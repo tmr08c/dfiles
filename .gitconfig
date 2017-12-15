@@ -1,0 +1,32 @@
+[alias]
+  ci = commit
+  co = checkout
+  f = fetch
+  s = status
+  b = branch
+  d = diff
+  a = add
+  l = log
+  ctags = !.git/hooks/ctags
+[core]
+  excludesfile = ~/.gitignore
+[color]
+  ui = auto
+[merge]
+  # Show merge statistics after merge.
+  stat = true
+  ff = only
+[include]
+  path = .gitconfig.local
+[commit]
+  template = ~/.gitmessage
+[push]
+  default = simple
+[pull]
+  ff = only
+[credential]
+  helper = osxkeychain
+[init]
+  templatedir = ~/.git_template
+[branch]
+  autosetupmerge = always
