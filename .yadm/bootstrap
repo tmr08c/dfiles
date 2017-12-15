@@ -1,0 +1,22 @@
+#!/bin/bash
+
+system_type=$(uname -s)
+
+if [ "$system_type" = "Darwin" ]; then
+  echo "macOS detected"
+fi
+
+if [ -f /etc/redhat-release ]; then
+  echo "Fedora / RHEL detected"
+fi
+
+if [ ! -e $HOME/.vim/bundle/vundle ]; then
+  echo "Installing Vundle for VIM configuration"
+  mkdir -p ~/.vim
+  git clone https://github.com/gmarik/vundle.git $HOME/.vim/bundle/vundle
+fi
+vim -u $HOME/.vimrc.bundles +BundleInstall +qa
+
+echo "Updating the yadm repo origin URL"
+yadm remote set-url origin "git@github.com:jsmestad/dfiles.git"
+
