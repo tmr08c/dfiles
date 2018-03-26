@@ -20,6 +20,7 @@
   path = .gitconfig.local
 [commit]
   template = ~/.gitmessage
+  gpgsign = true
 [push]
   default = simple
 [pull]
@@ -30,3 +31,5 @@
   templatedir = ~/.git_template
 [branch]
   autosetupmerge = always
+[user]
+  signingkey = 1CAE895F6E08EA26
