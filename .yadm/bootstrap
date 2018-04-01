@@ -8,7 +8,10 @@ if [ "$system_type" = "Darwin" ]; then
   if [ ! command -v brew >/dev/null 2>&1]; then
     echo "Installing homebrew"
     /usr/bin/ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
+
+    brew install pinentry-mac
   fi
+
 
 	if [ command -v vim > /dev/null 2>&1]; then
 		if [ ! -e $HOME/.vim/bundle/vundle ]; then
