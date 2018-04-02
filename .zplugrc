@@ -15,7 +15,6 @@ zplug "~/.zsh", from:local, use:"java-osx.zsh", if:"[[ $OSTYPE == *darwin* ]]", 
 #zplug "plugins/git",    from:oh-my-zsh, as:plugin
 #zplug "plugins/heroku", from:oh-my-zsh, as:plugin
 #zplug "plugins/tmux",   from:oh-my-zsh, as:plugin
-zplug "zsh-users/zsh-syntax-highlighting", defer:3
 zplug "zsh-users/zsh-history-substring-search"
 zplug "zsh-users/zsh-completions"
 zplug "zsh-users/zsh-autosuggestions"
@@ -24,8 +23,10 @@ zplug "greymd/docker-zsh-completion"
 zplug "lukechilds/zsh-nvm", from:github, as:plugin
 #zplug "lukechilds/zsh-better-npm-completion", from:github, defer:2
 
-#zplug "~/.zsh", from:local, use:murilasso.zsh-theme, as:theme
-zplug denysdovhan/spaceship-prompt, use:spaceship.zsh, from:github, as:theme
+zplug mafredri/zsh-async, from:github
+zplug sindresorhus/pure, use:pure.zsh, from:github, as:theme
+
+zplug "zsh-users/zsh-syntax-highlighting", defer:3
 
 bindkey '^[[A' history-substring-search-up
 bindkey '^[[B' history-substring-search-down
