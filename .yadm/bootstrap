@@ -23,14 +23,32 @@ if [ "$system_type" = "Darwin" ]; then
 	fi
 else
 	distro=$(lsb_release -i | cut -f2-)
-
 	if [ -f /etc/redhat-release ]; then
 		echo "Fedora / RHEL detected"
 	fi
 
 	if [ "$distro" = "Ubuntu" ]; then
 		echo "Ubuntu detected"
+    sudo apt install pinentry-gnome3 pinentry-curses
 	fi
+
+  # Download GPG key from Public Server
+  gpg --list-keys 0xDB57958A3B574D5C > /dev/null 2>&1
+  status=$?
+  if [ $status -ne 0 ]; then
+    echo "GPG key missing. Importing from Public Server."
+    gpg --recv 0xDB57958A3B574D5C
+    echo "GPG imported. You must manually trust it."
+    echo "Run 'gpg --edit-key 0xDB57958A3B574D5C' and give it ultimate trust."
+
+    # Run GPG with SSH
+    export GPG_TTY="$(tty)"
+    export SSH_AUTH_SOCK=$(gpgconf --list-dirs agent-ssh-socket)
+    gpgconf --launch gpg-agent
+
+    ssh-add -L | grep "cardno:000607123960" > ~/.ssh/id_rsa_yubikey.pub
+  fi
+
 fi
 
 echo "Updating the yadm repo origin URL"
