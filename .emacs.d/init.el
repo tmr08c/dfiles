@@ -12,6 +12,30 @@
   (package-install 'use-package))
 (eval-when-compile (require 'use-package))
 
+;;(setq use-package-verbose t)
+;;(setq use-package-always-ensure t)
+;;(use-package auto-compile
+;;  :config (auto-compile-on-load-mode))
+;;(setq load-prefer-newer t)
+
+;; Use spaces instead of Tabs
+(setq-default indent-tabs-mode nil)
+
+(setq user-full-name "Justin Smestad"
+      user-mail-address "justin.smestad@gmail.com")
+
+;; EditorConfig
+;; Read files to set coding style options according to current prroject
+(use-package editorconfig
+  :ensure t
+  :config
+  (editorconfig-mode 1))
+
+;; Rainbow Mode
+;; Show HEX colors inline
+;; (use-package rainbow-mode
+;;   :ensure t)
+
 ;; Theme
 (use-package doom-themes
   :init (load-theme 'doom-molokai t)
