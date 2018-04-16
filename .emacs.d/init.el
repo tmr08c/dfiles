@@ -1,64 +1,39 @@
+(setq package-check-signature nil)
+(setq package-enable-at-startup nil)
+(setq package-archives '(("melpa" . "https://melpa.org/packages/")
+                         ("marmalade" . "https://marmalade-repo.org/packages/")
+			 ("gnu" . "https://elpa.gnu.org/packages/")))
 (package-initialize)
-(setq package-archives
-      '(("gnu" . "http://elpa.gnu.org/packages/")
-	("melpa" . "https://melpa.org/packages/")))
+
+
+;; Bootstrap `use-package'
+(unless (package-installed-p 'use-package)
+  (package-refresh-contents)
+  (package-install 'use-package))
+(eval-when-compile (require 'use-package))
+
+;; Theme
+(use-package doom-themes
+  :init (load-theme 'doom-molokai t)
+  :config
+  (progn
+    (doom-themes-visual-bell-config)
+    (doom-themes-org-config)))
+
+;; Enable which-key
+(use-package which-key
+  :ensure t
+  :init (which-key-mode)
+  :config
+    (which-key-setup-side-window-right-bottom)
+    (setq which-key-sort-order 'which-key-key-order-alpha
+          which-key-side-window-max-width 0.33
+          which-key-idle-delay 0.05)
+  :diminish which-key-mode)
 
 ;; Detect underlying OS
 (defconst IS-MAC   (eq system-type 'darwin))
 (defconst IS-LINUX (eq system-type 'gnu/linux))
-
-;; clipboard
-(setq x-select-request-type '(UTF8_STRING COMPOUND_TEXT TEXT STRING)
-      ;; Use a shared clipboard
-      select-enable-clipboard t
-      select-enable-primary t)
-
-(cond (IS-MAC
-       (setq mac-command-modifier 'meta
-             mac-option-modifier  'alt
-             ;; sane trackpad/mouse scroll settings
-             mac-redisplay-dont-reset-vscroll t
-             mac-mouse-wheel-smooth-scroll nil
-             mouse-wheel-scroll-amount '(5 ((shift) . 2))  ; one line at a time
-             mouse-wheel-progressive-speed nil             ; don't accelerate scrolling
-             ;; Curse Lion and its sudden but inevitable fullscreen mode!
-             ;; NOTE Meaningless to railwaycat's emacs-mac build
-             ns-use-native-fullscreen nil
-             ;; Don't open files from the workspace in a new frame
-	     ns-pop-up-frames nil))
-      (IS-LINUX
-       ;; native tooltips are ugly!
-       (setq x-gtk-use-system-tooltips nil)))
-
-;; Theme
-(require 'doom-themes)
-;; Global settings (defaults)
-(setq doom-themes-enable-bold t    ; if nil, bold is universally disabled
-      doom-themes-enable-italic t) ; if nil, italics is universally disabled
-
-;; Load the theme (doom-one, doom-molokai, etc); keep in mind that each theme
-;; may have their own settings.
-(load-theme 'doom-molokai t)
-
-;; Enable flashing mode-line on errors
-(doom-themes-visual-bell-config)
-
-;; Enable custom neotree theme
-;(doom-themes-neotree-config)  ; all-the-icons fonts must be installed!
-
-;; Corrects (and improves) org-mode's native fontification.
-(doom-themes-org-config)
-
-;;;
-;; UTF-8 as the default coding system
-(when (fboundp 'set-charset-priority)
-  (set-charset-priority 'unicode))     ; pretty
-  (prefer-coding-system        'utf-8)   ; pretty
-  (set-terminal-coding-system  'utf-8)   ; pretty
-  (set-keyboard-coding-system  'utf-8)   ; pretty
-  (set-selection-coding-system 'utf-8)   ; perdy
-  (setq locale-coding-system   'utf-8)   ; please
-  (setq-default buffer-file-coding-system 'utf-8) ; with sugar on top
 
 (setq-default
  ;; History & backup settings (save nothing, that's what git is for)
@@ -81,8 +56,9 @@
  '(global-display-line-numbers-mode t)
  '(inhibit-startup-screen t)
  '(initial-buffer-choice t)
- '(package-selected-packages (quote (doom-themes)))
+ '(package-selected-packages (quote (which-key use-package doom-themes)))
  '(scroll-bar-mode nil)
+ '(select-enable-clipboard t)
  '(show-paren-mode t))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
