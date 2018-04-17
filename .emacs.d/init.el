@@ -55,6 +55,10 @@
   :ensure nil
   :if (eq system-type 'darwin))
 
+(use-package reveal-in-osx-finder
+  :ensure nil
+  :if (eq system-type 'darwin))
+
 (use-package windows
   :ensure nil
   :if (eq system-type 'windows-nt))
@@ -69,7 +73,8 @@
 
 
 ;; Global Modes
-;; Enable which-key
+;;
+;;; Enable which-key
 (use-package which-key
   :delight
   :init (which-key-mode)
@@ -79,24 +84,28 @@
           which-key-side-window-max-width 0.33
           which-key-idle-delay 0.05))
 
-;; Ivy for completion
+;;; Ivy for completion
 (use-package ivy
   :config (progn
             (ivy-mode)
             (setq ivy-use-virtual-buffers t
                   ivy-count-format ""
                   ivy-use-selectable-prompt t)))
-
+;;; Ado-ado
 (use-package counsel
   :config (progn
             (global-set-key (kbd "M-x") 'counsel-M-x)))
-
 (use-package swiper)
 
-;; Resize all buffers at once with C-M-= / C-M--
+(use-package flyspell
+  :config (progn
+            (setq flyspell-issue-message-flag nil)))
+
+;;; Resize all buffers at once with C-M-= / C-M--
 (use-package default-text-scale
   :init (default-text-scale-mode))
 
+;;; Key Bindings
 (use-package general)
 
 ;; Development Modes
@@ -109,13 +118,22 @@
             (projectile-global-mode)
             (setq projectile-enable-caching nil
                   projectile-completion-system 'ivy)))
+;;; Magit
+(use-package magit
+  :pin melpa-stable
+  :config (progn
+            (put 'magit-clean 'disabled nil)
+            (add-hook 'magit-status-sections-hook 'magit-insert-worktrees)
+            (setq magit-commit-show-diff nil)))
 ;;; EditorConfig
 ;;; Read files to set coding style options according to current prroject
 (use-package editorconfig
   :config (editorconfig-mode 1))
 
-;; Other Modes
 
+;;; Other Modes
+;;;
+;;; Markdown Mode
 (use-package markdown-mode
   :mode (("\\.md\\'" . markdown-mode))
   :config (progn
@@ -133,8 +151,18 @@
  visible-bell nil
  blink-matching-paren nil ;; don't blink -- too distracting
  ;;confirm-kill-emacs 'yes-or-no-p
-)
+ )
 
+;; TODO not sure if I need these yet
+(setq dired-dwim-target t
+      dired-recursive-deletes t
+      dired-use-ls-dired nil
+      delete-by-moving-to-trash t)
+;; TODO: do I want emmet mode?
+(use-package emmet-mode
+  :config (progn
+            (setq emmet-move-cursor-between-quotes t)
+            (add-hook 'css-mode-hook  'emmet-mode)))
 
 ;; Theme
 ;;
