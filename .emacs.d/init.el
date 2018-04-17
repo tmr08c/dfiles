@@ -1,3 +1,8 @@
+(setq gc-cons-threshold 64000000)
+(add-hook 'after-init-hook (lambda ()
+                             ;; restore after startup
+                             (setq gc-cons-threshold 800000)))
+
 ;; Default to UTF-8 early as this file uses Unicode symbols.
 (prefer-coding-system 'utf-8)
 (set-default-coding-systems 'utf-8)
@@ -36,33 +41,34 @@
                            (invert-face 'mode-line)
                            (run-with-timer 0.1 nil 'invert-face 'mode-line)))
 
-;;(setq use-package-verbose t)
-;;(setq use-package-always-ensure t)
-;;(use-package auto-compile
-;;  :config (auto-compile-on-load-mode))
-;;(setq load-prefer-newer t)
-
-
 (setq user-full-name "Justin Smestad"
       user-mail-address "justin.smestad@gmail.com")
 
-;; EditorConfig
-;; Read files to set coding style options according to current prroject
-(use-package editorconfig
-  :config (editorconfig-mode 1))
 
-;; Rainbow Mode
-;; Show HEX colors inline
-;; (use-package rainbow-mode
-;;   :ensure t)
+;; Platform
+;;
+(use-package linux
+  :ensure nil
+  :if (eq system-type 'gnu/linux))
 
-;; Theme
-(use-package doom-themes
-  :init (load-theme 'doom-molokai t)
-  :config
-  (progn
-    (doom-themes-org-config)))
+(use-package osx
+  :ensure nil
+  :if (eq system-type 'darwin))
 
+(use-package windows
+  :ensure nil
+  :if (eq system-type 'windows-nt))
+
+;; Auto-update packages.
+;;
+;; (use-package auto-package-update
+;;   :custom
+;;   (auto-package-update-interval 7)
+;;   (auto-package-update-prompt-before-update ft)
+;;   :config (auto-package-update-maybe))
+
+
+;; Global Modes
 ;; Enable which-key
 (use-package which-key
   :delight
@@ -73,12 +79,42 @@
           which-key-side-window-max-width 0.33
           which-key-idle-delay 0.05))
 
+;; Ivy for completion
+(use-package ivy
+  :config (progn
+            (ivy-mode)
+            (setq ivy-use-virtual-buffers t
+                  ivy-count-format ""
+                  ivy-use-selectable-prompt t)))
+
+(use-package counsel
+  :config (progn
+            (global-set-key (kbd "M-x") 'counsel-M-x)))
+
+(use-package swiper)
+
+;; Resize all buffers at once with C-M-= / C-M--
 (use-package default-text-scale
   :init (default-text-scale-mode))
 
-;; Detect underlying OS
-(defconst IS-MAC   (eq system-type 'darwin))
-(defconst IS-LINUX (eq system-type 'gnu/linux))
+(use-package general)
+
+;; Development Modes
+
+;;; ALL
+;;;
+;;; EditorConfig
+;;; Read files to set coding style options according to current prroject
+(use-package editorconfig
+  :config (editorconfig-mode 1))
+
+;; Other Modes
+
+(use-package markdown-mode
+  :mode (("\\.md\\'" . markdown-mode))
+  :config (progn
+            (add-hook 'markdown-mode-hook 'visual-line-mode)
+            (add-hook 'markdown-mode-hook (lambda () (flyspell-mode 1)))))
 
 (setq-default
  inhibit-splash-screen t
@@ -89,15 +125,24 @@
  make-backup-files nil
  ;; no beeping or blinking please
  visible-bell nil
- blink-matching-paren nil ; don't blink -- too distracting
- confirm-kill-emacs 'yes-or-no-p)
+ blink-matching-paren nil ;; don't blink -- too distracting
+ ;;confirm-kill-emacs 'yes-or-no-p
+)
 
+
+;; Theme
+;;
+(use-package doom-themes
+  :init (load-theme 'doom-molokai t)
+  :config
+  (progn
+    (doom-themes-org-config)))
+;; Default Font
 (set-face-attribute 'default nil
                     :family "Fira Mono"
                     :height 130
                     :weight 'normal
                     :width 'normal)
-
 
 (custom-set-variables
  ;; custom-set-variables was added by Custom.
@@ -110,5 +155,14 @@
  '(package-selected-packages (quote (which-key doom-themes editorconfig use-package)))
  '(scroll-bar-mode nil)
  '(select-enable-clipboard t)
- '(show-paren-mode t))
+ '(sentence-end-double-space nil)
+ '(show-paren-mode t)
+ '(vc-follow-symlinks t)
+ '(version-control t))
 
+(custom-set-faces
+ ;; custom-set-faces was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ )
