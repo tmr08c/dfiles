@@ -103,6 +103,12 @@
 
 ;;; ALL
 ;;;
+;;; Projectile
+(use-package projectile
+  :config (progn
+            (projectile-global-mode)
+            (setq projectile-enable-caching nil
+                  projectile-completion-system 'ivy)))
 ;;; EditorConfig
 ;;; Read files to set coding style options according to current prroject
 (use-package editorconfig
