@@ -12,7 +12,8 @@
 
 ;; Get package repos configured
 (require 'package)
-(add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/"))
+(add-to-list 'package-archives
+             '("melpa" . "https://melpa.org/packages/"))
 (add-to-list 'package-archives
              '("melpa-stable" . "https://stable.melpa.org/packages/") t)
 
@@ -104,9 +105,33 @@
 ;;; Resize all buffers at once with C-M-= / C-M--
 (use-package default-text-scale
   :init (default-text-scale-mode))
+;;; Grab ENV variables from shell
+;(use-package exec-path-from-shell)
+;(require 'exec-path-from-shell)
+;;; Restart Emacs
+(use-package restart-emacs)
+
+;;; Evil mode
+(use-package evil
+  :init
+  (evil-mode 1))
+
+(use-package evil-surround
+    :init
+    (global-evil-surround-mode))
+(use-package evil-indent-textobject)
 
 ;;; Key Bindings
-(use-package general)
+(use-package general
+  :config
+  (general-define-key
+   :states '(normal visual insert emacs)
+   :prefix "SPC"
+   :non-normal-prefix "C-SPC"
+
+   ;; simple command
+   "TAB" '(switch-to-other-buffer :which-key "prev buffer")
+   ))
 
 ;; Development Modes
 
@@ -125,11 +150,25 @@
             (put 'magit-clean 'disabled nil)
             (add-hook 'magit-status-sections-hook 'magit-insert-worktrees)
             (setq magit-commit-show-diff nil)))
+;;; Company
+;;; Auto-completion framework for most modes
+(use-package company
+  :init
+  (add-hook 'after-init-hook 'global-company-mode))
 ;;; EditorConfig
 ;;; Read files to set coding style options according to current prroject
 (use-package editorconfig
   :config (editorconfig-mode 1))
-
+;;; Rainbow Delimiters
+;;; Highlight matching delimiters with unique colors.
+(use-package rainbow-delimiters
+  :commands (rainbow-delimiters-mode)
+  :init
+  (add-hook 'prog-mode-hook #'rainbow-delimiters-mode))
+;;; Follow files indent style
+;(use-package dtrt-indent)
+;;; Auto update changed files
+;(global-auto-revert-mode t)
 
 ;;; Other Modes
 ;;;
@@ -139,6 +178,8 @@
   :config (progn
             (add-hook 'markdown-mode-hook 'visual-line-mode)
             (add-hook 'markdown-mode-hook (lambda () (flyspell-mode 1)))))
+;;; JSON Formatter
+(use-package json-mode)
 
 (setq-default
  inhibit-splash-screen t
@@ -186,7 +227,9 @@
  '(cua-mode t nil (cua-base))
  '(global-display-line-numbers-mode t)
  '(initial-buffer-choice t)
- '(package-selected-packages (quote (which-key doom-themes editorconfig use-package)))
+ '(package-selected-packages
+   (quote
+    (evil which-key doom-themes editorconfig use-package)))
  '(scroll-bar-mode nil)
  '(select-enable-clipboard t)
  '(sentence-end-double-space nil)
