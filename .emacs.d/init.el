@@ -105,11 +105,17 @@
 ;;; Resize all buffers at once with C-M-= / C-M--
 (use-package default-text-scale
   :init (default-text-scale-mode))
-;;; Grab ENV variables from shell
+;;; TODO Grab ENV variables from shell
 ;(use-package exec-path-from-shell)
 ;(require 'exec-path-from-shell)
 ;;; Restart Emacs
 (use-package restart-emacs)
+;;; TODO Shackle to keep pop-up windows under control
+;(use-package 'shackle)
+;;; TODO Workspaces
+;(use-package 'persp-mode)
+;;; TODO workgroups
+;(use-package 'workgroups)
 
 ;;; Evil mode
 (use-package evil
@@ -165,9 +171,9 @@
   :commands (rainbow-delimiters-mode)
   :init
   (add-hook 'prog-mode-hook #'rainbow-delimiters-mode))
-;;; Follow files indent style
+;;; TODO Follow files indent style
 ;(use-package dtrt-indent)
-;;; Auto update changed files
+;;; TODO Auto update changed files
 ;(global-auto-revert-mode t)
 
 ;;; Other Modes
@@ -207,6 +213,8 @@
 
 ;; Theme
 ;;
+(use-package powerline
+  :init (powerline-default-theme))
 (use-package doom-themes
   :init (load-theme 'doom-molokai t)
   :config
