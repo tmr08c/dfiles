@@ -8,3 +8,7 @@ export PGUSER='postgres'
 hash -d mikasa=~/code/homebot/mikasa
 hash -d homebot-api=~/code/homebot/api
 hash -d homebot-web=~/code/homebot/web
+
+export GPG_TTY="$(tty)"
+export SSH_AUTH_SOCK=$(gpgconf --list-dirs agent-ssh-socket)
+gpgconf --launch gpg-agent

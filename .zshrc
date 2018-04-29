@@ -17,16 +17,6 @@ export HISTSIZE=11000
 export SAVEHIST=10000
 export HISTFILE=~/.zsh_history
 
-
-# completion
-autoload -Uz compinit
-typeset -i updated_at=$(date +'%j' -r ~/.zcompdump 2>/dev/null || stat -f '%Sm' -t '%j' ~/.zcompdump 2>/dev/null)
-if [ $(date +'%j') != $updated_at ]; then
-  compinit
-else
-  compinit -C
-fi
-
 # use vim as the visual editor
 export EDITOR='vim'
 
@@ -46,7 +36,13 @@ eval "$(direnv hook zsh)"
 [[ -f ~/.zshrc.local ]] && source ~/.zshrc.local
 [[ -f ~/.zshrc.private ]] && source ~/.zshrc.private
 
-source ~/.zplugrc
+source ~/.zpluginrc
+# source ~/.zplugrc
 
 # Aliases
 [[ -f ~/.aliases ]] && source ~/.aliases
+
+# completion
+autoload -Uz compinit
+compinit
+
