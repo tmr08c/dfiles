@@ -52,8 +52,8 @@ else
     echo "Run 'gpg --edit-key 0xDB57958A3B574D5C' and give it ultimate trust."
 
     # Run GPG with SSH
-    export GPG_TTY="$(tty)"
-    export SSH_AUTH_SOCK=$(gpgconf --list-dirs agent-ssh-socket)
+    GPG_TTY="$(tty)"
+    SSH_AUTH_SOCK=$(gpgconf --list-dirs agent-ssh-socket)
     gpgconf --launch gpg-agent
 
     ssh-add -L | grep "cardno:000607123960" > ~/.ssh/id_rsa_yubikey.pub

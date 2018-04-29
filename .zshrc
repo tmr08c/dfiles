@@ -33,11 +33,15 @@ export NVM_AUTO_USE=true
 # direnv
 eval "$(direnv hook zsh)"
 
+if [[ -d ~/.rbenv ]]; then
+  export PATH="$HOME/.rbenv/bin:$PATH"
+  eval "$(rbenv init -)"
+fi
+
 [[ -f ~/.zshrc.local ]] && source ~/.zshrc.local
 [[ -f ~/.zshrc.private ]] && source ~/.zshrc.private
 
 source ~/.zpluginrc
-# source ~/.zplugrc
 
 # Aliases
 [[ -f ~/.aliases ]] && source ~/.aliases
