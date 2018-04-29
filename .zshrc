@@ -19,25 +19,26 @@ export HISTSIZE=11000
 export SAVEHIST=10000
 export HISTFILE=~/.zsh_history
 
-# use vim as the visual editor
-export EDITOR='vim'
-
 # enable colored output from ls, etc
 export CLICOLOR=1
 
-# NVM settings (Node.JS)
-#
-# Lazy load nvm on first use
-export NVM_LAZY_LOAD=true
-# NVM auto use
+# NVM (Node.JS) auto use
 export NVM_AUTO_USE=true
 
-# direnv
-eval "$(direnv hook zsh)"
+export ZSH_AUTOSUGGEST_USE_ASYNC=true
 
-if [[ -d ~/.rbenv ]]; then
+# direnv
+if (( $+commands[direnv] )); then
+  eval "$(direnv hook zsh)"
+else
+  echo "Missing direnv. Please install it `brew install direnv` or `apt install direnv`."
+fi
+
+if (( $+commands[rbenv] )); then
   export PATH="$HOME/.rbenv/bin:$PATH"
   eval "$(rbenv init -)"
+else
+  echo "Missing rbenv. Please install it https://github.com/rbenv/rbenv#basic-github-checkout"
 fi
 
 [[ -f ~/.zshrc.local ]] && source ~/.zshrc.local

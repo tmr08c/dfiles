@@ -1,14 +1,17 @@
-# direnv
-eval "$(direnv hook zsh)"
+if (( $+commands[emacs] )); then
+  export EDITOR='emacs -nw'
+elif (( $+commands[vim] )); then
+  export EDITOR='vim'
+fi
 
-export PGHOST='127.0.0.1'
-export PGPORT='5432'
-export PGUSER='postgres'
+if (( $+commands[psql] )); then
+  export PGHOST='127.0.0.1'
+  export PGPORT='5432'
+  export PGUSER='postgres'
+fi
 
-hash -d mikasa=~/code/homebot/mikasa
-hash -d homebot-api=~/code/homebot/api
-hash -d homebot-web=~/code/homebot/web
-
-export GPG_TTY="$(tty)"
-export SSH_AUTH_SOCK=$(gpgconf --list-dirs agent-ssh-socket)
-gpgconf --launch gpg-agent
+if (( $+commands[gpgconf] )); then
+  export GPG_TTY="$(tty)"
+  export SSH_AUTH_SOCK=$(gpgconf --list-dirs agent-ssh-socket)
+  gpgconf --launch gpg-agent
+fi

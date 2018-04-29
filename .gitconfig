@@ -8,6 +8,7 @@
   a = add
   l = log
   ctags = !.git/hooks/ctags
+  cleanup = "!git branch --merged | grep  -v '\\*\\|master\\|develop' | xargs -n 1 git branch -d"
 [core]
   excludesfile = ~/.gitignore
 [color]
@@ -33,3 +34,5 @@
   autosetupmerge = always
 [user]
   signingkey = 1CAE895F6E08EA26
+[fetch]
+  prune = true
