@@ -17,8 +17,9 @@
 (add-to-list 'package-archives
              '("melpa-stable" . "https://stable.melpa.org/packages/") t)
 
-(setq package-check-signature nil)
-(setq package-enable-at-startup nil)
+(setq package-check-signature nil
+      package-enable-at-startup nil
+      use-package-always-ensure t)
 (package-initialize)
 
 ;; Bootstrap `use-package'
@@ -28,10 +29,13 @@
 (eval-when-compile
   (require 'use-package))
 
+;; Ensure system has required packages and install if missing
+(use-package exec-path-from-shell)
+(use-package use-package-ensure-system-package)
+(use-package system-packages
+  :requires use-package-ensure-system-package)
 
-(setq-default use-package-always-defer t
-              use-package-always-ensure t
-              indent-tabs-mode nil ;; Use spaces instead of tabs
+(setq-default indent-tabs-mode nil ;; Use spaces instead of tabs
               tab-width 2
               css-indent-offset 2)
 
@@ -49,29 +53,33 @@
 ;; Platform
 ;;
 (use-package linux
+  :disabled
   :ensure nil
   :if (eq system-type 'gnu/linux))
 
 (use-package osx
+  :disabled
   :ensure nil
   :if (eq system-type 'darwin))
 
 (use-package reveal-in-osx-finder
+  :disabled
   :ensure nil
   :if (eq system-type 'darwin))
 
 (use-package windows
+  :disabled
   :ensure nil
   :if (eq system-type 'windows-nt))
 
 ;; Auto-update packages.
 ;;
-;; (use-package auto-package-update
-;;   :custom
-;;   (auto-package-update-interval 7)
-;;   (auto-package-update-prompt-before-update ft)
-;;   :config (auto-package-update-maybe))
-
+(use-package auto-package-update
+  :config
+  (setq auto-package-update-delete-old-versions t
+        auto-package-update-hide-results t
+        auto-package-update-prompt-before-update t)
+  (auto-package-update-maybe))
 
 ;; Global Modes
 ;;
@@ -94,16 +102,20 @@
                   ivy-use-selectable-prompt t)))
 ;;; Ado-ado
 (use-package counsel
+  :disabled
   :config (progn
             (global-set-key (kbd "M-x") 'counsel-M-x)))
-(use-package swiper)
+(use-package swiper
+  :disabled)
 
 (use-package flyspell
+  :disabled
   :config (progn
             (setq flyspell-issue-message-flag nil)))
 
 ;;; Resize all buffers at once with C-M-= / C-M--
 (use-package default-text-scale
+  :disabled
   :init (default-text-scale-mode))
 ;;; TODO Grab ENV variables from shell
 ;(use-package exec-path-from-shell)
@@ -119,25 +131,25 @@
 
 ;;; Evil mode
 (use-package evil
-  :init
-  (evil-mode 1))
-
+  :init (evil-mode 1))
 (use-package evil-surround
-    :init
-    (global-evil-surround-mode))
-(use-package evil-indent-textobject)
+  :disabled
+  :requires evil
+  :init (global-evil-surround-mode))
+(use-package evil-indent-textobject
+  :disabled
+  :requires evil)
 
 ;;; Key Bindings
 (use-package general
   :config
   (general-define-key
-   :states '(normal visual insert emacs)
-   :prefix "SPC"
-   :non-normal-prefix "C-SPC"
+    :states '(normal visual insert emacs)
+    :prefix "SPC"
+    :non-normal-prefix "C-SPC"
 
-   ;; simple command
-   "TAB" '(switch-to-other-buffer :which-key "prev buffer")
-   ))
+    ;; simple command
+    "TAB" '(switch-to-other-buffer :which-key "prev buffer")))
 
 ;; Development Modes
 
@@ -145,12 +157,14 @@
 ;;;
 ;;; Projectile
 (use-package projectile
+  :delight '(:eval (concat " " (projectile-project-name)))
   :config (progn
             (projectile-global-mode)
             (setq projectile-enable-caching nil
                   projectile-completion-system 'ivy)))
 ;;; Magit
 (use-package magit
+  :disabled
   :pin melpa-stable
   :config (progn
             (put 'magit-clean 'disabled nil)
@@ -164,6 +178,7 @@
 ;;; EditorConfig
 ;;; Read files to set coding style options according to current prroject
 (use-package editorconfig
+  :disabled
   :config (editorconfig-mode 1))
 ;;; Rainbow Delimiters
 ;;; Highlight matching delimiters with unique colors.
@@ -207,6 +222,7 @@
       delete-by-moving-to-trash t)
 ;; TODO: do I want emmet mode?
 (use-package emmet-mode
+  :disabled
   :config (progn
             (setq emmet-move-cursor-between-quotes t)
             (add-hook 'css-mode-hook  'emmet-mode)))
