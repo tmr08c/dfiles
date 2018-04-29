@@ -16,11 +16,10 @@
              '("melpa" . "https://melpa.org/packages/"))
 (add-to-list 'package-archives
              '("melpa-stable" . "https://stable.melpa.org/packages/") t)
-
+(package-initialize)
 (setq package-check-signature nil
       package-enable-at-startup nil
       use-package-always-ensure t)
-(package-initialize)
 
 ;; Bootstrap `use-package'
 (unless (package-installed-p 'use-package)
@@ -30,7 +29,9 @@
   (require 'use-package))
 
 ;; Ensure system has required packages and install if missing
-(use-package exec-path-from-shell)
+(use-package exec-path-from-shell
+  :if (memq window-system '(mac ns))
+  :config (exec-path-from-shell-initialize))
 (use-package use-package-ensure-system-package)
 (use-package system-packages
   :requires use-package-ensure-system-package)
@@ -157,11 +158,13 @@
 ;;;
 ;;; Projectile
 (use-package projectile
+  :requires ivy
   :delight '(:eval (concat " " (projectile-project-name)))
-  :config (progn
-            (projectile-global-mode)
-            (setq projectile-enable-caching nil
-                  projectile-completion-system 'ivy)))
+  :custom
+  (projectile-completion-system 'ivy)
+  (projectile-enable-caching nil)
+  :config
+  (projectile-global-mode))
 ;;; Magit
 (use-package magit
   :disabled
@@ -223,9 +226,8 @@
 ;; TODO: do I want emmet mode?
 (use-package emmet-mode
   :disabled
-  :config (progn
-            (setq emmet-move-cursor-between-quotes t)
-            (add-hook 'css-mode-hook  'emmet-mode)))
+  :custom (emmet-move-cursor-between-quotes t)
+  :config (add-hook 'css-mode-hook  'emmet-mode))
 
 ;; Theme
 ;;
