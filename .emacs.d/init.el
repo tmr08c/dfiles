@@ -88,19 +88,19 @@
 (use-package which-key
   :delight
   :init (which-key-mode)
-  :config
-    (which-key-setup-side-window-right-bottom)
-    (setq which-key-sort-order 'which-key-key-order-alpha
-          which-key-side-window-max-width 0.33
-          which-key-idle-delay 0.05))
+  :custom
+  (which-key-sort-order 'which-key-key-order-alpha)
+  (which-key-side-window-max-width 0.33)
+  (which-key-idle-delay 0.05)
+  (which-key-setup-side-window-right-bottom))
 
 ;;; Ivy for completion
 (use-package ivy
-  :config (progn
-            (ivy-mode)
-            (setq ivy-use-virtual-buffers t
-                  ivy-count-format ""
-                  ivy-use-selectable-prompt t)))
+  :init (ivy-mode)
+  :custom
+  (ivy-use-virtual-buffers t)
+  (ivy-count-format "")
+  (ive-use-selectable-prompt t))
 ;;; Ado-ado
 (use-package counsel
   :disabled
@@ -111,8 +111,8 @@
 
 (use-package flyspell
   :disabled
-  :config (progn
-            (setq flyspell-issue-message-flag nil)))
+  :custom
+  (flyspell-issue-message-flag nil))
 
 ;;; Resize all buffers at once with C-M-= / C-M--
 (use-package default-text-scale
@@ -150,7 +150,8 @@
     :non-normal-prefix "C-SPC"
 
     ;; simple command
-    "TAB" '(switch-to-other-buffer :which-key "prev buffer")))
+    "TAB" '(switch-to-other-buffer :which-key "prev buffer")
+    "q r" '(restart-emacs :which-key "restart emacs")))
 
 ;; Development Modes
 
@@ -163,7 +164,7 @@
   :custom
   (projectile-completion-system 'ivy)
   (projectile-enable-caching nil)
-  :config
+  :init
   (projectile-global-mode))
 ;;; Magit
 (use-package magit
