@@ -1,6 +1,8 @@
 # Disable "flow control"
 setopt noflowcontrol
 
+# Allow dynamic prompts
+setopt prompt_subst
 
 # Configure History
 setopt append_history
