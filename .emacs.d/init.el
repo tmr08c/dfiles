@@ -1,7 +1,8 @@
-(setq gc-cons-threshold 64000000)
-(add-hook 'after-init-hook (lambda ()
-                             ;; restore after startup
-                             (setq gc-cons-threshold 800000)))
+;;; init --- Justin Smestad's Emacs init file
+;;; Commentary:
+
+;;; Code:
+(customize-set-variable 'gc-cons-threshold (* 10 1024 1024))
 
 ;; Default to UTF-8 early as this file uses Unicode symbols.
 (prefer-coding-system 'utf-8)
@@ -12,21 +13,23 @@
 
 ;; Get package repos configured
 (require 'package)
-(add-to-list 'package-archives
-             '("melpa" . "https://melpa.org/packages/"))
-(add-to-list 'package-archives
-             '("melpa-stable" . "https://stable.melpa.org/packages/") t)
-(package-initialize)
-(setq package-check-signature nil
-      package-enable-at-startup nil
-      use-package-always-ensure t)
+(customize-set-variable
+ 'package-archives
+ '(("melpa" . "https://melpa.org/packages/")
+   ("melpa-stable" . "https://stable.melpa.org/packages/")
+   ("gnu" . "https://elpa.gnu.org/packages/")
+   ("org" . "https://orgmode.org/elpa/")))
 
 ;; Bootstrap `use-package'
 (unless (package-installed-p 'use-package)
   (package-refresh-contents)
   (package-install 'use-package))
+(customize-set-variable 'use-package-always-ensure t)
 (eval-when-compile
   (require 'use-package))
+
+(use-package delight)
+(use-package dash)
 
 ;; Ensure system has required packages and install if missing
 (use-package exec-path-from-shell
@@ -36,19 +39,18 @@
 (use-package system-packages
   :requires use-package-ensure-system-package)
 
-(setq-default indent-tabs-mode nil ;; Use spaces instead of tabs
-              tab-width 2
-              css-indent-offset 2)
+;; Save data files consistently:
+;; - `save-place-file'
+;; - `undo-tree-history-directory-alist'
+;; - `backup-directory-alist'
+;; - etc.
+(use-package no-littering)
 
-(fset 'yes-or-no-p 'y-or-n-p)
+(customize-set-variable
+ 'custom-file (no-littering-expand-var-file-name "custom.el"))
 
-
-(setq ring-bell-function (lambda ()
-                           (invert-face 'mode-line)
-                           (run-with-timer 0.1 nil 'invert-face 'mode-line)))
-
-(setq user-full-name "Justin Smestad"
-      user-mail-address "justin.smestad@gmail.com")
+(customize-set-variable 'user-full-name "Justin Smestad")
+(customize-set-variable 'user-mail-address "justin.smestad@gmail.com")
 
 
 ;; Platform
@@ -76,11 +78,36 @@
 ;; Auto-update packages.
 ;;
 (use-package auto-package-update
+  :load-path "vendor/"
   :config
-  (setq auto-package-update-delete-old-versions t
-        auto-package-update-hide-results t
-        auto-package-update-prompt-before-update t)
-  (auto-package-update-maybe))
+  (auto-package-update-maybe)
+  :custom
+  (auto-package-update-interval 1)
+  (auto-package-update-delete-old-versions t)
+  (auto-package-update-hide-results t)
+  (auto-package-update-prompt-before-update t)
+  (apu--last-update-day-filename
+   (no-littering-expand-var-file-name "auto-update-package-last-update-day")))
+
+;; File settings
+;;
+(use-package files
+  :ensure nil
+  :custom
+  (require-final-newline t)
+  (backup-by-copying t)
+  (delete-old-versions t)
+  (kept-new-versions 8)
+  (kept-old-versions 4)
+  (version-control t)
+  (auto-save-file-name-transforms
+   `((".*" ,(no-littering-expand-var-file-name "auto-save/") t)))
+  (large-file-warning-threshold (* 20 1000 1000) "20 megabytes."))
+
+;;; Version control:
+(use-package vc-hooks
+  :ensure nil
+  :custom (vc-follow-symlinks t))
 
 ;; Global Modes
 ;;
@@ -96,6 +123,7 @@
 
 ;;; Ivy for completion
 (use-package ivy
+  :delight
   :init (ivy-mode)
   :custom
   (ivy-use-virtual-buffers t)
@@ -106,33 +134,49 @@
   :disabled
   :config (progn
             (global-set-key (kbd "M-x") 'counsel-M-x)))
+
+(use-package counsel-projectile
+  :requires (counsel projectile)
+  :config (counsel-projectile-mode))
+
 (use-package swiper
   :disabled)
 
+(use-package flycheck
+  :config (global-flycheck-mode))
+
 (use-package flyspell
-  :disabled
+  ;; Disable on Windows because `aspell' 0.6+ isn't available.
+  :if (not (eq system-type 'windows-nt))
+  :delight
+  :hook ((text-mode . flyspell-mode)
+         (prog-mode . flyspell-prog-mode))
   :custom
-  (flyspell-issue-message-flag nil))
+  (ispell-program-name "aspell")
+  (ispell-extra-args '("--sug-mode=ultra")))
+
+(use-package flyspell-correct-ivy
+  :after (flyspell ivy))
 
 ;;; Resize all buffers at once with C-M-= / C-M--
 (use-package default-text-scale
   :disabled
   :init (default-text-scale-mode))
-;;; TODO Grab ENV variables from shell
-;(use-package exec-path-from-shell)
-;(require 'exec-path-from-shell)
 ;;; Restart Emacs
 (use-package restart-emacs)
 ;;; TODO Shackle to keep pop-up windows under control
-;(use-package 'shackle)
+;; (use-package shackle)
 ;;; TODO Workspaces
-;(use-package 'persp-mode)
+;; (use-package persp-mode)
 ;;; TODO workgroups
-;(use-package 'workgroups)
+;; (use-package workgroups)
 
 ;;; Evil mode
 (use-package evil
   :init (evil-mode 1))
+(use-package evil-commentary
+  :requires evil
+  :init (evil-commentary-mode))
 (use-package evil-surround
   :disabled
   :requires evil
@@ -165,15 +209,17 @@
   (projectile-completion-system 'ivy)
   (projectile-enable-caching nil)
   :init
-  (projectile-global-mode))
+  (projectile-mode))
 ;;; Magit
 (use-package magit
   :disabled
   :pin melpa-stable
+  :custom
+  (magit-commit-show-diff nil)
   :config (progn
             (put 'magit-clean 'disabled nil)
-            (add-hook 'magit-status-sections-hook 'magit-insert-worktrees)
-            (setq magit-commit-show-diff nil)))
+            (add-hook 'magit-status-sections-hook 'magit-insert-worktrees)))
+
 ;;; Company
 ;;; Auto-completion framework for most modes
 (use-package company
@@ -190,10 +236,33 @@
   :commands (rainbow-delimiters-mode)
   :init
   (add-hook 'prog-mode-hook #'rainbow-delimiters-mode))
-;;; TODO Follow files indent style
-;(use-package dtrt-indent)
-;;; TODO Auto update changed files
-;(global-auto-revert-mode t)
+;;; Adapt to foreign indentation offsets
+(use-package dtrt-indent
+  :delight
+  :custom (dtrt-indent-min-quality 60)
+  :init (dtrt-indent-global-mode))
+(use-package aggressive-indent
+  :hook (emacs-lisp-mode . aggressive-indent-mode))
+(use-package adaptive-wrap
+  :config (adaptive-wrap-prefix-mode))
+(use-package whitespace
+  :commands (whitespace-mode))
+(use-package ws-butler
+  :delight
+  :config (ws-butler-global-mode))
+;;; Editing
+(use-package autorevert
+  :ensure nil
+  :delight auto-revert-mode
+  :config (global-auto-revert-mode))
+(use-package undo-tree
+  :delight
+  :custom (undo-tree-auto-save-history t)
+  :config (global-undo-tree-mode))
+
+(use-package unfill
+  :disabled
+  :bind ([remap fill-paragraph] . #'unfill-toggle))
 
 ;;; Other Modes
 ;;;
@@ -204,34 +273,56 @@
             (add-hook 'markdown-mode-hook 'visual-line-mode)
             (add-hook 'markdown-mode-hook (lambda () (flyspell-mode 1)))))
 ;;; JSON Formatter
-(use-package json-mode)
+(use-package json-mode
+  :mode "\\.json$")
+;;; Dockerfile
+(use-package dockerfile-mode
+  :mode "Dockerfile.*\\'")
+;;; YAML mode
+(use-package yaml-mode
+  :mode "\\.ya?ml\'")
+;;; Git Attributes
+(use-package gitattributes-mode
+  :disabled
+  :mode ("/\\.gitattributes\\'"
+         "/info/attributes\\'"
+         "/git/attributes\\'"))
+(use-package gitconfig-mode
+  :disabled
+  :mode ("/\\.gitconfig\\'"
+         "/\\.git/config\\'"
+         "/modules/.*/config\\'"
+         "/git/config\\'"
+         "/\\.gitmodules\\'"
+         "/etc/gitconfig\\'"))
+(use-package gitignore-mode
+  :disabled
+  :mode ("/\\.gitignore\\'"
+         "/info/exclude\\'"
+         "/git/ignore\\'"))
 
-(setq-default
- inhibit-splash-screen t
- ;; History & backup settings (save nothing, that's what git is for)
- auto-save-default nil
- create-lockfiles nil
- history-length 500
- make-backup-files nil
- ;; no beeping or blinking please
- visible-bell nil
- blink-matching-paren nil ;; don't blink -- too distracting
- ;;confirm-kill-emacs 'yes-or-no-p
- )
-
-;; TODO not sure if I need these yet
-(setq dired-dwim-target t
-      dired-recursive-deletes t
-      dired-use-ls-dired nil
-      delete-by-moving-to-trash t)
+(use-package dired
+  :ensure nil
+  :commands (dired)
+  :custom
+  (dired-dwim-target t "Enable side-by-side `dired` buffer targets.")
+  (dired-recursive-copies 'always "Better recursion in `dired`.")
+  (dired-recursive-deletes 'top)
+  (delete-by-moving-to-trash t)
+  (dired-use-ls-dired nil))
 ;; TODO: do I want emmet mode?
 (use-package emmet-mode
   :disabled
   :custom (emmet-move-cursor-between-quotes t)
   :config (add-hook 'css-mode-hook  'emmet-mode))
 
-;; Theme
-;;
+;; Appearance:
+(if (display-graphic-p)
+    (progn
+      (tool-bar-mode 0)
+      (scroll-bar-mode 0)))
+
+;;; Theme
 (use-package powerline
   :init (powerline-default-theme))
 (use-package doom-themes
@@ -239,34 +330,44 @@
   :config
   (progn
     (doom-themes-org-config)))
-;; Default Font
+;;; Font
 (set-face-attribute 'default nil
                     :family "Fira Mono"
                     :height 130
                     :weight 'normal
                     :width 'normal)
+;;; Highlight TODOs
+(use-package hl-todo
+  :init (global-hl-todo-mode))
+;;; Better scrolling
+(use-package smooth-scroll
+  :if (display-graphic-p)
+  :delight
+  :custom (smooth-scroll/vscroll-step-size 8)
+  :init (smooth-scroll-mode))
 
-(custom-set-variables
- ;; custom-set-variables was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- '(cua-mode t nil (cua-base))
- '(global-display-line-numbers-mode t)
- '(initial-buffer-choice t)
- '(package-selected-packages
-   (quote
-    (evil which-key doom-themes editorconfig use-package)))
- '(scroll-bar-mode nil)
- '(select-enable-clipboard t)
- '(sentence-end-double-space nil)
- '(show-paren-mode t)
- '(vc-follow-symlinks t)
- '(version-control t))
+(use-package recentf
+  :ensure nil
+  :custom (recentf-max-saved-items 256)
+  :config (recentf-mode))
 
-(custom-set-faces
- ;; custom-set-faces was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- )
+
+;;; Fix Annoyances
+(defalias 'yes-or-no-p 'y-or-n-p)
+
+(customize-set-variable 'visible-bell nil)
+(customize-set-variable 'blink-matching-paran nil)
+(customize-set-variable 'inhibit-startup-screen t)
+(customize-set-variable 'load-prefer-newer t)
+(customize-set-variable 'indent-tabs-mode nil)
+(customize-set-variable 'sentence-end-double-space nil)
+(customize-set-variable 'ring-bell-function (lambda ()
+                                              (invert-face 'mode-line)
+                                              (run-with-timer 0.1 nil 'invert-face 'mode-line)))
+
+
+
+;;; provide init package
+(provide 'init)
+
+;;; init.el ends here
