@@ -19,6 +19,8 @@
    ("melpa-stable" . "https://stable.melpa.org/packages/")
    ("gnu" . "https://elpa.gnu.org/packages/")
    ("org" . "https://orgmode.org/elpa/")))
+(unless package--initialized
+  (package-initialize))
 
 ;; Bootstrap `use-package'
 (unless (package-installed-p 'use-package)
