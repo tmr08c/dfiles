@@ -346,7 +346,9 @@
   :if (display-graphic-p)
   :delight
   :custom (smooth-scroll/vscroll-step-size 8)
-  :init (smooth-scroll-mode))
+  :init (progn
+          (require 'smooth-scroll)
+          (smooth-scroll-mode 1)))
 
 (use-package recentf
   :ensure nil
