@@ -106,7 +106,7 @@
    `((".*" ,(no-littering-expand-var-file-name "auto-save/") t)))
   (large-file-warning-threshold (* 20 1000 1000) "20 megabytes."))
 
-;;; Version control:
+;;; Version control
 (use-package vc-hooks
   :ensure nil
   :custom (vc-follow-symlinks t))
@@ -318,11 +318,12 @@
   :custom (emmet-move-cursor-between-quotes t)
   :config (add-hook 'css-mode-hook  'emmet-mode))
 
-;; Appearance:
+;; Appearance
 (if (display-graphic-p)
     (progn
       (tool-bar-mode 0)
-      (scroll-bar-mode 0)))
+      (scroll-bar-mode 0)
+      (horizontal-scroll-bar-mode 0)))
 
 ;;; Theme
 (use-package powerline
@@ -343,7 +344,7 @@
   :init (global-hl-todo-mode))
 ;;; Better scrolling
 (use-package smooth-scroll
-  :if (display-graphic-p)
+  :if (eq system-type 'gnu/linux);;(display-graphic-p)
   :delight
   :custom (smooth-scroll/vscroll-step-size 8)
   :init (progn
@@ -357,6 +358,11 @@
 
 
 ;;; Fix Annoyances
+
+(use-package uniquify
+  :ensure nil
+  :custom (uniquify-buffer-name-style 'forward))
+
 (defalias 'yes-or-no-p 'y-or-n-p)
 
 (customize-set-variable 'visible-bell nil)
