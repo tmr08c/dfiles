@@ -59,21 +59,25 @@
 ;;
 (use-package linux
   :disabled
+  :load-path "vendor/"
   :ensure nil
   :if (eq system-type 'gnu/linux))
 
 (use-package osx
   :disabled
+  :load-path "vendor/"
   :ensure nil
   :if (eq system-type 'darwin))
 
 (use-package reveal-in-osx-finder
   :disabled
+  ;; :load-path "vendor/"
   :ensure nil
   :if (eq system-type 'darwin))
 
 (use-package windows
   :disabled
+  :load-path "vendor/"
   :ensure nil
   :if (eq system-type 'windows-nt))
 
@@ -196,10 +200,15 @@
    :prefix "SPC"
    :non-normal-prefix "C-SPC"
 
-   ;; simple command
    "TAB" '(switch-to-other-buffer :which-key "prev buffer")
+
    "q"   '(:ignore t :which-key "Quit")
    "q r" '(restart-emacs :which-key "restart")
+
+   "w"   '(:ignore t :which-key "Window")
+   "w /" '(split-window-right :which-key "split vertical")
+   "w -" '(split-window-below :which-key "split horizontal")
+
    "SPC" '(counsel-M-x :which-key "M-x")))
 
 ;; Development Modes
