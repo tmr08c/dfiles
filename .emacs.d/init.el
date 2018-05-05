@@ -165,7 +165,8 @@
   :disabled
   :init (default-text-scale-mode))
 ;;; Restart Emacs
-(use-package restart-emacs)
+(use-package restart-emacs
+  :defer t)
 ;;; TODO Shackle to keep pop-up windows under control
 ;; (use-package shackle)
 ;;; TODO Workspaces
@@ -191,13 +192,15 @@
 (use-package general
   :config
   (general-define-key
-    :states '(normal visual insert emacs)
-    :prefix "SPC"
-    :non-normal-prefix "C-SPC"
+   :states '(normal visual insert emacs)
+   :prefix "SPC"
+   :non-normal-prefix "C-SPC"
 
-    ;; simple command
-    "TAB" '(switch-to-other-buffer :which-key "prev buffer")
-    "q r" '(restart-emacs :which-key "restart emacs")))
+   ;; simple command
+   "TAB" '(switch-to-other-buffer :which-key "prev buffer")
+   "q"   '(:ignore t :which-key "Quit")
+   "q r" '(restart-emacs :which-key "restart")
+   "SPC" '(counsel-M-x :which-key "M-x")))
 
 ;; Development Modes
 
@@ -365,6 +368,7 @@
 
 (defalias 'yes-or-no-p 'y-or-n-p)
 
+(customize-set-variable 'cua-mode t)
 (customize-set-variable 'visible-bell nil)
 (customize-set-variable 'blink-matching-paran nil)
 (customize-set-variable 'inhibit-startup-screen t)
