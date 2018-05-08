@@ -1,4 +1,4 @@
-;;; init --- Justin Smestad's Emacs init file
+;; init --- Justin Smestad's Emacs init file
 ;;; Commentary:
 
 ;;; Code:
@@ -273,15 +273,14 @@
   :pin melpa-stable
   :custom
   (magit-commit-show-diff nil)
-  :config (progn
-            (put 'magit-clean 'disabled nil)
-            (add-hook 'magit-status-sections-hook 'magit-insert-worktrees)))
+  :hook (magit-status-sections . magit-insert-worktrees)
+  :config
+  (put 'magit-clean 'disabled nil))
 
 ;;; Company
 ;;; Auto-completion framework for most modes
 (use-package company
-  :init
-  (add-hook 'after-init-hook 'global-company-mode))
+  :hook (after-init . global-company-mode))
 ;;; EditorConfig
 ;;; Read files to set coding style options according to current project
 (use-package editorconfig
@@ -291,8 +290,7 @@
 ;;; Highlight matching delimiters with unique colors.
 (use-package rainbow-delimiters
   :commands (rainbow-delimiters-mode)
-  :init
-  (add-hook 'prog-mode-hook #'rainbow-delimiters-mode))
+  :hook (prog-mode . rainbow-delimiters-mode))
 ;;; Adapt to foreign indentation offsets
 (use-package dtrt-indent
   :delight
@@ -323,6 +321,35 @@
 
 ;;; Other Modes
 ;;;
+
+;;; Ruby
+(use-package projectile-rails
+  :requires 'projectile)
+(use-package ruby-mode
+  :ensure nil
+  :general
+  (space-leader-def
+    :keymaps 'ruby-mode-map
+    "m" '(:ignore t :which-key "Ruby")
+    "m t" '(:ignore t :which-key "Tests")))
+
+(use-package rspec-mode
+  :hook (ruby-mode . rspec-mode)
+  :general
+  (space-leader-def 'normal ruby-mode-map
+    "m t a" '(rspec-verify-all :which-key "run all tests")
+    "m t b" '(rspec-verify :which-key "run tests in buffer")
+    "m t e" '(rspec-toggle-example-pendingness :which-key "toggle test pending")
+    "m t t" '(rspec-verify-single :which-key "run focus test")
+    "m t l" '(rspec-run-last-failed :which-key "rerun failed tests")
+    "m t r" '(rspec-rerun :which-key "rerun last tests")))
+(use-package rubocop
+  :hook (ruby-mode . rubocop-mode))
+(use-package rbenv
+  :hook (ruby-mode . global-rbenv-mode))
+(use-package yard-mode
+  :hook (ruby-mode . yard-mode))
+
 ;;; Markdown Mode
 (use-package markdown-mode
   :mode (("\\.md\\'" . markdown-mode))
