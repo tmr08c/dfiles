@@ -55,6 +55,37 @@
 (customize-set-variable 'user-mail-address "justin.smestad@gmail.com")
 
 
+;;; Key Bindings
+(use-package general
+  ;; :custom
+  ;; (general-default-prefix "SPC")
+  ;; (general-default-non-normal-prefix "C-SPC")
+  :config
+  (general-create-definer space-leader-def
+    :prefix "SPC"
+    :non-normal-prefix "C-SPC")
+  (general-evil-setup)
+  (space-leader-def
+    :states '(normal visual insert emacs)
+
+    "TAB" '(switch-to-other-buffer :which-key "prev buffer")
+
+    "f"   '(:ignore t :which-key "Files")
+    "f t" '(neotree-toggle :which-key "toggle file tree")
+
+    "p"   '(:ignore t :which-key "Projects")
+    "p t" '(neotree-find-project-root :which-key "project tree")
+    "p p" '(projectile-switch-project :which-key "open project")
+
+    "q"   '(:ignore t :which-key "Quit")
+    "q r" '(restart-emacs :which-key "restart")
+
+    "w"   '(:ignore t :which-key "Windows")
+    "w /" '(split-window-right :which-key "split vertical")
+    "w -" '(split-window-below :which-key "split horizontal")
+
+    "SPC" '(counsel-M-x :which-key "M-x")))
+
 ;; Platform
 ;;
 (use-package linux
@@ -128,9 +159,32 @@
   (neo-theme (if (display-graphic-p) 'icons 'arrow))
   (neo-window-width 32)
   (neo-create-file-auto-open t)
-  (neo-banner-message "Press ? for neotree help")
   (neo-modern-sidebar t)
-  (neo-point-auto-indent t))
+  (neo-point-auto-indent t)
+  :general
+  (general-nmap neotree-mode-map
+
+    "RET" 'neotree-enter
+    "TAB" 'neotree-stretch-toggle
+    "q" 'neotree-hide
+    "|" 'neotree-enter-vertical-split
+    "-" 'neotree-enter-horizontal-split
+    "'" 'neotree-quick-look
+    "c" 'neotree-create-node
+    "C" 'neotree-copy-node
+    "d" 'neotree-delete-node
+    "gr" 'neotree-refresh
+    "H" 'neotree-select-previous-sibling-node
+    "j" 'neotree-next-line
+    "J" 'neotree-select-down-node
+    "k" 'neotree-previous-line
+    "K" 'neotree-select-up-node
+    "L" 'neotree-select-next-sibling-node
+    "q" 'neotree-hide
+    "o" 'neotree-enter
+    "r" 'neotree-rename-node
+    "R" 'neotree-change-root
+    "I" 'neotree-hidden-file-toggle))
 
 ;;; Ivy for completion
 (use-package ivy
@@ -138,11 +192,10 @@
   :init (ivy-mode)
   :custom
   (ivy-use-virtual-buffers t)
-  (ivy-count-format "")
+  (ivy-count-format "(%d/%d) ")
   (ive-use-selectable-prompt t))
 ;;; Ado-ado
 (use-package counsel
-  :disabled
   :config (progn
             (global-set-key (kbd "M-x") 'counsel-M-x)))
 
@@ -150,13 +203,14 @@
   :requires (counsel projectile)
   :config (counsel-projectile-mode))
 
-(use-package swiper
-  :disabled)
+;; Search regex
+(use-package swiper)
 
 (use-package flycheck
   :config (global-flycheck-mode))
 
 (use-package flyspell
+  :disabled ;; I don't like spell checking
   ;; Disable on Windows because `aspell' 0.6+ isn't available.
   :if (not (eq system-type 'windows-nt))
   :delight
@@ -167,7 +221,7 @@
   (ispell-extra-args '("--sug-mode=ultra")))
 
 (use-package flyspell-correct-ivy
-  :after (flyspell ivy))
+  :requires (flyspell ivy))
 
 ;;; Resize all buffers at once with C-M-= / C-M--
 (use-package default-text-scale
@@ -185,7 +239,9 @@
 
 ;;; Evil mode
 (use-package evil
-  :init (evil-mode 1))
+  :init (evil-mode 1)
+  :custom
+  (evil-want-C-u-scroll t))
 (use-package evil-commentary
   :requires evil
   :init (evil-commentary-mode))
@@ -197,42 +253,18 @@
   :disabled
   :requires evil)
 
-;;; Key Bindings
-(use-package general
-  :config
-  (general-define-key
-   :states '(normal visual insert emacs)
-   :prefix "SPC"
-   :non-normal-prefix "C-SPC"
-
-   "TAB" '(switch-to-other-buffer :which-key "prev buffer")
-
-   "f"   '(:ignore t :which-key "Files")
-   "f t" '(neotree-toggle :which-key "toggle file tree")
-
-   "p"   '(:ignore t :which-key "Projects")
-   "p t" '(neotree-find-project-root :which-key "project tree")
-
-   "q"   '(:ignore t :which-key "Quit")
-   "q r" '(restart-emacs :which-key "restart")
-
-   "w"   '(:ignore t :which-key "Windows")
-   "w /" '(split-window-right :which-key "split vertical")
-   "w -" '(split-window-below :which-key "split horizontal")
-
-   "SPC" '(counsel-M-x :which-key "M-x")))
-
 ;; Development Modes
 
 ;;; ALL
 ;;;
 ;;; Projectile
 (use-package projectile
-  :requires ivy
+  :requires (ivy neotree)
   :delight '(:eval (concat " " (projectile-project-name)))
   :custom
   (projectile-completion-system 'ivy)
   (projectile-enable-caching nil)
+  (projectile-switch-project-action 'neotree-projectile-action)
   :init
   (projectile-mode))
 ;;; Magit
