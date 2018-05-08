@@ -207,6 +207,9 @@
 (use-package swiper)
 
 (use-package flycheck
+  :custom
+  (flycheck-rubocop-lint-only t)
+  (flycheck-check-syntax-automatically '(mode-enabled save))
   :config (global-flycheck-mode))
 
 (use-package flyspell
@@ -281,6 +284,8 @@
 ;;; Auto-completion framework for most modes
 (use-package company
   :hook (after-init . global-company-mode))
+;;; direnv
+(use-package direnv)
 ;;; EditorConfig
 ;;; Read files to set coding style options according to current project
 (use-package editorconfig
@@ -327,6 +332,8 @@
   :requires 'projectile)
 (use-package ruby-mode
   :ensure nil
+  :custom
+  (ruby-align-to-stmt-keywords '(if while unless until begin case for def))
   :general
   (space-leader-def
     :keymaps 'ruby-mode-map
