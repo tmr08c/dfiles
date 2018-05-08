@@ -64,15 +64,7 @@
   :if (eq system-type 'gnu/linux))
 
 (use-package osx
-  :disabled
   :load-path "vendor/"
-  :ensure nil
-  :if (eq system-type 'darwin))
-
-(use-package reveal-in-osx-finder
-  :disabled
-  ;; :load-path "vendor/"
-  :ensure nil
   :if (eq system-type 'darwin))
 
 (use-package windows
@@ -110,7 +102,7 @@
    `((".*" ,(no-littering-expand-var-file-name "auto-save/") t)))
   (large-file-warning-threshold (* 20 1000 1000) "20 megabytes."))
 
-;;; Version control
+;; Version control
 (use-package vc-hooks
   :ensure nil
   :custom (vc-follow-symlinks t))
@@ -126,6 +118,19 @@
   (which-key-side-window-max-width 0.33)
   (which-key-idle-delay 0.05)
   (which-key-setup-side-window-right-bottom))
+
+;;; File Tree
+(use-package all-the-icons
+  :if window-system)
+(use-package neotree
+  :after (all-the-icons)
+  :custom
+  (neo-theme (if (display-graphic-p) 'icons 'arrow))
+  (neo-window-width 32)
+  (neo-create-file-auto-open t)
+  (neo-banner-message "Press ? for neotree help")
+  (neo-modern-sidebar t)
+  (neo-point-auto-indent t))
 
 ;;; Ivy for completion
 (use-package ivy
@@ -170,7 +175,7 @@
   :init (default-text-scale-mode))
 ;;; Restart Emacs
 (use-package restart-emacs
-  :defer t)
+  :commands restart-emacs)
 ;;; TODO Shackle to keep pop-up windows under control
 ;; (use-package shackle)
 ;;; TODO Workspaces
@@ -202,10 +207,16 @@
 
    "TAB" '(switch-to-other-buffer :which-key "prev buffer")
 
+   "f"   '(:ignore t :which-key "Files")
+   "f t" '(neotree-toggle :which-key "toggle file tree")
+
+   "p"   '(:ignore t :which-key "Projects")
+   "p t" '(neotree-find-project-root :which-key "project tree")
+
    "q"   '(:ignore t :which-key "Quit")
    "q r" '(restart-emacs :which-key "restart")
 
-   "w"   '(:ignore t :which-key "Window")
+   "w"   '(:ignore t :which-key "Windows")
    "w /" '(split-window-right :which-key "split vertical")
    "w -" '(split-window-below :which-key "split horizontal")
 
@@ -240,7 +251,7 @@
   :init
   (add-hook 'after-init-hook 'global-company-mode))
 ;;; EditorConfig
-;;; Read files to set coding style options according to current prroject
+;;; Read files to set coding style options according to current project
 (use-package editorconfig
   :disabled
   :config (editorconfig-mode 1))
@@ -387,8 +398,6 @@
 (customize-set-variable 'ring-bell-function (lambda ()
                                               (invert-face 'mode-line)
                                               (run-with-timer 0.1 nil 'invert-face 'mode-line)))
-
-
 
 ;;; provide init package
 (provide 'init)
