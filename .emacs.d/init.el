@@ -35,8 +35,8 @@
 
 ;; Ensure system has required packages and install if missing
 (use-package exec-path-from-shell
-  :if (memq window-system '(mac ns))
-  :config (exec-path-from-shell-initialize))
+  :if (memq window-system '(mac ns x))
+  :init (exec-path-from-shell-initialize))
 (use-package use-package-ensure-system-package)
 (use-package system-packages
   :requires use-package-ensure-system-package)
@@ -68,14 +68,23 @@
   (space-leader-def
     :states '(normal visual insert emacs)
 
-    "TAB" '(switch-to-other-buffer :which-key "prev buffer")
+    ;; "TAB" '(switch-to-other-buffer :which-key "prev buffer")
+
+    "b"   '(:ignore t :which-key "Buffers")
+    "b n" '(next-buffer :which-key "next buffer")
+    "b p" '(previous-buffer :which-key "prev buffer")
+    "b b" '(ivy-switch-buffer :which-key "list buffers")
 
     "f"   '(:ignore t :which-key "Files")
     "f t" '(neotree-toggle :which-key "toggle file tree")
 
     "p"   '(:ignore t :which-key "Projects")
     "p t" '(neotree-find-project-root :which-key "project tree")
-    "p p" '(projectile-switch-project :which-key "open project")
+    "p p" '(counsel-projectile-switch-project :which-key "open project")
+    "p f" '(counsel-projectile-find-file :which-key "open file")
+    "p b" '(counsel-projectile-switch-to-buffer :which-key "switch to buffer")
+    ;; Does not seem to work
+    ;; "p s" '(counsel-projectile-rg :which-key "search in project")
 
     "q"   '(:ignore t :which-key "Quit")
     "q r" '(restart-emacs :which-key "restart")
@@ -200,7 +209,9 @@
 
 (use-package counsel-projectile
   :requires (counsel projectile)
-  :config (counsel-projectile-mode))
+  :config (counsel-projectile-mode)
+  :ensure-system-package
+  (rg . ripgrep))
 
 ;; Search regex
 (use-package swiper)
@@ -279,12 +290,22 @@
   :config
   (put 'magit-clean 'disabled nil))
 
+;;; EShell
+(use-package eshell
+  :commands eshell
+  :custom
+  (eshell-history-size 10000)
+  (eshell-hist-ignoredups t)
+  (eshell-scroll-to-bottom-on-output 'this)
+  (eshell-scroll-to-bottom-on-input 'all))
+
 ;;; Company
 ;;; Auto-completion framework for most modes
 (use-package company
   :hook (after-init . global-company-mode))
 ;;; direnv
-(use-package direnv)
+(use-package direnv
+  :ensure-system-package direnv)
 ;;; EditorConfig
 ;;; Read files to set coding style options according to current project
 (use-package editorconfig
@@ -329,6 +350,8 @@
 ;;; Ruby
 (use-package projectile-rails
   :requires 'projectile)
+(use-package inf-ruby
+  :hook (after-init . inf-ruby-switch-setup))
 (use-package ruby-mode
   :ensure nil
   :custom
