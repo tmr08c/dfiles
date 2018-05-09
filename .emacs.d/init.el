@@ -74,6 +74,7 @@
     "b n" '(next-buffer :which-key "next buffer")
     "b p" '(previous-buffer :which-key "prev buffer")
     "b b" '(ivy-switch-buffer :which-key "list buffers")
+    "b d" '((lambda () (interactive) (kill-buffer (current-buffer))) :which-key "close current buffer")
 
     "f"   '(:ignore t :which-key "Files")
     "f t" '(neotree-toggle :which-key "toggle file tree")
@@ -139,6 +140,7 @@
   (kept-new-versions 8)
   (kept-old-versions 4)
   (version-control t)
+  (backup-directory-alist `((".*" . ,temporary-file-directory)))
   (auto-save-file-name-transforms
    `((".*" ,(no-littering-expand-var-file-name "auto-save/") t)))
   (large-file-warning-threshold (* 20 1000 1000) "20 megabytes."))
@@ -208,10 +210,11 @@
             (global-set-key (kbd "M-x") 'counsel-M-x)))
 
 (use-package counsel-projectile
-  :requires (counsel projectile)
-  :config (counsel-projectile-mode)
-  :ensure-system-package
-  (rg . ripgrep))
+  :requires (counsel projectile rg)
+  :config (counsel-projectile-mode))
+
+(use-package rg
+  :ensure-system-package (rg . ripgrep))
 
 ;; Search regex
 (use-package swiper)
@@ -299,6 +302,16 @@
   (eshell-scroll-to-bottom-on-output 'this)
   (eshell-scroll-to-bottom-on-input 'all))
 
+(use-package repl-toggle
+  :custom
+  (rtog/mode-repl-alist
+   '((emacs-lisp-mode . ielm)
+     (ruby-mode . inf-ruby)
+     (js2-mode . nodejs-repl)
+     (rjsx-mode . nodejs-repl)))
+  :config
+  (repl-toggle-mode))
+
 ;;; Company
 ;;; Auto-completion framework for most modes
 (use-package company
@@ -354,7 +367,12 @@
   :hook (after-init . inf-ruby-switch-setup))
 (use-package ruby-mode
   :ensure nil
+  :ensure-system-package
+  ((ruby-lint   . "gem install ruby-lint")
+   (ripper-tags . "gem install ripper-tags")
+   (pry . "gem install pry"))
   :custom
+  (ruby-insert-encoding-magic-comment nil)
   (ruby-align-to-stmt-keywords '(if while unless until begin case for def))
   :general
   (space-leader-def
@@ -373,11 +391,97 @@
     "m t l" '(rspec-run-last-failed :which-key "rerun failed tests")
     "m t r" '(rspec-rerun :which-key "rerun last tests")))
 (use-package rubocop
+  :requires ruby-mode
+  :ensure-system-package
+  (rubocop . "gem install rubocop")
   :hook (ruby-mode . rubocop-mode))
 (use-package rbenv
+  :requires ruby-mode
   :hook (ruby-mode . global-rbenv-mode))
 (use-package yard-mode
+  :requires ruby-mode
   :hook (ruby-mode . yard-mode))
+(use-package ruby-hash-syntax
+  :requires ruby-mode
+  :general
+  (space-leader-def 'normal ruby-mode-map
+    "m f h" '(ruby-hash-syntax-toggle :which-key "toggle hash syntax")))
+
+;;; HTML / CSS
+
+(use-package web-mode
+  :mode
+  (("\\.erb\\'"        . web-mode)
+   ("\\.php\\'"        . web-mode)
+   ("\\.hbs\\'"        . web-mode)
+   ("\\.handlebars\\'" . web-mode))
+  ;; :bind
+  ;; (:map web-mode-map
+  ;;       ("," . self-with-space)
+  ;;       ("<C-return>" . html-newline-dwim))
+  :custom
+  (web-mode-enable-auto-quoting nil)
+  (web-mode-enable-current-element-highlight t))
+
+(use-package css-mode
+  :mode "\\.css\\.erb\\'"
+  ;; :bind
+  ;; (:map css-mode-map
+  ;;       ("," . self-with-space)
+  ;;       ("{" . open-brackets-newline-and-indent))
+  :custom
+  (css-indent-offset 2))
+
+(use-package counsel-css
+  :hook
+  (css-mode . counsel-css-imenu-setup))
+
+;;; Javascript
+(use-package js2-mode
+  :mode "\\.js\\'"
+  :ensure-system-package
+  (eslint_d . "npm install -g eslint_d")
+  ;; :bind
+  ;; (:map js2-mode-map
+  ;;       ("," . self-with-space)
+  ;;       ("=" . pad-equals)
+  ;;       (":" . self-with-space))
+  :interpreter
+  ("node" . js2-mode)
+  :hook
+  (js2-mode . js2-imenu-extras-mode)
+  :custom
+  (js2-mode-show-strict-warnings nil)
+  (js2-highlight-level 3)
+  :config
+  (defvaralias 'js-switch-indent-offset 'js2-basic-offset)
+  (setenv "NODE_NO_READLINE" "1")
+  (after flycheck
+         (setq flycheck-javascript-eslint-executable "eslint_d")))
+
+(use-package tern
+  :ensure-system-package (tern . "npm i -g tern")
+  :requires js2-mode
+  :hook
+  (js2-mode . tern-mode))
+
+(use-package company-tern
+  :requires (company tern)
+  :config
+  (add-to-list 'company-backends #'company-tern))
+
+(use-package nodejs-repl
+  :ensure-system-package node
+  :defer t)
+
+;;; React
+(use-package rjsx-mode
+  :requires js2-mode
+  :config
+  (bind-key "=" #'pad-equals rjsx-mode-map
+            (not (memq (js2-node-type (js2-node-at-point))
+                       (list rjsx-JSX rjsx-JSX-ATTR rjsx-JSX-IDENT rjsx-JSX-MEMBER)))))
+
 
 ;;; Markdown Mode
 (use-package markdown-mode
@@ -385,9 +489,17 @@
   :config (progn
             (add-hook 'markdown-mode-hook 'visual-line-mode)
             (add-hook 'markdown-mode-hook (lambda () (flyspell-mode 1)))))
+
+;;; Ember Mode
+(use-package ember-mode
+  :ensure-system-package (ember . "npm i -g ember-cli"))
+
 ;;; JSON Formatter
 (use-package json-mode
-  :mode "\\.json$")
+  :custom
+  (js-indent-level 2)
+  :mode (("\\.json$" . json-mode)
+         ("\\.jshintrc$" . json-mode)))
 ;;; Dockerfile
 (use-package dockerfile-mode
   :mode "Dockerfile.*\\'")
@@ -466,8 +578,11 @@
 
 (use-package recentf
   :ensure nil
-  :custom (recentf-max-saved-items 256)
-  :config (recentf-mode))
+  :custom
+  (recentf-auto-cleanup 200)
+  (recentf-max-saved-items 200)
+  :config
+  (recentf-mode))
 
 (use-package display-line-numbers
   :ensure nil
