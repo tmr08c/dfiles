@@ -79,6 +79,7 @@
 
     "q"   '(:ignore t :which-key "Quit")
     "q r" '(restart-emacs :which-key "restart")
+    "q q" '(kill-emacs :which-key "quit")
 
     "w"   '(:ignore t :which-key "Windows")
     "w /" '(split-window-right :which-key "split vertical")
@@ -447,6 +448,7 @@
 
 (use-package display-line-numbers
   :ensure nil
+  :if (version<= "26.0.50" emacs-version)
   :hook (prog-mode . display-line-numbers-mode))
 
 ;;; Fix Annoyances
