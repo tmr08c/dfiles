@@ -92,8 +92,22 @@
     "q q" '(kill-emacs :which-key "quit")
 
     "w"   '(:ignore t :which-key "Windows")
+    "w d" '(delete-window :which-key "close window")
     "w /" '(split-window-right :which-key "split vertical")
     "w -" '(split-window-below :which-key "split horizontal")
+    "w h" '(evil-window-left :which-key "window left")
+    "w <left>" '(evil-window-left :which-key nil)
+
+    "w j" '(evil-window-down :which-key "window down")
+    "w <down>" '(evil-window-down :which-key nil)
+
+    "w k" '(evil-window-up :which-key "window up")
+    "w <up>" '(evil-window-up :which-key nil)
+
+    "w l" '(evil-window-right :which-key "window right")
+    "w <right>" '(evil-window-right :which-key nil)
+
+    "w =" '(balance-windows :which-key "balance window split")
 
     "SPC" '(counsel-M-x :which-key "M-x")))
 
