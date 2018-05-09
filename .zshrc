@@ -34,6 +34,7 @@ else
   echo "Missing direnv. Please install it `brew install direnv` or `apt install direnv`."
 fi
 
+# Ruby (rbenv)
 if [[ -d ~/.rbenv ]]; then
   export PATH="$HOME/.rbenv/bin:$PATH"
   eval "$(rbenv init -)"

@@ -151,13 +151,11 @@
   (which-key-setup-side-window-right-bottom))
 
 ;;; File Tree
-(use-package all-the-icons
-  :if window-system)
 (use-package neotree
-  :after (all-the-icons)
+  :after all-the-icons
   :custom
   (neo-theme (if (display-graphic-p) 'icons 'arrow))
-  (neo-window-width 32)
+  (neo-window-width 25)
   (neo-create-file-auto-open t)
   (neo-modern-sidebar t)
   (neo-point-auto-indent t)
@@ -417,11 +415,13 @@
 ;;; Theme
 (use-package powerline
   :init (powerline-default-theme))
+
+(use-package all-the-icons
+  :if window-system)
 (use-package doom-themes
   :init (load-theme 'doom-molokai t)
   :config
-  (progn
-    (doom-themes-org-config)))
+  (doom-themes-org-config))
 ;;; Font
 (set-face-attribute 'default nil
                     :family "Fira Mono"
@@ -445,6 +445,9 @@
   :custom (recentf-max-saved-items 256)
   :config (recentf-mode))
 
+(use-package display-line-numbers
+  :ensure nil
+  :hook (prog-mode . display-line-numbers-mode))
 
 ;;; Fix Annoyances
 
