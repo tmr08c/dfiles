@@ -237,6 +237,7 @@
   :custom
   (flycheck-rubocop-lint-only t)
   (flycheck-check-syntax-automatically '(mode-enabled save))
+  (flycheck-disabled-checkers '(ruby-rubylint))
   :config (global-flycheck-mode))
 
 (use-package flyspell
@@ -296,7 +297,7 @@
   (projectile-enable-caching nil)
   (projectile-switch-project-action 'neotree-projectile-action)
   :init
-  (projectile-mode))
+  (projectile-global-mode))
 ;;; Magit
 (use-package magit
   :disabled
@@ -376,7 +377,8 @@
 
 ;;; Ruby
 (use-package projectile-rails
-  :requires 'projectile)
+  :requires 'projectile
+  :hook (projectile-mode . projectile-rails-on))
 (use-package inf-ruby
   :hook (after-init . inf-ruby-switch-setup))
 (use-package ruby-mode
@@ -385,6 +387,7 @@
   ((ruby-lint   . "gem install ruby-lint")
    (ripper-tags . "gem install ripper-tags")
    (pry . "gem install pry"))
+  :hook (ruby-mode . flycheck-mode)
   :custom
   (ruby-insert-encoding-magic-comment nil)
   (ruby-align-to-stmt-keywords '(if while unless until begin case for def))
@@ -396,6 +399,8 @@
 
 (use-package rspec-mode
   :hook (ruby-mode . rspec-mode)
+  :custom
+  (compilation-scroll-output t)
   :general
   (space-leader-def 'normal ruby-mode-map
     "m t a" '(rspec-verify-all :which-key "run all tests")

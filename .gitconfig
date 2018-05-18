@@ -9,6 +9,7 @@
   l = log
   ctags = !.git/hooks/ctags
   cleanup = "!git branch --merged | grep  -v '\\*\\|master\\|develop' | xargs -n 1 git branch -d"
+  set-upstream = "!git branch --set-upstream-to=origin/`git symbolic-ref --short HEAD"
 [core]
   excludesfile = ~/.gitignore
 [color]

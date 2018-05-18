@@ -27,6 +27,10 @@ export NVM_AUTO_USE=true
 
 export ZSH_AUTOSUGGEST_USE_ASYNC=true
 
+# Delete key
+bindkey    "^[[3~"          delete-char
+bindkey    "^[3;5~"         delete-char
+
 # direnv
 if (( $+commands[direnv] )); then
   eval "$(direnv hook zsh)"
