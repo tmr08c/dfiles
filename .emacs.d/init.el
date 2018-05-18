@@ -46,7 +46,11 @@
 ;; - `undo-tree-history-directory-alist'
 ;; - `backup-directory-alist'
 ;; - etc.
-(use-package no-littering)
+(use-package no-littering
+  :config
+  (require 'recentf)
+  (add-to-list 'recentf-exclude no-littering-var-directory)
+  (add-to-list 'recentf-exclude no-littering-etc-directory))
 
 (customize-set-variable
  'custom-file (no-littering-expand-var-file-name "custom.el"))
@@ -147,14 +151,14 @@
 ;;
 (use-package files
   :ensure nil
+  :demand t
   :custom
-  (require-final-newline t)
   (backup-by-copying t)
+  (require-final-newline t)
   (delete-old-versions t)
-  (kept-new-versions 6)
-  (kept-old-versions 2)
   (version-control t)
-  (backup-directory-alist `((".*" . ,temporary-file-directory)))
+  (backup-directory-alist
+   `((".*" . ,(no-littering-expand-var-file-name "backup/"))))
   (auto-save-file-name-transforms
    `((".*" ,(no-littering-expand-var-file-name "auto-save/") t)))
   (large-file-warning-threshold (* 20 1000 1000) "20 megabytes."))
@@ -162,6 +166,7 @@
 ;; Version control
 (use-package vc-hooks
   :ensure nil
+  :demand t
   :custom (vc-follow-symlinks t))
 
 ;; Global Modes
@@ -295,10 +300,10 @@
   :delight '(:eval (concat " " (projectile-project-name)))
   :custom
   (projectile-completion-system 'ivy)
-  (projectile-enable-caching nil)
+  (projectile-enable-caching t)
   (projectile-switch-project-action 'neotree-projectile-action)
   :init
-  (projectile-global-mode))
+  (projectile-mode))
 ;;; Magit
 (use-package magit
   :disabled
@@ -332,6 +337,12 @@
 ;;; Auto-completion framework for most modes
 (use-package company
   :hook (after-init . global-company-mode))
+(use-package company-quickhelp
+  :requires company
+  :config (company-quickhelp-mode))
+(use-package company-flx
+  :requires company
+  :config (company-flx-mode))
 ;;; direnv
 (use-package direnv
   :ensure-system-package direnv)
@@ -548,6 +559,7 @@
 
 (use-package dired
   :ensure nil
+  :demand t
   :commands (dired)
   :custom
   (dired-dwim-target t "Enable side-by-side `dired` buffer targets.")
@@ -613,10 +625,12 @@
 
 (use-package uniquify
   :ensure nil
+  :demand t
   :custom (uniquify-buffer-name-style 'forward))
 
 (defalias 'yes-or-no-p 'y-or-n-p)
 
+(customize-set-variable 'create-lockfiles nil)
 (customize-set-variable 'cua-mode t)
 (customize-set-variable 'visible-bell nil)
 (customize-set-variable 'blink-matching-paran nil)
