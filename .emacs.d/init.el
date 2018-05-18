@@ -80,7 +80,7 @@
     "f t" '(neotree-toggle :which-key "toggle file tree")
 
     "p"   '(:ignore t :which-key "Projects")
-    "p t" '(neotree-find-project-root :which-key "project tree")
+    "p t" '(neotree-projectile-action :which-key "project tree")
     "p p" '(counsel-projectile-switch-project :which-key "open project")
     "p f" '(counsel-projectile-find-file :which-key "open file")
     "p b" '(counsel-projectile-switch-to-buffer :which-key "switch to buffer")
@@ -151,8 +151,8 @@
   (require-final-newline t)
   (backup-by-copying t)
   (delete-old-versions t)
-  (kept-new-versions 8)
-  (kept-old-versions 4)
+  (kept-new-versions 6)
+  (kept-old-versions 2)
   (version-control t)
   (backup-directory-alist `((".*" . ,temporary-file-directory)))
   (auto-save-file-name-transforms
@@ -272,17 +272,18 @@
 (use-package evil
   :init (evil-mode 1)
   :custom
-  (evil-want-C-u-scroll t))
+  (evil-want-C-u-scroll t)
+  (evil-want-Y-yank-to-eol t)
+  (evil-shift-width 2))
 (use-package evil-commentary
   :requires evil
   :init (evil-commentary-mode))
 (use-package evil-surround
-  :disabled
   :requires evil
   :init (global-evil-surround-mode))
-(use-package evil-indent-textobject
-  :disabled
-  :requires evil)
+(use-package evil-matchit
+  :requires evil
+  :init (global-evil-matchit-mode 1))
 
 ;; Development Modes
 
