@@ -36,7 +36,10 @@
 ;; Ensure system has required packages and install if missing
 (use-package exec-path-from-shell
   :if (memq window-system '(mac ns x))
-  :init (exec-path-from-shell-initialize))
+  :custom
+  (exec-path-from-shell-variables '("PATH" "GOPATH"))
+  :config
+  (exec-path-from-shell-initialize))
 (use-package use-package-ensure-system-package)
 (use-package system-packages
   :requires use-package-ensure-system-package)
@@ -232,8 +235,7 @@
   :requires (counsel projectile rg)
   :config (counsel-projectile-mode))
 
-(use-package rg
-  :ensure-system-package (rg . ripgrep))
+(use-package rg)
 
 ;; Search regex
 (use-package swiper)
