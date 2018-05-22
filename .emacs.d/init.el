@@ -471,6 +471,7 @@
 
 ;;; Javascript
 (use-package js2-mode
+  :disabled
   :mode "\\.js\\'"
   :ensure-system-package
   (eslint_d . "npm install -g eslint_d")
@@ -493,6 +494,7 @@
          (setq flycheck-javascript-eslint-executable "eslint_d")))
 
 (use-package tern
+  :disabled
   :ensure-system-package (tern . "npm i -g tern")
   :requires js2-mode
   :hook
