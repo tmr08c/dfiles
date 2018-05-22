@@ -29,6 +29,9 @@ else
     echo "Ubuntu detected"
     sudo apt install -y pinentry-gnome3 pinentry-curses direnv dconf-cli
 
+    echo "Install Ruby dependencies"
+    sudo apt install -y autoconf bison build-essential libssl-dev libyaml-dev libreadline-dev zlib1g-dev libncurses5-dev libffi-dev
+
     echo "Configure Yubikey dependencies"
     sudo apt install -y gnupg2 gnupg-agent pinentry-curses scdaemon pcscd yubikey-personalization libusb-1.0-0-dev
   fi
@@ -36,6 +39,7 @@ else
 
   if [ ! -d ~/.config/base16-gnome-terminal ]; then
     echo "Fetching base16 themes for gnome terminal"
+    sudo apt install -y gconf2
     git clone https://github.com/aaron-williamson/base16-gnome-terminal.git ~/.config/base16-gnome-terminal
 
     echo "Installing Monokai theme `~/.config/base16-gnome-terminal/color-scripts/base16-monokai.sh`"
@@ -43,7 +47,7 @@ else
   fi
 
   # Download GPG key from Public Server
-  gpg --list-keys 0xDB57958A3B574D5C > /dev/null 2>&1
+  gpg --list-keys 0xDB57958A3B574D5C >/dev/null 2>&1
   status=$?
   if [ $status -ne 0 ]; then
     echo "GPG key missing. Importing from Public Server."
@@ -61,7 +65,7 @@ else
 
 fi
 
-if [ command -v vim > /dev/null 2>&1]; then
+if [ command -v vim >/dev/null 2>&1 ]; then
   if [ ! -e $HOME/.vim/bundle/vundle ]; then
     echo "Installing Vundle for VIM configuration"
     mkdir -p ~/.vim
