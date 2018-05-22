@@ -75,48 +75,91 @@
   (space-leader-def
     :states '(normal visual insert emacs)
 
+    "SPC" '(counsel-M-x :which-key "M-x")
     ;; "TAB" '(switch-to-other-buffer :which-key "prev buffer")
 
+    ;;; Help bindings
+    "?" '(counsel-descbinds :which-key "Help")
+    "h" '(:ignore t :which-key "Help")
+    "h d f" '(counsel-describe-function :which-key "describe function")
+    "h d m" '(describe-mode :which-key "describe modes")
+    "h d v" '(counsel-describe-variable :which-key "describe variable")
+
+
+    ;;; Buffers
     "b"   '(:ignore t :which-key "Buffers")
     "b n" '(next-buffer :which-key "next buffer")
     "b p" '(previous-buffer :which-key "prev buffer")
     "b b" '(ivy-switch-buffer :which-key "list buffers")
-    "b d" '((lambda () (interactive) (kill-buffer (current-buffer))) :which-key "close current buffer")
+    "b d" '((lambda ()
+              (interactive)
+              (kill-buffer (current-buffer)))
+            :which-key "close current buffer")
 
+    ;;; Files
     "f"   '(:ignore t :which-key "Files")
+    "f f" '(counsel-find-file :which-key "find file")
     "f t" '(neotree-toggle :which-key "toggle file tree")
+    "f e d" '((lambda ()
+                (interactive)
+                (find-file-existing user-init-file))
+              :which-key "open emacs configuration")
 
+    ;;; Projects
     "p"   '(:ignore t :which-key "Projects")
     "p t" '(neotree-projectile-action :which-key "project tree")
     "p p" '(counsel-projectile-switch-project :which-key "open project")
     "p f" '(counsel-projectile-find-file :which-key "open file")
     "p b" '(counsel-projectile-switch-to-buffer :which-key "switch to buffer")
+    "p d" '(counsel-projectile-find-dir :which-key "find directory")
+    "p r" '(projectile-recentf :which-key "recent files")
+
     ;; Does not seem to work
     ;; "p s" '(counsel-projectile-rg :which-key "search in project")
 
+    ;;; Quit
     "q"   '(:ignore t :which-key "Quit")
     "q r" '(restart-emacs :which-key "restart")
     "q q" '(kill-emacs :which-key "quit")
 
+    ;;; Search
+    "s" '(:ignore t :which-key "Search")
+    "s s" '(swiper :which-key "search buffer")
+    "s S" '(lambda ()
+             (interactive)
+             (let ((input (if (region-active-p)
+                              (buffer-substring-no-properties
+                               (region-beginning) (region-end))
+                            (thing-at-point 'symbol t))))
+               (swiper input))
+             :which-key "search buffer")
+
+    ;;; Themes
+    "t" '(:ignore t :which-key "Theme")
+    "t s" '(counsel-load-theme :which-key "switch theme")
+
+    ;;; Windows
     "w"   '(:ignore t :which-key "Windows")
     "w d" '(delete-window :which-key "close window")
-    "w /" '(split-window-right :which-key "split vertical")
-    "w -" '(split-window-below :which-key "split horizontal")
+    "w /" '((lambda ()
+              (interactive)
+              (split-window-horizontally)
+              (other-window 1))
+            :which-key "split vertical")
+    "w -" '((lambda ()
+              (interactive)
+              (split-window-vertically)
+              (other-window 1))
+            :which-key "split horizontal")
     "w h" '(evil-window-left :which-key "window left")
     "w <left>" '(evil-window-left :which-key nil)
-
     "w j" '(evil-window-down :which-key "window down")
     "w <down>" '(evil-window-down :which-key nil)
-
     "w k" '(evil-window-up :which-key "window up")
     "w <up>" '(evil-window-up :which-key nil)
-
     "w l" '(evil-window-right :which-key "window right")
     "w <right>" '(evil-window-right :which-key nil)
-
-    "w =" '(balance-windows :which-key "balance window split")
-
-    "SPC" '(counsel-M-x :which-key "M-x")))
+    "w =" '(balance-windows :which-key "balance window split")))
 
 ;; Platform
 ;;
@@ -174,6 +217,9 @@
 
 ;; Global Modes
 ;;
+;;; ace-window (for better window switching)
+(use-package ace-window
+  :disabled)
 ;;; Enable which-key
 (use-package which-key
   :delight
@@ -291,6 +337,11 @@
 (use-package evil-matchit
   :requires evil
   :init (global-evil-matchit-mode 1))
+(use-package evil-escape
+  :requires evil
+  :custom
+  (evil-escape-delay 0.2)
+  :init (evil-escape-mode))
 
 ;; Development Modes
 
@@ -303,7 +354,7 @@
   :custom
   (projectile-completion-system 'ivy)
   (projectile-enable-caching t)
-  (projectile-switch-project-action 'neotree-projectile-action)
+  (projectile-switch-project-action 'counsel-projectile-find-file)
   :init
   (projectile-mode))
 ;;; Magit
