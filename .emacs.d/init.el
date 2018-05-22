@@ -85,12 +85,11 @@
     "h d m" '(describe-mode :which-key "describe modes")
     "h d v" '(counsel-describe-variable :which-key "describe variable")
 
-
     ;;; Buffers
     "b"   '(:ignore t :which-key "Buffers")
+    "b b" '(ivy-switch-buffer :which-key "list buffers")
     "b n" '(next-buffer :which-key "next buffer")
     "b p" '(previous-buffer :which-key "prev buffer")
-    "b b" '(ivy-switch-buffer :which-key "list buffers")
     "b d" '((lambda ()
               (interactive)
               (kill-buffer (current-buffer)))
@@ -107,20 +106,26 @@
 
     ;;; Projects
     "p"   '(:ignore t :which-key "Projects")
-    "p t" '(neotree-projectile-action :which-key "project tree")
-    "p p" '(counsel-projectile-switch-project :which-key "open project")
-    "p f" '(counsel-projectile-find-file :which-key "open file")
+    "p !" '(projectile-run-shell-command-in-root :which-key "run command")
+    "p %" '(projectile-replace-regexp :which-key "replace regexp")
+    ;; "p a" '(projectile-toggle-between-implementation-and-test :which-key "toggle test")
+    "p I" '(projectile-invalidate-cache :which-key "clear cache")
+    "p R" '(projectile-replace :which-key "replace")
     "p b" '(counsel-projectile-switch-to-buffer :which-key "switch to buffer")
     "p d" '(counsel-projectile-find-dir :which-key "find directory")
+    "p f" '(counsel-projectile-find-file :which-key "open file")
+    "p k" '(projectile-kill-buffers :which-key "kill buffers")
+    "p p" '(counsel-projectile-switch-project :which-key "open project")
     "p r" '(projectile-recentf :which-key "recent files")
+    "p t" '(neotree-projectile-action :which-key "project tree")
 
     ;; Does not seem to work
     ;; "p s" '(counsel-projectile-rg :which-key "search in project")
 
     ;;; Quit
     "q"   '(:ignore t :which-key "Quit")
-    "q r" '(restart-emacs :which-key "restart")
     "q q" '(kill-emacs :which-key "quit")
+    "q r" '(restart-emacs :which-key "restart")
 
     ;;; Search
     "s" '(:ignore t :which-key "Search")
@@ -359,13 +364,13 @@
   (projectile-mode))
 ;;; Magit
 (use-package magit
-  :disabled
-  :pin melpa-stable
-  :custom
-  (magit-commit-show-diff nil)
-  :hook (magit-status-sections . magit-insert-worktrees)
-  :config
-  (put 'magit-clean 'disabled nil))
+  :pin melpa-stable)
+;; May not be needed:
+;; :custom
+;; (magit-commit-show-diff nil)
+;; :hook (magit-status-sections . magit-insert-worktrees)
+;; :config
+;; (put 'magit-clean 'disabled nil))
 
 ;;; EShell
 (use-package eshell
@@ -498,7 +503,11 @@
   (("\\.erb\\'"        . web-mode)
    ("\\.php\\'"        . web-mode)
    ("\\.hbs\\'"        . web-mode)
-   ("\\.handlebars\\'" . web-mode))
+   ("\\.handlebars\\'" . web-mode)
+   ("\\.mustache\\'"   . web-mode)
+   ("\\.inky-erb\\"    . web-mode)
+   ("\\.inky\\"        . web-mode)
+   ("\\.hbs\\'"        . web-mode))
   ;; :bind
   ;; (:map web-mode-map
   ;;       ("," . self-with-space)
@@ -506,6 +515,10 @@
   :custom
   (web-mode-enable-auto-quoting nil)
   (web-mode-enable-current-element-highlight t))
+(use-package company-web
+  :requires (web-mode company)
+  :config
+  (add-to-list 'company-backends 'company-web-html))
 
 (use-package css-mode
   :mode "\\.css\\.erb\\'"
