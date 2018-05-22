@@ -525,6 +525,7 @@
 
 ;;; Ember Mode
 (use-package ember-mode
+  :disabled
   :ensure-system-package (ember . "npm i -g ember-cli"))
 
 ;;; JSON Formatter
