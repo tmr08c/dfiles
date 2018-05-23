@@ -505,8 +505,8 @@
    ("\\.hbs\\'"        . web-mode)
    ("\\.handlebars\\'" . web-mode)
    ("\\.mustache\\'"   . web-mode)
-   ("\\.inky-erb\\"    . web-mode)
-   ("\\.inky\\"        . web-mode)
+   ("\\.inky-erb\\'"   . web-mode)
+   ("\\.inky\\'"       . web-mode)
    ("\\.hbs\\'"        . web-mode))
   ;; :bind
   ;; (:map web-mode-map
