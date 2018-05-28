@@ -4,6 +4,46 @@
 
 ;;; Code:
 
+;; Rainbow Delimiters
+;; Highlight matching delimiters with unique colors.
+(use-package rainbow-delimiters
+  :commands (rainbow-delimiters-mode)
+  :hook (prog-mode . rainbow-delimiters-mode))
+
+;; Adapt to foreign indentation offsets
+(use-package dtrt-indent
+  :delight
+  :custom (dtrt-indent-min-quality 60)
+  :init (dtrt-indent-global-mode))
+
+(use-package aggressive-indent
+  :hook (emacs-lisp-mode . aggressive-indent-mode))
+
+(use-package adaptive-wrap
+  :config (adaptive-wrap-prefix-mode))
+
+(use-package whitespace
+  :commands (whitespace-mode))
+
+(use-package ws-butler
+  :delight
+  :config (ws-butler-global-mode))
+
+(use-package autorevert
+  :ensure nil
+  :delight auto-revert-mode
+  :config (global-auto-revert-mode))
+
+(use-package undo-tree
+  :delight
+  :custom (undo-tree-auto-save-history t)
+  :config (global-undo-tree-mode))
+
+(use-package unfill
+  :disabled
+  :bind ([remap fill-paragraph] . #'unfill-toggle))
+
+
 (use-package evil
   :init (evil-mode 1)
   :custom

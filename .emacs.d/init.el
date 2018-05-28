@@ -391,130 +391,18 @@
 (use-package editorconfig
   :disabled
   :config (editorconfig-mode 1))
-;;; Rainbow Delimiters
-;;; Highlight matching delimiters with unique colors.
-(use-package rainbow-delimiters
-  :commands (rainbow-delimiters-mode)
-  :hook (prog-mode . rainbow-delimiters-mode))
-;;; Adapt to foreign indentation offsets
-(use-package dtrt-indent
-  :delight
-  :custom (dtrt-indent-min-quality 60)
-  :init (dtrt-indent-global-mode))
-(use-package aggressive-indent
-  :hook (emacs-lisp-mode . aggressive-indent-mode))
-(use-package adaptive-wrap
-  :config (adaptive-wrap-prefix-mode))
-(use-package whitespace
-  :commands (whitespace-mode))
-(use-package ws-butler
-  :delight
-  :config (ws-butler-global-mode))
-;;; Editing
-(use-package autorevert
-  :ensure nil
-  :delight auto-revert-mode
-  :config (global-auto-revert-mode))
-(use-package undo-tree
-  :delight
-  :custom (undo-tree-auto-save-history t)
-  :config (global-undo-tree-mode))
 
-(use-package unfill
-  :disabled
-  :bind ([remap fill-paragraph] . #'unfill-toggle))
-
-;;; Other Modes
-;;;
-
+;; Ruby
 (use-package js-ruby
   :load-path "vendor/")
 
-;;; HTML / CSS
+;; HTML / CSS
+(use-package js-web
+  :load-path "/vendor")
 
-(use-package web-mode
-  :mode
-  (("\\.erb\\'"        . web-mode)
-   ("\\.php\\'"        . web-mode)
-   ("\\.hbs\\'"        . web-mode)
-   ("\\.handlebars\\'" . web-mode)
-   ("\\.mustache\\'"   . web-mode)
-   ("\\.inky-erb\\'"   . web-mode)
-   ("\\.inky\\'"       . web-mode)
-   ("\\.hbs\\'"        . web-mode))
-  ;; :bind
-  ;; (:map web-mode-map
-  ;;       ("," . self-with-space)
-  ;;       ("<C-return>" . html-newline-dwim))
-  :custom
-  (web-mode-enable-auto-quoting nil)
-  (web-mode-enable-current-element-highlight t))
-(use-package company-web
-  :requires (web-mode company)
-  :config
-  (add-to-list 'company-backends 'company-web-html))
-
-(use-package css-mode
-  :mode "\\.css\\.erb\\'"
-  ;; :bind
-  ;; (:map css-mode-map
-  ;;       ("," . self-with-space)
-  ;;       ("{" . open-brackets-newline-and-indent))
-  :custom
-  (css-indent-offset 2))
-
-(use-package counsel-css
-  :hook
-  (css-mode . counsel-css-imenu-setup))
-
-;;; Javascript
-(use-package js2-mode
-  :disabled
-  :mode "\\.js\\'"
-  :ensure-system-package
-  (eslint_d . "npm install -g eslint_d")
-  ;; :bind
-  ;; (:map js2-mode-map
-  ;;       ("," . self-with-space)
-  ;;       ("=" . pad-equals)
-  ;;       (":" . self-with-space))
-  :interpreter
-  ("node" . js2-mode)
-  :hook
-  (js2-mode . js2-imenu-extras-mode)
-  :custom
-  (js2-mode-show-strict-warnings nil)
-  (js2-highlight-level 3)
-  :config
-  (defvaralias 'js-switch-indent-offset 'js2-basic-offset)
-  (setenv "NODE_NO_READLINE" "1")
-  (after flycheck
-         (setq flycheck-javascript-eslint-executable "eslint_d")))
-
-(use-package tern
-  :disabled
-  :ensure-system-package (tern . "npm i -g tern")
-  :requires js2-mode
-  :hook
-  (js2-mode . tern-mode))
-
-(use-package company-tern
-  :requires (company tern)
-  :config
-  (add-to-list 'company-backends #'company-tern))
-
-(use-package nodejs-repl
-  :ensure-system-package node
-  :defer t)
-
-;;; React
-(use-package rjsx-mode
-  :requires js2-mode
-  :config
-  (bind-key "=" #'pad-equals rjsx-mode-map
-            (not (memq (js2-node-type (js2-node-at-point))
-                       (list rjsx-JSX rjsx-JSX-ATTR rjsx-JSX-IDENT rjsx-JSX-MEMBER)))))
-
+;; Javascript
+(use-package js-javascript
+  :load-path "/vendor")
 
 ;;; Markdown Mode
 (use-package markdown-mode
@@ -524,10 +412,6 @@
             (add-hook 'markdown-mode-hook (lambda () (flyspell-mode 1)))))
 
 ;;; Ember Mode
-(use-package ember-mode
-  :disabled
-  :ensure-system-package (ember . "npm i -g ember-cli"))
-
 ;;; JSON Formatter
 (use-package json-mode
   :custom
