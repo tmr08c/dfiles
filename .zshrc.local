@@ -1,5 +1,6 @@
 if (( $+commands[emacs] )); then
-  alias emacs="open -a /Applications/Emacs $@"
+  #alias emacs="open -a /Applications/Emacs $@"
+  alias emacs="open -a /usr/local/opt/emacs-plus/Emacs.app $@"
   export EDITOR='emacs'
 elif (( $+commands[vim] )); then
   export EDITOR='vim'

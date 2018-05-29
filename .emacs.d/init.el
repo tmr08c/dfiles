@@ -468,16 +468,21 @@
       (horizontal-scroll-bar-mode 0)))
 
 ;;; Theme
+(add-to-list 'default-frame-alist '(ns-transparent-titlebar . t))
+(add-to-list 'default-frame-alist '(ns-appearance . dark))
+
 (use-package powerline
   :init (powerline-default-theme))
 
 (use-package all-the-icons
   :if window-system)
+
 (use-package doom-themes
   :init (load-theme 'doom-molokai t)
   :config
   (doom-themes-org-config))
-;;; Font
+
+;; Font
 (set-face-attribute 'default nil
                     :family "Fira Mono"
                     :height 130
