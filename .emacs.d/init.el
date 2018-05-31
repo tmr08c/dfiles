@@ -342,6 +342,7 @@
   (projectile-completion-system 'ivy)
   (projectile-enable-caching t)
   (projectile-switch-project-action 'counsel-projectile-find-file)
+  (projectile-sort-order 'recentf)
   :init
   (projectile-mode))
 ;;; Magit
