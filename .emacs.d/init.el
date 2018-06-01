@@ -350,7 +350,7 @@
   :requires ivy
   :delight '(:eval (concat " " (projectile-project-name)))
   :custom
-  (projectile-indexing-method 'native)
+  (projectile-indexing-method 'alien)
   (projectile-completion-system 'ivy)
   (projectile-enable-caching t)
   (projectile-switch-project-action 'counsel-projectile-find-file)
