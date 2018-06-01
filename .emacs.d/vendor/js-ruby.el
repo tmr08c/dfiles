@@ -5,7 +5,7 @@
 ;;; Code:
 
 (use-package projectile-rails
-  :requires 'projectile
+  :requires (projectile)
   :hook (projectile-mode . projectile-rails-on))
 
 (use-package inf-ruby

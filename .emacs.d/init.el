@@ -49,14 +49,23 @@
 ;; - `undo-tree-history-directory-alist'
 ;; - `backup-directory-alist'
 ;; - etc.
-(use-package no-littering
+(use-package no-littering)
+(customize-set-variable
+ 'custom-file (no-littering-expand-var-file-name "custom.el"))
+
+(use-package recentf
+  :ensure nil
+  :requires no-littering
+  :custom
+  (recentf-auto-cleanup 200)
+  (recentf-max-saved-items 1000)
+  (recentf-auto-cleanup 'never)
+  (recentf-auto-save-timer (run-with-idle-timer 600 t 'recentf-save-list))
   :config
-  (require 'recentf)
+  (add-to-list 'recentf-exclude "COMMIT_EDITMSG\\'")
   (add-to-list 'recentf-exclude no-littering-var-directory)
   (add-to-list 'recentf-exclude no-littering-etc-directory))
 
-(customize-set-variable
- 'custom-file (no-littering-expand-var-file-name "custom.el"))
 
 (customize-set-variable 'user-full-name "Justin Smestad")
 (customize-set-variable 'user-mail-address "justin.smestad@gmail.com")
@@ -269,6 +278,8 @@
     "R" 'neotree-change-root
     "I" 'neotree-hidden-file-toggle))
 
+(use-package smex
+  :init (smex-initialize))
 ;;; Ivy for completion
 (use-package ivy
   :delight
@@ -336,14 +347,15 @@
 ;;;
 ;;; Projectile
 (use-package projectile
-  :requires (ivy neotree)
+  :requires ivy
   :delight '(:eval (concat " " (projectile-project-name)))
   :custom
+  (projectile-indexing-method 'native)
   (projectile-completion-system 'ivy)
   (projectile-enable-caching t)
   (projectile-switch-project-action 'counsel-projectile-find-file)
   (projectile-sort-order 'recentf)
-  :init
+  :config
   (projectile-mode))
 ;;; Magit
 (use-package magit
@@ -501,13 +513,7 @@
           (require 'smooth-scroll)
           (smooth-scroll-mode 1)))
 
-(use-package recentf
-  :ensure nil
-  :custom
-  (recentf-auto-cleanup 200)
-  (recentf-max-saved-items 200)
-  :config
-  (recentf-mode))
+
 
 (use-package display-line-numbers
   :ensure nil
