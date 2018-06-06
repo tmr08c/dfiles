@@ -352,7 +352,7 @@
   :custom
   (projectile-indexing-method 'alien)
   (projectile-completion-system 'ivy)
-  (projectile-enable-caching t)
+  (projectile-enable-caching nil)
   (projectile-switch-project-action 'counsel-projectile-find-file)
   (projectile-sort-order 'recentf)
   :config
