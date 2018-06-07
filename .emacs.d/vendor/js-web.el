@@ -42,13 +42,13 @@
   :custom
   (css-indent-offset 2))
 
+(use-package scss-mode)
+
 (use-package counsel-css
   :hook
   (css-mode . counsel-css-imenu-setup))
 
 (use-package web-beautify)
 
-
 (provide 'js-web)
-
 ;;; js-web.el ends here

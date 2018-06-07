@@ -376,6 +376,7 @@
   (eshell-scroll-to-bottom-on-input 'all))
 
 (use-package repl-toggle
+  :disabled
   :custom
   (rtog/mode-repl-alist
    '((emacs-lisp-mode . ielm)
@@ -388,7 +389,13 @@
 ;;; Company
 ;;; Auto-completion framework for most modes
 (use-package company
-  :hook (after-init . global-company-mode))
+  :custom
+  (company-idle-delay 0.5)
+  (company-tooltip-limit 10)
+  (company-minimum-prefix-length 2)
+  (company-tooltip-flip-when-above t)
+  :hook
+  (after-init . global-company-mode))
 (use-package company-quickhelp
   :requires company
   :config (company-quickhelp-mode))

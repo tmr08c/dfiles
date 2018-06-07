@@ -4,13 +4,6 @@
 
 ;;; Code:
 
-(use-package projectile-rails
-  :requires (projectile)
-  :hook (projectile-mode . projectile-rails-on))
-
-(use-package inf-ruby
-  :hook (after-init . inf-ruby-switch-setup))
-
 (use-package ruby-mode
   :ensure nil
   :ensure-system-package
@@ -26,6 +19,11 @@
     :keymaps 'ruby-mode-map
     "m" '(:ignore t :which-key "Ruby")
     "m t" '(:ignore t :which-key "Tests")))
+
+(use-package inf-ruby
+  :requires ruby-mode
+  :hook (after-init . inf-ruby-switch-setup))
+
 
 (use-package rspec-mode
   :hook (ruby-mode . rspec-mode)
@@ -59,6 +57,10 @@
   :general
   (space-leader-def 'normal ruby-mode-map
     "m f h" '(ruby-hash-syntax-toggle :which-key "toggle hash syntax")))
+
+(use-package projectile-rails
+  :requires projectile
+  :hook (projectile-mode . projectile-rails-on))
 
 (provide 'js-ruby)
 
