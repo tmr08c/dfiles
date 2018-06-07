@@ -417,6 +417,17 @@
 (use-package js-javascript
   :load-path "/vendor")
 
+;; Shell
+(use-package sh-mode
+  :ensure nil
+  :mode
+  (("\\.zshrc" . sh-mode)
+   ("bashrc$" . sh-mode)
+   ("bash_profile$" . sh-mode)
+   ("bash_aliases$" . sh-mode)
+   ("bash_local$" . sh-mode)
+   ("bash_completion$" . sh-mode)))
+
 ;;; Markdown Mode
 (use-package markdown-mode
   :mode (("\\.md\\'" . markdown-mode))

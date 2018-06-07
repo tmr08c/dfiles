@@ -1,6 +1,11 @@
+OS=$(uname -s)
+
 if (( $+commands[emacs] )); then
-  #alias emacs="open -a /Applications/Emacs $@"
-  alias emacs="open -a /usr/local/opt/emacs-plus/Emacs.app $@"
+  if [ "$OS" = "Darwin" ]; then
+    #alias emacs="open -a /Applications/Emacs $@"
+    alias emacs="open -a /usr/local/opt/emacs-plus/Emacs.app $@"
+  fi
+
   export EDITOR='emacs'
 elif (( $+commands[vim] )); then
   export EDITOR='vim'
