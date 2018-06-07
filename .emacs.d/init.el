@@ -259,11 +259,13 @@
 (use-package neotree
   :after all-the-icons
   :custom
-  (neo-theme (if (display-graphic-p) 'icons 'arrow))
-  (neo-window-width 25)
+  (neo-autorefresh t)
   (neo-create-file-auto-open t)
   (neo-modern-sidebar t)
   (neo-point-auto-indent t)
+  (neo-theme (if (display-graphic-p) 'icons 'arrow))
+  (neo-window-fixed-size nil)
+  (neo-window-width 25)
   :general
   (general-nmap neotree-mode-map
 
