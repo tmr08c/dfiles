@@ -45,29 +45,30 @@
 
 
 (use-package evil
-  :init (evil-mode 1)
+  :hook (after-init . evil-mode)
   :custom
   (evil-want-C-u-scroll t)
   (evil-want-Y-yank-to-eol t)
   (evil-shift-width 2))
 
 (use-package evil-commentary
-  :requires evil
-  :init (evil-commentary-mode))
+  :delight
+  ;; :requires evil
+  :hook (evil-mode . evil-commentary-mode))
 
 (use-package evil-surround
-  :requires evil
-  :init (global-evil-surround-mode))
+  ;; :requires evil
+  :hook (evil-mode . global-evil-surround-mode))
 
 (use-package evil-matchit
-  :requires evil
-  :init (global-evil-matchit-mode 1))
+  ;; :requires evil
+  :hook (evil-mode . global-evil-matchit-mode))
 
 (use-package evil-escape
-  :requires evil
+  :delight
   :custom
   (evil-escape-delay 0.2)
-  :init (evil-escape-mode))
+  :hook (evil-mode . evil-escape-mode))
 
 
 (provide 'js-editing)

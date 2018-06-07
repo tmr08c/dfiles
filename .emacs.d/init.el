@@ -320,19 +320,18 @@
   (flycheck-rubocop-lint-only t)
   (flycheck-check-syntax-automatically '(mode-enabled save))
   (flycheck-disabled-checkers '(ruby-rubylint))
-  :config (global-flycheck-mode))
+  :hook (prog-mode . flycheck-mode))
 
 (use-package flyspell
-  :disabled ;; I don't like spell checking
+  ;; :disabled ;; I don't like spell checking
   ;; Disable on Windows because `aspell' 0.6+ isn't available.
   :if (not (eq system-type 'windows-nt))
   :delight
-  :hook ((text-mode . flyspell-mode)
-         (prog-mode . flyspell-prog-mode))
+  ;; :hook ((text-mode . flyspell-mode)
+  ;;        (prog-mode . flyspell-prog-mode))
   :custom
   (ispell-program-name "aspell")
   (ispell-extra-args '("--sug-mode=ultra")))
-
 (use-package flyspell-correct-ivy
   :requires (flyspell ivy))
 
@@ -361,15 +360,15 @@
 ;;; Projectile
 (use-package projectile
   :requires ivy
-  :delight '(:eval (concat " " (projectile-project-name)))
+  :delight ;;'(:eval (concat " " (projectile-project-name)))
   :custom
   (projectile-indexing-method 'alien)
   (projectile-completion-system 'ivy)
   (projectile-enable-caching nil)
   (projectile-switch-project-action 'counsel-projectile-find-file)
   (projectile-sort-order 'recentf)
-  :config
-  (projectile-mode))
+  :hook
+  (after-init . projectile-mode))
 ;;; Magit
 (use-package magit)
 ;; May not be needed:
@@ -402,6 +401,7 @@
 ;;; Company
 ;;; Auto-completion framework for most modes
 (use-package company
+  :delight
   :custom
   (company-idle-delay 0.5)
   (company-tooltip-limit 10)
@@ -455,18 +455,23 @@
   :config (add-to-list 'company-backends 'company-irony))
 (use-package flycheck-irony
   :requires irony
-  :hook (flycheck-mode . flycheck-irony-setup))
+  :hook (irony-mode . flycheck-irony-setup))
 
 ;; Go
 (use-package go-mode
-  :mode (("\\.go$" . go-mode)))
+  :mode "\\.go$")
 (use-package go-eldoc
   :hook (go-mode . go-eldoc-setup))
-(use-package company-go
-  :requires (company go-mode)
-  :config (add-to-list 'company-backends 'company-go))
+;; (use-package company-go
+;; :requires (company go-mode)
+;; :config (add-to-list 'company-backends 'company-go))
 (use-package go-projectile
-  :requires (projectile go-mode))
+  :requires projectile)
+
+;; Elisp
+(use-package eldoc
+  :ensure nil
+  :delight)
 
 ;; Erlang
 (use-package erlang
@@ -480,15 +485,12 @@
   :commands alchemist-mode
   :hook (elixir-mode . alchemist-mode))
 (use-package flycheck-mix
-  :after (flycheck elixir-mode)
   :hook (elixir-mode . flycheck-mix-setup))
 
 ;;; Markdown Mode
 (use-package markdown-mode
   :mode "\\.md$"
-  :config (progn
-            (add-hook 'markdown-mode-hook 'visual-line-mode)
-            (add-hook 'markdown-mode-hook (lambda () (flyspell-mode 1)))))
+  :hook (markdown-mode . flyspell-mode))
 
 ;;; Ember Mode
 ;;; JSON Formatter
@@ -544,11 +546,27 @@
     (progn
       (tool-bar-mode 0)
       (scroll-bar-mode 0)
-      (horizontal-scroll-bar-mode 0)))
+      (horizontal-scroll-bar-mode 0)
 
-;;; Theme
-(add-to-list 'default-frame-alist '(ns-transparent-titlebar . t))
-(add-to-list 'default-frame-alist '(ns-appearance . dark))
+      ;; Theme Emacs for dark color scheme
+      (add-to-list 'default-frame-alist '(ns-transparent-titlebar . t))
+      (add-to-list 'default-frame-alist '(ns-appearance . dark))
+
+      (add-hook 'after-init-hook 'set-frame-size-according-to-resolution)
+      (add-hook 'after-make-frame-functions 'set-frame-size-according-to-resolution)))
+
+
+(defun set-frame-size-according-to-resolution (&rest frame)
+  "Set FRAME height to screen height and width to half total."
+  (if window-system
+      (let ((f (if (car frame)
+		   (car frame)
+	         (selected-frame))))
+        (progn
+          (set-frame-height f (display-pixel-height) nil 'pixelwise)
+          (set-frame-width f (/ (display-pixel-width) 2) nil 'pixelwise)
+          (set-frame-position f 0 0)))))
+
 
 (use-package powerline
   :init (powerline-default-theme))
@@ -572,12 +590,13 @@
   :init (global-hl-todo-mode))
 ;;; Better scrolling
 (use-package smooth-scroll
-  :if (eq system-type 'gnu/linux);;(display-graphic-p)
+  ;; :if (eq system-type 'gnu/linux)
+  :if (display-graphic-p)
   :delight
-  :custom (smooth-scroll/vscroll-step-size 8)
-  :init (progn
-          (require 'smooth-scroll)
-          (smooth-scroll-mode 1)))
+  :custom
+  (smooth-scroll/vscroll-step-size 8)
+  :config
+  (smooth-scroll-mode))
 
 
 
@@ -606,6 +625,7 @@
 (customize-set-variable 'desktop-save-mode nil)
 (customize-set-variable 'indent-tabs-mode nil)
 (customize-set-variable 'inhibit-startup-screen t)
+(customize-set-variable 'initial-major-mode 'markdown-mode)
 (customize-set-variable 'initial-scratch-message nil)
 (customize-set-variable 'load-prefer-newer t)
 (customize-set-variable 'sentence-end-double-space nil)
@@ -614,7 +634,5 @@
                                               (invert-face 'mode-line)
                                               (run-with-timer 0.1 nil 'invert-face 'mode-line)))
 
-;;; provide init package
 (provide 'init)
-
 ;;; init.el ends here
