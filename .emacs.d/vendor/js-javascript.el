@@ -21,6 +21,7 @@
   :hook
   (js2-mode . js2-imenu-extras-mode)
   :custom
+  ;; (js-indent-level 2) ;; TODO is this the right place for this?
   (js2-mode-show-strict-warnings nil)
   (js2-highlight-level 3)
   :config

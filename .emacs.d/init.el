@@ -290,8 +290,7 @@
   (ive-use-selectable-prompt t))
 ;;; Ado-ado
 (use-package counsel
-  :config (progn
-            (global-set-key (kbd "M-x") 'counsel-M-x)))
+  :bind (("M-x" . counsel-M-x)))
 
 (use-package counsel-projectile
   :requires (counsel projectile rg)
@@ -300,7 +299,8 @@
 (use-package rg)
 
 ;; Search regex
-(use-package swiper)
+(use-package swiper
+  :bind (("M-s" . swiper)))
 
 (use-package flycheck
   :custom
@@ -427,8 +427,26 @@
    ("bash_local$" . sh-mode)
    ("bash_completion$" . sh-mode)))
 
+;; C (via irony-mode)
+(use-package irony
+  :hook (c-mode . irony-mode))
+(use-package company-irony
+  :requires irony
+  :config (add-to-list 'company-backends 'company-irony))
+(use-package flycheck-irony
+  :requires irony
+  :hook (flycheck-mode . flycheck-irony-setup))
+
 ;; Go
 (use-package go-mode)
+(use-package company-go
+  :requires (go-mode company)
+  :config (add-to-list 'company-backends 'company-go))
+
+;; Elixir
+(use-package elixir-mode)
+(use-package alchemist
+  :requires elixir-mode)
 
 ;;; Markdown Mode
 (use-package markdown-mode

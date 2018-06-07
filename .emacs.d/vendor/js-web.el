@@ -46,6 +46,8 @@
   :hook
   (css-mode . counsel-css-imenu-setup))
 
+(use-package web-beautify)
+
 
 (provide 'js-web)
 
