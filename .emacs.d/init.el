@@ -358,8 +358,7 @@
   :config
   (projectile-mode))
 ;;; Magit
-(use-package magit
-  :pin melpa-stable)
+(use-package magit)
 ;; May not be needed:
 ;; :custom
 ;; (magit-commit-show-diff nil)
@@ -427,6 +426,9 @@
    ("bash_aliases$" . sh-mode)
    ("bash_local$" . sh-mode)
    ("bash_completion$" . sh-mode)))
+
+;; Go
+(use-package go-mode)
 
 ;;; Markdown Mode
 (use-package markdown-mode
@@ -540,14 +542,21 @@
 
 (defalias 'yes-or-no-p 'y-or-n-p)
 
+;; Use Github as the standard
+;; ref http://hilton.org.uk/blog/source-code-line-length
+(customize-set-variable 'fill-column 125)
+
+(customize-set-variable 'byte-compile-warnings nil)
+(customize-set-variable 'blink-matching-paran nil)
 (customize-set-variable 'create-lockfiles nil)
 (customize-set-variable 'cua-mode t)
-(customize-set-variable 'visible-bell nil)
-(customize-set-variable 'blink-matching-paran nil)
-(customize-set-variable 'inhibit-startup-screen t)
-(customize-set-variable 'load-prefer-newer t)
+(customize-set-variable 'desktop-save-mode t)
 (customize-set-variable 'indent-tabs-mode nil)
+(customize-set-variable 'inhibit-startup-screen t)
+(customize-set-variable 'initial-scratch-message nil)
+(customize-set-variable 'load-prefer-newer t)
 (customize-set-variable 'sentence-end-double-space nil)
+(customize-set-variable 'visible-bell nil)
 (customize-set-variable 'ring-bell-function (lambda ()
                                               (invert-face 'mode-line)
                                               (run-with-timer 0.1 nil 'invert-face 'mode-line)))
