@@ -30,6 +30,13 @@
 (eval-when-compile
   (require 'use-package))
 
+;; Used to benchmark init timings
+(use-package benchmark-init
+  :disabled
+  :config
+  ;; To disable collection of benchmark data after init is done.
+  (add-hook 'after-init-hook 'benchmark-init/deactivate))
+
 (use-package delight)
 (use-package dash)
 
@@ -445,14 +452,22 @@
   :hook (flycheck-mode . flycheck-irony-setup))
 
 ;; Go
-(use-package go-mode)
+(use-package go-mode
+  :mode (("\\.go$" . go-mode)))
+(use-package go-eldoc
+  :hook (go-mode . go-eldoc-setup))
 (use-package company-go
-  :requires (go-mode company)
+  :requires (company go-mode)
   :config (add-to-list 'company-backends 'company-go))
+(use-package go-projectile
+  :requires (projectile go-mode))
 
 ;; Elixir
-(use-package elixir-mode)
+(use-package elixir-mode
+  :commands elixir-mode
+  :hook (elixir-mode . alchemist))
 (use-package alchemist
+  :commands alchemist-mode
   :requires elixir-mode)
 
 ;;; Markdown Mode
@@ -575,7 +590,7 @@
 (customize-set-variable 'blink-matching-paran nil)
 (customize-set-variable 'create-lockfiles nil)
 (customize-set-variable 'cua-mode t)
-(customize-set-variable 'desktop-save-mode t)
+(customize-set-variable 'desktop-save-mode nil)
 (customize-set-variable 'indent-tabs-mode nil)
 (customize-set-variable 'inhibit-startup-screen t)
 (customize-set-variable 'initial-scratch-message nil)
