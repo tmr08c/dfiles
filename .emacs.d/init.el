@@ -110,6 +110,10 @@
               (interactive)
               (kill-buffer (current-buffer)))
             :which-key "close current buffer")
+    "b s" '((lambda ()
+              (interactive)
+              (switch-to-buffer (get-buffer-create "*scratch*")))
+            :which-key "scratch buffer")
 
     ;;; Files
     "f"   '(:ignore t :which-key "Files")
@@ -462,17 +466,24 @@
 (use-package go-projectile
   :requires (projectile go-mode))
 
+;; Erlang
+(use-package erlang
+  :mode "\\.erl$")
+
 ;; Elixir
 (use-package elixir-mode
   :commands elixir-mode
-  :hook (elixir-mode . alchemist))
+  :mode "\\.exs?")
 (use-package alchemist
   :commands alchemist-mode
-  :requires elixir-mode)
+  :hook (elixir-mode . alchemist-mode))
+(use-package flycheck-mix
+  :after (flycheck elixir-mode)
+  :hook (elixir-mode . flycheck-mix-setup))
 
 ;;; Markdown Mode
 (use-package markdown-mode
-  :mode (("\\.md\\'" . markdown-mode))
+  :mode "\\.md$"
   :config (progn
             (add-hook 'markdown-mode-hook 'visual-line-mode)
             (add-hook 'markdown-mode-hook (lambda () (flyspell-mode 1)))))
@@ -482,8 +493,8 @@
 (use-package json-mode
   :custom
   (js-indent-level 2)
-  :mode (("\\.json$" . json-mode)
-         ("\\.jshintrc$" . json-mode)))
+  :mode ("\\.json$"
+         "\\.jshintrc$"))
 ;;; Dockerfile
 (use-package dockerfile-mode
   :mode "Dockerfile.*\\'")
