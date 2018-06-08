@@ -124,6 +124,10 @@
                 (find-file-existing user-init-file))
               :which-key "open emacs configuration")
 
+    "g" '(:ignore t :which-key "Go to")
+    "g d" '(dumb-jump-go :which-key "definition")
+
+
     ;;; Projects
     "p"   '(:ignore t :which-key "Projects")
     "p !" '(projectile-run-shell-command-in-root :which-key "run command")
@@ -259,7 +263,7 @@
 (use-package neotree
   :after all-the-icons
   :custom
-  (neo-autorefresh t)
+  ;; (neo-autorefresh t) ;; annoyingly asks to change root all the time!
   (neo-create-file-auto-open t)
   (neo-modern-sidebar t)
   (neo-point-auto-indent t)

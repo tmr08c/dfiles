@@ -17,10 +17,22 @@
   :init (dtrt-indent-global-mode))
 
 (use-package aggressive-indent
-  :hook (emacs-lisp-mode . aggressive-indent-mode))
+  :hook (
+         (emacs-lisp-mode . aggressive-indent-mode)
+         (ruby-mode . aggressive-indent-mode)
+         (css-mode . aggressive-indent-mode))
 
 (use-package adaptive-wrap
   :config (adaptive-wrap-prefix-mode))
+
+(use-package dumb-jump
+  :commands (dump-jump-go
+             dumb-jump-go-other-window
+             dump-jump-go-prompt
+             dump-jump-go-prefer-external
+             dumb-jump-go-prefer-external-other-window)
+  :custom
+  (dumb-jump-selector 'ivy))
 
 (use-package whitespace
   :commands (whitespace-mode))
