@@ -22,3 +22,14 @@ if (( $+commands[gpgconf] )); then
   export SSH_AUTH_SOCK=$(gpgconf --list-dirs agent-ssh-socket)
   gpgconf --launch gpg-agent
 fi
+
+export GOPATH=$HOME/code/golang
+if [ "$OS" = "Darwin" ]; then
+  # export GOROOT=/usr/local/opt/go/libexec/bin
+  export GOROOT=/usr/local/go
+fi
+path=(
+  $path
+  $GOPATH/bin
+  $GOROOT/bin
+)
