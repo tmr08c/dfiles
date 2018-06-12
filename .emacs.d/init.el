@@ -407,8 +407,10 @@
 (use-package company
   :delight
   :custom
-  (company-idle-delay 0.5)
-  (company-tooltip-limit 10)
+  (company-echo-delay 0) ; remove annoying blinking
+  ;; (company-begin-commands '(self-insert-command)) ; start autocompletion only after typing
+  (company-idle-delay 0.3)
+  (company-tooltip-limit 20)
   (company-minimum-prefix-length 2)
   (company-tooltip-flip-when-above t)
   :hook
@@ -466,9 +468,12 @@
   :mode "\\.go$")
 (use-package go-eldoc
   :hook (go-mode . go-eldoc-setup))
-;; (use-package company-go
-;; :requires (company go-mode)
-;; :config (add-to-list 'company-backends 'company-go))
+(use-package company-go
+  ;; :requires (company go-mode)
+  :hook (go-mode . (lambda ()
+                     (set (make-local-variable 'company-backends) '(company-go))
+                     (company-mode))
+                 ))
 (use-package go-projectile
   :requires projectile)
 
