@@ -61,7 +61,9 @@
   :custom
   (evil-want-C-u-scroll t)
   (evil-want-Y-yank-to-eol t)
-  (evil-shift-width 2))
+  (evil-shift-width 2)
+  :config
+  (fset 'evil-visual-update-x-selection 'ignore))
 
 (use-package evil-commentary
   :delight
