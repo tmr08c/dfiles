@@ -465,7 +465,12 @@
 
 ;; Go
 (use-package go-mode
-  :mode "\\.go$")
+  :mode "\\.go$"
+  ;; :hook
+  ;; (before-save . gofmt-before-save)
+  :custom
+  (tab-width 2)
+  (indent-tabs-mode 1))
 (use-package go-eldoc
   :hook (go-mode . go-eldoc-setup))
 (use-package company-go
