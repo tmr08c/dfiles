@@ -24,6 +24,10 @@
   :requires ruby-mode
   :hook (after-init . inf-ruby-switch-setup))
 
+;; Not available yet on MELPA
+;; (use-package lsp-ruby
+;;   :requires lsp-mode
+;;   :hook (ruby-mode . lsp-ruby-enable))
 
 (use-package rspec-mode
   :hook (ruby-mode . rspec-mode)

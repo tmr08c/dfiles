@@ -375,6 +375,11 @@
   (after-init . projectile-mode))
 ;;; Magit
 (use-package magit)
+(use-package magithub
+  :disabled
+  :after magit
+  :config
+  (magithub-feature-autoinject t))
 ;; May not be needed:
 ;; :custom
 ;; (magit-commit-show-diff nil)
@@ -421,6 +426,9 @@
 (use-package company-flx
   :requires company
   :config (company-flx-mode))
+(use-package company-lsp
+  :requires (company lsp-mode)
+  :config (add-to-list 'company-backends 'company-lsp))
 ;;; direnv
 (use-package direnv
   :ensure-system-package direnv)
@@ -481,6 +489,9 @@
                  ))
 (use-package go-projectile
   :requires projectile)
+(use-package lsp-go
+  :requires (lsp-mode go-mode)
+  :hook (go-mode-hook . lsp-go-enable))
 
 ;; Elisp
 (use-package eldoc
@@ -501,7 +512,34 @@
 (use-package flycheck-mix
   :hook (elixir-mode . flycheck-mix-setup))
 
-;;; Markdown Mode
+;; Python
+(use-package python
+  :mode ("\\.py" . python-mode))
+(use-package anaconda-mode
+  :hook python-mode)
+(use-package company-anaconda
+  :after company
+  :config (add-to-list 'company-backends 'company-anaconda))
+(use-package pyenv-mode
+  :if (executable-find "pyenv")
+  :commands (pyenv-mode-versions)
+  :hook python-mode)
+(use-package lsp-python
+  :after lsp-mode
+  :hook (python-mode . lsp-python-enable))
+
+
+;; Scala
+(use-package scala-mode
+  :mode ("\\.\\(scala\\|sbt\\)\\'" . scala-mode))
+
+;; Language Server Mode
+(use-package lsp-mode)
+(use-package lsp-ui
+  :hook (lsp-mode . lsp-ui-mode))
+
+
+;; Markdown Mode
 (use-package markdown-mode
   :mode "\\.md$"
   :hook (markdown-mode . flyspell-mode))
@@ -574,16 +612,29 @@
   "Set FRAME height to screen height and width to half total."
   (if window-system
       (let ((f (if (car frame)
-		   (car frame)
-	         (selected-frame))))
+		               (car frame)
+	               (selected-frame))))
         (progn
           (set-frame-height f (display-pixel-height) nil 'pixelwise)
           (set-frame-width f (/ (display-pixel-width) 2) nil 'pixelwise)
           (set-frame-position f 0 0)))))
 
+;; Modeline
+(use-package shrink-path)
+(use-package eldoc-eval)
+(use-package doom-modeline
+  :requires (eldoc-eval shrink-path all-the-icons)
+  :load-path "vendor/"
+  :hook (after-init . doom-modeline-init))
+;; (use-package telephone-line
+;;   :hook (after-init . telephone-line-mode))
+;; (use-package powerline
+;; :hook (after-init . powerline-reset)
+;; )
+;; (use-package powerline-evil
+;;   :requires powerline
+;;   :init (powerline-evil-vim-color-theme))
 
-(use-package powerline
-  :init (powerline-default-theme))
 
 (use-package all-the-icons
   :if window-system)
@@ -599,10 +650,12 @@
                     :height 130
                     :weight 'normal
                     :width 'normal)
-;;; Highlight TODOs
+
+;; Highlight TODOs
 (use-package hl-todo
-  :init (global-hl-todo-mode))
-;;; Better scrolling
+  :hook (after-init . global-hl-todo-mode))
+
+;; Better scrolling
 (use-package smooth-scroll
   ;; :if (eq system-type 'gnu/linux)
   :if (display-graphic-p)
@@ -613,14 +666,13 @@
   (smooth-scroll-mode))
 
 
-
+;; Line Numbers
 (use-package display-line-numbers
   :ensure nil
   :if (version<= "26.0.50" emacs-version)
   :hook (prog-mode . display-line-numbers-mode))
 
-;;; Fix Annoyances
-
+;; Fix Annoyances
 (use-package uniquify
   :ensure nil
   :demand t
