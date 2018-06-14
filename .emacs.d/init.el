@@ -623,7 +623,7 @@
 (use-package shrink-path)
 (use-package eldoc-eval)
 (use-package doom-modeline
-  :requires (eldoc-eval shrink-path all-the-icons)
+  :requires (eldoc-eval shrink-path)
   :load-path "vendor/"
   :hook (after-init . doom-modeline-init))
 ;; (use-package telephone-line
