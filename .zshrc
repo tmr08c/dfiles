@@ -38,6 +38,16 @@ else
   echo "Missing direnv. Please install it `brew install direnv` or `apt install direnv`."
 fi
 
+# Python
+export PYENV_ROOT="$HOME/.pyenv"
+path=(
+  $PYENV_ROOT/bin
+  $path
+)
+if (( $+commands[pyenv] )); then
+  eval "$(pyenv init -)"
+fi
+
 # Ruby (rbenv)
 if [[ -d ~/.rbenv ]]; then
   export PATH="$HOME/.rbenv/bin:$PATH"
