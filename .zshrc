@@ -42,6 +42,7 @@ fi
 export PYENV_ROOT="$HOME/.pyenv"
 path=(
   $PYENV_ROOT/bin
+  $HOME/.local/bin
   $path
 )
 if (( $+commands[pyenv] )); then

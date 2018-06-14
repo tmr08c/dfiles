@@ -224,6 +224,7 @@
 
 ;; File settings
 ;;
+(use-package vlf)
 (use-package files
   :ensure nil
   :demand t
@@ -544,8 +545,21 @@
   :mode "\\.md$"
   :hook (markdown-mode . flyspell-mode))
 
-;;; Ember Mode
-;;; JSON Formatter
+;; CSV
+(use-package csv-mode
+  :mode "\\.csv$"
+  :config
+
+  (defun csv-align-visible ()
+    "Align only visible entries in csv-mode."
+    (interactive)
+    (csv-align-fields nil (window-start) (window-end)))
+
+  ;; C-c C-a is already bound to align all fields, but can be too slow.
+  :bind (:map csv-mode-map
+              ("C-c C-w" . 'csv-align-visible)))
+
+;; JSON Formatter
 (use-package json-mode
   :custom
   (js-indent-level 2)

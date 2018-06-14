@@ -62,20 +62,22 @@
   (evil-want-C-u-scroll t)
   (evil-want-Y-yank-to-eol t)
   (evil-shift-width 2)
-  (evil-want-integration nil) ;; TODO what is this for? see evil-collection README
+  (evil-want-integration nil)
   :config
   (fset 'evil-visual-update-x-selection 'ignore))
 
 (use-package evil-collection
-  :hook (evil-mode . evil-collection-init))
+  :after evil
+  :custom
+  (evil-collection-setup-minibuffer t)
+  :hook
+  (evil-mode . evil-collection-init))
 
 (use-package evil-commentary
   :delight
-  ;; :requires evil
   :hook (evil-mode . evil-commentary-mode))
 
 (use-package evil-surround
-  ;; :requires evil
   :hook (evil-mode . global-evil-surround-mode))
 
 (use-package evil-matchit
@@ -88,6 +90,10 @@
   (evil-escape-delay 0.2)
   :hook (evil-mode . evil-escape-mode))
 
+(use-package multiple-cursors
+  :bind (("C->" . mc/mark-next-like-this)
+         ("C-<" . mc/mark-previous-like-this)
+         ("C-*" . mc/mark-all-like-this)))
 
 (provide 'js-editing)
 
