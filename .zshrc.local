@@ -25,7 +25,7 @@ fi
 
 export GOPATH=$HOME/code/golang
 if [ "$OS" = "Darwin" ]; then
-  # export GOROOT=/usr/local/opt/go/libexec/bin
+  export JAVA_HOME=$(/usr/libexec/java_home -v 1.8)
   export GOROOT=/usr/local/go
 fi
 path=(
