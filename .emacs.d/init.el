@@ -640,6 +640,10 @@
   :requires (eldoc-eval shrink-path)
   :load-path "vendor/"
   :hook (after-init . doom-modeline-init))
+(use-package hide-mode-line
+  :hook ((neotree-mode . hide-mode-line-mode)
+         (completion-list-mode . hide-mode-line-mode)
+         (completion-in-region-mode . hide-mode-line-mode)))
 ;; (use-package telephone-line
 ;;   :hook (after-init . telephone-line-mode))
 ;; (use-package powerline
@@ -649,13 +653,17 @@
 ;;   :requires powerline
 ;;   :init (powerline-evil-vim-color-theme))
 
-
 (use-package all-the-icons
   :if window-system)
 
 (use-package doom-themes
   :init (load-theme 'doom-molokai t)
+  ;; :custom
+  ;; (doom-neotree-file-icons t)
+  ;; (doom-themes-org-config)
   :config
+  (doom-themes-visual-bell-config)
+  ;; (doom-themes-neotree-config)
   (doom-themes-org-config))
 
 ;; Font
