@@ -2,7 +2,8 @@ OS=$(uname -s)
 
 if (( $+commands[emacs] )); then
   if [ "$OS" = "Darwin" ]; then
-    #alias emacs="open -a /Applications/Emacs $@"
+    # For emacs-for-osx
+    # alias emacs="open -a /Applications/Emacs $@"
     alias emacs="open -a /usr/local/opt/emacs-plus/Emacs.app $@"
   fi
 
@@ -27,6 +28,8 @@ export GOPATH=$HOME/code/golang
 if [ "$OS" = "Darwin" ]; then
   export JAVA_HOME=$(/usr/libexec/java_home -v 1.8)
   export GOROOT=/usr/local/go
+else
+  export JAVA_HOME=/usr/lib/jvm/java-8-openjdk-amd64
 fi
 path=(
   $path
