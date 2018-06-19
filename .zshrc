@@ -58,6 +58,21 @@ else
   echo "Missing rbenv. Please install it https://github.com/rbenv/rbenv#basic-github-checkout"
 fi
 
+# Scala
+if [[ -d ~/.scalaenv ]]; then
+  export PATH="$HOME/.scalaenv/bin:$PATH"
+  eval "$(scalaenv init -)"
+
+  # if [[ -d ~/.sbtenv ]]; then
+    # export PATH="$HOME/.sbtenv/bin:$PATH"
+    # eval "$(sbtenv init -)"
+  # else
+    # echo "Missing sbtenv. Please install it https://github.com/sbtenv/sbtenv"
+  # fi
+else
+  echo "Missing scalaenv. Please install it https://github.com/scalaenv/scalaenv"
+fi
+
 [[ -f ~/.zshrc.local ]] && source ~/.zshrc.local
 [[ -f ~/.zshrc.private ]] && source ~/.zshrc.private
 

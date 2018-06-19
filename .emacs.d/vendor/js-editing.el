@@ -25,6 +25,17 @@
 (use-package adaptive-wrap
   :config (adaptive-wrap-prefix-mode))
 
+;; TODO this could be handy at SPC g t c
+(use-package goto-chg
+  :disabled
+  :commands goto-last-change
+  ;; complementary to
+  ;; C-x r m / C-x r l
+  ;; and C-<space> C-<space> / C-u C-<space>
+  :bind (("C-." . goto-last-change)
+         ("C-," . goto-last-change-reverse)))
+
+
 (use-package dumb-jump
   :commands (dump-jump-go
              dumb-jump-go-other-window
@@ -39,10 +50,12 @@
 
 (use-package ws-butler
   :delight
+  :defer t
   :config (ws-butler-global-mode))
 
 (use-package autorevert
   :ensure nil
+  :defer t
   :delight auto-revert-mode
   :config (global-auto-revert-mode))
 
@@ -54,7 +67,6 @@
 (use-package unfill
   :disabled
   :bind ([remap fill-paragraph] . #'unfill-toggle))
-
 
 (use-package evil
   :hook (after-init . evil-mode)

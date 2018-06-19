@@ -29,7 +29,7 @@
   (web-mode-enable-auto-quoting nil)
   (web-mode-enable-current-element-highlight t))
 (use-package company-web
-  :requires (web-mode company)
+  :hook web-mode
   :config
   (add-to-list 'company-backends 'company-web-html))
 
@@ -42,13 +42,14 @@
   :custom
   (css-indent-offset 2))
 
-(use-package scss-mode)
+(use-package scss-mode
+  :mode "\\.scss$")
 
 (use-package counsel-css
-  :hook
-  (css-mode . counsel-css-imenu-setup))
+  :hook (css-mode . counsel-css-imenu-setup))
 
-(use-package web-beautify)
+(use-package web-beautify
+  :hook web-mode)
 
 (provide 'js-web)
 ;;; js-web.el ends here

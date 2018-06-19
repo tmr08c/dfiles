@@ -224,7 +224,8 @@
 
 ;; File settings
 ;;
-(use-package vlf)
+(use-package vlf
+  :hook csv-mode)
 (use-package files
   :ensure nil
   :demand t
@@ -314,7 +315,8 @@
   :requires (counsel projectile rg)
   :config (counsel-projectile-mode))
 
-(use-package rg)
+(use-package rg
+  :commands (rg rg-project rg-dwim rg-literal))
 
 ;; Search regex
 (use-package swiper
@@ -364,6 +366,7 @@
 ;;;
 ;;; Projectile
 (use-package projectile
+  :defer t
   :requires ivy
   :delight ;;'(:eval (concat " " (projectile-project-name)))
   :custom
@@ -372,10 +375,11 @@
   (projectile-enable-caching nil)
   (projectile-switch-project-action 'counsel-projectile-find-file)
   (projectile-sort-order 'recentf)
-  :hook
-  (after-init . projectile-mode))
+  :config
+  (projectile-mode))
 ;;; Magit
-(use-package magit)
+(use-package magit
+  :defer t)
 (use-package magithub
   :disabled
   :after magit
@@ -412,6 +416,7 @@
 ;;; Auto-completion framework for most modes
 (use-package company
   :delight
+  :defer 2
   :custom
   (company-echo-delay 0) ; remove annoying blinking
   ;; (company-begin-commands '(self-insert-command)) ; start autocompletion only after typing
@@ -419,8 +424,8 @@
   (company-tooltip-limit 20)
   (company-minimum-prefix-length 2)
   (company-tooltip-flip-when-above t)
-  :hook
-  (after-init . global-company-mode))
+  :config
+  (global-company-mode t))
 (use-package company-quickhelp
   :requires company
   :config (company-quickhelp-mode))
@@ -484,15 +489,14 @@
   :hook (go-mode . go-eldoc-setup))
 (use-package company-go
   ;; :requires (company go-mode)
-  :hook (go-mode . (lambda ()
-                     (set (make-local-variable 'company-backends) '(company-go))
-                     (company-mode))
-                 ))
+  :hook go-mode
+  :config (add-to-list 'company-backends 'company-go))
 (use-package go-projectile
-  :requires projectile)
+;; :requires projectile
+:hook (go-mode . go-projectile-mode))
 (use-package lsp-go
-  :requires (lsp-mode go-mode)
-  :hook (go-mode-hook . lsp-go-enable))
+  ;; :requires lsp-mode
+  :hook (go-mode . lsp-go-enable))
 
 ;; Elisp
 (use-package eldoc
@@ -519,7 +523,8 @@
 (use-package anaconda-mode
   :hook python-mode)
 (use-package company-anaconda
-  :after company
+  :requires company
+  :hook (python-mode . anaconda-mode)
   :config (add-to-list 'company-backends 'company-anaconda))
 (use-package pyenv-mode
   :if (executable-find "pyenv")
@@ -533,9 +538,14 @@
 ;; Scala
 (use-package scala-mode
   :mode ("\\.\\(scala\\|sbt\\)\\'" . scala-mode))
+(use-package ensime
+  :hook (scala-mode . ensime-mode))
+(use-package sbt-mode
+  :hook (scala-mode . sbt-mode))
 
 ;; Language Server Mode
-(use-package lsp-mode)
+(use-package lsp-mode
+  :hook prog-mode)
 (use-package lsp-ui
   :hook (lsp-mode . lsp-ui-mode))
 
