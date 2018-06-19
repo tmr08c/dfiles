@@ -333,6 +333,7 @@
   ;; :disabled ;; I don't like spell checking
   ;; Disable on Windows because `aspell' 0.6+ isn't available.
   :if (not (eq system-type 'windows-nt))
+  :defer 2
   :delight
   ;; :hook ((text-mode . flyspell-mode)
   ;;        (prog-mode . flyspell-prog-mode))
@@ -425,7 +426,7 @@
   (company-minimum-prefix-length 2)
   (company-tooltip-flip-when-above t)
   :config
-  (global-company-mode t))
+  (global-company-mode))
 (use-package company-quickhelp
   :requires company
   :config (company-quickhelp-mode))
@@ -437,6 +438,7 @@
   :config (add-to-list 'company-backends 'company-lsp))
 ;;; direnv
 (use-package direnv
+  :defer 2
   :ensure-system-package direnv)
 ;;; EditorConfig
 ;;; Read files to set coding style options according to current project
@@ -471,7 +473,7 @@
 (use-package irony
   :hook (c-mode . irony-mode))
 (use-package company-irony
-  :requires irony
+  :hook irony-mode
   :config (add-to-list 'company-backends 'company-irony))
 (use-package flycheck-irony
   :requires irony
@@ -544,8 +546,7 @@
   :hook (scala-mode . sbt-mode))
 
 ;; Language Server Mode
-(use-package lsp-mode
-  :hook prog-mode)
+(use-package lsp-mode)
 (use-package lsp-ui
   :hook (lsp-mode . lsp-ui-mode))
 
@@ -688,20 +689,15 @@
   :hook (after-init . global-hl-todo-mode))
 
 ;; Better scrolling
-(use-package smooth-scroll
-  ;; :if (eq system-type 'gnu/linux)
-  :if (display-graphic-p)
-  :delight
-  :custom
-  (smooth-scroll/vscroll-step-size 8)
-  :config
-  (smooth-scroll-mode))
-
+(use-package pixel-scroll
+  :ensure nil
+  :if (> emacs-major-version 25)
+  :hook (after-init . pixel-scroll-mode))
 
 ;; Line Numbers
 (use-package display-line-numbers
   :ensure nil
-  :if (version<= "26.0.50" emacs-version)
+  :if (> emacs-major-version 25)
   :hook (prog-mode . display-line-numbers-mode))
 
 ;; Fix Annoyances
