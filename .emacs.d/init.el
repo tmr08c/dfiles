@@ -623,6 +623,7 @@
     (progn
       (tool-bar-mode 0)
       (scroll-bar-mode 0)
+      (menu-bar-mode 0)
       (horizontal-scroll-bar-mode 0)
 
       ;; Theme Emacs for dark color scheme
