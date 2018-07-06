@@ -52,15 +52,29 @@ fi
 
 # Ruby (rbenv)
 if [[ -d ~/.rbenv ]]; then
-  export PATH="$HOME/.rbenv/bin:$PATH"
+  path=(
+    $HOME/.rbenv/bin
+    $path
+  )
   eval "$(rbenv init -)"
 else
   echo "Missing rbenv. Please install it https://github.com/rbenv/rbenv#basic-github-checkout"
 fi
 
+if [[ -d ~/.cargo ]]; then
+  path=(
+    $HOME/.cargo/bin
+    $path
+  )
+fi
+
 # Scala
 if [[ -d ~/.scalaenv ]]; then
-  export PATH="$HOME/.scalaenv/bin:$PATH"
+  path=(
+    $HOME/.scalaenv/bin
+    $path
+  )
+
   eval "$(scalaenv init -)"
 
   # if [[ -d ~/.sbtenv ]]; then
