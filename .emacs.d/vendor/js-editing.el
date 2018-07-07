@@ -46,6 +46,7 @@
   (dumb-jump-selector 'ivy))
 
 (use-package whitespace
+  :hook (before-save . delete-trailing-whitespace)
   :commands (whitespace-mode))
 
 (use-package ws-butler

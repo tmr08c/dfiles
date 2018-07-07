@@ -44,7 +44,7 @@
 (use-package exec-path-from-shell
   :if (memq window-system '(mac ns x))
   :custom
-  (exec-path-from-shell-variables '("PATH" "GOPATH"))
+  (exec-path-from-shell-variables '("PATH" "GOPATH" "PGHOST"))
   :config
   (exec-path-from-shell-initialize))
 (use-package use-package-ensure-system-package)
