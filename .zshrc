@@ -68,6 +68,14 @@ if [[ -d ~/.cargo ]]; then
   )
 fi
 
+# PlatformIO
+if [[ -d ~/.platformio ]]; then
+  path=(
+    $HOME/.platformio/penv/bin
+    $path
+  )
+fi
+
 # Scala
 if [[ -d ~/.scalaenv ]]; then
   path=(

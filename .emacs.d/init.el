@@ -193,9 +193,7 @@
 ;; Platform
 ;;
 (use-package linux
-  :disabled
   :load-path "vendor/"
-  :ensure nil
   :if (eq system-type 'gnu/linux))
 
 (use-package osx
@@ -471,13 +469,25 @@
 
 ;; C (via irony-mode)
 (use-package irony
-  :hook (c-mode . irony-mode))
+  :hook ((c-mode . irony-mode)
+         (c++-mode . irony-mode)
+         (objc-mode . irony-mode)
+         (arduino-mode . irony-mode)))
+(use-package irony-eldoc
+  :hook (irony-mode . irony-eldoc))
 (use-package company-irony
   :hook irony-mode
   :config (add-to-list 'company-backends 'company-irony))
 (use-package flycheck-irony
   :requires irony
   :hook (irony-mode . flycheck-irony-setup))
+(use-package platformio-mode
+  :hook (irony-mode . platformio-conditionally-enable))
+(use-package arduino-mode
+  :after irony
+  :config
+  (add-to-list 'irony-supported-major-modes 'arduino-mode)
+  (add-to-list 'irony-lang-compile-option-alist '(arduino-mode . "c++")))
 
 ;; Go
 (use-package go-mode
