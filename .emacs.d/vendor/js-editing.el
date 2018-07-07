@@ -93,8 +93,10 @@
   :hook (evil-mode . global-evil-surround-mode))
 
 (use-package evil-matchit
-  ;; :requires evil
   :hook (evil-mode . global-evil-matchit-mode))
+
+(use-package evil-smartparens
+  :hook (smartparens-enabled . evil-smartparens-mode))
 
 (use-package evil-escape
   :delight
@@ -106,6 +108,18 @@
   :bind (("C->" . mc/mark-next-like-this)
          ("C-<" . mc/mark-previous-like-this)
          ("C-*" . mc/mark-all-like-this)))
+
+;; Electric Pair Mode
+(use-package pair-mode
+  :disabled
+  :ensure nil
+  :hook (after-init . electric-pair-mode))
+
+(use-package smartparens
+  :hook ((elixir-mode . smartparens-strict-mode)
+         (js-mode . smartparens-strict-mode)
+         (python-mode . smartparens-strict-mode)
+         (ruby-mode . smartparens-strict-mode)))
 
 (provide 'js-editing)
 
