@@ -117,6 +117,18 @@
 
     ;;; Files
     "f"   '(:ignore t :which-key "Files")
+    "f D" '((lambda ()
+              (interactive)
+              (let ((filename (buffer-file-name))
+                    (buffer (current-buffer))
+                    (name (buffer-name)))
+                (if (not (and filename (file-exists-p filename)))
+                    (ido-kill-buffer)
+                  (when (yes-or-no-p "Are you sure you want to delete this file? ")
+                    (delete-file filename t)
+                    (kill-buffer buffer)
+                    (message "File '%s' successfully removed" filename)))))
+            :which-key "delete file and kill buffer")
     "f f" '(counsel-find-file :which-key "find file")
     "f t" '(neotree-toggle :which-key "toggle file tree")
     "f e d" '((lambda ()
@@ -124,8 +136,21 @@
                 (find-file-existing user-init-file))
               :which-key "open emacs configuration")
 
+
+    "d" '(:ignore t :which-key "Docs")
+    "d d" '((lambda ()
+              (interactive)
+              (counsel-dash
+               (if (use-region-p)
+                   (buffer-substring-no-properties (region-beginning) (region-end))
+                 (substring-no-properties (or (thing-at-point 'symbol) "")))))
+            :which-key "Lookup thing at point")
+    "d D" '(counsel-dash :which-key "Lookup thing at point with docset")
+
+
     "g" '(:ignore t :which-key "Go to")
     "g d" '(dumb-jump-go :which-key "definition")
+    "g D" '(dumb-jump-go-other-window :which-key "definition (other window)")
 
 
     ;;; Projects
@@ -312,6 +337,12 @@
 (use-package counsel-projectile
   :requires (counsel projectile rg)
   :config (counsel-projectile-mode))
+
+(use-package counsel-dash
+  :defer t
+  :hook
+  ((emacs-lisp-mode . (lambda () (setq-local counsel-dash-docsets '("Emacs Lisp"))))
+   (ruby-mode . (lambda () (setq-local counsel-dash-docsets '("Ruby"))))))
 
 (use-package rg
   :commands (rg rg-project rg-dwim rg-literal))

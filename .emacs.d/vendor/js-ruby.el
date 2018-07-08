@@ -29,6 +29,12 @@
 ;;   :requires lsp-mode
 ;;   :hook (ruby-mode . lsp-ruby-enable))
 
+(use-package robe
+  :disabled
+  :after company
+  :hook (ruby-mode . robe-mode)
+  :config (add-to-list 'company-backends 'company-robe))
+
 (use-package rspec-mode
   :hook (ruby-mode . rspec-mode)
   :custom
