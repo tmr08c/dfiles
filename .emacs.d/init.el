@@ -340,6 +340,9 @@
 
 (use-package counsel-dash
   :defer t
+  :custom
+  (counsel-dash-browser-func 'eww)
+  (counsel-dash-common-docsets '("Ruby"))
   :hook
   ((emacs-lisp-mode . (lambda () (setq-local counsel-dash-docsets '("Emacs Lisp"))))
    (ruby-mode . (lambda () (setq-local counsel-dash-docsets '("Ruby"))))))
