@@ -27,7 +27,7 @@ else
 
   if [ "$distro" = "Ubuntu" ]; then
     echo "Ubuntu detected"
-    sudo apt install -y pinentry-gnome3 pinentry-curses direnv dconf-cli
+    sudo apt install -y pinentry-gnome3 pinentry-curses direnv dconf-cli xsel
 
     echo "Install Ruby dependencies"
     sudo apt install -y autoconf bison build-essential libssl-dev libyaml-dev libreadline-dev zlib1g-dev libncurses5-dev libffi-dev
