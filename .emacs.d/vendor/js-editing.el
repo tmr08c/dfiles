@@ -97,6 +97,7 @@
   :hook (evil-mode . global-evil-matchit-mode))
 
 (use-package evil-smartparens
+  :disabled
   :hook (smartparens-enabled . evil-smartparens-mode))
 
 (use-package evil-escape
@@ -117,6 +118,7 @@
   :hook (after-init . electric-pair-mode))
 
 (use-package smartparens
+  :disabled
   :hook ((elixir-mode . smartparens-strict-mode)
          (js-mode . smartparens-strict-mode)
          (python-mode . smartparens-strict-mode)
