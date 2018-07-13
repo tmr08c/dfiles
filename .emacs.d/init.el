@@ -524,25 +524,8 @@
   (add-to-list 'irony-lang-compile-option-alist '(arduino-mode . "c++")))
 
 ;; Go
-(use-package go-mode
-  :mode "\\.go$"
-  ;; :hook
-  ;; (before-save . gofmt-before-save)
-  :custom
-  (tab-width 2)
-  (indent-tabs-mode 1))
-(use-package go-eldoc
-  :hook (go-mode . go-eldoc-setup))
-(use-package company-go
-  ;; :requires (company go-mode)
-  :hook go-mode
-  :config (add-to-list 'company-backends 'company-go))
-(use-package go-projectile
-;; :requires projectile
-:hook (go-mode . go-projectile-mode))
-(use-package lsp-go
-  ;; :requires lsp-mode
-  :hook (go-mode . lsp-go-enable))
+(use-package js-golang
+  :load-path "vendor/")
 
 ;; Elisp
 (use-package eldoc
@@ -592,6 +575,7 @@
 ;; Language Server Mode
 (use-package lsp-mode)
 (use-package lsp-ui
+  :disabled ;; TODO the popup is terrible and in the way
   :hook (lsp-mode . lsp-ui-mode))
 
 
