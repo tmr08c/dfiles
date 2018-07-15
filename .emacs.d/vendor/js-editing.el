@@ -62,7 +62,10 @@
 
 (use-package undo-tree
   :delight
-  :custom (undo-tree-auto-save-history t)
+  :custom
+  (undo-tree-auto-save-history t)
+  (undo-tree-visualizer-diff t)
+  (undo-tree-visualizer-timestamps t)
   :config (global-undo-tree-mode))
 
 (use-package unfill
@@ -77,7 +80,14 @@
   (evil-shift-width 2)
   (evil-want-integration nil)
   :config
-  (fset 'evil-visual-update-x-selection 'ignore))
+  (fset 'evil-visual-update-x-selection 'ignore)
+  :general
+  (general-def 'insert
+    "C-v" 'cua-paste
+    "C-c" 'cua-copy-region
+    "C-x" 'cua-cut-region
+    "C-z" 'undo-tree-undo
+    "C-Z" 'undo-tree-redo))
 
 (use-package evil-collection
   :after evil
