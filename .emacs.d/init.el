@@ -352,7 +352,11 @@
 
 ;; Search regex
 (use-package swiper
+  :if (eq system-type 'osx)
   :bind (("M-s" . swiper)))
+(use-package swiper
+  :unless (eq system-type 'osx)
+  :bind (("C-s" . swiper)))
 
 (use-package flycheck
   :custom
