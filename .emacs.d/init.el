@@ -409,6 +409,7 @@
   (projectile-switch-project-action 'counsel-projectile-find-file)
   (projectile-sort-order 'recentf)
   :config
+  (add-to-list 'projectile-project-root-files ".clang_complete")
   (projectile-mode))
 ;;; Magit
 (use-package magit
@@ -504,19 +505,41 @@
 ;; C (via irony-mode)
 (use-package irony
   :hook ((c-mode . irony-mode)
-         (c++-mode . irony-mode)
-         (objc-mode . irony-mode)
-         (arduino-mode . irony-mode)))
+         (c++-mode . irony-mode))
+  :config
+  (progn
+    (setq irony-additional-clang-options '("-std=c++11"))
+    (setq-default irony-cdb-compilation-databases '(irony-cdb-clang-complete
+                                                    iron-cdb-libclang))
+
+    (add-hook 'irony-mode-hook 'irony-cdb-autosetup-compile-options)))
 (use-package irony-eldoc
   :hook (irony-mode . irony-eldoc))
+(use-package company-irony-c-headers
+  :after company-irony
+  :config (add-to-list 'company-backends 'company-irony-c-headers))
 (use-package company-irony
   :hook irony-mode
+  :custom (company-irony-ignore-case 'smart)
   :config (add-to-list 'company-backends 'company-irony))
 (use-package flycheck-irony
-  :requires irony
   :hook (irony-mode . flycheck-irony-setup))
+;; (use-package lsp-clangd
+;;   :load-path "/vendor"
+;;   :hook ((c-mode . lsp-clangd-c-enable)
+;;          (c++-mode . lsp-clangd-c++-enable)
+;;          (objc-mode . lsp-clangd-objc-enable)))
 (use-package platformio-mode
-  :hook (irony-mode . platformio-conditionally-enable))
+  :after irony-mode
+  :hook ((c-mode . platformio-conditionally-enable)
+         (c++-mode . platformio-conditionally-enable)))
+(use-package clang-format
+  :config
+  (defun c-mode-before-save-hook ()
+    (when (or (eq major-mode 'c++-mode) (eq major-mode 'c-mode))
+      (call-interactively 'clang-format)))
+
+  (add-hook 'before-save-hook #'c-mode-before-save-hook))
 (use-package arduino-mode
   :after irony
   :config
@@ -573,9 +596,11 @@
   :hook (scala-mode . sbt-mode))
 
 ;; Language Server Mode
-(use-package lsp-mode)
+(use-package lsp-mode
+  :custom
+  (lsp-message-project-root-warning t))
 (use-package lsp-ui
-  :disabled ;; TODO the popup is terrible and in the way
+  ;; :disabled ;; TODO the popup is terrible and in the way
   :hook (lsp-mode . lsp-ui-mode))
 
 
@@ -719,6 +744,7 @@
 
 ;; Better scrolling
 (use-package pixel-scroll
+  :disabled
   :ensure nil
   :if (> emacs-major-version 25)
   :hook (after-init . pixel-scroll-mode))
