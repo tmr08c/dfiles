@@ -82,12 +82,13 @@
   :config
   (fset 'evil-visual-update-x-selection 'ignore)
   :general
-  (general-def 'insert
-    "C-v" 'cua-paste
-    "C-c" 'cua-copy-region
-    "C-x" 'cua-cut-region
-    "C-z" 'undo-tree-undo
-    "C-Z" 'undo-tree-redo))
+  (general-define-key
+   :states 'insert
+   "C-v" 'cua-paste
+   "C-c" 'cua-copy-region
+   "C-x" 'cua-cut-region
+   "C-z" 'undo-tree-undo
+   "C-Z" 'undo-tree-redo))
 
 (use-package evil-collection
   :after evil

@@ -332,7 +332,9 @@
   (ive-use-selectable-prompt t))
 ;;; Ado-ado
 (use-package counsel
-  :bind (("M-x" . counsel-M-x)))
+  :general
+  (general-define-key
+   "M-x" 'counsel-M-x))
 
 (use-package counsel-projectile
   :requires (counsel projectile rg)
@@ -352,11 +354,16 @@
 
 ;; Search regex
 (use-package swiper
-  :if (eq system-type 'osx)
-  :bind (("M-s" . swiper)))
+  :if (eq system-type 'darwin)
+  :general
+  (general-define-key
+   "M-s" 'swiper))
+
 (use-package swiper
-  :unless (eq system-type 'osx)
-  :bind (("C-s" . swiper)))
+  :unless (eq system-type 'darwin)
+  :general
+  (general-define-key
+   "C-s" 'swiper))
 
 (use-package flycheck
   :custom
