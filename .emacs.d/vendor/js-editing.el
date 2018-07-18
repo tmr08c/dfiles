@@ -19,7 +19,7 @@
 (use-package aggressive-indent
   :hook (
          (emacs-lisp-mode . aggressive-indent-mode)
-         (ruby-mode . aggressive-indent-mode)
+         ;; (ruby-mode . aggressive-indent-mode)
          (css-mode . aggressive-indent-mode)))
 
 (use-package adaptive-wrap
