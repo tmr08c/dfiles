@@ -135,6 +135,9 @@
          (python-mode . smartparens-strict-mode)
          (ruby-mode . smartparens-strict-mode)))
 
+;; (use-package string-inflection)
+(use-package evil-string-inflection)
+
 (provide 'js-editing)
 
 ;;; js-editing.el ends here
