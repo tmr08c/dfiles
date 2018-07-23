@@ -330,6 +330,12 @@
   (ivy-use-virtual-buffers t)
   (ivy-count-format "(%d/%d) ")
   (ive-use-selectable-prompt t))
+(use-package all-the-icons-ivy
+  :custom
+  (all-the-icons-ivy-file-commands
+   '(counsel-find-file counsel-file-jump counsel-recentf counsel-projectile-find-file counsel-projectile-find-dir))
+  :config
+  (all-the-icons-ivy-setup))
 ;;; Ado-ado
 (use-package counsel
   :general
