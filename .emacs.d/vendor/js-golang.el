@@ -54,17 +54,17 @@
 (use-package go-eldoc
   :hook (go-mode . go-eldoc-setup))
 
-(use-package company-go
-  ;; :requires (company go-mode)
-  :hook go-mode
-  :config (add-to-list 'company-backends 'company-go))
+;; (use-package company-go
+;;   ;; :requires (company go-mode)
+;;   :hook go-mode
+;;   :config (add-to-list 'company-backends 'company-go))
 
 (use-package go-projectile
   ;; :requires projectile
   :hook (go-mode . go-projectile-mode))
 
 (use-package lsp-go
-  ;; :requires lsp-mode
+  :requires lsp-mode
   :hook (go-mode . lsp-go-enable))
 
 (use-package go-gen-test

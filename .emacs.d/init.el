@@ -463,14 +463,15 @@
   :delight
   :defer 2
   :custom
-  (company-echo-delay 0) ; remove annoying blinking
+  ;; (company-echo-delay 0) ; remove annoying blinking
   ;; (company-begin-commands '(self-insert-command)) ; start autocompletion only after typing
-  (company-idle-delay 0.3)
+  ;; (company-idle-delay 0.3)
   (company-tooltip-limit 20)
   (company-minimum-prefix-length 2)
+  (company-tooltips-align-annotations t)
   (company-tooltip-flip-when-above t)
-  :config
-  (global-company-mode))
+  :hook
+  (after-init . global-company-mode))
 (use-package company-quickhelp
   :requires company
   :config (company-quickhelp-mode))
@@ -478,8 +479,8 @@
   :requires company
   :config (company-flx-mode))
 (use-package company-lsp
-  :requires (company lsp-mode)
-  :config (add-to-list 'company-backends 'company-lsp))
+  :after (company lsp-mode)
+  :init (push 'company-lsp company-backends))
 ;;; direnv
 (use-package direnv
   :defer 2
