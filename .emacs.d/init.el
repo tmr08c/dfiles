@@ -98,7 +98,7 @@
     "?" '(counsel-descbinds :which-key "Help")
     "h" '(:ignore t :which-key "Help")
     "h d f" '(counsel-describe-function :which-key "describe function")
-    "h d m" '(describe-mode :which-key "describe modes")
+    "h d m" '(describe-mode :which-key "describe modes") ;; TODO: https://framagit.org/steckerhalter/discover-my-major
     "h d v" '(counsel-describe-variable :which-key "describe variable")
 
     ;;; Buffers
@@ -371,6 +371,9 @@
   (flycheck-check-syntax-automatically '(mode-enabled save))
   (flycheck-disabled-checkers '(ruby-rubylint))
   :hook (prog-mode . flycheck-mode))
+(use-package flycheck-pos-tip
+  :defer 2
+  :hook (flycheck-mode . flycheck-pos-tip-mode))
 
 (use-package flyspell
   ;; :disabled ;; I don't like spell checking
@@ -399,7 +402,9 @@
 ;; (use-package persp-mode)
 ;;; TODO workgroups
 ;; (use-package workgroups)
-
+(use-package popwin
+  :defer t
+  :hook (after-init . popwin-mode))
 
 (use-package js-editing
   :load-path "vendor/")
@@ -436,6 +441,20 @@
 ;; :hook (magit-status-sections . magit-insert-worktrees)
 ;; :config
 ;; (put 'magit-clean 'disabled nil))
+
+(use-package company-emoji
+  :hook
+  ((markdown-mode . company-mode)
+   (git-commit-mode . company-mode))
+  :config
+  (add-to-list 'company-backends 'company-emoji))
+
+(use-package emojify
+  :defer 2
+  :init
+  (progn
+    (setq emojify-display-style 'unicode)
+    (global-emojify-mode)))
 
 ;;; EShell
 (use-package eshell
@@ -787,7 +806,7 @@
 (customize-set-variable 'indent-tabs-mode nil)
 (customize-set-variable 'inhibit-startup-screen t)
 (customize-set-variable 'initial-major-mode 'markdown-mode)
-(customize-set-variable 'initial-scratch-message nil)
+(customize-set-variable 'initial-scratch-message (format ";; Scratch buffer - started on %s\n\n" (current-time-string)))
 (customize-set-variable 'load-prefer-newer t)
 (customize-set-variable 'sentence-end-double-space nil)
 (customize-set-variable 'visible-bell nil)

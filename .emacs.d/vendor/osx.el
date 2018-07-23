@@ -4,6 +4,12 @@
 
 ;;; Code:
 
+
+(set-fontset-font t 'unicode "Apple Color Emoji" nil 'prepend)
+(add-hook 'after-make-frame-functions
+          (lambda (frame)
+            (set-fontset-font t 'unicode "Apple Color Emoji" frame 'prepend)))
+
 (use-package reveal-in-osx-finder
   :commands reveal-in-osx-finder)
 

@@ -117,6 +117,22 @@
   (evil-escape-delay 0.2)
   :hook (evil-mode . evil-escape-mode))
 
+(use-package evil-goggles
+  :delight
+  :hook (evil-mode . evil-goggles-mode))
+
+(use-package evil-easymotion
+  :delight
+  :hook (evil-mode . evil-easymotion-mode))
+(use-package evil-quickscope
+  :delight
+  :hook (evil-mode . global-evil-quickscope-mode))
+
+;; (use-package evil-mc
+;;   :hook (evil-mode . global-evil-mc-mode))
+;; (use-package evil-mc-extras
+;;   :hook (global-evil-mc-mode . global-evil-mc-extras-mode))
+
 (use-package multiple-cursors
   :bind (("C->" . mc/mark-next-like-this)
          ("C-<" . mc/mark-previous-like-this)

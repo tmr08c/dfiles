@@ -11,7 +11,7 @@
   :custom
   (tab-width 2)
   (indent-tabs-mode 1)
-  (gofmt-args "-s")
+  (gofmt-command "goimports")
   :general
   (space-leader-def 'normal go-mode-map
     ;; Tests
@@ -53,6 +53,20 @@
 
 (use-package go-eldoc
   :hook (go-mode . go-eldoc-setup))
+
+(use-package flycheck-gometalinter
+  :custom
+  ;; skip linting for vendor dirs
+  (flycheck-gometalinter-vendor t)
+  ;; use in test files
+  (flycheck-gometalinter-test t)
+  ;; only use fast linters
+  (flycheck-gometalinter-fast t)
+  ;; explicitly disable 'gotype' & 'govet' linters (also currently broken Nix overlays)
+  (flycheck-gometalinter-disable-linters '("gotype" "vet" "vetshadow" "megacheck" "interfacer" "ineffassign"))
+  :config
+  (progn
+    (flycheck-gometalinter-setup)))
 
 ;; (use-package company-go
 ;;   ;; :requires (company go-mode)
