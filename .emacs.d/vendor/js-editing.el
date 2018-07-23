@@ -123,7 +123,8 @@
 
 (use-package evil-easymotion
   :delight
-  :hook (evil-mode . evil-easymotion-mode))
+  :after evil-mode)
+
 (use-package evil-quickscope
   :delight
   :hook (evil-mode . global-evil-quickscope-mode))
