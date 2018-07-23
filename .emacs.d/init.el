@@ -442,15 +442,11 @@
 ;; :config
 ;; (put 'magit-clean 'disabled nil))
 
-(use-package company-emoji
-  :hook
-  ((markdown-mode . company-mode)
-   (git-commit-mode . company-mode))
-  :config
-  (add-to-list 'company-backends 'company-emoji))
+(use-package js-completion
+  :load-path "vendor/")
 
 (use-package emojify
-  :defer 2
+  :defer t
   :init
   (progn
     (setq emojify-display-style 'unicode)
@@ -476,30 +472,6 @@
   :config
   (repl-toggle-mode))
 
-;;; Company
-;;; Auto-completion framework for most modes
-(use-package company
-  :delight
-  :defer 2
-  :custom
-  ;; (company-echo-delay 0) ; remove annoying blinking
-  ;; (company-begin-commands '(self-insert-command)) ; start autocompletion only after typing
-  ;; (company-idle-delay 0.3)
-  (company-tooltip-limit 20)
-  (company-minimum-prefix-length 2)
-  (company-tooltips-align-annotations t)
-  (company-tooltip-flip-when-above t)
-  :hook
-  (after-init . global-company-mode))
-(use-package company-quickhelp
-  :requires company
-  :config (company-quickhelp-mode))
-(use-package company-flx
-  :requires company
-  :config (company-flx-mode))
-(use-package company-lsp
-  :after (company lsp-mode)
-  :init (push 'company-lsp company-backends))
 ;;; direnv
 (use-package direnv
   :defer 2
@@ -546,13 +518,6 @@
     (add-hook 'irony-mode-hook 'irony-cdb-autosetup-compile-options)))
 (use-package irony-eldoc
   :hook (irony-mode . irony-eldoc))
-(use-package company-irony-c-headers
-  :after company-irony
-  :config (add-to-list 'company-backends 'company-irony-c-headers))
-(use-package company-irony
-  :hook irony-mode
-  :custom (company-irony-ignore-case 'smart)
-  :config (add-to-list 'company-backends 'company-irony))
 (use-package flycheck-irony
   :hook (irony-mode . flycheck-irony-setup))
 ;; (use-package lsp-clangd
@@ -605,10 +570,6 @@
   :mode ("\\.py" . python-mode))
 (use-package anaconda-mode
   :hook python-mode)
-(use-package company-anaconda
-  :requires company
-  :hook (python-mode . anaconda-mode)
-  :config (add-to-list 'company-backends 'company-anaconda))
 (use-package pyenv-mode
   :if (executable-find "pyenv")
   :commands (pyenv-mode-versions)
@@ -626,13 +587,6 @@
 (use-package sbt-mode
   :hook (scala-mode . sbt-mode))
 
-;; Language Server Mode
-(use-package lsp-mode
-  :custom
-  (lsp-message-project-root-warning t))
-(use-package lsp-ui
-  ;; :disabled ;; TODO the popup is terrible and in the way
-  :hook (lsp-mode . lsp-ui-mode))
 
 
 ;; Markdown Mode
