@@ -119,7 +119,11 @@
 
 (use-package evil-goggles
   :delight
-  :hook (evil-mode . evil-goggles-mode))
+  :custom
+  (evil-goggles-duration 0.1)
+  (evil-goggles-enable-delete nil)
+  :hook
+  (evil-mode . evil-goggles-mode))
 
 (use-package evil-easymotion
   :delight

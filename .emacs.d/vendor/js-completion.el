@@ -9,30 +9,36 @@
 ;;; Auto-completion framework for most modes
 (use-package company
   :delight
-  ;; :defer 2
+  :defer 2
   :custom
   (company-tooltip-limit 20)
   (company-idle-delay 0.3)
   (company-echo-delay 0) ; remove annoying blinking
   (company-begin-commands '(self-insert-command)) ; start autocompletion only after typing
-  (company-minimum-prefix-length 3)
-  (company-tooltips-align-annotations t)
+  (company-minimum-prefix-length 2)
+  (company-tooltip-align-annotations t)
   (company-tooltip-flip-when-above t)
+  (company-require-match nil)
+  (company-dabbrev-ignore-case nil)
+  (company-dabbrev-downcase nil)
+  ;; (company-frontends'(company-echo-metadata-frontend
+  ;;                     company-pseudo-tooltip-unless-just-one-frontend-with-delay
+  ;;                     company-preview-frontend))
   :hook
   (after-init . global-company-mode))
 
 (use-package company-box
+  ;; :disabled
   :defer 5
   :load-path "vendor/company-box/"
-  :hook (company-mode . company-box-mode)
-  )
+  :hook (company-mode . company-box-mode))
 
 (use-package company-statistics
   :after company
   :hook (company-mode . company-statistics-mode))
 
 (use-package company-quickhelp
-  :disabled
+  ;; :disabled
   :custom
   (company-quickhelp-delay 0.1)
   :hook (company-mode . company-quickhelp-mode))
@@ -78,18 +84,24 @@
   ;; :requires (company go-mode)
   ;; :after company
   :hook go-mode
+  :custom
+  (company-go-show-annotation t)
   :config (add-to-list 'company-backends 'company-go))
 
 
 ;;; Language Server Mode
 (use-package lsp-mode
+  :disabled
+  :hook prog-mode
   :custom
   (lsp-message-project-root-warning t))
 
 (use-package lsp-ui
+  :disabled
   :hook (lsp-mode . lsp-ui-mode))
 
 (use-package company-lsp
+  :disabled
   :after (company lsp-mode)
   :custom
   (company-lsp-async t)
@@ -97,6 +109,12 @@
   :config
   (push 'company-lsp company-backends))
 
+
+(custom-set-faces
+ '(company-tooltip-common
+   ((t (:inherit company-tooltip :weight bold :underline nil))))
+ '(company-tooltip-common-selection
+   ((t (:inherit company-tooltip-selection :weight bold :underline nil)))))
 
 (provide 'js-completion)
 ;;; js-completion.el ends here

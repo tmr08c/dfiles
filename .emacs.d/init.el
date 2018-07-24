@@ -330,6 +330,7 @@
   (ivy-count-format "(%d/%d) ")
   (ive-use-selectable-prompt t))
 (use-package all-the-icons-ivy
+  :disabled
   :ensure t
   :after (ivy projectile)
   :custom
@@ -345,6 +346,7 @@
      counsel-projectile-find-dir))
   :config
   (all-the-icons-ivy-setup))
+
 ;;; Ado-ado
 (use-package counsel
   :general
@@ -387,6 +389,7 @@
   (flycheck-disabled-checkers '(ruby-rubylint))
   :hook (prog-mode . flycheck-mode))
 (use-package flycheck-pos-tip
+  :disabled
   :defer 2
   :hook (flycheck-mode . flycheck-pos-tip-mode))
 
