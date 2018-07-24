@@ -16,7 +16,6 @@
 (customize-set-variable
  'package-archives
  '(("melpa" . "https://melpa.org/packages/")
-   ("melpa-stable" . "https://stable.melpa.org/packages/")
    ("gnu" . "https://elpa.gnu.org/packages/")
    ("org" . "https://orgmode.org/elpa/")))
 (unless package--initialized
@@ -331,9 +330,19 @@
   (ivy-count-format "(%d/%d) ")
   (ive-use-selectable-prompt t))
 (use-package all-the-icons-ivy
+  :ensure t
+  :after (ivy projectile)
   :custom
+  (all-the-icons-ivy-buffer-commands
+   '(ivy-switch-buffer
+     ivy-switch-buffer-other-window
+     counsel-projectile-switch-to-buffer))
   (all-the-icons-ivy-file-commands
-   '(counsel-find-file counsel-file-jump counsel-recentf counsel-projectile-find-file counsel-projectile-find-dir))
+   '(counsel-find-file
+     counsel-file-jump
+     counsel-recentf
+     counsel-projectile-find-file
+     counsel-projectile-find-dir))
   :config
   (all-the-icons-ivy-setup))
 ;;; Ado-ado

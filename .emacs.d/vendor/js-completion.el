@@ -22,12 +22,10 @@
   (after-init . global-company-mode))
 
 (use-package company-box
-  :disabled
   :defer 5
   :load-path "vendor/company-box/"
   :hook (company-mode . company-box-mode)
-  :custom
-  (company-box-icons-alist company-box-icons-all-the-icons))
+  )
 
 (use-package company-statistics
   :after company
