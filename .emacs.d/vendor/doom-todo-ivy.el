@@ -1,4 +1,21 @@
-;;; -*- lexical-binding: t; -*-
+;;; doom-todo-ivy.el --- Display TODO, FIXME, etc in an Ivy buffer. -*- lexical-binding: t; -*-
+
+;; Copyright (C) 2018 Justin Smestad
+
+;; Author: Justin Smestad <justin.smestad@gmail.com>
+;; Homepage: https://github.com/jsmestad/doom-todo-ivy
+;; Version: 0.1.0
+;; Package-Requires: ((emacs "25.1") (projectile "0.10.0") (ivy))
+;; Keywords:
+
+;;; Commentary:
+;;;
+;;; This is a straight port of the version supplied with Doom Emacs.
+
+;;; Code:
+
+(require 'projectile)
+(require 'ivy)
 
 (defvar doom/ivy-buffer-icons nil
   "If non-nil, show buffer mode icons in `ivy-switch-buffer' and the like.")
@@ -6,12 +23,11 @@
 (defvar doom/ivy-task-tags
   '(("TODO"  . warning)
     ("FIXME" . error))
-  "An alist of tags for `doom/ivy-tasks' to include in its search, whose CDR is the
-face to render it with.")
+  "An list of tags for `doom/ivy-tasks' to search for.")
+
 
 (defun doom/ivy--tasks-candidates (tasks)
-  "Generate a list of task tags (specified by `doom/ivy-task-tags') for
-`doom/ivy-tasks'."
+  "Generate a list of task candidates from TASKS."
   (let* ((max-type-width
           (cl-loop for task in doom/ivy-task-tags maximize (length (car task))))
          (max-desc-width
@@ -31,6 +47,7 @@ face to render it with.")
                (propertize .line 'face 'font-lock-constant-face))))))
 
 (defun doom/ivy--tasks (target)
+  "Search TARGET for a list of tasks."
   (let* (case-fold-search
          (task-tags (mapcar #'car doom/ivy-task-tags))
          (cmd
@@ -39,7 +56,7 @@ face to render it with.")
                         (concat bin " --line-number"))
                       (when-let* ((bin (executable-find "ag")))
                         (concat bin " --numbers"))
-                      (error "ripgrep & the_silver_searcher are unavailable"))
+                      (error "Cannot find executables: ripgrep or the_silver_searcher"))
                   (shell-quote-argument
                    (concat "\\s("
                            (string-join task-tags "|")
@@ -66,7 +83,7 @@ face to render it with.")
 
 
 (defun doom/ivy--tasks-open-action (x)
-  "Jump to the file and line of the current task."
+  "Jump to the file X and line of the current task."
   (let ((location (cadr (split-string x " | ")))
         (type (car (split-string x " "))))
     (cl-destructuring-bind (file line) (split-string location ":")
@@ -80,8 +97,7 @@ face to render it with.")
 
 ;;;###autoload
 (defun doom/ivy-tasks (&optional arg)
-  "Search through all TODO/FIXME tags in the current project. If ARG, only
-search current file. See `doom/ivy-task-tags' to customize what this searches for."
+  "Search through all TODO/FIXME tags in the current project. Optional ARG will search only that file."
   (interactive "P")
   (ivy-read (format "Tasks (%s): "
                     (if arg
@@ -93,3 +109,5 @@ search current file. See `doom/ivy-task-tags' to customize what this searches fo
             :caller 'doom/ivy-tasks))
 
 (provide 'doom-todo-ivy)
+
+;;; doom-todo-ivy.el ends here
