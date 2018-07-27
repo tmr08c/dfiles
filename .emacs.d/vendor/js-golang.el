@@ -63,18 +63,13 @@
   ;; only use fast linters
   (flycheck-gometalinter-fast t)
   ;; explicitly disable 'gotype' & 'govet' linters (also currently broken Nix overlays)
-  (flycheck-gometalinter-disable-linters '("gotype" "vet" "vetshadow" "megacheck" "interfacer" "ineffassign"))
+  (flycheck-gometalinter-disable-linters '("gosec" "gotype" "vet" "vetshadow" "megacheck" "interfacer" "ineffassign"))
   :config
   (progn
     (flycheck-gometalinter-setup)))
 
 (use-package go-projectile
-  ;; :requires projectile
   :hook (go-mode . go-projectile-mode))
-
-(use-package lsp-go
-  :requires (lsp-mode go-mode)
-  :hook (go-mode . lsp-go-enable))
 
 (use-package go-gen-test
   :commands (go-gen-test-exported

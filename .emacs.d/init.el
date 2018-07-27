@@ -77,6 +77,7 @@
 (customize-set-variable 'user-mail-address "justin.smestad@gmail.com")
 
 
+(use-package all-the-icons)
 ;;; Key Bindings
 (use-package general
   ;; :custom
@@ -166,6 +167,7 @@
     "p p" '(counsel-projectile-switch-project :which-key "open project")
     "p r" '(projectile-recentf :which-key "recent files")
     "p t" '(neotree-projectile-action :which-key "project tree")
+    "p T" '(doom/ivy-tasks :which-key "List project tasks")
 
     ;; Does not seem to work
     ;; "p s" '(counsel-projectile-rg :which-key "search in project")
@@ -324,28 +326,28 @@
 ;;; Ivy for completion
 (use-package ivy
   :delight
-  :init (ivy-mode)
+  ;; :config (after-init . ivy-mode)
   :custom
   (ivy-use-virtual-buffers t)
   (ivy-count-format "(%d/%d) ")
-  (ive-use-selectable-prompt t))
-(use-package all-the-icons-ivy
+  (ivy-wrap t)
+  (ivy-display-style 'fancy)
+  (ivy-format-function 'ivy-format-function-line)
+  (ivy-use-selectable-prompt t))
+(use-package doom-todo-ivy
+  :after ivy
+  :load-path "vendor/")
+(use-package ivy-rich
   :disabled
-  :ensure t
-  :after (ivy projectile)
+  :load-path "vendor/"
+  ;; :defer 2
+  :after ivy
   :custom
-  (all-the-icons-ivy-buffer-commands
-   '(ivy-switch-buffer
-     ivy-switch-buffer-other-window
-     counsel-projectile-switch-to-buffer))
-  (all-the-icons-ivy-file-commands
-   '(counsel-find-file
-     counsel-file-jump
-     counsel-recentf
-     counsel-projectile-find-file
-     counsel-projectile-find-dir))
+  (ivy-virtual-abbreviate 'full)
+  (ivy-rich-switch-buffer-align-virtual-buffer t)
+  (ivy-rich-path-style 'abbrev)
   :config
-  (all-the-icons-ivy-setup))
+  (ivy-rich-mode 1))
 
 ;;; Ado-ado
 (use-package counsel
@@ -354,8 +356,7 @@
    "M-x" 'counsel-M-x))
 
 (use-package counsel-projectile
-  :requires (counsel projectile rg)
-  :config (counsel-projectile-mode))
+  :hook (counsel-mode . counsel-projectile-mode))
 
 (use-package counsel-dash
   :defer t
@@ -434,7 +435,7 @@
 ;;; Projectile
 (use-package projectile
   :defer t
-  :requires ivy
+  :after ivy
   :delight ;;'(:eval (concat " " (projectile-project-name)))
   :custom
   (projectile-indexing-method 'alien)
@@ -721,8 +722,6 @@
 ;;   :requires powerline
 ;;   :init (powerline-evil-vim-color-theme))
 
-(use-package all-the-icons
-  :if window-system)
 
 (use-package doom-themes
   :init (load-theme 'doom-molokai t)

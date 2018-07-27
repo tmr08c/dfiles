@@ -9,42 +9,57 @@
 ;;; Auto-completion framework for most modes
 (use-package company
   :delight
-  :defer 2
   :custom
-  (company-tooltip-limit 20)
-  (company-idle-delay 0.3)
-  (company-echo-delay 0) ; remove annoying blinking
   (company-begin-commands '(self-insert-command)) ; start autocompletion only after typing
+  (company-dabbrev-downcase nil)
+  (company-dabbrev-ignore-case nil)
+  (company-echo-delay 0) ; remove annoying blinking
+  (company-idle-delay 0.3)
   (company-minimum-prefix-length 2)
+  (company-require-match nil)
+  (company-selection-wrap-around t)
   (company-tooltip-align-annotations t)
   (company-tooltip-flip-when-above t)
-  (company-require-match nil)
-  (company-dabbrev-ignore-case nil)
-  (company-dabbrev-downcase nil)
-  ;; (company-frontends'(company-echo-metadata-frontend
-  ;;                     company-pseudo-tooltip-unless-just-one-frontend-with-delay
-  ;;                     company-preview-frontend))
+  (company-tooltip-limit 20)
+  ;; (company-frontends '(company-tng-frontend))
+  ;; (company-frontends '(company-echo-metadata-frontend
+  ;;                      company-pseudo-tooltip-unless-just-one-frontend-with-delay
+  ;;                      company-preview-frontend))
   :hook
-  (after-init . global-company-mode))
+  (after-init . global-company-mode)
+  ;; :config (add-to-list 'company-frontends 'company-tng-frontend)
+  )
 
 (use-package company-box
-  ;; :disabled
-  :defer 5
+  ;; :defer 5
   :load-path "vendor/company-box/"
-  :hook (company-mode . company-box-mode))
+  :hook (company-mode . company-box-mode)
+  ;; :bind
+  ;; (:map company-active-map
+  ;;       ("TAB" . company-complete-common)
+  ;;       ("<tab>" . company-complete-common)
+  ;;       ("RET" . company-complete-selection)
+  ;;       ([return] . company-complete-selection)
+  ;;       ("C-/" . company-search-candidates)
+  ;;       ("C-M-/" . company-filter-candidates)
+  ;;       ("C-d" . company-show-doc-buffer)
+  ;;       ("C-j" . company-select-next)
+  ;;       ("C-k" . company-select-previous)
+  ;;       ("C-l" . company-complete-selection))
+  )
 
 (use-package company-statistics
-  :after company
   :hook (company-mode . company-statistics-mode))
 
 (use-package company-quickhelp
-  ;; :disabled
   :custom
   (company-quickhelp-delay 0.1)
-  :hook (company-mode . company-quickhelp-mode))
+  :hook (company-mode . company-quickhelp-mode)
+  :general
+  (general-def 'insert company-quickhelp-mode-map
+    "C-k" 'company-select-previous))
 
 (use-package company-flx
-  :disabled
   :hook (company-mode . company-flx-mode))
 
 (use-package company-posframe
@@ -81,8 +96,6 @@
 
 ;;; Golang
 (use-package company-go
-  ;; :requires (company go-mode)
-  ;; :after company
   :hook go-mode
   :custom
   (company-go-show-annotation t)
@@ -90,8 +103,17 @@
 
 
 ;;; Language Server Mode
+(use-package eglot
+  :disabled ;; Works butjust not as good as company-go
+  :after company
+  :config
+  (progn
+    (add-to-list
+     'eglot-server-programs
+     '(go-mode . ("go-langserver" "-gocodecompletion")))))
+
 (use-package lsp-mode
-  :disabled
+  :disabled ;; TODO: replace with eglot
   :hook prog-mode
   :custom
   (lsp-message-project-root-warning t))
