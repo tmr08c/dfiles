@@ -390,18 +390,15 @@
   (flycheck-disabled-checkers '(ruby-rubylint))
   :hook (prog-mode . flycheck-mode))
 (use-package flycheck-pos-tip
-  :disabled
+  ;; :disabled
   :defer 2
   :hook (flycheck-mode . flycheck-pos-tip-mode))
 
 (use-package flyspell
-  ;; :disabled ;; I don't like spell checking
   ;; Disable on Windows because `aspell' 0.6+ isn't available.
   :if (not (eq system-type 'windows-nt))
   :defer 2
   :delight
-  ;; :hook ((text-mode . flyspell-mode)
-  ;;        (prog-mode . flyspell-prog-mode))
   :custom
   (ispell-program-name "aspell")
   (ispell-extra-args '("--sug-mode=ultra")))
@@ -517,56 +514,17 @@
 (use-package js-altmodes
   :load-path "/vendor")
 
-;; Shell
-(use-package sh-mode
-  :ensure nil
-  :mode
-  (("\\.zshrc" . sh-mode)
-   ("bashrc$" . sh-mode)
-   ("bash_profile$" . sh-mode)
-   ("bash_aliases$" . sh-mode)
-   ("bash_local$" . sh-mode)
-   ("bash_completion$" . sh-mode)))
-
-;; C (via irony-mode)
-(use-package irony
-  :hook ((c-mode . irony-mode)
-         (c++-mode . irony-mode))
-  :config
-  (progn
-    (setq irony-additional-clang-options '("-std=c++11"))
-    (setq-default irony-cdb-compilation-databases '(irony-cdb-clang-complete
-                                                    iron-cdb-libclang))
-
-    (add-hook 'irony-mode-hook 'irony-cdb-autosetup-compile-options)))
-(use-package irony-eldoc
-  :hook (irony-mode . irony-eldoc))
-(use-package flycheck-irony
-  :hook (irony-mode . flycheck-irony-setup))
-;; (use-package lsp-clangd
-;;   :load-path "/vendor"
-;;   :hook ((c-mode . lsp-clangd-c-enable)
-;;          (c++-mode . lsp-clangd-c++-enable)
-;;          (objc-mode . lsp-clangd-objc-enable)))
-(use-package platformio-mode
-  :after irony-mode
-  :hook ((c-mode . platformio-conditionally-enable)
-         (c++-mode . platformio-conditionally-enable)))
-(use-package clang-format
-  :config
-  (defun c-mode-before-save-hook ()
-    (when (or (eq major-mode 'c++-mode) (eq major-mode 'c-mode))
-      (call-interactively 'clang-format)))
-
-  (add-hook 'before-save-hook #'c-mode-before-save-hook))
-(use-package arduino-mode
-  :after irony
-  :config
-  (add-to-list 'irony-supported-major-modes 'arduino-mode)
-  (add-to-list 'irony-lang-compile-option-alist '(arduino-mode . "c++")))
 
 ;; Go
 (use-package js-golang
+  :load-path "vendor/")
+
+;; Scala
+(use-package js-scala
+  :load-path "vendor/")
+
+;; C / C++ / Arduino
+(use-package js-clang
   :load-path "vendor/")
 
 ;; Elisp
@@ -597,18 +555,21 @@
   :if (executable-find "pyenv")
   :commands (pyenv-mode-versions)
   :hook python-mode)
+
 (use-package lsp-python
   :after lsp-mode
   :hook (python-mode . lsp-python-enable))
 
-
-;; Scala
-(use-package scala-mode
-  :mode ("\\.\\(scala\\|sbt\\)\\'" . scala-mode))
-(use-package ensime
-  :hook (scala-mode . ensime-mode))
-(use-package sbt-mode
-  :hook (scala-mode . sbt-mode))
+;; Shell
+(use-package sh-mode
+  :ensure nil
+  :mode
+  (("\\.zshrc" . sh-mode)
+   ("bashrc$" . sh-mode)
+   ("bash_profile$" . sh-mode)
+   ("bash_aliases$" . sh-mode)
+   ("bash_local$" . sh-mode)
+   ("bash_completion$" . sh-mode)))
 
 (use-package dired
   :ensure nil
