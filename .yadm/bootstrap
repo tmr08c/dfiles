@@ -46,6 +46,13 @@ else
     source ~/.config/base16-gnome-terminal/color-scripts/base16-monokai.sh
   fi
 
+  if [ ! -d ~/.config/tilix/schemes ]; then
+    echo "Fetching base16 theme for Tilix"
+    mkdir -p ~/.config/tilix/schemes
+    cd ~/.config/tilix/schemes
+    wget https://github.com/karlding/base16-tilix/blob/master/tilix/base16-monokai.json
+  fi
+
   # Download GPG key from Public Server
   gpg --list-keys 0xDB57958A3B574D5C >/dev/null 2>&1
   status=$?
