@@ -59,20 +59,6 @@
 (customize-set-variable
  'custom-file (no-littering-expand-var-file-name "custom.el"))
 
-(use-package recentf
-  :ensure nil
-  :requires no-littering
-  :custom
-  (recentf-auto-cleanup 200)
-  (recentf-max-saved-items 1000)
-  (recentf-auto-cleanup 'never)
-  (recentf-auto-save-timer (run-with-idle-timer 600 t 'recentf-save-list))
-  :config
-  (add-to-list 'recentf-exclude "COMMIT_EDITMSG\\'")
-  (add-to-list 'recentf-exclude no-littering-var-directory)
-  (add-to-list 'recentf-exclude no-littering-etc-directory))
-
-
 (customize-set-variable 'user-full-name "Justin Smestad")
 (customize-set-variable 'user-mail-address "justin.smestad@gmail.com")
 
@@ -246,30 +232,6 @@
   (apu--last-update-day-filename
    (no-littering-expand-var-file-name "auto-update-package-last-update-day")))
 
-;; File settings
-;;
-(use-package vlf
-  :hook csv-mode)
-(use-package files
-  :ensure nil
-  :demand t
-  :custom
-  (backup-by-copying t)
-  (require-final-newline t)
-  (delete-old-versions t)
-  (version-control t)
-  (backup-directory-alist
-   `((".*" . ,(no-littering-expand-var-file-name "backup/"))))
-  (auto-save-file-name-transforms
-   `((".*" ,(no-littering-expand-var-file-name "auto-save/") t)))
-  (large-file-warning-threshold (* 20 1000 1000) "20 megabytes."))
-
-;; Version control
-(use-package vc-hooks
-  :ensure nil
-  :demand t
-  :custom (vc-follow-symlinks t))
-
 ;; Global Modes
 ;;
 ;;; ace-window (for better window switching)
@@ -280,16 +242,16 @@
   :delight
   :init (which-key-mode)
   :custom
-  (which-key-sort-order 'which-key-key-order-alpha)
+  (which-key-sort-order 'which-key-prefix-then-key-order)
+  (which-key-add-column-padding 1)
   (which-key-side-window-max-width 0.33)
-  (which-key-idle-delay 0.05)
+  ;; (which-key-idle-delay 0.05)
   (which-key-setup-side-window-right-bottom))
 
 ;;; File Tree
 (use-package neotree
   :after all-the-icons
   :custom
-  ;; (neo-autorefresh t) ;; annoyingly asks to change root all the time!
   (neo-create-file-auto-open t)
   (neo-modern-sidebar t)
   (neo-point-auto-indent t)
@@ -323,10 +285,10 @@
 
 (use-package smex
   :init (smex-initialize))
+
 ;;; Ivy for completion
 (use-package ivy
   :delight
-  ;; :config (after-init . ivy-mode)
   :custom
   (ivy-use-virtual-buffers t)
   (ivy-count-format "(%d/%d) ")
@@ -560,27 +522,7 @@
   :after lsp-mode
   :hook (python-mode . lsp-python-enable))
 
-;; Shell
-(use-package sh-mode
-  :ensure nil
-  :mode
-  (("\\.zshrc" . sh-mode)
-   ("bashrc$" . sh-mode)
-   ("bash_profile$" . sh-mode)
-   ("bash_aliases$" . sh-mode)
-   ("bash_local$" . sh-mode)
-   ("bash_completion$" . sh-mode)))
 
-(use-package dired
-  :ensure nil
-  :demand t
-  :commands (dired)
-  :custom
-  (dired-dwim-target t "Enable side-by-side `dired` buffer targets.")
-  (dired-recursive-copies 'always "Better recursion in `dired`.")
-  (dired-recursive-deletes 'top)
-  (delete-by-moving-to-trash t)
-  (dired-use-ls-dired nil))
 ;; TODO: do I want emmet mode?
 (use-package emmet-mode
   :disabled
@@ -625,24 +567,12 @@
   :hook ((neotree-mode . hide-mode-line-mode)
          (completion-list-mode . hide-mode-line-mode)
          (completion-in-region-mode . hide-mode-line-mode)))
-;; (use-package telephone-line
-;;   :hook (after-init . telephone-line-mode))
-;; (use-package powerline
-;; :hook (after-init . powerline-reset)
-;; )
-;; (use-package powerline-evil
-;;   :requires powerline
-;;   :init (powerline-evil-vim-color-theme))
 
 
 (use-package doom-themes
   :init (load-theme 'doom-molokai t)
-  ;; :custom
-  ;; (doom-neotree-file-icons t)
-  ;; (doom-themes-org-config)
   :config
   (doom-themes-visual-bell-config)
-  ;; (doom-themes-neotree-config)
   (doom-themes-org-config))
 
 ;; Font
@@ -656,24 +586,9 @@
 (use-package hl-todo
   :hook (after-init . global-hl-todo-mode))
 
-;; Better scrolling
-(use-package pixel-scroll
-  :disabled
-  :ensure nil
-  :if (> emacs-major-version 25)
-  :hook (after-init . pixel-scroll-mode))
-
-;; Line Numbers
-(use-package display-line-numbers
-  :ensure nil
-  :if (> emacs-major-version 25)
-  :hook (prog-mode . display-line-numbers-mode))
-
-;; Fix Annoyances
-(use-package uniquify
-  :ensure nil
-  :demand t
-  :custom (uniquify-buffer-name-style 'forward))
+;; Adjust the built-in Emacs packages
+(use-package js-builtin
+  :load-path "vendor/")
 
 (defalias 'yes-or-no-p 'y-or-n-p)
 
