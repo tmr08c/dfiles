@@ -97,10 +97,6 @@
   :hook
   (evil-mode . evil-collection-init))
 
-(use-package evil-commentary
-  :delight
-  :hook (evil-mode . evil-commentary-mode))
-
 (use-package evil-surround
   :hook (evil-mode . global-evil-surround-mode))
 
@@ -133,6 +129,10 @@
   :delight
   :hook (evil-mode . global-evil-quickscope-mode))
 
+(use-package evil-commentary
+  :delight
+  :hook (evil-mode . evil-commentary-mode))
+
 ;; (use-package evil-mc
 ;;   :hook (evil-mode . global-evil-mc-mode))
 ;; (use-package evil-mc-extras
@@ -155,6 +155,13 @@
          (js-mode . smartparens-strict-mode)
          (python-mode . smartparens-strict-mode)
          (ruby-mode . smartparens-strict-mode)))
+
+;; This package highlights the cursor every time it jumps abruptedly from a
+;; place to another (e.g. when changing windows and so on).
+(use-package beacon
+  :delight
+  :defer 2
+  :config (beacon-mode 1))
 
 ;; (use-package string-inflection)
 (use-package evil-string-inflection)

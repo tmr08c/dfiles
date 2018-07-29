@@ -62,8 +62,9 @@
 (customize-set-variable 'user-full-name "Justin Smestad")
 (customize-set-variable 'user-mail-address "justin.smestad@gmail.com")
 
+(use-package js-ui
+  :load-path "vendor/")
 
-(use-package all-the-icons)
 ;;; Key Bindings
 (use-package general
   ;; :custom
@@ -201,22 +202,6 @@
     "w l" '(evil-window-right :which-key "window right")
     "w <right>" '(evil-window-right :which-key nil)
     "w =" '(balance-windows :which-key "balance window split")))
-
-;; Platform
-;;
-(use-package linux
-  :load-path "vendor/"
-  :if (eq system-type 'gnu/linux))
-
-(use-package osx
-  :load-path "vendor/"
-  :if (eq system-type 'darwin))
-
-(use-package windows
-  :disabled
-  :load-path "vendor/"
-  :ensure nil
-  :if (eq system-type 'windows-nt))
 
 ;; Auto-update packages.
 ;;
@@ -405,30 +390,9 @@
   :config
   (add-to-list 'projectile-project-root-files ".clang_complete")
   (projectile-mode))
-;;; Magit
-(use-package magit
-  :defer t)
-(use-package magithub
-  :disabled
-  :after magit
-  :config
-  (magithub-feature-autoinject t))
-;; May not be needed:
-;; :custom
-;; (magit-commit-show-diff nil)
-;; :hook (magit-status-sections . magit-insert-worktrees)
-;; :config
-;; (put 'magit-clean 'disabled nil))
 
 (use-package js-completion
   :load-path "vendor/")
-
-(use-package emojify
-  :defer t
-  :init
-  (progn
-    (setq emojify-display-style 'unicode)
-    (global-emojify-mode)))
 
 ;;; EShell
 (use-package eshell
@@ -529,58 +493,6 @@
   :custom (emmet-move-cursor-between-quotes t)
   :config (add-hook 'css-mode-hook  'emmet-mode))
 
-;; Appearance
-(if (display-graphic-p)
-    (progn
-      (tool-bar-mode 0)
-      (scroll-bar-mode 0)
-      (menu-bar-mode 0)
-      (horizontal-scroll-bar-mode 0)
-
-      ;; Theme Emacs for dark color scheme
-      (add-to-list 'default-frame-alist '(ns-transparent-titlebar . t))
-      (add-to-list 'default-frame-alist '(ns-appearance . dark))
-
-      (add-hook 'after-init-hook 'set-frame-size-according-to-resolution)
-      (add-hook 'after-make-frame-functions 'set-frame-size-according-to-resolution)))
-
-
-(defun set-frame-size-according-to-resolution (&rest frame)
-  "Set FRAME height to screen height and width to half total."
-  (if window-system
-      (let ((f (if (car frame)
-		               (car frame)
-	               (selected-frame))))
-        (progn
-          (set-frame-height f (display-pixel-height) nil 'pixelwise)
-          (set-frame-width f (/ (display-pixel-width) 2) nil 'pixelwise)
-          (set-frame-position f 0 0)))))
-
-;; Modeline
-(use-package shrink-path)
-(use-package eldoc-eval)
-(use-package doom-modeline
-  :requires (eldoc-eval shrink-path)
-  :load-path "vendor/"
-  :hook (after-init . doom-modeline-init))
-(use-package hide-mode-line
-  :hook ((neotree-mode . hide-mode-line-mode)
-         (completion-list-mode . hide-mode-line-mode)
-         (completion-in-region-mode . hide-mode-line-mode)))
-
-
-(use-package doom-themes
-  :init (load-theme 'doom-molokai t)
-  :config
-  (doom-themes-visual-bell-config)
-  (doom-themes-org-config))
-
-;; Font
-(set-face-attribute 'default nil
-                    :family "Fira Mono"
-                    :height 130
-                    :weight 'normal
-                    :width 'normal)
 
 ;; Highlight TODOs
 (use-package hl-todo
@@ -590,27 +502,29 @@
 (use-package js-builtin
   :load-path "vendor/")
 
+;; Version Control (git and what-not)
+(use-package js-vc
+  :load-path "vendor/")
+
 (defalias 'yes-or-no-p 'y-or-n-p)
 
-;; Use Github as the standard
-;; ref http://hilton.org.uk/blog/source-code-line-length
-(customize-set-variable 'fill-column 125)
-
 (customize-set-variable 'byte-compile-warnings nil)
-(customize-set-variable 'blink-matching-paran nil)
 (customize-set-variable 'create-lockfiles nil)
 (customize-set-variable 'cua-mode t)
 (customize-set-variable 'desktop-save-mode nil)
 (customize-set-variable 'indent-tabs-mode nil)
-(customize-set-variable 'inhibit-startup-screen t)
-(customize-set-variable 'initial-major-mode 'markdown-mode)
+;; (customize-set-variable 'initial-major-mode 'markdown-mode)
 (customize-set-variable 'initial-scratch-message (format ";; Scratch buffer - started on %s\n\n" (current-time-string)))
 (customize-set-variable 'load-prefer-newer t)
 (customize-set-variable 'sentence-end-double-space nil)
-(customize-set-variable 'visible-bell nil)
-(customize-set-variable 'ring-bell-function (lambda ()
-                                              (invert-face 'mode-line)
-                                              (run-with-timer 0.1 nil 'invert-face 'mode-line)))
+
+;; Platform Specific
+(use-package linux
+  :load-path "vendor/"
+  :if (eq system-type 'gnu/linux))
+(use-package osx
+  :load-path "vendor/"
+  :if (eq system-type 'darwin))
 
 (provide 'init)
 ;;; init.el ends here
