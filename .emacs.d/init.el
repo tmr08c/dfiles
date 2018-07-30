@@ -303,6 +303,7 @@
    "M-x" 'counsel-M-x))
 
 (use-package counsel-projectile
+  :after projectile
   :hook (counsel-mode . counsel-projectile-mode))
 
 (use-package counsel-dash
@@ -337,8 +338,6 @@
   (flycheck-disabled-checkers '(ruby-rubylint))
   :hook (prog-mode . flycheck-mode))
 (use-package flycheck-pos-tip
-  ;; :disabled
-  :defer 2
   :hook (flycheck-mode . flycheck-pos-tip-mode))
 
 (use-package flyspell

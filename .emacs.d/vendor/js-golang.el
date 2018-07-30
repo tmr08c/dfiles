@@ -55,6 +55,7 @@
   :hook (go-mode . go-eldoc-setup))
 
 (use-package flycheck-gometalinter
+  :hook (go-mode . flycheck-gometalinter-setup)
   :custom
   ;; skip linting for vendor dirs
   (flycheck-gometalinter-vendor t)
@@ -63,10 +64,7 @@
   ;; only use fast linters
   (flycheck-gometalinter-fast t)
   ;; explicitly disable 'gotype' & 'govet' linters (also currently broken Nix overlays)
-  (flycheck-gometalinter-disable-linters '("gosec" "gotype" "vet" "vetshadow" "megacheck" "interfacer" "ineffassign"))
-  :config
-  (progn
-    (flycheck-gometalinter-setup)))
+  (flycheck-gometalinter-disable-linters '("gosec" "gotype" "vet" "vetshadow" "megacheck" "interfacer" "ineffassign")))
 
 (use-package go-projectile
   :hook (go-mode . go-projectile-mode))

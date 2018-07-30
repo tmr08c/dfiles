@@ -59,11 +59,7 @@
 
 
 ;; Modeline
-;; (use-package shrink-path)
-;; (use-package eldoc-eval)
 (use-package doom-modeline
-  ;; :requires (eldoc-eval shrink-path)
-  ;; :load-path "vendor/"
   :hook (after-init . doom-modeline-init))
 (use-package hide-mode-line
   :hook ((neotree-mode . hide-mode-line-mode)

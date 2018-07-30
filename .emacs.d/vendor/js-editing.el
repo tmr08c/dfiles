@@ -159,12 +159,18 @@
 ;; This package highlights the cursor every time it jumps abruptedly from a
 ;; place to another (e.g. when changing windows and so on).
 (use-package beacon
+  :disabled ;; TODO get this working with company mode
   :delight
   :defer 2
-  :config (beacon-mode 1))
+  :config
+  (progn
+    (setq beacon-blink-when-buffer-changes nil)
+    (setq beacon-blink-when-window-changes nil)
+    (add-to-list 'beacon-dont-blink-major-modes 'shell-mode)
+    (beacon-mode 1)))
 
-;; (use-package string-inflection)
-(use-package evil-string-inflection)
+(use-package evil-string-inflection
+  :after evil-mode)
 
 (provide 'js-editing)
 
