@@ -43,7 +43,7 @@
 (use-package exec-path-from-shell
   :if (memq window-system '(mac ns x))
   :custom
-  (exec-path-from-shell-variables '("PATH" "GOPATH" "PGHOST"))
+  (exec-path-from-shell-variables '("SHELL" "MANPATH" "PATH" "GOPATH" "PGHOST" "SSH_AUTH_SOCK"))
   :config
   (exec-path-from-shell-initialize))
 (use-package use-package-ensure-system-package)
@@ -504,6 +504,9 @@
 
 ;; Version Control (git and what-not)
 (use-package js-vc
+  :load-path "vendor/")
+
+(use-package js-org
   :load-path "vendor/")
 
 (defalias 'yes-or-no-p 'y-or-n-p)

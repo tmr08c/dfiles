@@ -59,11 +59,11 @@
 
 
 ;; Modeline
-(use-package shrink-path)
-(use-package eldoc-eval)
+;; (use-package shrink-path)
+;; (use-package eldoc-eval)
 (use-package doom-modeline
-  :requires (eldoc-eval shrink-path)
-  :load-path "vendor/"
+  ;; :requires (eldoc-eval shrink-path)
+  ;; :load-path "vendor/"
   :hook (after-init . doom-modeline-init))
 (use-package hide-mode-line
   :hook ((neotree-mode . hide-mode-line-mode)
@@ -73,7 +73,7 @@
 
 ;;; Support Emojis in Emacs
 (use-package emojify
-  :defer t
+  :defer 5
   :init
   (progn
     (setq emojify-display-style 'unicode)
