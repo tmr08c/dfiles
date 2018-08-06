@@ -133,6 +133,18 @@
   :delight
   :hook (evil-mode . evil-commentary-mode))
 
+(use-package hideshow
+  :ensure nil
+  :delight
+  :config
+  (progn
+    (defun toggle-fold ()
+      (interactive)
+      (save-excursion
+        (end-of-line)
+        (hs-toggle-hiding))))
+  :hook (prog-mode . hs-minor-mode))
+
 ;; (use-package evil-mc
 ;;   :hook (evil-mode . global-evil-mc-mode))
 ;; (use-package evil-mc-extras
