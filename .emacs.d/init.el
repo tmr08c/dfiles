@@ -388,8 +388,10 @@
   (projectile-switch-project-action 'counsel-projectile-find-file)
   (projectile-sort-order 'recentf)
   :config
+  (define-key projectile-mode-map (kbd "s-p") 'projectile-command-map)
+  (define-key projectile-mode-map (kbd "C-c p") 'projectile-command-map)
   (add-to-list 'projectile-project-root-files ".clang_complete")
-  (projectile-mode))
+  (projectile-mode +1))
 
 (use-package js-completion
   :load-path "vendor/")

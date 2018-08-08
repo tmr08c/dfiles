@@ -10,7 +10,7 @@
 (use-package company
   :delight
   :custom
-  (company-begin-commands '(self-insert-command)) ; start autocompletion only after typing
+  ;; (company-begin-commands '(self-insert-command)) ; start autocompletion only after typing
   (company-dabbrev-downcase nil)
   (company-dabbrev-ignore-case nil)
   (company-echo-delay 0) ; remove annoying blinking

@@ -67,6 +67,7 @@
   (flycheck-gometalinter-disable-linters '("gosec" "gotype" "vet" "vetshadow" "megacheck" "interfacer" "ineffassign")))
 
 (use-package go-projectile
+  :load-path "vendor/"
   :hook (go-mode . go-projectile-mode))
 
 (use-package go-gen-test
