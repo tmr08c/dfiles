@@ -303,6 +303,7 @@
    "M-x" 'counsel-M-x))
 
 (use-package counsel-projectile
+  :load-path "vendor/"
   :after projectile
   :hook (counsel-mode . counsel-projectile-mode))
 
