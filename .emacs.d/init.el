@@ -206,11 +206,11 @@
 ;; Auto-update packages.
 ;;
 (use-package auto-package-update
-  :load-path "vendor/"
+  :defer 5
   :config
   (auto-package-update-maybe)
   :custom
-  (auto-package-update-interval 1)
+  (auto-package-update-interval 7)
   (auto-package-update-delete-old-versions t)
   (auto-package-update-hide-results t)
   (auto-package-update-prompt-before-update t)
