@@ -72,9 +72,9 @@
   :defer 5
   :init
   (progn
-    (if (eq system-type 'darwin)
-        (setq emojify-display-style 'unicode)
-      (setq emojify-display-style 'image))
+    ;; (if (eq system-type 'darwin)
+    (setq emojify-display-style 'unicode)
+    ;; (setq emojify-display-style 'image))
     (global-emojify-mode)))
 
 

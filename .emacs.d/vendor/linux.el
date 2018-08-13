@@ -5,8 +5,8 @@
 
 ;;; Code:
 
-(when (member "Symbola" (font-family-list))
-  (set-fontset-font t 'unicode "Symbola" nil 'prepend))
+;; (when (member "Symbola" (font-family-list))
+(set-fontset-font t 'unicode "Twitter Color Emoji" nil 'prepend)
 
 (when (display-graphic-p)
   (global-set-key (kbd "s-s") (lambda ()
