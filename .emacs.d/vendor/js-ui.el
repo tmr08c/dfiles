@@ -10,9 +10,9 @@
 (customize-set-variable 'inhibit-startup-screen t)
 (customize-set-variable 'blink-matching-paran nil)
 (customize-set-variable 'visible-bell nil)
-(customize-set-variable 'ring-bell-function (lambda ()
-                                              (invert-face 'mode-line)
-                                              (run-with-timer 0.1 nil 'invert-face 'mode-line)))
+(customize-set-variable 'ring-bell-function 'ignore)
+(customize-set-variable 'window-resize-pixelwise t)
+(customize-set-variable 'frame-resize-pixelwise t)
 
 ;;; Font
 (set-face-attribute 'default nil
@@ -54,7 +54,6 @@
 (use-package doom-themes
   :init (load-theme 'doom-molokai t)
   :config
-  (doom-themes-visual-bell-config)
   (doom-themes-org-config))
 
 
