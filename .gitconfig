@@ -37,3 +37,5 @@
   signingkey = 1CAE895F6E08EA26
 [fetch]
   prune = true
+[gpg]
+	program = gpg2
