@@ -303,7 +303,6 @@
    "M-x" 'counsel-M-x))
 
 (use-package counsel-projectile
-  :load-path "vendor/"
   :after projectile
   :hook (counsel-mode . counsel-projectile-mode))
 
@@ -351,6 +350,8 @@
   (ispell-extra-args '("--sug-mode=ultra")))
 (use-package flyspell-correct-ivy
   :requires (flyspell ivy))
+(use-package writegood-mode
+  :hook (flyspell-mode . writegood-mode))
 
 ;;; Resize all buffers at once with C-M-= / C-M--
 (use-package default-text-scale
