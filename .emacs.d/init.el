@@ -268,8 +268,8 @@
     "R" 'neotree-change-root
     "I" 'neotree-hidden-file-toggle))
 
-(use-package smex
-  :init (smex-initialize))
+(use-package amx
+  :init (amx-initialize))
 
 ;;; Ivy for completion
 (use-package ivy
@@ -320,13 +320,6 @@
 
 ;; Search regex
 (use-package swiper
-  :if (eq system-type 'darwin)
-  :general
-  (general-define-key
-   "M-s" 'swiper))
-
-(use-package swiper
-  :unless (eq system-type 'darwin)
   :general
   (general-define-key
    "C-s" 'swiper))

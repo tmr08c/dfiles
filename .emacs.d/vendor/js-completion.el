@@ -21,6 +21,13 @@
   (company-tooltip-align-annotations t)
   (company-tooltip-flip-when-above t)
   (company-tooltip-limit 20)
+  (company-backends '(
+                      company-nxml
+                      company-css
+                      company-files
+                      company-c-headers
+                      (company-dabbrev-code company-gtags company-etags company-capf company-keywords)
+                      company-dabbrev))
   ;; (company-frontends '(company-tng-frontend))
   ;; (company-frontends '(company-echo-metadata-frontend
   ;;                      company-pseudo-tooltip-unless-just-one-frontend-with-delay
@@ -31,6 +38,7 @@
   )
 
 (use-package company-box
+  :disabled
   ;; :defer 5
   :load-path "vendor/company-box/"
   :hook (company-mode . company-box-mode)
@@ -75,6 +83,7 @@
   :after company
   :config (add-to-list 'company-backends 'company-emoji))
 
+(use-package counsel-etags)
 
 ;;; C/C++
 (use-package company-irony-c-headers
@@ -96,6 +105,7 @@
 
 ;;; Golang
 (use-package company-go
+  :disabled
   :hook go-mode
   :custom
   (company-go-show-annotation t)
