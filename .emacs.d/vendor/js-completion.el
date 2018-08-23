@@ -26,7 +26,7 @@
                       company-css
                       company-files
                       company-c-headers
-                      (company-dabbrev-code company-gtags company-etags company-capf company-keywords)
+                      (company-dabbrev-code company-etags company-capf company-keywords)
                       company-dabbrev))
   ;; (company-frontends '(company-tng-frontend))
   ;; (company-frontends '(company-echo-metadata-frontend
