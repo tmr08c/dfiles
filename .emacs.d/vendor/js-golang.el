@@ -15,7 +15,7 @@
   :ensure-system-package
   ((gocode . "go get -u github.com/nsf/gocode")
    (gometalinter . "go get -u github.com/alecthomas/gometalinter")
-   (gorename . "go get -u golang.org/x/tools/cmd/gorename")
+   (godoc . "go get -u golang.org/x/tools/cmd/godoc")
    (goimports . "go get -u golang.org/x/tools/cmd/goimports")
    (guru . "go get -u golang.org/x/tools/cmd/guru"))
   :general
@@ -45,6 +45,7 @@
 
     ;; Refactoring
     "m r" '(:ignore t :which-key "refactoring")
+    "m r i" '(go-impl :which-key "implement interface")
     "m r s" '(go-fill-struct :which-key "fill struct")
     "m r d" '(godoctor-godoc :which-key "godoc")
     "m r e" '(godoctor-extract :which-key "extract")
@@ -80,19 +81,30 @@
 (use-package go-gen-test
   :commands (go-gen-test-exported
              go-gen-test-all
-             go-gen-test-dwim))
+             go-gen-test-dwim)
+  :ensure-system-package
+  (gotests . "go get -u github.com/cweill/gotests/..."))
 
 (use-package go-fill-struct
-  :commands (go-fill-struct))
+  :commands (go-fill-struct)
+  :ensure-system-package
+  (fillstruct . "go get -u github.com/davidrjenni/reftools/cmd/fillstruct"))
 
-(use-package godoctor
-  :commands (godoctor-godoc
-             godoctor-extract
-             godoctor-rename
-             godoctor-toggle))
+ (use-package godoctor
+   :commands (godoctor-godoc
+              godoctor-extract
+              godoctor-rename
+              godoctor-toggle))
 
 (use-package go-rename
-  :commands (go-rename))
+  :commands (go-rename)
+  :ensure-system-package
+  (gorename . "go get -u golang.org/x/tools/cmd/gorename"))
+
+(use-package go-impl
+  :hook go-mode
+  :ensure-system-package
+  (impl . "go get -u github.com/josharian/impl"))
 
 ;; Taken from js
 (defun js/go-run-tests (args)
