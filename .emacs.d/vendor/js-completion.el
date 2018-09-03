@@ -10,7 +10,7 @@
 (use-package company
   :delight
   :custom
-  ;; (company-begin-commands '(self-insert-command)) ; start autocompletion only after typing
+  (company-begin-commands '(self-insert-command)) ; start autocompletion only after typing
   (company-dabbrev-downcase nil)
   (company-dabbrev-ignore-case nil)
   (company-echo-delay 0) ; remove annoying blinking
@@ -105,8 +105,9 @@
 
 ;;; Golang
 (use-package company-go
-  :disabled
-  :hook go-mode
+  :hook (go-mode . (lambda ()
+                     (set (make-local-variable 'company-backends) '(company-go))
+                     (company-mode)))
   :custom
   (company-go-show-annotation t)
   :config (add-to-list 'company-backends 'company-go))

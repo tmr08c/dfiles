@@ -71,8 +71,8 @@ fi
 # PlatformIO
 if [[ -d ~/.platformio ]]; then
   path=(
-    $HOME/.platformio/penv/bin
     $path
+    $HOME/.platformio/penv/bin
   )
 fi
 

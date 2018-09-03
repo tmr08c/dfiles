@@ -12,6 +12,12 @@
   (tab-width 2)
   (indent-tabs-mode 1)
   (gofmt-command "goimports")
+  :ensure-system-package
+  ((gocode . "go get -u github.com/nsf/gocode")
+   (gometalinter . "go get -u github.com/alecthomas/gometalinter")
+   (gorename . "go get -u golang.org/x/tools/cmd/gorename")
+   (goimports . "go get -u golang.org/x/tools/cmd/goimports")
+   (guru . "go get -u golang.org/x/tools/cmd/guru"))
   :general
   (space-leader-def 'normal go-mode-map
     ;; Tests
@@ -64,7 +70,8 @@
   ;; only use fast linters
   (flycheck-gometalinter-fast t)
   ;; explicitly disable 'gotype' & 'govet' linters (also currently broken Nix overlays)
-  (flycheck-gometalinter-disable-linters '("gosec" "gotype" "vet" "vetshadow" "megacheck" "interfacer" "ineffassign")))
+  (flycheck-gometalinter-disable-linters
+   '("gosec" "gotype" "vet" "vetshadow" "megacheck" "interfacer" "ineffassign")))
 
 (use-package go-projectile
   :load-path "vendor/"
