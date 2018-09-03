@@ -30,14 +30,13 @@ zplugin light zdharma/zsh-diff-so-fancy
 zplugin ice lucid wait'2' pick"*.plugin.zsh" atload'_zsh_autosuggest_start'
 zplugin light zsh-users/zsh-autosuggestions
 
-zplugin ice lucid wait'3' atload'_zsh_nvm_load'
-zplugin light lukechilds/zsh-nvm
+# zplugin ice lucid wait'3' atload'_zsh_nvm_load'
+# zplugin light lukechilds/zsh-nvm
 
-zplugin ice lucid wait'4'
-zplugin load lukechilds/zsh-better-npm-completion
+# zplugin ice lucid wait'4'
+# zplugin load lukechilds/zsh-better-npm-completion
 
 zplugin load zdharma/history-search-multi-word
 
 # bindkey '^[[A' history-substring-search-up
 # bindkey '^[[B' history-substring-search-down
-

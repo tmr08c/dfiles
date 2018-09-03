@@ -27,7 +27,7 @@ else
 
   if [ "$distro" = "Ubuntu" ]; then
     echo "Ubuntu detected"
-    sudo apt install -y pinentry-gnome3 pinentry-curses direnv dconf-cli xsel
+    sudo apt install -y pinentry-gnome3 pinentry-curses direnv dconf-cli xsel m4 libssh-dev xsltproc fop
 
     echo "Install Ruby dependencies"
     sudo apt install -y autoconf bison build-essential libssl-dev libyaml-dev libreadline-dev zlib1g-dev libncurses5-dev libffi-dev
@@ -36,15 +36,28 @@ else
     sudo apt install -y gnupg2 gnupg-agent pinentry-curses scdaemon pcscd yubikey-personalization libusb-1.0-0-dev
   fi
 
+  if [ "$distro" = "ManjaroLinux" ]; then
+    echo "Manjaro / Arch Linux detected"
+    sudo pacman -Syu xsel vim neovim emacs otf-fira-sans otf-fira-code otf-fira-mono ttf-roboto-slab ttf-roboto-mono ttf-roboto tilix slack-desktop ripgrep postgresql-libs gcc the_silver_searcher visual-studio-code-bin yakyak
 
-  if [ ! -d ~/.config/base16-gnome-terminal ]; then
-    echo "Fetching base16 themes for gnome terminal"
-    sudo apt install -y gconf2
-    git clone https://github.com/aaron-williamson/base16-gnome-terminal.git ~/.config/base16-gnome-terminal
+    sudo pacman -S --needed base-devel curses glu mesa wxgtk2 libpng libssh unixodbc
 
-    echo "Installing Monokai theme `~/.config/base16-gnome-terminal/color-scripts/base16-monokai.sh`"
-    source ~/.config/base16-gnome-terminal/color-scripts/base16-monokai.sh
+    echo "Install Pop_OS! theme"
+    sudo pacman -Sy pop-gtk-theme-bin pop-icon-theme-bin
+
+    echo "Configure Yubikey dependencies"
+    sudo pacman -Sy libusb-compat yubikey-manager
   fi
+
+
+  # if [ ! -d ~/.config/base16-gnome-terminal ]; then
+  #   echo "Fetching base16 themes for gnome terminal"
+  #   sudo apt install -y gconf2
+  #   git clone https://github.com/aaron-williamson/base16-gnome-terminal.git ~/.config/base16-gnome-terminal
+
+  #   echo "Installing Monokai theme `~/.config/base16-gnome-terminal/color-scripts/base16-monokai.sh`"
+  #   source ~/.config/base16-gnome-terminal/color-scripts/base16-monokai.sh
+  # fi
 
   if [ ! -d ~/.config/tilix/schemes ]; then
     echo "Fetching base16 theme for Tilix"
@@ -63,24 +76,27 @@ else
     echo "Run 'gpg --edit-key 0xDB57958A3B574D5C' and give it ultimate trust."
 
     # Run GPG with SSH
-    GPG_TTY="$(tty)"
+    GPG_TTY=$(tty)
     SSH_AUTH_SOCK=$(gpgconf --list-dirs agent-ssh-socket)
     gpgconf --launch gpg-agent
 
     ssh-add -L | grep "cardno:000607123960" > ~/.ssh/id_rsa_yubikey.pub
   fi
+fi
 
+if [ ! -e $HOME/.vim/bundle/vundle ]; then
+  echo "Installing Vundle for VIM configuration"
+  mkdir -p ~/.vim
+  git clone https://github.com/gmarik/vundle.git $HOME/.vim/bundle/vundle
 fi
 
 if [ command -v vim >/dev/null 2>&1 ]; then
-  if [ ! -e $HOME/.vim/bundle/vundle ]; then
-    echo "Installing Vundle for VIM configuration"
-    mkdir -p ~/.vim
-    git clone https://github.com/gmarik/vundle.git $HOME/.vim/bundle/vundle
-  fi
   vim -u $HOME/.vimrc.bundles +BundleInstall +qa
+fi
+
+if [ ! -d ~/.asdf ]; then
+  git clone https://github.com/asdf-vm/asdf.git ~/.asdf --branch v0.5.1
 fi
 
 echo "Updating the yadm repo origin URL"
 yadm remote set-url origin "git@github.com:jsmestad/dfiles.git"
-
