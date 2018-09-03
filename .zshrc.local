@@ -14,14 +14,21 @@ fi
 
 if (( $+commands[psql] )); then
   export PGHOST='127.0.0.1'
+
   export PGPORT='5432'
   export PGUSER='postgres'
 fi
 
 if (( $+commands[gpgconf] )); then
-  export GPG_TTY="$(tty)"
+  unset SSH_AGENT_PID
+  if [ "${gnupg_SSH_AUTH_SOCK_by:-0}" -ne $$ ]; then
+    export SSH_AUTH_SOCK="$(gpgconf --list-dirs agent-ssh-socket)"
+  fi
+
+  export GPG_TTY=$(tty)
   export SSH_AUTH_SOCK=$(gpgconf --list-dirs agent-ssh-socket)
   gpgconf --launch gpg-agent
+  gpg-connect-agent updatestartuptty /bye >/dev/null
 fi
 
 export GOPATH=$HOME/code/golang
