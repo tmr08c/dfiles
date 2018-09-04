@@ -458,15 +458,8 @@
 (use-package erlang
   :mode "\\.erl$")
 
-;; Elixir
-(use-package elixir-mode
-  :commands elixir-mode
-  :mode "\\.exs?")
-(use-package alchemist
-  :commands alchemist-mode
-  :hook (elixir-mode . alchemist-mode))
-(use-package flycheck-mix
-  :hook (elixir-mode . flycheck-mix-setup))
+(use-package js-elixir
+  :load-path "vendor/")
 
 ;; Python
 (use-package python
