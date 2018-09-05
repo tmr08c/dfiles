@@ -348,7 +348,6 @@
 
 ;;; Resize all buffers at once with C-M-= / C-M--
 (use-package default-text-scale
-  :disabled
   :init (default-text-scale-mode))
 ;;; Restart Emacs
 (use-package restart-emacs
