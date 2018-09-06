@@ -26,7 +26,11 @@
   (company-global-modes '(not eshell-mode comint-mode erc-mode message-mode help-mode gud-mode))
   (company-frontends '(company-pseudo-tooltip-frontend company-echo-metadata-frontend))
   (company-transformers '(company-sort-by-occurrence))
-  (company-backends '(company-capf company-dabbrev company-async-files)))
+  (company-backends '((company-async-files company-keywords company-capf)
+                      company-etags
+                      ;; company-keywords
+                      ;; company-capf
+                      (company-dabbrev))))
 
 (use-package company-async-files
   :load-path "vendor/"
@@ -62,36 +66,33 @@
   :config (add-to-list 'company-backends 'company-emoji))
 
 ;;; C/C++
-(use-package company-irony-c-headers
-  :after company-irony
-  :hook (irony-mode . (lambda ()
-                        (set (make-local-variable 'company-backends) '((company-irony-c-headers company-irony)))
-                        (company-mode))))
-
 (use-package company-irony
   :hook irony-mode
   :custom
   (company-irony-ignore-case 'smart))
 
+(use-package company-irony-c-headers
+  :after company-irony
+  :hook (irony-mode . (lambda ()
+                        (set (make-local-variable 'company-backends) '((company-irony-c-headers company-irony company-etags))))))
+
 ;;; Python
 (use-package company-anaconda
   :hook (python-mode . (lambda ()
-                         (set (make-local-variable 'company-backends) '(company-anaconda))
-                         (company-mode)
-                         (anaconda-mode))))
+                         (set (make-local-variable 'company-backends) '(company-anaconda)))))
 
 ;;; Golang
 (use-package company-go
+  :load-path "vendor/"
   :hook (go-mode . (lambda ()
-                     (set (make-local-variable 'company-backends) '(company-go))
-                     (company-mode)))
+                     (set (make-local-variable 'company-backends) '(company-go))))
   :custom
   (company-go-show-annotation t))
 
 
 ;;; Language Server Mode
 (use-package eglot
-  :disabled ;; Works butjust not as good as company-go
+  :disabled ;; Works but not as good as company-go
   :after company
   :config
   (progn

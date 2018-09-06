@@ -357,7 +357,7 @@
   (ispell-extra-args '("--sug-mode=ultra"
                        "--lang=en_US")))
 (use-package flyspell-correct-ivy
-  :requires (flyspell ivy))
+  :after (flyspell ivy))
 (use-package writegood-mode
   :hook (text-mode . writegood-mode))
 

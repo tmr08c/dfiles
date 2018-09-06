@@ -13,7 +13,7 @@
   (indent-tabs-mode 1)
   (gofmt-command "goimports")
   :ensure-system-package
-  ((gocode . "go get -u github.com/nsf/gocode")
+  ((gocode . "go get -u github.com/mdempsky/gocode")
    (gometalinter . "go get -u github.com/alecthomas/gometalinter")
    (godoc . "go get -u golang.org/x/tools/cmd/godoc")
    (goimports . "go get -u golang.org/x/tools/cmd/goimports")
@@ -102,7 +102,7 @@
   (gorename . "go get -u golang.org/x/tools/cmd/gorename"))
 
 (use-package go-impl
-  :hook go-mode
+  :commands go-impl
   :ensure-system-package
   (impl . "go get -u github.com/josharian/impl"))
 
