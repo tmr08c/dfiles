@@ -9,64 +9,40 @@
 ;;; Auto-completion framework for most modes
 (use-package company
   :delight
+  :hook (after-init . global-company-mode)
   :custom
-  (company-begin-commands '(self-insert-command)) ; start autocompletion only after typing
+  ;; (company-begin-commands '(self-insert-command)) ; start autocompletion only after typing
   (company-dabbrev-downcase nil)
   (company-dabbrev-ignore-case nil)
+  (company-dabbrev-code-other-buffers t)
   (company-echo-delay 0) ; remove annoying blinking
-  (company-idle-delay 0.3)
+  (company-idle-delay 0.1)
   (company-minimum-prefix-length 2)
-  (company-require-match nil)
+  (company-require-match 'never)
   (company-selection-wrap-around t)
   (company-tooltip-align-annotations t)
   (company-tooltip-flip-when-above t)
-  (company-tooltip-limit 20)
-  (company-backends '(
-                      company-nxml
-                      company-css
-                      company-async-files
-                      company-c-headers
-                      (company-dabbrev-code company-etags company-capf company-keywords)
-                      company-dabbrev))
-  ;; (company-frontends '(company-tng-frontend))
-  ;; (company-frontends '(company-echo-metadata-frontend
-  ;;                      company-pseudo-tooltip-unless-just-one-frontend-with-delay
-  ;;                      company-preview-frontend))
-  :hook
-  (after-init . global-company-mode)
-  ;; :config (add-to-list 'company-frontends 'company-tng-frontend)
-  )
+  (company-tooltip-limit 10)
+  (company-global-modes '(not eshell-mode comint-mode erc-mode message-mode help-mode gud-mode))
+  (company-frontends '(company-pseudo-tooltip-frontend company-echo-metadata-frontend))
+  (company-transformers '(company-sort-by-occurrence))
+  (company-backends '(company-capf company-dabbrev company-async-files)))
 
 (use-package company-async-files
   :load-path "vendor/"
   :requires company)
 
 (use-package company-box
-  :disabled
-  ;; :defer 5
-  :load-path "vendor/company-box/"
   :hook (company-mode . company-box-mode)
-  ;; :bind
-  ;; (:map company-active-map
-  ;;       ("TAB" . company-complete-common)
-  ;;       ("<tab>" . company-complete-common)
-  ;;       ("RET" . company-complete-selection)
-  ;;       ([return] . company-complete-selection)
-  ;;       ("C-/" . company-search-candidates)
-  ;;       ("C-M-/" . company-filter-candidates)
-  ;;       ("C-d" . company-show-doc-buffer)
-  ;;       ("C-j" . company-select-next)
-  ;;       ("C-k" . company-select-previous)
-  ;;       ("C-l" . company-complete-selection))
-  )
+  :load-path "vendor/company-box/")
 
 (use-package company-statistics
   :hook (company-mode . company-statistics-mode))
 
 (use-package company-quickhelp
+  :hook (company-mode . company-quickhelp-mode)
   :custom
   (company-quickhelp-delay 0.1)
-  :hook (company-mode . company-quickhelp-mode)
   :general
   (general-def 'insert company-quickhelp-mode-map
     "C-k" 'company-select-previous))
@@ -77,9 +53,7 @@
 (use-package company-posframe
   :disabled
   :delight
-  :after company-mode
-  :config
-  (company-posframe-mode 1))
+  :hook (company-mode . company-posframe-mode))
 
 
 ;;; General
@@ -89,21 +63,22 @@
 
 ;;; C/C++
 (use-package company-irony-c-headers
-  :after (company company-irony)
-  :config (add-to-list 'company-backends 'company-irony-c-headers))
+  :after company-irony
+  :hook (irony-mode . (lambda ()
+                        (set (make-local-variable 'company-backends) '((company-irony-c-headers company-irony)))
+                        (company-mode))))
 
 (use-package company-irony
   :hook irony-mode
-  :custom (company-irony-ignore-case 'smart)
-  :config (add-to-list 'company-backends 'company-irony))
-
+  :custom
+  (company-irony-ignore-case 'smart))
 
 ;;; Python
 (use-package company-anaconda
-  :requires company
-  :hook (python-mode . anaconda-mode)
-  :config (add-to-list 'company-backends 'company-anaconda))
-
+  :hook (python-mode . (lambda ()
+                         (set (make-local-variable 'company-backends) '(company-anaconda))
+                         (company-mode)
+                         (anaconda-mode))))
 
 ;;; Golang
 (use-package company-go
@@ -111,8 +86,7 @@
                      (set (make-local-variable 'company-backends) '(company-go))
                      (company-mode)))
   :custom
-  (company-go-show-annotation t)
-  :config (add-to-list 'company-backends 'company-go))
+  (company-go-show-annotation t))
 
 
 ;;; Language Server Mode

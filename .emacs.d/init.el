@@ -345,15 +345,21 @@
 (use-package flyspell
   ;; Disable on Windows because `aspell' 0.6+ isn't available.
   :if (not (eq system-type 'windows-nt))
-  :defer 2
+  :defer 5
+  :hook
+  (text-mode . turn-on-flyspell)
+  (org-mode . turn-on-flyspell)
+  (prog-mode . flyspell-prog-mode)
   :delight
   :custom
+  (ispell-silently-savep t)
   (ispell-program-name "aspell")
-  (ispell-extra-args '("--sug-mode=ultra")))
+  (ispell-extra-args '("--sug-mode=ultra"
+                       "--lang=en_US")))
 (use-package flyspell-correct-ivy
   :requires (flyspell ivy))
 (use-package writegood-mode
-  :hook (flyspell-mode . writegood-mode))
+  :hook (text-mode . writegood-mode))
 
 ;;; Resize all buffers at once with C-M-= / C-M--
 (use-package default-text-scale

@@ -94,6 +94,7 @@
   :after evil
   :custom
   (evil-collection-setup-minibuffer t)
+  (evil-collection-company-use-tng nil)
   :hook
   (evil-mode . evil-collection-init))
 
