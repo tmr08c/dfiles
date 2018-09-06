@@ -48,7 +48,6 @@
          "/git/attributes\\'"))
 
 (use-package gitconfig-mode
-  :disabled
   :mode ("/\\.gitconfig\\'"
          "/\\.git/config\\'"
          "/modules/.*/config\\'"
@@ -57,7 +56,6 @@
          "/etc/gitconfig\\'"))
 
 (use-package gitignore-mode
-  :disabled
   :mode ("/\\.gitignore\\'"
          "/info/exclude\\'"
          "/git/ignore\\'"))

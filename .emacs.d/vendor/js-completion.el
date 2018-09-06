@@ -24,7 +24,7 @@
   (company-backends '(
                       company-nxml
                       company-css
-                      company-files
+                      company-async-files
                       company-c-headers
                       (company-dabbrev-code company-etags company-capf company-keywords)
                       company-dabbrev))
@@ -36,6 +36,10 @@
   (after-init . global-company-mode)
   ;; :config (add-to-list 'company-frontends 'company-tng-frontend)
   )
+
+(use-package company-async-files
+  :load-path "vendor/"
+  :requires company)
 
 (use-package company-box
   :disabled
@@ -82,8 +86,6 @@
 (use-package company-emoji
   :after company
   :config (add-to-list 'company-backends 'company-emoji))
-
-(use-package counsel-etags)
 
 ;;; C/C++
 (use-package company-irony-c-headers

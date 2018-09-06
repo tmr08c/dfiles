@@ -4,7 +4,6 @@
 
 ;;; Code:
 
-;; Scala
 (use-package scala-mode
   :mode ("\\.\\(scala\\|sbt\\)\\'" . scala-mode))
 
@@ -13,7 +12,6 @@
 
 (use-package sbt-mode
   :hook (scala-mode . sbt-mode))
-
 
 (provide 'js-scala)
 

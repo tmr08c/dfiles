@@ -269,6 +269,7 @@
     "I" 'neotree-hidden-file-toggle))
 
 (use-package amx
+  :after ivy
   :init (amx-initialize))
 
 ;;; Ivy for completion
@@ -280,6 +281,10 @@
   (ivy-wrap t)
   (ivy-display-style 'fancy)
   (ivy-format-function 'ivy-format-function-line)
+  (ivy-initial-inputs-alist nil)
+  (ivy-re-builders-alist
+	 ;; allow input not in order
+   '((t   . ivy--regex-ignore-order)))
   (ivy-use-selectable-prompt t))
 (use-package doom-todo-ivy
   :after ivy
@@ -300,7 +305,8 @@
 (use-package counsel
   :general
   (general-define-key
-   "M-x" 'counsel-M-x))
+   "M-x" 'counsel-M-x
+   "C-x C-f" 'counsel-find-file))
 
 (use-package counsel-projectile
   :after projectile
@@ -314,6 +320,9 @@
   :hook
   ((emacs-lisp-mode . (lambda () (setq-local counsel-dash-docsets '("Emacs Lisp"))))
    (ruby-mode . (lambda () (setq-local counsel-dash-docsets '("Ruby"))))))
+
+(use-package counsel-etags
+  :defer t)
 
 (use-package rg
   :commands (rg rg-project rg-dwim rg-literal))
