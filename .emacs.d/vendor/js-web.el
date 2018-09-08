@@ -11,6 +11,7 @@
   :mode
   (("\\.html\\'"       . web-mode)
    ("\\.erb\\'"        . web-mode)
+   ("\\.eex\\'"        . web-mode)
    ("\\.php\\'"        . web-mode)
    ("\\.hbs\\'"        . web-mode)
    ("\\.handlebars\\'" . web-mode)
