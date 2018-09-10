@@ -6,7 +6,8 @@
 
 ;;; Magit
 (use-package magit
-  :defer 5)
+  :commands
+  (magit-status magit-log-all-branches))
 (use-package magithub
   :disabled
   :after magit
@@ -20,7 +21,7 @@
 ;; (put 'magit-clean 'disabled nil))
 
 (use-package evil-magit
-  :after (magit evil))
+  :requires (magit evil))
 
 (provide 'js-vc)
 ;;; js-vc.el ends here

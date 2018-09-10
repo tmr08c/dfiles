@@ -66,7 +66,7 @@
   (undo-tree-auto-save-history t)
   (undo-tree-visualizer-diff t)
   (undo-tree-visualizer-timestamps t)
-  :config (global-undo-tree-mode))
+  :hook (after-init . global-undo-tree-mode))
 
 (use-package unfill
   :disabled
@@ -91,10 +91,12 @@
    "C-Z" 'undo-tree-redo))
 
 (use-package evil-collection
-  :after evil
+  :requires evil
+  :defer t
   :custom
   (evil-collection-setup-minibuffer t)
   (evil-collection-company-use-tng nil)
+  (evil-collection-mode-list nil)
   :hook
   (evil-mode . evil-collection-init))
 

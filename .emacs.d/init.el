@@ -25,40 +25,58 @@
 (unless (package-installed-p 'use-package)
   (package-refresh-contents)
   (package-install 'use-package))
-(customize-set-variable 'use-package-always-ensure t)
+(setq use-package-always-ensure t
+      use-package-compute-statistics t)
 (eval-when-compile
   (require 'use-package))
 
 ;; Used to benchmark init timings
 (use-package benchmark-init
-  :disabled
+  ;; :disabled
   :config
   ;; To disable collection of benchmark data after init is done.
   (add-hook 'after-init-hook 'benchmark-init/deactivate))
 
-(use-package delight)
-(use-package dash)
+;; (use-package delight)
+;; (use-package dash)
 
 ;; Ensure system has required packages and install if missing
 (use-package exec-path-from-shell
   :if (memq window-system '(mac ns x))
   :custom
   (exec-path-from-shell-variables '("SHELL" "MANPATH" "PATH" "GOPATH" "PGHOST" "SSH_AUTH_SOCK"))
+  (exec-path-from-shell-check-startup-files nil)
+  (exec-path-from-shell-arguments '("-l"))
   :config
   (exec-path-from-shell-initialize))
-(use-package use-package-ensure-system-package)
-(use-package system-packages
-  :requires use-package-ensure-system-package)
+(use-package use-package-ensure-system-package
+  :functions use-package-ensure-system-package-exists?
+  :requires (use-package exec-path-from-shell))
+
+;; TODO I may benefit from this
+;; (use-package auto-compile
+;;   :demand t
+;;   :custom
+;;   (auto-compile-mode-line-counter t "Show compile info in the mode-line")
+;;   (auto-compile-source-recreate-deletes-dest t)
+;;   (auto-compile-toggle-deletes-nonlib-dest t)
+;;   (auto-compile-update-autoloads t)
+;;   (auto-compile-display-buffer nil "Don't display compile buffer")
+;;   :hook
+;;   (auto-compile-inhibit-compile . auto-compile-inhibit-compile-detached-git-head)
+;;   :config
+;;   (auto-compile-on-load-mode)
+;;   (auto-compile-on-save-mode))
 
 ;; Save data files consistently:
 ;; - `save-place-file'
 ;; - `undo-tree-history-directory-alist'
 ;; - `backup-directory-alist'
 ;; - etc.
-(use-package no-littering)
-(customize-set-variable
- 'custom-file (no-littering-expand-var-file-name "custom.el"))
+(use-package no-littering
+  :demand t)
 
+(setq custom-file (no-littering-expand-var-file-name "custom.el"))
 (customize-set-variable 'user-full-name "Justin Smestad")
 (customize-set-variable 'user-mail-address "justin.smestad@gmail.com")
 
@@ -67,6 +85,7 @@
 
 ;;; Key Bindings
 (use-package general
+  :functions space-leader-def
   ;; :custom
   ;; (general-default-prefix "SPC")
   ;; (general-default-non-normal-prefix "C-SPC")
@@ -206,9 +225,8 @@
 ;; Auto-update packages.
 ;;
 (use-package auto-package-update
-  :defer 5
-  :config
-  (auto-package-update-maybe)
+  :commands auto-package-update-now
+  :requires no-littering
   :custom
   (auto-package-update-interval 7)
   (auto-package-update-delete-old-versions t)
@@ -224,6 +242,7 @@
   :disabled)
 ;;; Enable which-key
 (use-package which-key
+  :demand t
   :delight
   :init (which-key-mode)
   :custom
@@ -269,11 +288,11 @@
     "I" 'neotree-hidden-file-toggle))
 
 (use-package amx
-  :after ivy
-  :init (amx-initialize))
+  :hook (after-init . amx-initialize))
 
 ;;; Ivy for completion
 (use-package ivy
+  :commands (ivy-switch-buffer)
   :delight
   :custom
   (ivy-use-virtual-buffers t)
@@ -287,7 +306,7 @@
    '((t   . ivy--regex-ignore-order)))
   (ivy-use-selectable-prompt t))
 (use-package doom-todo-ivy
-  :after ivy
+  :commands doom/ivy-tasks
   :load-path "vendor/")
 (use-package ivy-rich
   :disabled
@@ -303,17 +322,29 @@
 
 ;;; Ado-ado
 (use-package counsel
+  :commands (counsel-M-x counsel-find-file)
   :general
   (general-define-key
    "M-x" 'counsel-M-x
    "C-x C-f" 'counsel-find-file))
 
 (use-package counsel-projectile
-  :after projectile
-  :hook (counsel-mode . counsel-projectile-mode))
+  :commands (counsel-projectile-find-file
+             counsel-projectile-find-file-dwim
+             counsel-projectile-find-dir
+             counsel-projectile-switch-to-buffer
+             counsel-projectile-grep
+             counsel-projectile-ag
+             counsel-projectile-rg
+             counsel-projectile-switch-project
+             counsel-projectile
+             counsel-projectile-git-grep
+             counsel-projectile-org-capture
+             counsel-projectile-org-agenda)
+  :requires (counsel projectile))
 
 (use-package counsel-dash
-  :defer t
+  :commands counsel-dash
   :custom
   (counsel-dash-browser-func 'eww)
   (counsel-dash-common-docsets '("Ruby"))
@@ -322,7 +353,14 @@
    (ruby-mode . (lambda () (setq-local counsel-dash-docsets '("Ruby"))))))
 
 (use-package counsel-etags
-  :defer t)
+  :requires counsel
+  :commands (counsel-etags-find-tag-at-point
+             counsel-etags-scan-code
+             counsel-etags-grep
+             counsel-etags-grep-symbol-at-point
+             counsel-etags-recent-tag
+             counsel-etags-find-tag
+             counsel-etags-list-tag))
 
 (use-package rg
   :commands (rg rg-project rg-dwim rg-literal))
@@ -334,21 +372,19 @@
    "C-s" 'swiper))
 
 (use-package flycheck
+  :hook (prog-mode . flycheck-mode)
   :custom
   (flycheck-rubocop-lint-only t)
   (flycheck-check-syntax-automatically '(mode-enabled save))
-  (flycheck-disabled-checkers '(ruby-rubylint))
-  :hook (prog-mode . flycheck-mode))
+  (flycheck-disabled-checkers '(ruby-rubylint)))
 (use-package flycheck-pos-tip
   :hook (flycheck-mode . flycheck-pos-tip-mode))
 
 (use-package flyspell
   ;; Disable on Windows because `aspell' 0.6+ isn't available.
   :if (not (eq system-type 'windows-nt))
-  :defer 5
   :hook
-  (text-mode . turn-on-flyspell)
-  (org-mode . turn-on-flyspell)
+  ((markdown-mode org-mode) . turn-on-flyspell)
   (prog-mode . flyspell-prog-mode)
   :delight
   :custom
@@ -357,12 +393,14 @@
   (ispell-extra-args '("--sug-mode=ultra"
                        "--lang=en_US")))
 (use-package flyspell-correct-ivy
-  :after (flyspell ivy))
+  :requires  ivy)
 (use-package writegood-mode
+  :defer t
   :hook (text-mode . writegood-mode))
 
 ;;; Resize all buffers at once with C-M-= / C-M--
 (use-package default-text-scale
+  :defer 3
   :init (default-text-scale-mode))
 ;;; Restart Emacs
 (use-package restart-emacs
@@ -374,7 +412,7 @@
 ;;; TODO workgroups
 ;; (use-package workgroups)
 (use-package popwin
-  :defer t
+  :defer 3
   :hook (after-init . popwin-mode))
 
 (use-package js-editing
@@ -386,8 +424,13 @@
 ;;;
 ;;; Projectile
 (use-package projectile
-  :defer t
-  :after ivy
+  :commands (projectile-project-root
+             projectile-switch-project
+             projectile-run-shell-command-in-root
+             projectile-recentf
+             projectile-kill-buffers)
+  ;; :defer t
+  :requires ivy
   :delight ;;'(:eval (concat " " (projectile-project-name)))
   :custom
   (projectile-indexing-method 'alien)
@@ -396,9 +439,11 @@
   (projectile-switch-project-action 'counsel-projectile-find-file)
   (projectile-sort-order 'recentf)
   :config
-  (define-key projectile-mode-map (kbd "s-p") 'projectile-command-map)
-  (define-key projectile-mode-map (kbd "C-c p") 'projectile-command-map)
-  (add-to-list 'projectile-project-root-files ".clang_complete")
+  (progn
+    (define-key projectile-mode-map (kbd "s-p") 'projectile-command-map)
+    (define-key projectile-mode-map (kbd "C-c p") 'projectile-command-map)
+    (add-to-list 'projectile-project-root-files ".clang_complete"))
+  :init
   (projectile-mode +1))
 
 (use-package js-completion
@@ -476,8 +521,8 @@
   :load-path "vendor/")
 
 ;; Python
-(use-package python
-  :mode ("\\.py" . python-mode))
+(use-package python-mode
+  :mode "\\.py")
 (use-package anaconda-mode
   :hook python-mode)
 (use-package pyenv-mode
@@ -485,9 +530,9 @@
   :commands (pyenv-mode-versions)
   :hook python-mode)
 
-(use-package lsp-python
-  :after lsp-mode
-  :hook (python-mode . lsp-python-enable))
+;; (use-package lsp-python
+;;   :after lsp-mode
+;;   :hook (python-mode . lsp-python-enable))
 
 
 ;; TODO: do I want emmet mode?
@@ -514,15 +559,15 @@
 
 (defalias 'yes-or-no-p 'y-or-n-p)
 
-(customize-set-variable 'byte-compile-warnings nil)
-(customize-set-variable 'create-lockfiles nil)
-(customize-set-variable 'cua-mode t)
-(customize-set-variable 'desktop-save-mode nil)
-(customize-set-variable 'indent-tabs-mode nil)
-;; (customize-set-variable 'initial-major-mode 'markdown-mode)
-(customize-set-variable 'initial-scratch-message (format ";; Scratch buffer - started on %s\n\n" (current-time-string)))
-(customize-set-variable 'load-prefer-newer t)
-(customize-set-variable 'sentence-end-double-space nil)
+(setq byte-compile-warnings nil
+      create-lockfiles nil
+      cua-mode t
+      desktop-save-mode nil
+      indent-tabs-mode nil
+      ;; (customize-set-variable 'initial-major-mode 'markdown-mode
+      initial-scratch-message (format ";; Scratch buffer - started on %s\n\n" (current-time-string))
+      load-prefer-newer t
+      sentence-end-double-space nil)
 
 ;; Platform Specific
 (use-package linux

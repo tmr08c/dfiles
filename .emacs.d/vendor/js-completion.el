@@ -8,6 +8,7 @@
 ;;; Company
 ;;; Auto-completion framework for most modes
 (use-package company
+  :defer t
   :delight
   :hook (after-init . global-company-mode)
   :custom
@@ -26,21 +27,28 @@
   (company-global-modes '(not eshell-mode comint-mode erc-mode message-mode help-mode gud-mode))
   (company-frontends '(company-pseudo-tooltip-frontend company-echo-metadata-frontend))
   (company-transformers '(company-sort-by-occurrence))
-  (company-backends '((company-async-files company-keywords company-capf)
-                      company-etags
+  (company-backends '(
+                      ;; company-etags
                       ;; company-keywords
                       ;; company-capf
                       (company-dabbrev))))
 
+
 (use-package company-async-files
+  :defer t
+  :no-require t
   :load-path "vendor/"
-  :requires company)
+  :requires company
+  :config (add-to-list 'company-backends '(company-async-files company-keywords company-capf)))
 
 (use-package company-box
-  :hook (company-mode . company-box-mode)
-  :load-path "vendor/company-box/")
+  :defer t
+  :hook (company-mode . company-box-mode))
+  ;; :load-path "vendor/company-box/")
 
 (use-package company-statistics
+  :defer t
+  :no-require t
   :hook (company-mode . company-statistics-mode))
 
 (use-package company-quickhelp
@@ -62,27 +70,32 @@
 
 ;;; General
 (use-package company-emoji
-  :after company
+  :no-require t
+  :defer 5
   :config (add-to-list 'company-backends 'company-emoji))
 
 ;;; C/C++
 (use-package company-irony
+  :no-require t
   :hook irony-mode
   :custom
   (company-irony-ignore-case 'smart))
 
 (use-package company-irony-c-headers
+  :no-require t
   :after company-irony
   :hook (irony-mode . (lambda ()
                         (set (make-local-variable 'company-backends) '((company-irony-c-headers company-irony company-etags))))))
 
 ;;; Python
 (use-package company-anaconda
+  :no-require t
   :hook (python-mode . (lambda ()
                          (set (make-local-variable 'company-backends) '(company-anaconda)))))
 
 ;;; Golang
 (use-package company-go
+  :no-require t
   :load-path "vendor/"
   :hook (go-mode . (lambda ()
                      (set (make-local-variable 'company-backends) '(company-go))))

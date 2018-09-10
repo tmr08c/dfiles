@@ -11,6 +11,7 @@
   :hook csv-mode)
 
 (use-package files
+  :no-require t
   :ensure nil
   :demand t
   :custom
@@ -26,12 +27,14 @@
 
 ;; Version control
 (use-package vc-hooks
+  :no-require t
   :ensure nil
   :demand t
   :custom (vc-follow-symlinks t))
 
 
 (use-package dired
+  :no-require t
   :ensure nil
   :demand t
   :commands (dired)
@@ -50,6 +53,7 @@
 
 ;; Fix Annoyances
 (use-package uniquify
+  :no-require t
   :ensure nil
   :demand t
   :custom (uniquify-buffer-name-style 'forward))
@@ -74,6 +78,7 @@
 
 
 (use-package recentf
+  :defer t
   :ensure nil
   :requires no-littering
   :custom

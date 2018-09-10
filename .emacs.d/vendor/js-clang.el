@@ -32,6 +32,7 @@
          (c++-mode . platformio-conditionally-enable)))
 
 (use-package clang-format
+  :after irony
   :config
   (progn
     (defun c-mode-before-save-hook ()

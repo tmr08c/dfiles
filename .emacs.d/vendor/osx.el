@@ -23,6 +23,7 @@
   (setq mac-system-move-file-to-trash-use-finder t))
 
 (use-package osx-trash
+  :defer 5
   :unless (boundp 'mac-system-move-file-to-trash-use-finder)
   :init (osx-trash-setup))
 
