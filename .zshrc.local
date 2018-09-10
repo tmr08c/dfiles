@@ -31,20 +31,6 @@ if (( $+commands[gpgconf] )); then
   gpg-connect-agent updatestartuptty /bye >/dev/null
 fi
 
-export GOPATH=$HOME/code/golang
-if [ "$OS" = "Darwin" ]; then
-  export JAVA_HOME=$(/usr/libexec/java_home -v 1.8)
-  export GOROOT=/usr/local/go
-else
-  export JAVA_HOME=/usr/lib/jvm/java-8-openjdk-amd64
-fi
-path=(
-  $path
-  $GOPATH/bin
-  $GOROOT/bin
-)
-
 # if [ $TILIX_ID ] || [ $VTE_VERSION ]; then
   # source /etc/profile.d/vte.sh
 # fi
-

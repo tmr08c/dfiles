@@ -38,62 +38,10 @@ else
   echo "Missing direnv. Please install it `brew install direnv` or `apt install direnv`."
 fi
 
-# Python
-# export PYENV_ROOT="$HOME/.pyenv"
-# path=(
-#   $PYENV_ROOT/bin
-#   $HOME/.local/bin
-#   $path
-# )
-# if (( $+commands[pyenv] )); then
-#   eval "$(pyenv init -)"
-#   eval "$(pyenv virtualenv-init -)"
-# fi
-
-# Ruby (rbenv)
-# if [[ -d ~/.rbenv ]]; then
-#   path=(
-#     $HOME/.rbenv/bin
-#     $path
-#   )
-#   eval "$(rbenv init -)"
-# else
-#   echo "Missing rbenv. Please install it https://github.com/rbenv/rbenv#basic-github-checkout"
-# fi
-
-if [[ -d ~/.cargo ]]; then
-  path=(
-    $HOME/.cargo/bin
-    $path
-  )
+# asdf
+if [[ -d ~/.asdf ]]; then
+  . ~/.asdf/completions/asdf.bash
 fi
-
-# PlatformIO
-if [[ -d ~/.platformio ]]; then
-  path=(
-    $path
-    $HOME/.platformio/penv/bin
-  )
-fi
-
-# Scala
-# if [[ -d ~/.scalaenv ]]; then
-#   path=(
-#     $HOME/.scalaenv/bin
-#     $path
-#   )
-
-#   eval "$(scalaenv init -)"
-
-#   # if [[ -d ~/.sbtenv ]]; then
-#     # export PATH="$HOME/.sbtenv/bin:$PATH"
-#     # eval "$(sbtenv init -)"
-#   # else
-#     # echo "Missing sbtenv. Please install it https://github.com/sbtenv/sbtenv"
-#   # fi
-# else
-#   echo "Missing scalaenv. Please install it https://github.com/scalaenv/scalaenv"
-# fi
 
 [[ -f ~/.zshrc.local ]] && source ~/.zshrc.local
 [[ -f ~/.zshrc.private ]] && source ~/.zshrc.private
@@ -106,8 +54,3 @@ source ~/.zpluginrc
 # completion
 autoload -Uz compinit
 compinit
-
-if [[ -d ~/.asdf ]]; then
-  . ~/.asdf/asdf.sh
-  . ~/.asdf/completions/asdf.bash
-fi
