@@ -1,4 +1,4 @@
-;;; js-java.el --- Part of my Emacs configuration
+;;; js-java.el --- Part of my Emacs configuration -*- lexical-binding: t; -*-
 
 ;;; Commentary:
 

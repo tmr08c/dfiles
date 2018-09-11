@@ -1,4 +1,4 @@
-;;; js-editing.el --- Part of my Emacs setup
+;;; js-editing.el --- Part of my Emacs setup -*- lexical-binding: t; -*-
 
 ;;; Commentary:
 
@@ -7,34 +7,23 @@
 ;; Rainbow Delimiters
 ;; Highlight matching delimiters with unique colors.
 (use-package rainbow-delimiters
-  :commands (rainbow-delimiters-mode)
   :hook (prog-mode . rainbow-delimiters-mode))
 
 ;; Adapt to foreign indentation offsets
 (use-package dtrt-indent
+  :defer t
   :delight
   :custom (dtrt-indent-min-quality 60)
   :init (dtrt-indent-global-mode))
 
 (use-package aggressive-indent
-  :hook (
-         (emacs-lisp-mode . aggressive-indent-mode)
+  :hook ((emacs-lisp-mode . aggressive-indent-mode)
          ;; (ruby-mode . aggressive-indent-mode)
          (css-mode . aggressive-indent-mode)))
 
 (use-package adaptive-wrap
+  :defer t
   :config (adaptive-wrap-prefix-mode))
-
-;; TODO this could be handy at SPC g t c
-(use-package goto-chg
-  :disabled
-  :commands goto-last-change
-  ;; complementary to
-  ;; C-x r m / C-x r l
-  ;; and C-<space> C-<space> / C-u C-<space>
-  :bind (("C-." . goto-last-change)
-         ("C-," . goto-last-change-reverse)))
-
 
 (use-package dumb-jump
   :commands (dump-jump-go
@@ -46,7 +35,9 @@
   (dumb-jump-selector 'ivy))
 
 (use-package whitespace
-  :hook (before-save . delete-trailing-whitespace)
+  :defer 5
+  :config
+  (add-hook 'before-save 'delete-trailing-whitespace)
   :commands (whitespace-mode))
 
 (use-package ws-butler
@@ -73,7 +64,8 @@
   :bind ([remap fill-paragraph] . #'unfill-toggle))
 
 (use-package evil
-  :hook (after-init . evil-mode)
+  :ensure t
+  :init (evil-mode 1)
   :custom
   (evil-want-C-u-scroll t)
   (evil-want-Y-yank-to-eol t)
@@ -91,52 +83,57 @@
    "C-Z" 'undo-tree-redo))
 
 (use-package evil-collection
+  :disabled
   :requires evil
   :defer t
   :custom
   (evil-collection-setup-minibuffer t)
   (evil-collection-company-use-tng nil)
-  (evil-collection-mode-list nil)
-  :hook
+  (evil-collection-mode-list '())
+  :init
   (evil-mode . evil-collection-init))
 
 (use-package evil-surround
-  :hook (evil-mode . global-evil-surround-mode))
+  :defer 5
+  :init (global-evil-surround-mode 1))
 
 (use-package evil-matchit
-  :hook (evil-mode . global-evil-matchit-mode))
-
-(use-package evil-smartparens
-  :disabled
-  :hook (smartparens-enabled . evil-smartparens-mode))
+  :defer 5
+  :init (global-evil-matchit-mode))
 
 (use-package evil-escape
+  :requires evil
   :delight
   :custom
   (evil-escape-delay 0.2)
-  :hook (evil-mode . evil-escape-mode))
+  :init
+  (evil-escape-mode))
 
 (use-package evil-goggles
+  :defer 5
   :delight
   :custom
   (evil-goggles-duration 0.1)
   (evil-goggles-enable-delete nil)
-  :hook
-  (evil-mode . evil-goggles-mode))
+  :init
+  (evil-goggles-mode))
 
 (use-package evil-easymotion
-  :delight
-  :after evil-mode)
+  :defer 5
+  :delight)
 
 (use-package evil-quickscope
+  :defer t
   :delight
-  :hook (evil-mode . global-evil-quickscope-mode))
+  :init (global-evil-quickscope-mode 1))
 
 (use-package evil-commentary
+  :defer t
   :delight
-  :hook (evil-mode . evil-commentary-mode))
+  :init (evil-commentary-mode))
 
 (use-package hideshow
+  :functions hs-toggle-hiding
   :ensure nil
   :delight
   :config
@@ -154,38 +151,14 @@
 ;;   :hook (global-evil-mc-mode . global-evil-mc-extras-mode))
 
 (use-package multiple-cursors
+  :disabled
   :bind (("C->" . mc/mark-next-like-this)
          ("C-<" . mc/mark-previous-like-this)
          ("C-*" . mc/mark-all-like-this)))
 
-;; Electric Pair Mode
-(use-package pair-mode
-  :disabled
-  :ensure nil
-  :hook (after-init . electric-pair-mode))
-
-(use-package smartparens
-  :disabled
-  :hook ((elixir-mode . smartparens-strict-mode)
-         (js-mode . smartparens-strict-mode)
-         (python-mode . smartparens-strict-mode)
-         (ruby-mode . smartparens-strict-mode)))
-
-;; This package highlights the cursor every time it jumps abruptedly from a
-;; place to another (e.g. when changing windows and so on).
-(use-package beacon
-  :disabled ;; TODO get this working with company mode
-  :delight
-  :defer 2
-  :config
-  (progn
-    (setq beacon-blink-when-buffer-changes nil)
-    (setq beacon-blink-when-window-changes nil)
-    (add-to-list 'beacon-dont-blink-major-modes 'shell-mode)
-    (beacon-mode 1)))
-
 (use-package evil-string-inflection
-  :after evil-mode)
+  :requires evil
+  :defer t)
 
 (provide 'js-editing)
 

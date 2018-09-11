@@ -1,4 +1,4 @@
-;;; js-ui.el --- Part of my Emacs configuration
+;;; js-ui.el --- Part of my Emacs configuration -*- lexical-binding: t; -*-
 
 ;;; Commentary:
 
@@ -21,35 +21,17 @@
 ;;                     :weight 'normal
 ;;                     :width 'normal)
 
+;; This is MUCH faster than using set-face-attribute
+(add-to-list 'default-frame-alist '(font . "Fira Mono:13"))
+
+;; (add-to-list 'default-frame-alist '(width . 120))
+(add-to-list 'default-frame-alist '(fullscreen . fullboth))
+
 ;; Appearance
 ;; (if (display-graphic-p)
-(progn
-  (menu-bar-mode -1)
-  (when (fboundp 'tool-bar-mode)
-    (tool-bar-mode -1))
-  (when (fboundp 'scroll-bar-mode)
-    (scroll-bar-mode -1))
-  (when (fboundp 'horizontal-scroll-bar-mode)
-    (horizontal-scroll-bar-mode -1)))
-
-  ;; Theme Emacs for dark color scheme
-  ;; (add-to-list 'default-frame-alist '(ns-transparent-titlebar . t))
-  ;; (add-to-list 'default-frame-alist '(ns-appearance . dark))
-
-  ;; (add-hook 'after-init-hook 'set-frame-size-according-to-resolution)
-  ;; (add-hook 'after-make-frame-functions 'set-frame-size-according-to-resolution)))
-
-
-  (defun set-frame-size-according-to-resolution (&rest frame)
-    "Set FRAME height to screen height and width to half total."
-    (if window-system
-        (let ((f (if (car frame)
-		                 (car frame)
-	                 (selected-frame))))
-          (progn
-            (set-frame-height f (display-pixel-height) nil 'pixelwise)
-            (set-frame-width f (/ (display-pixel-width) 2) nil 'pixelwise)
-            (set-frame-position f 0 0)))))
+;; Theme Emacs for dark color scheme
+(add-to-list 'default-frame-alist '(ns-transparent-titlebar . t))
+(add-to-list 'default-frame-alist '(ns-appearance . dark))
 
 (use-package all-the-icons
   :commands (all-the-icons-faicon
@@ -66,23 +48,24 @@
 
 ;; Modeline
 (use-package doom-modeline
+	:defer t
   :load-path "vendor/"
   :hook (after-init . doom-modeline-init))
-;; (use-package hide-mode-line
-;;   :hook ((neotree-mode . hide-mode-line-mode)
-;;          (completion-list-mode . hide-mode-line-mode)
-;;          (completion-in-region-mode . hide-mode-line-mode)))
+(use-package hide-mode-line
+  :hook ((neotree-mode . hide-mode-line-mode)
+         (completion-list-mode . hide-mode-line-mode)
+         (completion-in-region-mode . hide-mode-line-mode)))
 
 
 ;;; Support Emojis in Emacs
-;; (use-package emojify
-;;   ;; :defer 5
-;;   :init
-;;   (progn
-;;     ;; (if (eq system-type 'darwin)
-;;     (setq emojify-display-style 'unicode)
-;;     ;; (setq emojify-display-style 'image))
-;;     (global-emojify-mode)))
+(use-package emojify
+	:defer 5
+  :init
+  (progn
+    ;; (if (eq system-type 'darwin)
+    (setq emojify-display-style 'unicode)
+    ;; (setq emojify-display-style 'image))
+    (global-emojify-mode)))
 
 
 (provide 'js-ui)

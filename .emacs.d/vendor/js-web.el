@@ -1,4 +1,4 @@
-;;; js-web.el --- Part of my Emacs config
+;;; js-web.el --- Part of my Emacs config -*- lexical-binding: t; -*-
 
 ;;; Commentary:
 

@@ -1,4 +1,4 @@
-;;; js-completion.el -- Part of my Emacs configuration
+;;; js-completion.el -- Part of my Emacs configuration -*- lexical-binding: t; -*-
 
 ;;; Commentary:
 
@@ -47,9 +47,9 @@
   ;; :load-path "vendor/company-box/")
 
 (use-package company-statistics
+  ;; :disabled
   :defer t
-  :no-require t
-  :hook (company-mode . company-statistics-mode))
+  :no-require t)
 
 (use-package company-quickhelp
   :hook (company-mode . company-quickhelp-mode)

@@ -1,4 +1,4 @@
-;;; js-builtin.el --- Part of my Emacs configuration
+;;; js-builtin.el --- Part of my Emacs configuration -*- lexical-binding: t; -*-
 
 ;;; Commentary:
 ;;; This file contains changes to built-in Emacs packages. Things like

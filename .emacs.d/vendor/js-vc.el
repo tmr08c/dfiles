@@ -1,4 +1,4 @@
-;;; js-vc.el --- Part of my Emacs configuration
+;;; js-vc.el --- Part of my Emacs configuration -*- lexical-binding: t; -*-
 
 ;;; Commentary:
 

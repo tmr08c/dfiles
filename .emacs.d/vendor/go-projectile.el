@@ -1,4 +1,4 @@
-;;; go-projectile.el --- Go add-ons for Projectile
+;;; go-projectile.el --- Go add-ons for Projectile -*- lexical-binding: t; -*-
 
 ;; Copyright (C) 2014 Doug MacEachern
 

@@ -1,4 +1,4 @@
-;;; js-ruby.el --- Part of my Emacs configuration
+;;; js-ruby.el --- Part of my Emacs configuration -*- lexical-binding: t; -*-
 
 ;;; Commentary:
 

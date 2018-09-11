@@ -1,7 +1,18 @@
-;; init --- Justin Smestad's Emacs init file
+;; init.el --- Justin Smestad's Emacs init file -*- lexical-binding: t; -*-
 ;;; Commentary:
 
 ;;; Code:
+
+;; Package initialize occurs automatically, before `user-init-file' is
+;; loaded, but after `early-init-file'. Doom handles package
+;; initialization, so we must prevent Emacs from doing it early!
+(setq package-enable-at-startup nil)
+
+;; Prevent the glimpse of un-styled Emacs by setting these early.
+(add-to-list 'default-frame-alist '(tool-bar-lines 0))
+(add-to-list 'default-frame-alist '(menu-bar-lines 0))
+(add-to-list 'default-frame-alist '(vertical-scroll-bars))
+
 (customize-set-variable 'gc-cons-threshold (* 10 1024 1024))
 
 ;; Default to UTF-8 early as this file uses Unicode symbols.
@@ -10,6 +21,7 @@
 (set-terminal-coding-system 'utf-8)
 (set-keyboard-coding-system 'utf-8)
 (setq-default buffer-file-coding-system 'utf-8)
+(add-to-list 'load-path "~/.emacs.d/vendor/")
 
 ;; Get package repos configured
 (require 'package)
@@ -32,7 +44,7 @@
 
 ;; Used to benchmark init timings
 (use-package benchmark-init
-  ;; :disabled
+  :disabled
   :config
   ;; To disable collection of benchmark data after init is done.
   (add-hook 'after-init-hook 'benchmark-init/deactivate))
@@ -51,7 +63,7 @@
   (exec-path-from-shell-initialize))
 (use-package use-package-ensure-system-package
   :functions use-package-ensure-system-package-exists?
-  :requires (use-package exec-path-from-shell))
+  :requires (exec-path-from-shell))
 
 ;; TODO I may benefit from this
 ;; (use-package auto-compile
@@ -80,11 +92,10 @@
 (customize-set-variable 'user-full-name "Justin Smestad")
 (customize-set-variable 'user-mail-address "justin.smestad@gmail.com")
 
-(use-package js-ui
-  :load-path "vendor/")
 
 ;;; Key Bindings
 (use-package general
+  :demand t
   :functions space-leader-def
   ;; :custom
   ;; (general-default-prefix "SPC")
@@ -480,25 +491,19 @@
   :config (editorconfig-mode 1))
 
 ;; Ruby
-(use-package js-ruby
-  :load-path "vendor/")
+(require 'js-ruby)
 
 ;; HTML / CSS
-(use-package js-web
-  :load-path "/vendor")
+(require 'js-web)
 
 ;; Javascript
-(use-package js-javascript
-  :load-path "/vendor")
+(require 'js-javascript)
 
 ;; Other modes
-(use-package js-altmodes
-  :load-path "/vendor")
-
+(require 'js-altmodes)
 
 ;; Go
-(use-package js-golang
-  :load-path "vendor/")
+(require 'js-golang)
 
 ;; Scala
 (use-package js-scala
@@ -576,6 +581,8 @@
 (use-package osx
   :load-path "vendor/"
   :if (eq system-type 'darwin))
+
+(require 'js-ui)
 
 (provide 'init)
 ;;; init.el ends here

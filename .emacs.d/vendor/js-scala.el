@@ -1,4 +1,4 @@
-;;; js-scala.el -- Part of my emacs configuration
+;;; js-scala.el -- Part of my emacs configuration -*- lexical-binding: t; -*-
 
 ;;; Commentary:
 

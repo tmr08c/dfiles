@@ -1,4 +1,5 @@
-;;; js-elixir.el --- Part of my emacs configuration
+;;; js-elixir.el --- Part of my emacs configuration -*- lexical-binding: t; -*-
+
 ;;; Commentary:
 
 ;;; Code:

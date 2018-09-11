@@ -1,4 +1,4 @@
-;;; js-golang.el -- Part of my Emacs configuration
+;;; js-golang.el -- Part of my Emacs configuration -*- lexical-binding: t; -*-
 
 ;;; Commentary:
 

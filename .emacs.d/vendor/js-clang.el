@@ -1,4 +1,4 @@
-;;; js-clang.el --- Part of my Emacs configuration
+;;; js-clang.el --- Part of my Emacs configuration -*- lexical-binding: t; -*-
 
 ;;; Commentary:
 
