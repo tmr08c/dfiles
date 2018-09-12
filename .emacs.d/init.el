@@ -331,6 +331,39 @@
   :config
   (ivy-rich-mode 1))
 
+(use-package ivy-posframe
+  :hook (ivy-mode . ivy-posframe-enable)
+  :defines ivy-posframe-parameters
+  :preface
+  ;; This function searches the entire `obarray' just to populate
+  ;; `ivy-display-functions-props'. There are 15k entries in mine! This is
+  ;; wasteful, so...
+  (advice-add #'ivy-posframe-setup :override #'ignore)
+  :config
+  (setq ivy-fixed-height-minibuffer nil
+        ivy-posframe-parameters
+        `((min-width . 90)
+          (min-height . ,ivy-height)
+          (internal-border-width . 10)))
+
+  ;; ... let's do it manually instead
+  (unless (assq 'ivy-posframe-display-at-frame-bottom-left ivy-display-functions-props)
+    (dolist (fn (list 'ivy-posframe-display-at-frame-bottom-left
+                      'ivy-posframe-display-at-frame-center
+                      'ivy-posframe-display-at-point
+                      'ivy-posframe-display-at-frame-bottom-window-center
+                      'ivy-posframe-display
+                      'ivy-posframe-display-at-window-bottom-left
+                      'ivy-posframe-display-at-window-center
+                      '+ivy-display-at-frame-center-near-bottom))
+      (push (cons fn '(:cleanup ivy-posframe-cleanup)) ivy-display-functions-props)))
+  ;; default to posframe display function
+  (setf (alist-get t ivy-display-functions-alist) #'+ivy-display-at-frame-center-near-bottom)
+
+  ;; posframe doesn't work well with async sources
+  (dolist (fn '(swiper counsel-ag counsel-grep counsel-git-grep))
+    (setf (alist-get fn ivy-display-functions-alist) #'ivy-display-function-fallback)))
+
 ;;; Ado-ado
 (use-package counsel
   :commands (counsel-M-x counsel-find-file)

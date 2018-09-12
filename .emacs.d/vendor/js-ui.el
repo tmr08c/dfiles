@@ -25,7 +25,7 @@
 (add-to-list 'default-frame-alist '(font . "Fira Mono:13"))
 
 ;; (add-to-list 'default-frame-alist '(width . 120))
-(add-to-list 'default-frame-alist '(fullscreen . fullboth))
+;; (add-to-list 'default-frame-alist '(fullscreen . fullboth))
 
 ;; Appearance
 ;; (if (display-graphic-p)
