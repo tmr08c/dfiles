@@ -38,6 +38,10 @@ else
   echo "Missing direnv. Please install it `brew install direnv` or `apt install direnv`."
 fi
 
+# completion
+autoload -Uz compinit
+compinit
+
 # asdf
 if [[ -d ~/.asdf ]]; then
   . ~/.asdf/completions/asdf.bash
@@ -51,6 +55,3 @@ source ~/.zpluginrc
 # Aliases
 [[ -f ~/.aliases ]] && source ~/.aliases
 
-# completion
-autoload -Uz compinit
-compinit
