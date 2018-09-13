@@ -1,3 +1,9 @@
+# Patch for macOS which sources this later by default in /etc/zprofile
+#
+if [ -x /usr/libexec/path_helper ]; then
+   eval `/usr/libexec/path_helper -s`
+fi
+
 # Set Language
 export LANG=en_US.UTF-8
 export LANGUAGE=en_US.UTF-8
@@ -25,6 +31,7 @@ if [[ -d ~/.platformio ]]; then
   )
 fi
 
+
 if [ -f ~/.zshenv.local ]; then
-	source ~/.zshenv.local
+  source ~/.zshenv.local
 fi

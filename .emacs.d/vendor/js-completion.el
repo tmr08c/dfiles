@@ -28,11 +28,7 @@
   (company-frontends '(company-pseudo-tooltip-frontend
                        company-echo-metadata-frontend))
   (company-transformers '(company-sort-by-occurrence))
-  (company-backends '(
-                      ;; company-etags
-                      ;; company-keywords
-                      ;; company-capf
-                      company-dabbrev)))
+  (company-backends '()))
 
 
 (use-package company-async-files
@@ -40,7 +36,7 @@
   :no-require t
   :load-path "vendor/"
   :requires company
-  :config (add-to-list 'company-backends '(company-async-files company-keywords company-capf)))
+  :config (add-to-list 'company-backends '(company-keywords company-capf company-async-files)))
 
 (use-package company-box
   :defer t
@@ -121,7 +117,8 @@
 (use-package company-emoji
   :no-require t
   :defer 5
-  :config (add-to-list 'company-backends 'company-emoji))
+  :hook ((markdown-mode git-commit-mode magit-status-mode magit-log-mode) . (lambda ()
+                                                                              (set (make-local-variable 'company-backends) '(company-emoji)))))
 
 ;;; C/C++
 (use-package company-irony

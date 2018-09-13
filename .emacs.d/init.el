@@ -495,12 +495,16 @@
 
 ;;; EShell
 (use-package eshell
-  :commands eshell
+  :commands (eshell eshell-mode)
   :custom
+  (eshell-visual-commands '("tmux" "htop" "bash" "zsh" "fish" "vim" "nvim"))
+  (eshell-visual-subcommands '(("git" "log" "l" "diff" "show")))
   (eshell-history-size 10000)
   (eshell-hist-ignoredups t)
   (eshell-scroll-to-bottom-on-output 'this)
-  (eshell-scroll-to-bottom-on-input 'all))
+  (eshell-scroll-to-bottom-on-input 'all)
+  (eshell-buffer-shorthand t)
+  (eshell-kill-processes-on-exit t))
 
 (use-package repl-toggle
   :disabled
