@@ -67,6 +67,44 @@
     ;; (setq emojify-display-style 'image))
     (global-emojify-mode)))
 
+;; TODO try out shackle instead
+;; (use-package popwin
+;;   :defer 3
+;;   :hook (after-init . popwin-mode))
+
+(use-package shackle
+  :diminish
+  :custom
+  (shackle-default-alignment 'below)
+  (shackle-default-size 8)
+  (shackle-rules
+   '(
+     ;; built-in (emacs)
+     ("*compilation*" :size 0.25 :noselect t :autokill t :autoclose t)
+     ("*ert*" :same t :modeline t)
+     ("*info*" :size 0.5 :select t :autokill t)
+     ("*Backtrace*" :size 20 :noselect t)
+     ("*Warnings*"  :size 12 :noselect t :autofit t)
+     ("*Messages*"  :size 12 :noselect t)
+     ("*Help*" :size 0.3 :autokill t)
+     ("^\\*.*Shell Command.*\\*$" :regexp t :size 20 :noselect t :autokill t)
+     (apropos-mode :size 0.3 :autokill t :autoclose t)
+     (Buffer-menu-mode :size 20 :autokill t)
+     (comint-mode :noesc t)
+     (grep-mode :size 25 :noselect t :autokill t)
+     (profiler-report-mode :size 0.3 :regexp t :autokill t :modeline minimal)
+     (tabulated-list-mode :noesc t)
+     ("^ ?\\*" :regexp t :size 15 :noselect t :autokill t :autoclose t))))
+
+
+;;; Resize all buffers at once with C-M-= / C-M--
+(use-package default-text-scale
+  :defer 3
+  :init (default-text-scale-mode))
+
+;;; Restart Emacs
+(use-package restart-emacs
+  :commands restart-emacs)
 
 (provide 'js-ui)
 

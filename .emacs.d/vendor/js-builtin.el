@@ -69,27 +69,29 @@
    ("bash_local$" . sh-mode)
    ("bash_completion$" . sh-mode)))
 
-;; Better scrolling
-(use-package pixel-scroll
-  :disabled
-  :ensure nil
-  :if (> emacs-major-version 25)
-  :hook (after-init . pixel-scroll-mode))
-
-
 (use-package recentf
+  :requires no-littering
   :defer t
   :ensure nil
-  :requires no-littering
   :custom
   (recentf-auto-cleanup 200)
-  (recentf-max-saved-items 1000)
+  (recentf-max-saved-items 500)
   (recentf-auto-cleanup 'never)
-  (recentf-auto-save-timer (run-with-idle-timer 600 t 'recentf-save-list))
+  (recentf-exclude
+   '("/tmp/" "\\.ido\\.last" "ido.last" "\\.git/config" "\\.git/COMMIT_EDITMSG"
+     "cache/recentf" "\\.emacs\\.d/elpa/.*" "\\.emacs\\.d/.cask/.*" ))
   :config
-  (add-to-list 'recentf-exclude "COMMIT_EDITMSG\\'")
-  (add-to-list 'recentf-exclude no-littering-var-directory)
-  (add-to-list 'recentf-exclude no-littering-etc-directory))
+  (progn
+    (add-to-list 'recentf-exclude "COMMIT_EDITMSG\\'")
+    (add-to-list 'recentf-exclude no-littering-var-directory)
+    (add-to-list 'recentf-exclude no-littering-etc-directory)
+    (setq recentf-auto-save-timer (run-with-idle-timer 600 t 'recentf-save-list))))
+
+
+(use-package eldoc
+  :defer t
+  :ensure nil
+  :delight)
 
 (provide 'js-builtin)
 

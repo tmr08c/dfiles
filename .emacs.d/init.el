@@ -275,7 +275,6 @@
   (neo-window-width 25)
   :general
   (general-nmap neotree-mode-map
-
     "RET" 'neotree-enter
     "TAB" 'neotree-stretch-toggle
     "q" 'neotree-hide
@@ -442,22 +441,10 @@
   :defer t
   :hook (text-mode . writegood-mode))
 
-;;; Resize all buffers at once with C-M-= / C-M--
-(use-package default-text-scale
-  :defer 3
-  :init (default-text-scale-mode))
-;;; Restart Emacs
-(use-package restart-emacs
-  :commands restart-emacs)
-;;; TODO Shackle to keep pop-up windows under control
-;; (use-package shackle)
 ;;; TODO Workspaces
 ;; (use-package persp-mode)
 ;;; TODO workgroups
 ;; (use-package workgroups)
-(use-package popwin
-  :defer 3
-  :hook (after-init . popwin-mode))
 
 (use-package js-editing
   :load-path "vendor/")
@@ -543,24 +530,19 @@
 (require 'js-golang)
 
 ;; Scala
-(use-package js-scala
-  :load-path "vendor/")
+(require 'js-scala)
 
 ;; C / C++ / Arduino
-(use-package js-clang
-  :load-path "vendor/")
+(require 'js-clang)
 
 ;; Elisp
-(use-package eldoc
-  :ensure nil
-  :delight)
+(require 'js-lisp)
 
 ;; Erlang
 (use-package erlang
   :mode "\\.erl$")
 
-(use-package js-elixir
-  :load-path "vendor/")
+(require 'js-elixir)
 
 ;; Python
 (use-package python-mode
@@ -608,8 +590,8 @@
       indent-tabs-mode nil
       ;; (customize-set-variable 'initial-major-mode 'markdown-mode
       initial-scratch-message (format ";; Scratch buffer - started on %s\n\n" (current-time-string))
-      load-prefer-newer t
-      sentence-end-double-space nil)
+  load-prefer-newer t
+  sentence-end-double-space nil)
 
 ;; Platform Specific
 (use-package linux

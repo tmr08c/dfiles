@@ -160,6 +160,8 @@
   :requires evil
   :defer t)
 
+(use-package yasnippet)
+
 (provide 'js-editing)
 
 ;;; js-editing.el ends here

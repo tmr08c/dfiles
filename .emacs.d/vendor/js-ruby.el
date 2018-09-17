@@ -21,24 +21,31 @@
     "m t" '(:ignore t :which-key "Tests")))
 
 (use-package inf-ruby
-  :requires ruby-mode
-  :hook (after-init . inf-ruby-switch-setup))
+  :custom
+  (inf-ruby-console-environment "development")
+  :hook
+  (after-init . inf-ruby-switch-setup))
+
+(use-package company-inf-ruby
+  :after inf-ruby
+  :config
+  (add-to-list 'company-backends 'company-inf-ruby))
 
 ;; Not available yet on MELPA
 ;; (use-package lsp-ruby
 ;;   :requires lsp-mode
 ;;   :hook (ruby-mode . lsp-ruby-enable))
 
-(use-package robe
-  :disabled
-  :after company
-  :hook (ruby-mode . robe-mode)
-  :config (add-to-list 'company-backends 'company-robe))
+;; (use-package robe
+;;   :disabled
+;;   :hook (ruby-mode . robe-mode)
+;;   :config (add-to-list 'company-backends 'company-robe))
 
 (use-package rspec-mode
   :hook (ruby-mode . rspec-mode)
   :custom
   (compilation-scroll-output t)
+  (rspec-autosave-buffer t)
   :general
   (space-leader-def 'normal ruby-mode-map
     "m t a" '(rspec-verify-all :which-key "run all tests")
