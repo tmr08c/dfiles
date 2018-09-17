@@ -297,6 +297,20 @@
     "R" 'neotree-change-root
     "I" 'neotree-hidden-file-toggle))
 
+(use-package helpful
+  :defer t
+  :general
+  (space-leader-def
+    :states '(normal visual insert emacs)
+    "hh" '(:ignore t :which-key "helpful")
+    "hhh" 'helpful-at-point
+    "hhc" 'helpful-command
+    "hhf" 'helpful-callable
+    "hhk" 'helpful-key
+    "hhm" 'helpful-macro
+    "hhv" 'helpful-variable))
+
+
 (use-package amx
   :hook (after-init . amx-initialize))
 
@@ -366,6 +380,8 @@
 ;;; Ado-ado
 (use-package counsel
   :commands (counsel-M-x counsel-find-file)
+  :custom
+  (counsel-mode-override-describe-bindings t)
   :general
   (general-define-key
    "M-x" 'counsel-M-x
