@@ -49,7 +49,6 @@
 ;; Modeline
 (use-package doom-modeline
 	:defer t
-  :load-path "vendor/"
   :hook (after-init . doom-modeline-init))
 (use-package hide-mode-line
   :hook ((neotree-mode . hide-mode-line-mode)

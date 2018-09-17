@@ -89,7 +89,6 @@
 
 
 (use-package eldoc
-  :defer t
   :ensure nil
   :delight)
 
