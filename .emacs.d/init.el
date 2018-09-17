@@ -298,7 +298,17 @@
     "I" 'neotree-hidden-file-toggle))
 
 (use-package helpful
+  :after ivy
   :defer t
+  :defines ivy-initial-inputs-alist
+  :bind (("C-c C-d" . helpful-at-point))
+  :config
+  (dolist (cmd '(helpful-callable
+                 helpful-variable
+                 helpful-function
+                 helpful-macro
+                 helpful-command))
+    (cl-pushnew `(,cmd . "^") ivy-initial-inputs-alist))
   :general
   (space-leader-def
     :states '(normal visual insert emacs)
