@@ -76,11 +76,11 @@ else
   fi
 
   # Download GPG key from Public Server
-  gpg --list-keys 0xDB57958A3B574D5C >/dev/null 2>&1
+  gpg2 --list-keys 0xDB57958A3B574D5C >/dev/null 2>&1
   status=$?
   if [ $status -ne 0 ]; then
     echo "GPG key missing. Importing from Public Server."
-    gpg --recv 0xDB57958A3B574D5C
+    gpg2 --recv 0xDB57958A3B574D5C
     echo "GPG imported. You must manually trust it."
     echo "Run 'gpg --edit-key 0xDB57958A3B574D5C' and give it ultimate trust."
 
