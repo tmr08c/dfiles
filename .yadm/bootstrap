@@ -22,7 +22,16 @@ else
   distro=$(lsb_release -i | cut -f2-)
   if [ -f /etc/redhat-release ]; then
     echo "Fedora / RHEL detected"
-    sudo yum install direnv
+    sudo dnf install -y direnv util-linux-user vim mozilla-fira-mono-fonts mozilla-fira-sans-fonts google-roboto-mono-fonts google-roboto-slab-fonts aspell-en tlp tlp-rdw
+
+    echo "Configure Yubikey dependencies"
+    sudo dnf install -y pcsc-lite yubioath-desktop powertop
+
+    echo "Install Ruby dependencies"
+    sudo dnf install -y bzip2 openssl-devel libyaml-devel libffi-devel readline-devel zlib-devel gdbm-devel ncurses-devel perl-Digest-SHA
+
+    echo "Install Python dependencies"
+    sudo dnf install -y zlib-devel bzip2 bzip2-devel readline-devel sqlite sqlite-devel openssl-devel tk-devel libffi-devel
   fi
 
   if [ "$distro" = "Ubuntu" ]; then
