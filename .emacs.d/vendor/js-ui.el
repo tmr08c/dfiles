@@ -59,12 +59,13 @@
 ;;; Support Emojis in Emacs
 (use-package emojify
 	:defer 5
-  :init
-  (progn
-    ;; (if (eq system-type 'darwin)
-    (setq emojify-display-style 'unicode)
-    ;; (setq emojify-display-style 'image))
-    (global-emojify-mode)))
+	:custom
+	(emojify-display-style 'unicode)
+	:hook
+	((markdown-mode . emojify-mode)
+	 (git-commit-mode . emojify-mode)
+	 (magit-status-mode . emojify-mode)
+	 (magit-log-mode . emojify-mode)))
 
 ;; TODO try out shackle instead
 ;; (use-package popwin
