@@ -16,7 +16,7 @@
   (company-dabbrev-downcase nil)
   (company-dabbrev-ignore-case nil)
   (company-dabbrev-code-other-buffers t)
-  (company-echo-delay 0) ; remove annoying blinking
+  ;; (company-echo-delay 0) ; remove annoying blinking
   (company-idle-delay 0.1)
   (company-minimum-prefix-length 2)
   (company-require-match 'never)
@@ -39,6 +39,7 @@
   :config (add-to-list 'company-backends '(company-keywords company-capf company-async-files)))
 
 (use-package company-box
+  :disabled
   :defer t
   :hook (company-mode . company-box-mode)
   :config
