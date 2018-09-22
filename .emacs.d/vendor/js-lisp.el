@@ -5,6 +5,9 @@
 ;;; Code:
 
 (use-package lispy
+	:disabled 														;; quite frustrating library in evil mode
+	:custom
+	(lispy-close-quotes-at-end-p t)
 	:hook ((emacs-lisp-mode
 					lisp-interaction-mode
 					lisp-mode
@@ -38,7 +41,7 @@
 		(add-to-list 'evil-emacs-state-modes 'sly-xref-mode)
 		(add-to-list 'evil-emacs-state-modes 'sly-stickers--replay-mode))
 	:general
-	(space-leader-def 'normal lisp-mode-map
+	(space-leader-def lisp-mode-map
 		"'" 'sly
 
 		"m h" '(:ignore t :which-key "help")
