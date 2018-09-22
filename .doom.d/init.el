@@ -17,11 +17,11 @@
        :completion
        (company          ; the ultimate code completion backend
         +auto)           ; as-you-type code completion
-      ;(helm             ; the *other* search engine for love and life
-      ; +fuzzy)          ; enable fuzzy search backend for helm
+       (helm             ; the *other* search engine for love and life
+        +fuzzy)          ; enable fuzzy search backend for helm
       ;ido               ; the other *other* search engine...
-       (ivy              ; a search engine for love and life
-        +fuzzy)          ; enable fuzzy search backend for ivy
+      ;(ivy              ; a search engine for love and life
+      ; +fuzzy)          ; enable fuzzy search backend for ivy
 
        :ui
       ;deft              ; notational velocity for Emacs
@@ -47,7 +47,7 @@
        window-select     ; visually switch windows
 
        :editor
-      ;(format +onsave)  ; automated prettiness
+       (format +onsave)  ; automated prettiness
        multiple-cursors  ; editing in many places at once
       ;parinfer          ; turn lisp into python, sort of
        rotate-text       ; cycle region at point between text candidates
@@ -63,26 +63,27 @@
        vc                ; version-control and Emacs, sitting in a tree
 
        :tools
+      ;ansible
       ;docker
        editorconfig      ; let someone else argue about tabs vs spaces
       ;ein               ; tame Jupyter notebooks with emacs
       ;gist              ; interacting with github gists
-       macos             ; MacOS-specific commands
+      ;macos             ; MacOS-specific commands
       ;make              ; run make tasks from Emacs
-       magit             ; a git porcelain for Emacs
+      ;magit             ; a git porcelain for Emacs
       ;password-store    ; password manager for nerds
       ;pdf               ; pdf enhancements
       ;prodigy           ; FIXME managing external services & code builders
-      ;rgb               ; creating color strings
+       rgb               ; creating color strings
       ;tmux              ; an API for interacting with tmux
       ;upload            ; map local to remote projects via ssh/ftp
       ;wakatime
 
        :lang
       ;assembly          ; assembly for fun or debugging
-      ;(cc +irony +rtags); C/C++/Obj-C madness
+       (cc +irony +rtags); C/C++/Obj-C madness
       ;clojure           ; java with a lisp
-      ;common-lisp       ; if you've seen one lisp, you've seen them all
+       common-lisp       ; if you've seen one lisp, you've seen them all
       ;coq               ; proofs-as-programs
       ;crystal           ; ruby at the speed of c
       ;csharp            ; unity, .NET, and mono shenanigans
@@ -106,23 +107,23 @@
       ;nim               ; python + lisp at the speed of c
       ;nix               ; I hereby declare "nix geht mehr!"
       ;ocaml             ; an objective camel
-       (org              ; organize your plain life in plain text
-        +attach          ; custom attachment system
-        +babel           ; running code in org
-        +capture         ; org-capture in and outside of Emacs
-        +export          ; Exporting org to whatever you want
-        +present)        ; Emacs for presentations
+      ;(org              ; organize your plain life in plain text
+      ; +attach          ; custom attachment system
+      ; +babel           ; running code in org
+      ; +capture         ; org-capture in and outside of Emacs
+      ; +export          ; Exporting org to whatever you want
+      ; +present)        ; Emacs for presentations
       ;perl              ; write code no one else can comprehend
       ;php               ; perl's insecure younger brother
       ;plantuml          ; diagrams for confusing people more
       ;purescript        ; javascript, but functional
-       python            ; beautiful is better than ugly
+      ;python            ; beautiful is better than ugly
       ;qt                ; the 'cutest' gui framework ever
       ;racket            ; a DSL for DSLs
       ;rest              ; Emacs as a REST client
        ruby              ; 1.step do {|i| p "Ruby is #{i.even? ? 'love' : 'life'}"}
-       rust              ; Fe2O3.unwrap().unwrap().unwrap().unwrap()
-       scala             ; java, but good
+      ;rust              ; Fe2O3.unwrap().unwrap().unwrap().unwrap()
+      ;hcala             ; java, but good
        (sh +fish)        ; she sells (ba|z|fi)sh shells on the C xor
       ;solidity          ; do you need a blockchain? No.
       ;swift             ; who asked for emoji variables?
@@ -154,4 +155,5 @@
        ;; library, and additional ex commands for evil-mode. Use it as a
        ;; reference for your own modules.
        (default +bindings +snippets +evil-commands))
+
 
