@@ -8,7 +8,7 @@ fi
 
 if [ ! -f ~/.emacs ]; then
 	echo "Install Chemacs"
-	git clone -b patch-1 https://github.com/jsmestad/chemacs.git ~/code/github/ && ./code/github/chemacs/install.sh
+	git clone https://github.com/plexus/chemacs.git ~/code/github/ && ./code/github/chemacs/install.sh
 fi
 
 
