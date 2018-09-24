@@ -16,8 +16,8 @@
   (company-dabbrev-downcase nil)
   (company-dabbrev-ignore-case nil)
   (company-dabbrev-code-other-buffers t)
-  ;; (company-echo-delay 0) ; remove annoying blinking
-  (company-idle-delay 0.1)
+  (company-echo-delay 0) ; remove annoying blinking
+  (company-idle-delay 0.6)
   (company-minimum-prefix-length 2)
   (company-require-match 'never)
   (company-selection-wrap-around t)

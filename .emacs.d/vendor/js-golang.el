@@ -19,7 +19,7 @@
    (goimports . "go get -u golang.org/x/tools/cmd/goimports")
    (guru . "go get -u golang.org/x/tools/cmd/guru"))
   :general
-  (space-leader-def 'normal go-mode-map
+  (space-leader-def go-mode-map
     ;; Tests
     "m t" '(:ignore t :which-key "test")
     "m t a" '(js/go-run-test-current-suite :which-key "run suite")

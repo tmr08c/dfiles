@@ -57,8 +57,6 @@
             (not (memq (js2-node-type (js2-node-at-point))
                        (list rjsx-JSX rjsx-JSX-ATTR rjsx-JSX-IDENT rjsx-JSX-MEMBER)))))
 
-
-
 (provide 'js-javascript)
 
 ;;; js-javascript.el ends here

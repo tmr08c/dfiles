@@ -11,7 +11,7 @@
 (use-package alchemist
   :hook (elixir-mode . alchemist-mode)
   :general
-  (space-leader-def 'normal elixir-mode-map
+  (space-leader-def elixir-mode-map
     ;; TODO FIXME all of these need to be prepended with m to scope to the major mode
     ;; "el" 'alchemist-eval-current-line
     ;; "eL" 'alchemist-eval-print-current-line

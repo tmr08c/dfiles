@@ -44,10 +44,16 @@
 (use-package rspec-mode
   :hook (ruby-mode . rspec-mode)
   :custom
-  (compilation-scroll-output t)
+  (compilation-scroll-output 'first-error)
   (rspec-autosave-buffer t)
+  :config
+  (add-hook 'rspec-compilation-mode-hook 'inf-ruby-auto-enter nil t)
+  ;; (add-hook 'rspec-compilation-mode-hook
+  ;;           (lambda ()
+  ;;             (make-local-variable 'compilation-scroll-output)
+  ;;             (setq compilation-scroll-output 'first-error)))
   :general
-  (space-leader-def 'normal ruby-mode-map
+  (space-leader-def ruby-mode-map
     "m t a" '(rspec-verify-all :which-key "run all tests")
     "m t b" '(rspec-verify :which-key "run tests in buffer")
     "m t e" '(rspec-toggle-example-pendingness :which-key "toggle test pending")
@@ -56,23 +62,20 @@
     "m t r" '(rspec-rerun :which-key "rerun last tests")))
 
 (use-package rubocop
-  :requires ruby-mode
   :ensure-system-package
   (rubocop . "gem install rubocop")
   :hook (ruby-mode . rubocop-mode))
 
 (use-package rbenv
-  :requires ruby-mode
   :hook (ruby-mode . global-rbenv-mode))
 
 (use-package yard-mode
-  :requires ruby-mode
   :hook (ruby-mode . yard-mode))
 
 (use-package ruby-hash-syntax
   :requires ruby-mode
   :general
-  (space-leader-def 'normal ruby-mode-map
+  (space-leader-def ruby-mode-map
     "m f h" '(ruby-hash-syntax-toggle :which-key "toggle hash syntax")))
 
 (use-package projectile-rails
