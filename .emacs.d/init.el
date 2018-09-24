@@ -33,6 +33,8 @@
 (unless package--initialized
   (package-initialize))
 
+(require 'core) ; Provides shared functions
+
 ;; Bootstrap `use-package'
 (unless (package-installed-p 'use-package)
   (package-refresh-contents)

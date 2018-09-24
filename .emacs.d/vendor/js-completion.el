@@ -23,8 +23,9 @@
   (company-selection-wrap-around t)
   (company-tooltip-align-annotations t)
   (company-tooltip-flip-when-above t)
-  (company-tooltip-limit 10)
-  (company-global-modes '(not eshell-mode comint-mode erc-mode message-mode help-mode gud-mode))
+  (company-tooltip-limit 14)
+  (company-global-modes
+   '(not eshell-mode comint-mode erc-mode message-mode help-mode gud-mode))
   (company-frontends '(company-pseudo-tooltip-frontend
                        company-echo-metadata-frontend))
   (company-transformers '(company-sort-by-occurrence))
@@ -114,14 +115,14 @@
   :hook (company-mode . company-posframe-mode))
 
 
-;;; General
+;; General
 (use-package company-emoji
   :no-require t
   :defer 5
   :hook ((markdown-mode git-commit-mode magit-status-mode magit-log-mode) . (lambda ()
                                                                               (set (make-local-variable 'company-backends) '(company-emoji)))))
 
-;;; C/C++
+;; C/C++
 (use-package company-irony
   :no-require t
   :hook irony-mode
@@ -134,13 +135,13 @@
   :hook (irony-mode . (lambda ()
                         (set (make-local-variable 'company-backends) '((company-irony-c-headers company-irony company-etags))))))
 
-;;; Python
+;; Python
 (use-package company-anaconda
   :no-require t
   :hook (python-mode . (lambda ()
                          (set (make-local-variable 'company-backends) '(company-anaconda)))))
 
-;;; Golang
+;; Golang
 (use-package company-go
   :no-require t
   :load-path "vendor/"
@@ -148,6 +149,12 @@
                      (set (make-local-variable 'company-backends) '(company-go))))
   :custom
   (company-go-show-annotation t))
+
+;; Shell
+(use-package company-shell
+  :custom
+  (company-shell-delete-duplicates t))
+
 
 
 ;;; Language Server Mode
