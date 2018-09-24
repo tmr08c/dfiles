@@ -36,14 +36,22 @@
 
 (use-package whitespace
   :defer 5
+  :custom
+  (whitespace-line-column fill-column)
+  (whitespace-style
+   '(face indentation tabs tab-mark spaces space-mark newline newline-mark
+          trailing lines-tail))
+  (whitespace-display-mappings
+   '((tab-mark ?\t [?› ?\t])
+     (newline-mark ?\n [?¬ ?\n])
+     (space-mark ?\ [?·] [?.])))
   :config
-  (add-hook 'before-save 'delete-trailing-whitespace)
-  :commands (whitespace-mode))
+  (add-hook 'before-save 'delete-trailing-whitespace))
 
-(use-package ws-butler
-  :delight
-  :defer t
-  :config (ws-butler-global-mode))
+;; (use-package ws-butler
+;;   :delight
+;;   :defer t
+;;   :config (ws-butler-global-mode))
 
 (use-package autorevert
   :ensure nil
@@ -54,9 +62,7 @@
 (use-package undo-tree
   :delight
   :custom
-  (undo-tree-auto-save-history t)
-  (undo-tree-visualizer-diff t)
-  (undo-tree-visualizer-timestamps t)
+  (undo-tree-auto-save-history nil)
   :hook (after-init . global-undo-tree-mode))
 
 (use-package unfill

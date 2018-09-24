@@ -10,6 +10,28 @@
 (use-package vlf
   :hook csv-mode)
 
+(use-package window
+  :ensure nil
+  :preface (provide 'window)
+  :custom
+  (display-buffer-alist
+   `((,(rx bos (or "*Flycheck errors*"
+                   "*Backtrace"
+                   "*Warnings"
+                   "*compilation"
+                   "*Help"
+                   "*helpful"
+                   "*ivy-occur"
+                   "*less-css-compilation"
+                   "*Packages"
+                   "*SQL"))
+      (display-buffer-reuse-window
+       display-buffer-in-side-window)
+      (side            . bottom)
+      (reusable-frames . visible)
+      (window-height   . 0.5))
+     ("." nil (reusable-frames . visible)))))
+
 (use-package files
   :no-require t
   :ensure nil

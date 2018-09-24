@@ -14,21 +14,11 @@
       window-resize-pixelwise t
       frame-resize-pixelwise t)
 
-;;; Font
-;; (set-face-attribute 'default nil
-;;                     :family "Fira Mono"
-;;                     :height 130
-;;                     :weight 'normal
-;;                     :width 'normal)
-
 ;; This is MUCH faster than using set-face-attribute
 (add-to-list 'default-frame-alist '(font . "Fira Mono:13"))
 
-;; (add-to-list 'default-frame-alist '(width . 120))
-;; (add-to-list 'default-frame-alist '(fullscreen . fullboth))
 
 ;; Appearance
-;; (if (display-graphic-p)
 ;; Theme Emacs for dark color scheme
 (add-to-list 'default-frame-alist '(ns-transparent-titlebar . t))
 (add-to-list 'default-frame-alist '(ns-appearance . dark))
@@ -58,14 +48,14 @@
 
 ;;; Support Emojis in Emacs
 (use-package emojify
-	:defer 5
-	:custom
-	(emojify-display-style 'unicode)
-	:hook
-	((markdown-mode . emojify-mode)
-	 (git-commit-mode . emojify-mode)
-	 (magit-status-mode . emojify-mode)
-	 (magit-log-mode . emojify-mode)))
+  :defer 5
+  :custom
+  (emojify-display-style 'unicode)
+  :hook
+  ((markdown-mode . emojify-mode)
+   (git-commit-mode . emojify-mode)
+   (magit-status-mode . emojify-mode)
+   (magit-log-mode . emojify-mode)))
 
 ;; TODO try out shackle instead
 ;; (use-package popwin
@@ -73,6 +63,7 @@
 ;;   :hook (after-init . popwin-mode))
 
 (use-package shackle
+  :disabled
   :diminish
   :custom
   (shackle-default-alignment 'below)

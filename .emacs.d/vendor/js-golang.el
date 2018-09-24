@@ -7,10 +7,12 @@
 (use-package go-mode
   :mode "\\.go$"
   :config
-  (add-hook 'before-save-hook 'gofmt-before-save)
+  (add-hook 'go-mode-hook
+            (lambda ()
+              (add-hook 'before-save-hook 'gofmt-before-save)
+              (setq tab-width 2
+                    indent-tabs-mode 1)))
   :custom
-  (tab-width 2)
-  (indent-tabs-mode 1)
   (gofmt-command "goimports")
   :ensure-system-package
   ((gocode . "go get -u github.com/mdempsky/gocode")

@@ -58,8 +58,8 @@
 (use-package exec-path-from-shell
   :if (memq window-system '(mac ns x))
   :custom
-  (exec-path-from-shell-variables '("SHELL" "MANPATH" "PATH" "GOPATH" "PGHOST" "SSH_AUTH_SOCK"))
-  (exec-path-from-shell-check-startup-files nil)
+  (exec-path-from-shell-variables '("SHELL" "MANPATH" "PATH" "GOPATH" "GOROOT" "PGHOST" "SSH_AUTH_SOCK" "LC_CTYPE" "LC_ALL" "LANG"))
+  ;; (exec-path-from-shell-check-startup-files nil)
   (exec-path-from-shell-arguments '("-l"))
   :config
   (exec-path-from-shell-initialize))
