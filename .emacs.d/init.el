@@ -614,10 +614,9 @@
       cua-mode t
       desktop-save-mode nil
       indent-tabs-mode nil
-      ;; (customize-set-variable 'initial-major-mode 'markdown-mode
       initial-scratch-message (format ";; Scratch buffer - started on %s\n\n" (current-time-string))
-  load-prefer-newer t
-  sentence-end-double-space nil)
+      load-prefer-newer t
+      sentence-end-double-space nil)
 
 ;; Platform Specific
 (use-package linux

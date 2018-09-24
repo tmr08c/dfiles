@@ -2,6 +2,41 @@
 
 system_type=$(uname -s)
 
+if [ ! -d ~/code ]; then
+	mkdir -p ~/code/{github,self,learning}
+fi
+
+if [ ! -f ~/.emacs ]; then
+	echo "Install Chemacs"
+	git clone -b patch-1 https://github.com/jsmestad/chemacs.git ~/code/github/ && ./code/github/chemacs/install.sh
+fi
+
+
+if [ ! -e $HOME/.vim/bundle/vundle ]; then
+  echo "Installing Vundle for VIM configuration"
+  mkdir -p ~/.vim
+  git clone https://github.com/gmarik/vundle.git $HOME/.vim/bundle/vundle
+fi
+
+if [ command -v vim >/dev/null 2>&1 ]; then
+  vim -u $HOME/.vimrc.bundles +BundleInstall +qa
+fi
+
+if [ ! -d ~/.asdf ]; then
+  git clone https://github.com/asdf-vm/asdf.git ~/.asdf --branch v0.5.1
+fi
+
+if [ ! -d ~/.emacs-doom.d ]; then
+	echo "Grabbing Doom Emacs"
+	git clone -b develop https://github.com/hlissner/doom-emacs.git ~/.emacs-doom.d
+	~/.emacs-doom.d/bin/doom refresh
+fi
+
+if [ ! -d ~/.emacs-spacemacs.d ]; then
+	echo "Grabbing Spacemacs"
+	git clone -b develop https://github.com/syl20bnr/spacemacs ~/.emacs-spacemacs.d
+fi
+
 if [ "$system_type" = "Darwin" ]; then
   echo "macOS detected"
 
@@ -22,16 +57,16 @@ else
   distro=$(lsb_release -i | cut -f2-)
   if [ -f /etc/redhat-release ]; then
     echo "Fedora / RHEL detected"
-    sudo dnf install -y direnv util-linux-user vim mozilla-fira-mono-fonts mozilla-fira-sans-fonts google-roboto-mono-fonts google-roboto-slab-fonts aspell-en tlp tlp-rdw
+    sudo dnf install -y -q direnv util-linux-user vim mozilla-fira-mono-fonts mozilla-fira-sans-fonts google-roboto-mono-fonts google-roboto-slab-fonts aspell-en tlp tlp-rdw
 
     echo "Configure Yubikey dependencies"
-    sudo dnf install -y pcsc-lite yubioath-desktop powertop
+    sudo dnf install -y -q pcsc-lite yubioath-desktop powertop
 
     echo "Install Ruby dependencies"
-    sudo dnf install -y bzip2 openssl-devel libyaml-devel libffi-devel readline-devel zlib-devel gdbm-devel ncurses-devel perl-Digest-SHA
+    sudo dnf install -y -q bzip2 openssl-devel libyaml-devel libffi-devel readline-devel zlib-devel gdbm-devel ncurses-devel perl-Digest-SHA
 
     echo "Install Python dependencies"
-    sudo dnf install -y zlib-devel bzip2 bzip2-devel readline-devel sqlite sqlite-devel openssl-devel tk-devel libffi-devel
+    sudo dnf install -y -q zlib-devel bzip2 bzip2-devel readline-devel sqlite sqlite-devel openssl-devel tk-devel libffi-devel
   fi
 
   if [ "$distro" = "Ubuntu" ]; then
@@ -58,16 +93,6 @@ else
     sudo pacman -Sy libusb-compat yubikey-manager
   fi
 
-
-  # if [ ! -d ~/.config/base16-gnome-terminal ]; then
-  #   echo "Fetching base16 themes for gnome terminal"
-  #   sudo apt install -y gconf2
-  #   git clone https://github.com/aaron-williamson/base16-gnome-terminal.git ~/.config/base16-gnome-terminal
-
-  #   echo "Installing Monokai theme `~/.config/base16-gnome-terminal/color-scripts/base16-monokai.sh`"
-  #   source ~/.config/base16-gnome-terminal/color-scripts/base16-monokai.sh
-  # fi
-
   if [ ! -d ~/.config/tilix/schemes ]; then
     echo "Fetching base16 theme for Tilix"
     mkdir -p ~/.config/tilix/schemes
@@ -92,20 +117,5 @@ else
     ssh-add -L | grep "cardno:000607123960" > ~/.ssh/id_rsa_yubikey.pub
   fi
 fi
-
-if [ ! -e $HOME/.vim/bundle/vundle ]; then
-  echo "Installing Vundle for VIM configuration"
-  mkdir -p ~/.vim
-  git clone https://github.com/gmarik/vundle.git $HOME/.vim/bundle/vundle
-fi
-
-if [ command -v vim >/dev/null 2>&1 ]; then
-  vim -u $HOME/.vimrc.bundles +BundleInstall +qa
-fi
-
-if [ ! -d ~/.asdf ]; then
-  git clone https://github.com/asdf-vm/asdf.git ~/.asdf --branch v0.5.1
-fi
-
 echo "Updating the yadm repo origin URL"
 yadm remote set-url origin "git@github.com:jsmestad/dfiles.git"
