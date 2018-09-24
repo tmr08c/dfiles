@@ -39,20 +39,36 @@ This function should only modify configuration layer settings."
      ;; Uncomment some layer names and press `SPC f e R' (Vim style) or
      ;; `M-m f e R' (Emacs style) to install them.
      ;; ----------------------------------------------------------------
-     helm
+     ;; helm
+     ivy
      ;; auto-completion
-     ;; better-defaults
+     better-defaults
+     csv
+     elixir
      emacs-lisp
+     go
      ;; git
-     ;; markdown
-     neotree
+     html
+     javascript
+     markdown
+     (neotree :variables
+              neo-auto-indent-point t
+              neo-show-hidden-files nil
+              neo-theme 'icons)
      ;; org
-     ;; (shell :variables
-     ;;        shell-default-height 30
-     ;;        shell-default-position 'bottom)
+     (ruby :variables
+           ruby-test-runner 'rspec)
+     ruby-on-rails
+     rust
+     (shell :variables
+            shell-default-height 30
+            shell-default-position 'bottom)
+     shell-scripts
      ;; spell-checking
-     ;; syntax-checking
-     ;; version-control
+     sql
+     syntax-checking
+     version-control
+     yaml
      )
 
    ;; List of additional packages that will be installed without being
@@ -62,7 +78,8 @@ This function should only modify configuration layer settings."
    ;; To use a local version of a package, use the `:location' property:
    ;; '(your-package :location "~/path/to/your-package/")
    ;; Also include the dependencies as they will not be resolved automatically.
-   dotspacemacs-additional-packages '()
+   dotspacemacs-additional-packages '(doom-themes
+                                      (direnv :location "~/.spacemacs.d/layers/direnv"))
 
    ;; A list of packages that cannot be updated.
    dotspacemacs-frozen-packages '()
@@ -185,7 +202,9 @@ It should only modify the values of Spacemacs settings."
    ;; List of themes, the first of the list is loaded when spacemacs starts.
    ;; Press `SPC T n' to cycle to the next theme in the list (works great
    ;; with 2 themes variants, one dark and one light)
-   dotspacemacs-themes '(spacemacs-dark
+   dotspacemacs-themes '(doom-molokai
+                         monokai
+                         spacemacs-dark
                          spacemacs-light)
 
    ;; Set the theme for the Spaceline. Supported themes are `spacemacs',
@@ -195,7 +214,8 @@ It should only modify the values of Spacemacs settings."
    ;; refer to the DOCUMENTATION.org for more info on how to create your own
    ;; spaceline theme. Value can be a symbol or list with additional properties.
    ;; (default '(spacemacs :separator wave :separator-scale 1.5))
-   dotspacemacs-mode-line-theme '(spacemacs :separator wave :separator-scale 1.5)
+   ;; dotspacemacs-mode-line-theme '(spacemacs :separator wave :separator-scale 1.5)
+   dotspacemacs-mode-line-theme 'doom
 
    ;; If non-nil the cursor color matches the state color in GUI Emacs.
    ;; (default t)
@@ -203,10 +223,8 @@ It should only modify the values of Spacemacs settings."
 
    ;; Default font, or prioritized list of fonts. `powerline-scale' allows to
    ;; quickly tweak the mode-line size to make separators look not too crappy.
-   dotspacemacs-default-font '("Source Code Pro"
-                               :size 13
-                               :weight normal
-                               :width normal)
+   dotspacemacs-default-font '("Fira Mono"
+                               :size 16)
 
    ;; The leader key (default "SPC")
    dotspacemacs-leader-key "SPC"
@@ -359,7 +377,7 @@ It should only modify the values of Spacemacs settings."
    ;; If non-nil pressing the closing parenthesis `)' key in insert mode passes
    ;; over any automatically added closing parenthesis, bracket, quote, etc…
    ;; This can be temporary disabled by pressing `C-q' before `)'. (default nil)
-   dotspacemacs-smart-closing-parenthesis nil
+   dotspacemacs-smart-closing-parenthesis t
 
    ;; Select a scope to highlight delimiters. Possible values are `any',
    ;; `current', `all' or `nil'. Default is `all' (highlight any scope and
@@ -414,7 +432,7 @@ It should only modify the values of Spacemacs settings."
    ;; `trailing' to delete only the whitespace at end of lines, `changed' to
    ;; delete only whitespace for changed lines or `nil' to disable cleanup.
    ;; (default nil)
-   dotspacemacs-whitespace-cleanup nil
+   dotspacemacs-whitespace-cleanup 'trailing
 
    ;; Either nil or a number of seconds. If non-nil zone out after the specified
    ;; number of seconds. (default nil)
@@ -454,6 +472,42 @@ This function is called at the very end of Spacemacs startup, after layer
 configuration.
 Put your configuration code here, except for variables that should be set
 before packages are loaded."
+  (setq doom-modeline-height 32) ; adjust modeline size to a little larger than default (23)
+  (setq ivy-use-selectable-prompt t) ; adjust modeline size to a little larger than default (23)
+
+  ;; Builtin
+  (setq create-lockfiles nil)
+
+  ;; Editing
+  (setq evil-escape-delay 0.3
+        indent-tabs-mode nil
+        show-trailing-whitespace t
+        tab-width 2
+        trucate-lines t)
+  (fset 'evil-visual-update-x-selection 'ignore) ; Prevent the visual selection from overriding the system clipboard
+
+  ;; UI
+  (with-eval-after-load 'neotree
+    ;; Use `o` and `I` in NeoTree and mimic NERDTree
+    (evil-define-key 'evilified neotree-mode-map (kbd "o") 'neotree-enter)
+    (evil-define-key 'evilified neotree-mode-map (kbd "I") 'neotree-hidden-file-toggle))
+
+  ;; Ruby
+  (setq flycheck-rubocop-lint-only t
+        ruby-align-to-stmt-keywords '(if while unless until begin case for def))
+
+  ;; JavaScript
+  (setq js2-basic-offset 2
+        js-indent-level 2)
+
+  ;; Web
+  (setq css-indent-offset 2
+        web-mode-attr-indent-offset 2
+        web-mode-auto-close-style 2 ; Close on </ and >
+        web-mode-code-indent-offset 2
+        web-mode-css-indent-offset 2
+        web-mode-markup-indent-offset 2)
+
   )
 
 ;; Do not write anything past this comment. This is where Emacs will
@@ -470,7 +524,7 @@ This function is called at the very end of Spacemacs initialization."
  ;; If there is more than one, they won't work right.
  '(package-selected-packages
    (quote
-    (ws-butler winum volatile-highlights vi-tilde-fringe uuidgen toc-org symon string-inflection spaceline-all-the-icons spaceline powerline restart-emacs request rainbow-delimiters popwin persp-mode password-generator paradox spinner overseer org-bullets open-junk-file neotree nameless move-text macrostep lorem-ipsum link-hint indent-guide hungry-delete hl-todo highlight-parentheses highlight-numbers parent-mode highlight-indentation helm-xref helm-themes helm-swoop helm-purpose window-purpose imenu-list helm-projectile helm-mode-manager helm-make helm-flx helm-descbinds helm-ag google-translate golden-ratio flx-ido flx fill-column-indicator fancy-battery eyebrowse expand-region evil-visualstar evil-visual-mark-mode evil-unimpaired evil-tutor evil-surround evil-numbers evil-nerd-commenter evil-mc evil-matchit evil-lisp-state evil-lion evil-indent-plus evil-iedit-state iedit evil-goggles evil-exchange evil-escape evil-ediff evil-cleverparens smartparens paredit evil-args evil-anzu anzu evil goto-chg eval-sexp-fu highlight elisp-slime-nav editorconfig dumb-jump doom-modeline eldoc-eval shrink-path all-the-icons memoize f dash s define-word counsel-projectile projectile counsel swiper ivy pkg-info epl column-enforce-mode clean-aindent-mode centered-cursor-mode auto-highlight-symbol auto-compile packed aggressive-indent ace-window ace-link ace-jump-helm-line helm avy helm-core popup which-key use-package pcre2el org-plus-contrib hydra font-lock+ undo-tree dotenv-mode diminish bind-map bind-key async))))
+    (yaml-mode xterm-color web-mode web-beautify toml-mode tern tagedit sql-indent slim-mode shell-pop seeing-is-believing scss-mode sass-mode rvm ruby-tools ruby-test-mode ruby-refactor ruby-hash-syntax rubocop rspec-mode robe rbenv racer pug-mode projectile-rails rake inflections prettier-js ob-elixir multi-term minitest livid-mode skewer-mode json-navigator hierarchy json-mode json-snatcher json-reformat js2-refactor yasnippet multiple-cursors js2-mode js-doc insert-shebang impatient-mode htmlize simple-httpd haml-mode godoctor go-tag go-rename go-impl go-guru go-gen-test go-fill-struct go-eldoc go-mode flycheck-rust flycheck-mix flycheck-credo flycheck-bashate fish-mode feature-mode eshell-z eshell-prompt-extras esh-help emmet-mode direnv csv-mode counsel-css chruby cargo rust-mode bundler inf-ruby alchemist company elixir-mode doom-themes monokai-theme wgrep unfill smex mwim mmm-mode markdown-toc markdown-mode ivy-xref ivy-purpose ivy-hydra git-gutter-fringe+ git-gutter-fringe fringe-helper git-gutter+ git-commit with-editor git-gutter gh-md flycheck-pos-tip pos-tip flycheck diff-hl browse-at-remote ws-butler winum volatile-highlights vi-tilde-fringe uuidgen toc-org symon string-inflection spaceline-all-the-icons spaceline powerline restart-emacs request rainbow-delimiters popwin persp-mode password-generator paradox spinner overseer org-bullets open-junk-file neotree nameless move-text macrostep lorem-ipsum link-hint indent-guide hungry-delete hl-todo highlight-parentheses highlight-numbers parent-mode highlight-indentation helm-xref helm-themes helm-swoop helm-purpose window-purpose imenu-list helm-projectile helm-mode-manager helm-make helm-flx helm-descbinds helm-ag google-translate golden-ratio flx-ido flx fill-column-indicator fancy-battery eyebrowse expand-region evil-visualstar evil-visual-mark-mode evil-unimpaired evil-tutor evil-surround evil-numbers evil-nerd-commenter evil-mc evil-matchit evil-lisp-state evil-lion evil-indent-plus evil-iedit-state iedit evil-goggles evil-exchange evil-escape evil-ediff evil-cleverparens smartparens paredit evil-args evil-anzu anzu evil goto-chg eval-sexp-fu highlight elisp-slime-nav editorconfig dumb-jump doom-modeline eldoc-eval shrink-path all-the-icons memoize f dash s define-word counsel-projectile projectile counsel swiper ivy pkg-info epl column-enforce-mode clean-aindent-mode centered-cursor-mode auto-highlight-symbol auto-compile packed aggressive-indent ace-window ace-link ace-jump-helm-line helm avy helm-core popup which-key use-package pcre2el org-plus-contrib hydra font-lock+ undo-tree dotenv-mode diminish bind-map bind-key async))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.

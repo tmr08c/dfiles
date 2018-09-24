@@ -63,7 +63,7 @@ else
     sudo dnf install -y -q pcsc-lite yubioath-desktop powertop
 
     echo "Install Ruby dependencies"
-    sudo dnf install -y -q bzip2 openssl-devel libyaml-devel libffi-devel readline-devel zlib-devel gdbm-devel ncurses-devel perl-Digest-SHA
+    sudo dnf install -y -q bzip2 openssl-devel libyaml-devel libffi-devel readline-devel zlib-devel gdbm-devel ncurses-devel perl-Digest-SHA postgresql-devel
 
     echo "Install Python dependencies"
     sudo dnf install -y -q zlib-devel bzip2 bzip2-devel readline-devel sqlite sqlite-devel openssl-devel tk-devel libffi-devel
