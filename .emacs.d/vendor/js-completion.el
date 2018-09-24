@@ -36,8 +36,7 @@
   :defer t
   :no-require t
   :load-path "vendor/"
-  :requires company
-  :config (add-to-list 'company-backends '(company-keywords company-capf company-async-files)))
+  :requires company)
 
 (use-package company-box
   :disabled
@@ -114,7 +113,6 @@
   :delight
   :hook (company-mode . company-posframe-mode))
 
-
 ;; General
 (use-package company-emoji
   :no-require t
@@ -153,9 +151,9 @@
 ;; Shell
 (use-package company-shell
   :custom
-  (company-shell-delete-duplicates t))
-
-
+  (company-shell-delete-duplicates t)
+  :hook (sh-mode . (lambda ()
+                     (set (make-local-variable 'company-backends) '(company-shell company-async-files)))))
 
 ;;; Language Server Mode
 (use-package eglot

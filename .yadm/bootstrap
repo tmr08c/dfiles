@@ -9,7 +9,6 @@ if [[ ! -f ~/.emacs ]]; then
   git clone https://github.com/plexus/chemacs.git ~/code/github/chemacs && ./code/github/chemacs/install.sh
 fi
 
-
 if [ ! -e $HOME/.vim/bundle/vundle ]; then
   echo "Installing Vundle for VIM configuration"
   mkdir -p ~/.vim
