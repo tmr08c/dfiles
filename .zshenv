@@ -1,37 +1,5 @@
-# Patch for macOS which sources this later by default in /etc/zprofile
-#
-if [ -x /usr/libexec/path_helper ]; then
-   eval `/usr/libexec/path_helper -s`
-fi
-
-# Set Language
-export LANG=en_US.UTF-8
-export LANGUAGE=en_US.UTF-8
-export LC_CTYPE=en_US.UTF-8
-export LC_ALL=en_US.UTF-8
-
-# asdf version manager
-if [[ -d ~/.asdf ]]; then
-  source ~/.asdf/asdf.sh
-fi
-
-# Rust
-if [[ -d ~/.cargo ]]; then
-  path=(
-    $HOME/.cargo/bin
-    $path
-  )
-fi
-
-# PlatformIO
-if [[ -d ~/.platformio ]]; then
-  path=(
-    $path
-    $HOME/.platformio/penv/bin
-  )
-fi
-
-
-if [ -f ~/.zshenv.local ]; then
-  source ~/.zshenv.local
+# Ensure that a non-login, non-interactive shell has a defined environment.
+# (Only once) if it was not sourced before, becuase .zshenv is always sourced
+if [[ ( "$SHLVL" -eq 1 && ! -o LOGIN ) && -s "${ZDOTDIR:-$HOME}/.zprofile" ]]; then
+  source "${ZDOTDIR:-$HOME}/.zprofile"
 fi
