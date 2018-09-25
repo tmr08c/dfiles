@@ -88,9 +88,15 @@
 ;; - `backup-directory-alist'
 ;; - etc.
 (use-package no-littering
-  :demand t)
+  :demand t
+  :config
+  (setq no-littering-var-directory
+        (expand-file-name "var/" user-emacs-directory))
+  (setq no-littering-etc-directory
+        (expand-file-name "etc/" user-emacs-directory))
+  (setq custom-file
+        (no-littering-expand-var-file-name "custom.el")))
 
-(setq custom-file (no-littering-expand-var-file-name "custom.el"))
 (customize-set-variable 'user-full-name "Justin Smestad")
 (customize-set-variable 'user-mail-address "justin.smestad@gmail.com")
 
