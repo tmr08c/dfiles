@@ -334,7 +334,7 @@
 
 ;;; Ivy for completion
 (use-package ivy
-  :commands (ivy-switch-buffer)
+  :demand
   :delight
   :custom
   (ivy-use-virtual-buffers t)
@@ -344,7 +344,7 @@
   (ivy-format-function 'ivy-format-function-line)
   (ivy-initial-inputs-alist nil)
   (ivy-re-builders-alist
-	 ;; allow input not in order
+   ;; allow input not in order
    '((t   . ivy--regex-ignore-order)))
   (ivy-use-selectable-prompt t))
 (use-package doom-todo-ivy
@@ -418,7 +418,7 @@
              counsel-projectile-git-grep
              counsel-projectile-org-capture
              counsel-projectile-org-agenda)
-  :requires (counsel projectile))
+  :after projectile)
 
 (use-package counsel-dash
   :commands counsel-dash
@@ -489,27 +489,19 @@
 ;;;
 ;;; Projectile
 (use-package projectile
-  :commands (projectile-project-root
-             projectile-switch-project
-             projectile-run-shell-command-in-root
-             projectile-recentf
-             projectile-kill-buffers)
-  ;; :defer t
-  :requires ivy
+  :demand
   :delight ;;'(:eval (concat " " (projectile-project-name)))
-  :custom
-  (projectile-indexing-method 'alien)
-  (projectile-completion-system 'ivy)
-  (projectile-enable-caching nil)
-  (projectile-switch-project-action 'counsel-projectile-find-file)
-  (projectile-sort-order 'recentf)
   :config
   (progn
+    (setq projectile-indexing-method 'alien
+          projectile-completion-system 'ivy
+          projectile-enable-caching nil
+          projectile-switch-project-action 'counsel-projectile-find-file
+          projectile-sort-order 'recentf)
     (define-key projectile-mode-map (kbd "s-p") 'projectile-command-map)
     (define-key projectile-mode-map (kbd "C-c p") 'projectile-command-map)
-    (add-to-list 'projectile-project-root-files ".clang_complete"))
-  :init
-  (projectile-mode +1))
+    (add-to-list 'projectile-project-root-files ".clang_complete")
+    (projectile-mode +1)))
 
 (use-package js-completion
   :load-path "vendor/")
