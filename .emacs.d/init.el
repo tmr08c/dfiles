@@ -422,12 +422,16 @@
 
 (use-package counsel-dash
   :commands counsel-dash
+  :hook
+  ((lisp-mode . (lambda () (setq-local counsel-dash-docsets '("Common_Lisp"))))
+   (emacs-lisp-mode . (lambda () (setq-local counsel-dash-docsets '("Emacs_Lisp"))))
+   (ruby-mode . (lambda () (setq-local counsel-dash-docsets '("Ruby"))))
+   (projectile-rails-mode . (lambda () (setq-local counsel-dash-docsets '("Ruby_on_Rails_5"))))
+   (sql-mode . (lambda () (setq-local counsel-dash-docsets '("PostgreSQL"))))
+   (web-mode . (lambda () (setq-local counsel-dash-docsets '("Javascript" "HTML")))))
   :custom
   (counsel-dash-browser-func 'eww)
-  (counsel-dash-common-docsets '("Ruby"))
-  :hook
-  ((emacs-lisp-mode . (lambda () (setq-local counsel-dash-docsets '("Emacs Lisp"))))
-   (ruby-mode . (lambda () (setq-local counsel-dash-docsets '("Ruby"))))))
+  (counsel-dash-common-docsets '()))
 
 (use-package counsel-etags
   :requires counsel

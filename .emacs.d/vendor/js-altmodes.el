@@ -60,6 +60,35 @@
          "/info/exclude\\'"
          "/git/ignore\\'"))
 
+(use-package sql
+  :defer t
+  :custom
+  (sql-set-product-feature 'postgres :prompt-regexp "^[-[:alnum:]_]*=[#>] ")
+  (sql-set-product-feature 'postgres :prompt-cont-regexp
+                           "^[-[:alnum:]_]*[-(][#>] ")
+  :config
+  (progn
+    (defun my-sql-login-hook ()
+      "Custom SQL log-in behaviours. See `sql-login-hook'."
+      ;; n.b. If you are looking for a response and need to parse the
+      ;; response, use `sql-redirect-value' instead of `comint-send-string'.
+      (when (eq sql-product 'postgres)
+        (let ((proc (get-buffer-process (current-buffer))))
+          ;; Output each query before executing it. (n.b. this also avoids
+          ;; the psql prompt breaking the alignment of query results.)
+          (comint-send-string proc "\\set ECHO queries\n"))))
+    (add-hook 'sql-login-hook 'my-sql-login-hook)
+    (add-hook 'sql-interactive-mode-hook
+              (lambda ()
+                (toggle-truncate-lines t)))))
+
+(use-package sql-indent
+  :pin gnu
+  :hook (sql-mode . sqlind-minor-mode))
+
+(use-package sqlup-mode
+  :hook (sql-mode sql-interactive-mode-hook))
+
 (provide 'js-altmodes)
 
 ;;; js-altmodes.el ends here
