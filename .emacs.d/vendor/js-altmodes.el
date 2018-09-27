@@ -60,6 +60,11 @@
          "/info/exclude\\'"
          "/git/ignore\\'"))
 
+;; Editorconfig - Read files to set coding style options according to current project
+(use-package editorconfig
+  :disabled
+  :config (editorconfig-mode 1))
+
 (use-package sql
   :defer t
   :custom

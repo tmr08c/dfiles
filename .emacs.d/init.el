@@ -259,17 +259,6 @@
 ;;; ace-window (for better window switching)
 (use-package ace-window
   :disabled)
-;;; Enable which-key
-(use-package which-key
-  :demand t
-  :delight
-  :init (which-key-mode)
-  :custom
-  (which-key-sort-order 'which-key-prefix-then-key-order)
-  (which-key-add-column-padding 1)
-  (which-key-side-window-max-width 0.33)
-  ;; (which-key-idle-delay 0.05)
-  (which-key-setup-side-window-right-bottom))
 
 ;;; File Tree
 (use-package neotree
@@ -304,30 +293,6 @@
     "r" 'neotree-rename-node
     "R" 'neotree-change-root
     "I" 'neotree-hidden-file-toggle))
-
-(use-package helpful
-  :after ivy
-  :defer t
-  :defines ivy-initial-inputs-alist
-  :bind (("C-c C-d" . helpful-at-point))
-  :config
-  (dolist (cmd '(helpful-callable
-                 helpful-variable
-                 helpful-function
-                 helpful-macro
-                 helpful-command))
-    (cl-pushnew `(,cmd . "^") ivy-initial-inputs-alist))
-  :general
-  (space-leader-def
-    :states '(normal visual insert emacs)
-    "hh" '(:ignore t :which-key "helpful")
-    "hhh" 'helpful-at-point
-    "hhc" 'helpful-command
-    "hhf" 'helpful-callable
-    "hhk" 'helpful-key
-    "hhm" 'helpful-macro
-    "hhv" 'helpful-variable))
-
 
 (use-package amx
   :hook (after-init . amx-initialize))
@@ -507,72 +472,12 @@
     (add-to-list 'projectile-project-root-files ".clang_complete")
     (projectile-mode +1)))
 
-(use-package js-completion
-  :load-path "vendor/")
-
-;;; EShell
-(use-package eshell
-  :commands (eshell eshell-mode)
-  :custom
-  (eshell-visual-commands '("tmux" "htop" "bash" "zsh" "fish" "vim" "nvim"))
-  (eshell-visual-subcommands '(("git" "log" "l" "diff" "show")))
-  (eshell-history-size 10000)
-  (eshell-hist-ignoredups t)
-  (eshell-scroll-to-bottom-on-output 'this)
-  (eshell-scroll-to-bottom-on-input 'all)
-  (eshell-buffer-shorthand t)
-  (eshell-kill-processes-on-exit t))
-
-(use-package repl-toggle
-  :disabled
-  :custom
-  (rtog/mode-repl-alist
-   '((emacs-lisp-mode . ielm)
-     (ruby-mode . inf-ruby)
-     (js2-mode . nodejs-repl)
-     (rjsx-mode . nodejs-repl)))
-  :config
-  (repl-toggle-mode))
-
 ;;; direnv
 (use-package direnv
   :defer 2
   :ensure-system-package direnv)
-;;; EditorConfig
-;;; Read files to set coding style options according to current project
-(use-package editorconfig
-  :disabled
-  :config (editorconfig-mode 1))
-
-;; Ruby
-(require 'js-ruby)
-
-;; HTML / CSS
-(require 'js-web)
-
-;; Javascript
-(require 'js-javascript)
-
-;; Other modes
-(require 'js-altmodes)
-
-;; Go
-(require 'js-golang)
-
-;; Scala
-(require 'js-scala)
-
-;; C / C++ / Arduino
-(require 'js-clang)
-
-;; Elisp
-(require 'js-lisp)
-
-;; Erlang
 (use-package erlang
   :mode "\\.erl$")
-
-(require 'js-elixir)
 
 ;; Python
 (use-package python-mode
@@ -588,29 +493,11 @@
 ;;   :after lsp-mode
 ;;   :hook (python-mode . lsp-python-enable))
 
-
-;; TODO: do I want emmet mode?
-(use-package emmet-mode
-  :disabled
-  :custom (emmet-move-cursor-between-quotes t)
-  :config (add-hook 'css-mode-hook  'emmet-mode))
-
-
 ;; Highlight TODOs
 (use-package hl-todo
   :hook (after-init . global-hl-todo-mode))
 
 ;; Adjust the built-in Emacs packages
-(use-package js-builtin
-  :load-path "vendor/")
-
-;; Version Control (git and what-not)
-(use-package js-vc
-  :load-path "vendor/")
-
-(use-package js-org
-  :load-path "vendor/")
-
 (defalias 'yes-or-no-p 'y-or-n-p)
 
 (setq byte-compile-warnings nil
@@ -618,7 +505,7 @@
       cua-mode t
       desktop-save-mode nil
       indent-tabs-mode nil
-      initial-scratch-message (format ";; Scratch buffer - started on %s\n\n" (current-time-string))
+      initial-scratch-message nil
       load-prefer-newer t
       sentence-end-double-space nil)
 
@@ -630,7 +517,20 @@
   :load-path "vendor/"
   :if (eq system-type 'darwin))
 
+(require 'js-altmodes)
+(require 'js-builtin)
+(require 'js-clang)
+(require 'js-completion)
+(require 'js-elixir)
+(require 'js-golang)
+(require 'js-javascript)
+(require 'js-lisp)
+(require 'js-org)
+(require 'js-ruby)
+(require 'js-scala)
 (require 'js-ui)
+(require 'js-vc)
+(require 'js-web)
 
 (provide 'init)
 ;;; init.el ends here

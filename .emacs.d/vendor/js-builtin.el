@@ -114,6 +114,54 @@
   :ensure nil
   :delight)
 
+(use-package eshell
+  :commands (eshell eshell-mode)
+  :custom
+  (eshell-visual-commands '("tmux" "htop" "bash" "zsh" "fish" "vim" "nvim"))
+  (eshell-visual-subcommands '(("git" "log" "l" "diff" "show")))
+  (eshell-history-size 10000)
+  (eshell-hist-ignoredups t)
+  (eshell-scroll-to-bottom-on-output 'this)
+  (eshell-scroll-to-bottom-on-input 'all)
+  (eshell-buffer-shorthand t)
+  (eshell-kill-processes-on-exit t))
+
+(use-package helpful
+  :after ivy
+  :defer t
+  :defines ivy-initial-inputs-alist
+  :bind (("C-c C-d" . helpful-at-point))
+  :config
+  (dolist (cmd '(helpful-callable
+                 helpful-variable
+                 helpful-function
+                 helpful-macro
+                 helpful-command))
+    (cl-pushnew `(,cmd . "^") ivy-initial-inputs-alist))
+  :general
+  (space-leader-def
+    :states '(normal visual insert emacs)
+    "hh" '(:ignore t :which-key "helpful")
+    "hhh" 'helpful-at-point
+    "hhc" 'helpful-command
+    "hhf" 'helpful-callable
+    "hhk" 'helpful-key
+    "hhm" 'helpful-macro
+    "hhv" 'helpful-variable))
+
+
+(use-package which-key
+  :demand t
+  :delight
+  :init (which-key-mode)
+  :custom
+  (which-key-sort-order 'which-key-prefix-then-key-order)
+  (which-key-add-column-padding 1)
+  (which-key-side-window-max-width 0.33)
+  ;; (which-key-idle-delay 0.05)
+  (which-key-setup-side-window-right-bottom))
+
+
 (provide 'js-builtin)
 
 ;;; js-builtin.el ends here
