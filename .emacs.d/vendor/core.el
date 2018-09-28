@@ -26,5 +26,7 @@ The rest of the arguments are treated exactly like they are in
        :keymaps ',(intern (format "%s-map" (eval mode)))
        ,@mode-bindings)))
 
+;;(macroexpand-1 '(keymap-for-mode 'ruby-mode "a" 'foo)) ;; why is it expanding to `'\'ruby-mode-map` without doing (eval mode)
+
 (provide 'core)
 ;;; core.el ends here
