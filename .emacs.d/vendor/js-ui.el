@@ -98,6 +98,30 @@
 (use-package restart-emacs
   :commands restart-emacs)
 
+(use-package winum
+  :config
+  (progn
+    (setq winum-auto-assign-0-to-minibuffer nil
+	  winum-auto-setup-mode-line nil
+	  winum-keymap nil
+	  winum-ignored-buffers '(" *which-key*"))
+    (defun winum-assign-0-to-neotree ()
+      (when (string-match-p (buffer-name) ".*\\*NeoTree\\*.*") 10))
+    (add-to-list 'winum-assign-functions #'winum-assign-0-to-neotree)
+    (global-keymap "`" 'winum-select-window-by-number
+		   ;; "²" 'winum-select-window-by-number
+		   "0" 'winum-select-window-0-or-10
+		   "1" 'winum-select-window-1
+		   "2" 'winum-select-window-2
+		   "3" 'winum-select-window-3
+		   "4" 'winum-select-window-4
+		   "5" 'winum-select-window-5
+		   "6" 'winum-select-window-6
+		   "7" 'winum-select-window-7
+		   "8" 'winum-select-window-8
+		   "9" 'winum-select-window-9)
+    (winum-mode)))
+
 (provide 'js-ui)
 
 ;;; js-ui.el ends here

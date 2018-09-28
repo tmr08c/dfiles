@@ -114,7 +114,8 @@
     :non-normal-prefix "C-SPC")
   (general-evil-setup)
   (space-leader-def
-    :states '(normal visual insert emacs)
+    ;; :states '(normal visual insert emacs)
+    :states 'normal
 
     "SPC" '(counsel-M-x :which-key "M-x")
     ;; "TAB" '(switch-to-other-buffer :which-key "prev buffer")
