@@ -75,65 +75,63 @@ bin/doom while packages at compile-time (not a runtime though)."
 	(setq sly-protocol-version (sly-version nil (locate-library "sly.el"))))
       (advice-remove #'sly-check-version #'+common-lisp*refresh-sly-version))
     (advice-add #'sly-check-version :before #'+common-lisp*refresh-sly-version)
-    )
-  :general
-  (space-leader-def lisp-mode-map
-    "'" 'sly
+    (keymap-for-mode 'lisp-mode
+		     "'" 'sly
 
-    "m h" '(:ignore t :which-key "help")
-    "m ha" 'sly-apropos
-    "m hb" 'sly-who-binds
-    "m hd" 'sly-disassemble-symbol
-    "m hh" 'sly-describe-symbol
-    "m hH" 'sly-hyperspec-lookup
-    "m hm" 'sly-who-macroexpands
-    "m hp" 'sly-apropos-package
-    "m hr" 'sly-who-references
-    "m hs" 'sly-who-specializes
-    "m hS" 'sly-who-sets
-    "m h<" 'sly-who-calls
-    "m h>" 'sly-calls-who
+		     "h" '(:ignore t :which-key "help")
+		     "ha" 'sly-apropos
+		     "hb" 'sly-who-binds
+		     "hd" 'sly-disassemble-symbol
+		     "hh" 'sly-describe-symbol
+		     "hH" 'sly-hyperspec-lookup
+		     "hm" 'sly-who-macroexpands
+		     "hp" 'sly-apropos-package
+		     "hr" 'sly-who-references
+		     "hs" 'sly-who-specializes
+		     "hS" 'sly-who-sets
+		     "h<" 'sly-who-calls
+		     "h>" 'sly-calls-who
 
-    "m c" '(:ignore t :which-key "compile")
-    "m cc" 'sly-compile-file
-    "m cC" 'sly-compile-and-load-file
-    "m cf" 'sly-compile-defun
-    "m cl" 'sly-load-file
-    "m cn" 'sly-remove-notes
-    "m cr" 'sly-compile-region
+		     "c" '(:ignore t :which-key "compile")
+		     "cc" 'sly-compile-file
+		     "cC" 'sly-compile-and-load-file
+		     "cf" 'sly-compile-defun
+		     "cl" 'sly-load-file
+		     "cn" 'sly-remove-notes
+		     "cr" 'sly-compile-region
 
-    "m e" '(:ignore t :which-key "eval")
-    "m eb" 'sly-eval-buffer
-    "m ee" 'sly-eval-last-expression
-    "m eE" 'sly-eval-print-last-expression
-    "m ef" 'sly-eval-defun
-    "m eF" 'slime-undefine-function
-    "m er" 'sly-eval-region
+		     "e" '(:ignore t :which-key "eval")
+		     "eb" 'sly-eval-buffer
+		     "ee" 'sly-eval-last-expression
+		     "eE" 'sly-eval-print-last-expression
+		     "ef" 'sly-eval-defun
+		     "eF" 'slime-undefine-function
+		     "er" 'sly-eval-region
 
-    ;; "m g" 'spacemacs/common-lisp-navigation-transient-state/body
-    "m m" '(:ignore t :which-key "macro")
-    "m me" 'sly-macroexpand-1
-    "m mE" 'sly-macroexpand-all
+		     ;; "m g" 'spacemacs/common-lisp-navigation-transient-state/body
+		     "m" '(:ignore t :which-key "macro")
+		     "me" 'sly-macroexpand-1
+		     "mE" 'sly-macroexpand-all
 
-    "m s" '(:ignore t :which-key "repl")
-    "m sc" 'sly-mrepl-clear-repl
-    "m si" 'sly
-    "m sq" 'sly-quit-lisp
-    "m sr" 'sly-restart-inferior-lisp
-    "m ss" 'sly-mrepl-sync
+		     "s" '(:ignore t :which-key "repl")
+		     "sc" 'sly-mrepl-clear-repl
+		     "si" 'sly
+		     "sq" 'sly-quit-lisp
+		     "sr" 'sly-restart-inferior-lisp
+		     "ss" 'sly-mrepl-sync
 
-    "m S" '(:ignore t :which-key "stickers")
-    "m Sb" 'sly-stickers-toggle-break-on-stickers
-    "m Sc" 'sly-stickers-clear-defun-stickers
-    "m SC" 'sly-stickers-clear-buffer-stickers
-    "m Sf" 'sly-stickers-fetch
-    "m Sr" 'sly-stickers-replay
-    "m Ss" 'sly-stickers-dwim
+		     "S" '(:ignore t :which-key "stickers")
+		     "Sb" 'sly-stickers-toggle-break-on-stickers
+		     "Sc" 'sly-stickers-clear-defun-stickers
+		     "SC" 'sly-stickers-clear-buffer-stickers
+		     "Sf" 'sly-stickers-fetch
+		     "Sr" 'sly-stickers-replay
+		     "Ss" 'sly-stickers-dwim
 
-    "m t" '(:ignore t :which-key "trace")
-    "m tt" 'sly-toggle-trace-fdefinition
-    "m tT" 'sly-toggle-fancy-trace
-    "m tu" 'sly-untrace-all))
+		     "t" '(:ignore t :which-key "trace")
+		     "tt" 'sly-toggle-trace-fdefinition
+		     "tT" 'sly-toggle-fancy-trace
+		     "tu" 'sly-untrace-all)))
 
 (use-package sly-mrepl
   :ensure nil ;; built-in sly

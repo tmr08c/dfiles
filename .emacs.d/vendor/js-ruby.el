@@ -13,13 +13,7 @@
   :hook (ruby-mode . flycheck-mode)
   :custom
   (ruby-insert-encoding-magic-comment nil)
-  (ruby-align-to-stmt-keywords '(if while unless until begin case for def))
-  :general
-  (space-leader-def
-    :states '(normal visual)
-    :keymaps 'ruby-mode-map
-    "m" '(:ignore t :which-key "Ruby")
-    "m t" '(:ignore t :which-key "Tests")))
+  (ruby-align-to-stmt-keywords '(if while unless until begin case for def)))
 
 (use-package inf-ruby
   :custom
@@ -49,20 +43,14 @@
   (rspec-autosave-buffer t)
   :config
   (add-hook 'rspec-compilation-mode-hook 'inf-ruby-auto-enter nil t)
-  ;; (add-hook 'rspec-compilation-mode-hook
-  ;;           (lambda ()
-  ;;             (make-local-variable 'compilation-scroll-output)
-  ;;             (setq compilation-scroll-output 'first-error)))
-  :general
-  (space-leader-def
-    :states '(normal visual)
-    :keymaps 'ruby-mode-map
-    "m t a" '(rspec-verify-all :which-key "run all tests")
-    "m t b" '(rspec-verify :which-key "run tests in buffer")
-    "m t e" '(rspec-toggle-example-pendingness :which-key "toggle test pending")
-    "m t t" '(rspec-verify-single :which-key "run focus test")
-    "m t l" '(rspec-run-last-failed :which-key "rerun failed tests")
-    "m t r" '(rspec-rerun :which-key "rerun last tests")))
+  (keymap-for-mode 'ruby-mode
+                   "t" '(:ignore t :which-key "Tests")
+                   "ta" '(rspec-verify-all :which-key "run all tests")
+                   "tb" '(rspec-verify :which-key "run tests in buffer")
+                   "te" '(rspec-toggle-example-pendingness :which-key "toggle test pending")
+                   "tt" '(rspec-verify-single :which-key "run focus test")
+                   "tl" '(rspec-run-last-failed :which-key "rerun failed tests")
+                   "tr" '(rspec-rerun :which-key "rerun last tests")))
 
 (use-package rubocop
   :ensure-system-package
@@ -77,11 +65,9 @@
 
 (use-package ruby-hash-syntax
   :requires ruby-mode
-  :general
-  (space-leader-def
-    :states '(normal visual)
-    :keymaps 'ruby-mode-map
-    "m f h" '(ruby-hash-syntax-toggle :which-key "toggle hash syntax")))
+  :config
+  (keymap-for-mode 'ruby-mode
+                   "fh" 'ruby-hash-syntax-toggle))
 
 (use-package projectile-rails
   :requires projectile

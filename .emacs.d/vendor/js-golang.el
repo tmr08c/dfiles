@@ -12,6 +12,42 @@
               (add-hook 'before-save-hook 'gofmt-before-save)
               (setq tab-width 2
                     indent-tabs-mode 1)))
+  (keymap-for-mode 'go-mode
+                   "t" '(:ignore t :which-key "test")
+                   "ta" '(js/go-run-test-current-suite :which-key "run suite")
+                   "tt" '(js/go-run-test-current-function :which-key "run current function")
+                   "tg" '(:ignore t :which-key "generate")
+                   "tgf" '(go-gen-test-exported :which-key "all exported functions")
+                   "tga" '(go-gen-test-all :which-key "all functions")
+                   "tgs" '(go-gen-test-dwim :which-key "selected region")
+
+                   ;; Go To
+                   "g" '(:ignore t :which-key "goto")
+                   "gc" '(go-coverage :which-key "coverage")
+
+                   ;; Imports
+                   "i" '(:ignore t :which-key "imports")
+                   "ia" '(go-import-add :which-key "add")
+                   "ig" '(go-import-add :which-key "goto")
+                   "ir" '(go-remove-unused-imports :which-key "remove unused")
+
+                   ;; Execute
+                   "x" '(:ignore t :which-key "execute")
+                   "xx" '(js/go-run-main :which-key "run main")
+
+                   ;; Refactoring
+                   "r" '(:ignore t :which-key "refactoring")
+                   "ri" '(go-impl :which-key "implement interface")
+                   "rs" '(go-fill-struct :which-key "fill struct")
+                   "rd" '(godoctor-godoc :which-key "godoc")
+                   "re" '(godoctor-extract :which-key "extract")
+                   "rn" '(godoctor-rename :which-key "rename")
+                   ;; "rN" '(go-rename :which-key "rename")
+                   "rt" '(godoctor-toggle :which-key "toggle")
+
+                   ;; Help
+                   "h" '(:ignore t :which-key "help")
+                   "hh" '(godoc-at-point :which-key "godoc at point"))
   :custom
   (gofmt-command "goimports")
   :ensure-system-package
@@ -19,46 +55,7 @@
    (gometalinter . "go get -u github.com/alecthomas/gometalinter")
    (godoc . "go get -u golang.org/x/tools/cmd/godoc")
    (goimports . "go get -u golang.org/x/tools/cmd/goimports")
-   (guru . "go get -u golang.org/x/tools/cmd/guru"))
-  :general
-  (space-leader-def go-mode-map
-    ;; Tests
-    "m t" '(:ignore t :which-key "test")
-    "m t a" '(js/go-run-test-current-suite :which-key "run suite")
-    "m t t" '(js/go-run-test-current-function :which-key "run current function")
-    "m t g" '(:ignore t :which-key "generate")
-    "m t g f" '(go-gen-test-exported :which-key "all exported functions")
-    "m t g a" '(go-gen-test-all :which-key "all functions")
-    "m t g s" '(go-gen-test-dwim :which-key "selected region")
-
-    ;; Go To
-    "m g" '(:ignore t :which-key "goto")
-    "m g c" '(go-coverage :which-key "coverage")
-
-    ;; Imports
-    "m i" '(:ignore t :which-key "imports")
-    "m i a" '(go-import-add :which-key "add")
-    "m i g" '(go-import-add :which-key "goto")
-    "m i r" '(go-remove-unused-imports :which-key "remove unused")
-
-    ;; Execute
-    "m x" '(:ignore t :which-key "execute")
-    "m x x" '(js/go-run-main :which-key "run main")
-
-    ;; Refactoring
-    "m r" '(:ignore t :which-key "refactoring")
-    "m r i" '(go-impl :which-key "implement interface")
-    "m r s" '(go-fill-struct :which-key "fill struct")
-    "m r d" '(godoctor-godoc :which-key "godoc")
-    "m r e" '(godoctor-extract :which-key "extract")
-    "m r n" '(godoctor-rename :which-key "rename")
-    ;; "m r N" '(go-rename :which-key "rename")
-    "m r t" '(godoctor-toggle :which-key "toggle")
-
-    ;; Help
-    "m h" '(:ignore t :which-key "help")
-    "m h h" '(godoc-at-point :which-key "godoc at point")
-    ))
+   (guru . "go get -u golang.org/x/tools/cmd/guru")))
 
 (use-package go-eldoc
   :hook (go-mode . go-eldoc-setup))
