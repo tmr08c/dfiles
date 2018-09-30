@@ -51,6 +51,10 @@ if [ "$system_type" = "Darwin" ]; then
   echo "Run \`wget https://raw.githubusercontent.com/martinlindhe/base16-iterm2/master/itermcolors/base16-monokai-256.itermcolors\` and install it"
 
 else
+  echo "Configure Keyboard Settings"
+  sudo gsettings set org.gnome.desktop.peripherals.keyboard repeat-interval 30
+  sudo gsettings set org.gnome.desktop.peripherals.keyboard delay 300
+
   if [ -f /etc/redhat-release ]; then
     echo "Fedora / RHEL detected"
     sudo dnf install -y -q direnv util-linux-user vim mozilla-fira-mono-fonts mozilla-fira-sans-fonts google-roboto-mono-fonts google-roboto-slab-fonts aspell-en tlp tlp-rdw
