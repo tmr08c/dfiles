@@ -12,9 +12,9 @@
   (defun my-go-mode-hook-fn ()
     (go-eldoc-setup)
     ;; (set (make-local-variable 'company-backends) '(company-go))
-    (setq-local 'company-backends '(company-go)
-                tab-width 2
-                indent-tabs-mode 1)
+    (setq-local company-backends '(company-go))
+    (setq tab-width 2
+          indent-tabs-mode 1)
     (flycheck-gometalinter-setup)
     (flycheck-mode 1))
   (add-hook 'go-mode-hook #'my-go-mode-hook-fn)
