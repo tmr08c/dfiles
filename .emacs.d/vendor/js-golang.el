@@ -6,12 +6,18 @@
 
 (use-package go-mode
   :mode "\\.go$"
+  :requires (company)
   :config
-  (add-hook 'go-mode-hook
-            (lambda ()
-              (add-hook 'before-save-hook 'gofmt-before-save)
-              (setq tab-width 2
-                    indent-tabs-mode 1)))
+  (add-hook 'before-save-hook 'gofmt-before-save)
+  (defun my-go-mode-hook-fn ()
+    (go-eldoc-setup)
+    ;; (set (make-local-variable 'company-backends) '(company-go))
+    (setq-local 'company-backends '(company-go)
+                tab-width 2
+                indent-tabs-mode 1)
+    (flycheck-gometalinter-setup)
+    (flycheck-mode 1))
+  (add-hook 'go-mode-hook #'my-go-mode-hook-fn)
   (keymap-for-mode 'go-mode
                    "t" '(:ignore t :which-key "test")
                    "ta" '(js/go-run-test-current-suite :which-key "run suite")
@@ -50,18 +56,20 @@
                    "hh" '(godoc-at-point :which-key "godoc at point"))
   :custom
   (gofmt-command "goimports")
-  :ensure-system-package
-  ((gocode . "go get -u github.com/mdempsky/gocode")
-   (gometalinter . "go get -u github.com/alecthomas/gometalinter")
-   (godoc . "go get -u golang.org/x/tools/cmd/godoc")
-   (goimports . "go get -u golang.org/x/tools/cmd/goimports")
-   (guru . "go get -u golang.org/x/tools/cmd/guru")))
+  ;; :ensure-system-package
+  ;; ((gocode . "go get -u github.com/mdempsky/gocode")
+  ;;  (gometalinter . "go get -u github.com/alecthomas/gometalinter")
+  ;;  (godoc . "go get -u golang.org/x/tools/cmd/godoc")
+  ;;  (goimports . "go get -u golang.org/x/tools/cmd/goimports")
+  ;;  (guru . "go get -u golang.org/x/tools/cmd/guru"))
+  )
 
 (use-package go-eldoc
-  :hook (go-mode . go-eldoc-setup))
+  :commands go-eldoc-setup)
 
 (use-package flycheck-gometalinter
-  :hook (go-mode . flycheck-gometalinter-setup)
+  :commands flycheck-gometalinter-setup
+  ;; :hook (go-mode . flycheck-gometalinter-setup)
   :custom
   ;; skip linting for vendor dirs
   (flycheck-gometalinter-vendor t)
@@ -74,20 +82,21 @@
    '("gosec" "gotype" "vet" "vetshadow" "megacheck" "interfacer" "ineffassign")))
 
 (use-package go-projectile
-  :load-path "vendor/"
   :hook (go-mode . go-projectile-mode))
 
 (use-package go-gen-test
   :commands (go-gen-test-exported
              go-gen-test-all
              go-gen-test-dwim)
-  :ensure-system-package
-  (gotests . "go get -u github.com/cweill/gotests/..."))
+  ;; :ensure-system-package
+  ;; (gotests . "go get -u github.com/cweill/gotests/...")
+  )
 
 (use-package go-fill-struct
   :commands (go-fill-struct)
-  :ensure-system-package
-  (fillstruct . "go get -u github.com/davidrjenni/reftools/cmd/fillstruct"))
+  ;; :ensure-system-package
+  ;; (fillstruct . "go get -u github.com/davidrjenni/reftools/cmd/fillstruct")
+  )
 
  (use-package godoctor
    :commands (godoctor-godoc
@@ -97,13 +106,15 @@
 
 (use-package go-rename
   :commands (go-rename)
-  :ensure-system-package
-  (gorename . "go get -u golang.org/x/tools/cmd/gorename"))
+  ;; :ensure-system-package
+  ;; (gorename . "go get -u golang.org/x/tools/cmd/gorename")
+  )
 
 (use-package go-impl
   :commands go-impl
-  :ensure-system-package
-  (impl . "go get -u github.com/josharian/impl"))
+  ;; :ensure-system-package
+  ;; (impl . "go get -u github.com/josharian/impl")
+  )
 
 ;; Taken from js
 (defun js/go-run-tests (args)

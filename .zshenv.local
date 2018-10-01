@@ -1,10 +1,12 @@
 OS=$(uname -s)
 
 export GOPATH=$HOME/code/golang
+# GOV=$(asdf current golang | sed  's/ (set by .*)//g')
+# export GOROOT=$ASDFINSTALLS/golang/$GOV/go/`
 
 if [ "$OS" = "Darwin" ]; then
   export JAVA_HOME=$(/usr/libexec/java_home -v 1.8)
-  export GOROOT=/usr/local/go
+  # export GOROOT=/usr/local/go
 else
   export JAVA_HOME=/usr/lib/jvm/java-8-openjdk-amd64
 fi
