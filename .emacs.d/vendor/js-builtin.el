@@ -132,6 +132,11 @@
   :defines ivy-initial-inputs-alist
   :bind (("C-c C-d" . helpful-at-point))
   :config
+  (general-define-key
+   [remap describe-function] #'helpful-callable
+   [remap describe-command]  #'helpful-command
+   [remap describe-variable] #'helpful-variable
+   [remap describe-key] #'helpful-key)
   (dolist (cmd '(helpful-callable
                  helpful-variable
                  helpful-function
@@ -151,12 +156,15 @@
 
 
 (use-package which-key
-  :demand t
+  :defer 1
   :delight
   :init (which-key-mode)
   :custom
   (which-key-sort-order 'which-key-prefix-then-key-order)
+  (which-key-sort-uppercase-first nil)
   (which-key-add-column-padding 1)
+  (which-key-max-display-columns nil)
+  (which-key-min-display-lines 6)
   (which-key-side-window-max-width 0.33)
   ;; (which-key-idle-delay 0.05)
   (which-key-setup-side-window-right-bottom))

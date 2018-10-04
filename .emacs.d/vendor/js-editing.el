@@ -9,6 +9,7 @@
 (use-package rainbow-delimiters
   :hook (prog-mode . rainbow-delimiters-mode))
 
+
 ;; Adapt to foreign indentation offsets
 (use-package dtrt-indent
   :defer t
@@ -48,16 +49,22 @@
   :config
   (add-hook 'before-save 'delete-trailing-whitespace))
 
-;; (use-package ws-butler
-;;   :delight
-;;   :defer t
-;;   :config (ws-butler-global-mode))
+(use-package ws-butler
+  :delight
+  :defer t
+  :config
+  (setq ws-butler-global-exempt-modes
+        (append ws-butler-global-exempt-modes
+                '(special-mode comint-mode term-mode eshell-mode)))
+  (ws-butler-global-mode))
 
 (use-package autorevert
   :ensure nil
   :defer t
   :delight auto-revert-mode
-  :config (global-auto-revert-mode))
+  :config
+  (setq auto-revert-verbose nil)
+  (global-auto-revert-mode +1))
 
 (use-package undo-tree
   :delight
@@ -88,16 +95,18 @@
    "C-z" 'undo-tree-undo
    "C-Z" 'undo-tree-redo))
 
-(use-package evil-collection
-  :disabled
-  :requires evil
-  :defer t
-  :custom
-  (evil-collection-setup-minibuffer t)
-  (evil-collection-company-use-tng nil)
-  (evil-collection-mode-list '())
-  :init
-  (evil-mode . evil-collection-init))
+;; (use-package evil-collection
+;;   :requires evil
+;;   :defer 5
+;;   :custom
+;;   (evil-collection-setup-minibuffer t)
+;;   (evil-collection-company-use-tng nil)
+;;   (evil-collection-mode-list '(go-mode
+;;                                ivy
+;;                                (pdf pdf-view)
+;;                                ruby-mode))
+;;   :init
+;;   (evil-mode . evil-collection-init))
 
 (use-package evil-surround
   :defer 5

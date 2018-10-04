@@ -15,12 +15,15 @@
 
 (customize-set-variable 'gc-cons-threshold (* 10 1024 1024))
 
-;; Default to UTF-8 early as this file uses Unicode symbols.
-(prefer-coding-system 'utf-8)
-(set-default-coding-systems 'utf-8)
-(set-terminal-coding-system 'utf-8)
-(set-keyboard-coding-system 'utf-8)
-(setq-default buffer-file-coding-system 'utf-8)
+;; UTF-8 as the default coding system
+(when (fboundp 'set-charset-priority)
+  (set-charset-priority 'unicode))     ; pretty
+(prefer-coding-system        'utf-8)   ; pretty
+(set-terminal-coding-system  'utf-8)   ; pretty
+(set-keyboard-coding-system  'utf-8)   ; pretty
+(set-selection-coding-system 'utf-8)   ; perdy
+(setq locale-coding-system 'utf-8)     ; please
+
 (add-to-list 'load-path "~/.emacs.d/vendor/")
 
 ;; Get package repos configured
@@ -115,7 +118,7 @@
   (general-evil-setup)
   (space-leader-def
     ;; :states '(normal visual insert emacs)
-    :states 'normal
+    :states '(normal emacs)
 
     "SPC" '(counsel-M-x :which-key "M-x")
     ;; "TAB" '(switch-to-other-buffer :which-key "prev buffer")
@@ -501,14 +504,24 @@
 ;; Adjust the built-in Emacs packages
 (defalias 'yes-or-no-p 'y-or-n-p)
 
-(setq byte-compile-warnings nil
+(setq byte-compile-warnings '(not free-vars unresolved noruntime lexical make-local)
+      idle-update-delay 2 ; update ui less often (0.5 default)
       create-lockfiles nil
       cua-mode t
       desktop-save-mode nil
       indent-tabs-mode nil
       initial-scratch-message nil
       load-prefer-newer t
-      sentence-end-double-space nil)
+      sentence-end-double-space nil
+      ;; keep the point out of the minibuffer
+      minibuffer-prompt-properties '(read-only t point-entered minibuffer-avoid-prompt face minibuffer-prompt)
+      ;; security
+      gnutls-verify-error (not (getenv "INSECURE")) ; you shouldn't use this
+      tls-checktrust gnutls-verify-error
+      tls-program (list "gnutls-cli --x509cafile %t -p %p %h"
+                        ;; compatibility fallbacks
+                        "gnutls-cli -p %p %h"
+                        "openssl s_client -connect %h:%p -no_ssl2 -no_ssl3 -ign_eof"))
 
 ;; Platform Specific
 (use-package linux

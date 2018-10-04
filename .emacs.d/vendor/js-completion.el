@@ -10,6 +10,7 @@
 (use-package company
   :defer t
   :delight
+  :defines company-backends
   :hook (after-init . global-company-mode)
   :custom
   ;; (company-begin-commands '(self-insert-command)) ; start autocompletion only after typing

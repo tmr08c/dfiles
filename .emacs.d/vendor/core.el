@@ -8,13 +8,13 @@
 All of the arguments are treated exactly like they are in
 'general' package."
   `(space-leader-def
-     :states 'normal
+     :states '(normal emacs)
      ,@bindings))
 
 (defmacro keymap-for-mode (mode key def &rest bindings)
   "Add KEY and DEF as key bindings under `space-leader-def` for MODE.
-MODE should be a quoted symbol corresponding to a valid major mode.
-The rest of the arguments are treated exactly like they are in
+mode should be a quoted symbol corresponding to a valid major mode.
+the rest of the arguments are treated exactly like they are in
 'general' package."
   (let (mode-bindings)
     (while key
@@ -22,9 +22,19 @@ The rest of the arguments are treated exactly like they are in
       (push (concat "m" key) mode-bindings)
       (setq key (pop bindings) def (pop bindings)))
     `(space-leader-def
-       :states '(normal visual)
+       :states 'normal
        :keymaps ',(intern (format "%s-map" (eval mode)))
        ,@mode-bindings)))
+
+(defmacro evil-keymap-for-mode (mode &rest bindings)
+  "Add BINDINGS to evil for the provided MODE.
+mode should be a quoted symbol corresponding to a valid major mode.
+the rest of the arguments are treated exactly like they are in
+'general' package."
+  `(general-define-key
+    :states 'normal
+    :keymaps ',(intern (format "%s-map" (eval mode)))
+    ,@bindings))
 
 (provide 'core)
 ;;; core.el ends here

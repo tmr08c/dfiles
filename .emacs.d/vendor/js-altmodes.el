@@ -65,6 +65,40 @@
   :disabled
   :config (editorconfig-mode 1))
 
+(use-package pdf-tools
+  :defer t
+  :mode ("\\.pdf\\'" . pdf-view-mode)
+  :config
+  (pdf-tools-install)
+  (setq-default pdf-view-display-size 'fit-page)
+  (keymap-for-mode 'pdf-view
+                   ;; Slicing image
+                   "sm" 'pdf-view-set-slice-using-mouse
+                   "sb" 'pdf-view-set-slice-from-bounding-box
+                   "sr" 'pdf-view-reset-slice
+                   ;; Annotations
+                   "a" '(:ignore t :which-key "annotations")
+                   "aD" 'pdf-annot-delete
+                   "at"	'pdf-annot-attachment-dired
+                   "ah"	'pdf-annot-add-highlight-markup-annotation
+                   "al"	'pdf-annot-list-annotations
+                   "am"	'pdf-annot-add-markup-annotation
+                   "ao"	'pdf-annot-add-strikeout-markup-annotation
+                   "as"	'pdf-annot-add-squiggly-markup-annotation
+                   "at"	'pdf-annot-add-text-annotation
+                   "au"	'pdf-annot-add-underline-markup-annotation
+                   ;; Fit image to window
+                   "f" '(:ignore t :which-key "fit")
+                   "fw" 'pdf-view-fit-width-to-window
+                   "fh" 'pdf-view-fit-height-to-window
+                   "fp" 'pdf-view-fit-page-to-window
+                   ;; Other
+                   "s" '(:ignore t :which-key "slice/search")
+                   "ss" 'pdf-occur
+                   "p" 'pdf-misc-print-document
+                   "O" 'pdf-outline
+                   "n" 'pdf-view-midnight-minor-mode))
+
 (use-package sql
   :defer t
   :custom
