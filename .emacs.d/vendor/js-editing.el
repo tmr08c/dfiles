@@ -165,15 +165,51 @@
 ;; (use-package evil-mc-extras
 ;;   :hook (global-evil-mc-mode . global-evil-mc-extras-mode))
 
-(use-package multiple-cursors
-  :disabled
-  :bind (("C->" . mc/mark-next-like-this)
-         ("C-<" . mc/mark-previous-like-this)
-         ("C-*" . mc/mark-all-like-this)))
+;; (use-package multiple-cursors
+;;   :disabled
+;;   :bind (("C->" . mc/mark-next-like-this)
+;;          ("C-<" . mc/mark-previous-like-this)
+;;          ("C-*" . mc/mark-all-like-this)))
 
 (use-package evil-string-inflection
   :requires evil
   :defer t)
+
+(use-package smartparens
+  :commands (sp-pair sp-local-pair sp-with-modes)
+  :config
+  (require 'smartparens-config)
+  (setq sp-highlight-pair-overlay nil
+        sp-highlight-wrap-overlay nil
+        sp-highlight-wrap-tag-overlay nil
+        sp-show-pair-from-inside t
+        sp-cancel-autoskip-on-backward-movement nil
+        sp-show-pair-delay 0.1
+        sp-max-pair-length 4
+        sp-max-prefix-length 50
+        sp-escape-quotes-after-insert nil)
+  ;; Smartparens' navigation feature is neat, but does not justify how expensive
+  ;; it is. It's also less useful for evil users. This may need to be
+  ;; reactivated for non-evil users though. Needs more testing!
+  (defun js|disable-smartparens-navigate-skip-match ()
+    (setq sp-navigate-skip-match nil
+          sp-navigate-consider-sgml-tags nil))
+  (add-hook 'after-change-major-mode-hook #'js|disable-smartparens-navigate-skip-match)
+
+  ;; autopairing in `eval-expression' and `evil-ex'
+  (defun js|init-smartparens-in-eval-expression ()
+    "Enable `smartparens-mode' in the minibuffer, during `eval-expression' or
+`evil-ex'."
+    (when (memq this-command '(eval-expression evil-ex))
+      (smartparens-mode)))
+  (add-hook 'minibuffer-setup-hook #'js|init-smartparens-in-eval-expression)
+  (sp-local-pair 'minibuffer-inactive-mode "'" nil :actions nil)
+
+  ;; smartparens breaks evil-mode's replace state
+  (add-hook 'evil-replace-state-entry-hook #'turn-off-smartparens-mode)
+  (add-hook 'evil-replace-state-exit-hook  #'turn-on-smartparens-mode)
+
+  (smartparens-global-mode +1))
 
 (use-package yasnippet)
 

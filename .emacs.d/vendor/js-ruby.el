@@ -12,11 +12,13 @@
    (pry . "gem install pry"))
   :hook (ruby-mode . flycheck-mode)
   :config
-  (add-hook 'ruby-mode-hook '(lambda ()
-                               (setq evil-shift-width ruby-indent-level)))
+  (add-hook 'ruby-mode-hook
+            '(lambda ()
+               (setq evil-shift-width ruby-indent-level)))
   :custom
   (ruby-insert-encoding-magic-comment nil)
-  (ruby-align-to-stmt-keywords '(if while unless until begin case for def)))
+  (ruby-align-to-stmt-keywords
+   '(if while unless until begin case for def)))
 
 (use-package inf-ruby
   :custom
