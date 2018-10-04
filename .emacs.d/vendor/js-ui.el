@@ -29,7 +29,6 @@
              all-the-icons-icon-for-mode
              all-the-icons-install-fonts))
 
-;;; Theme
 (use-package doom-themes
   :demand
   ;; :custom
@@ -38,16 +37,14 @@
   (load-theme 'doom-molokai t)
   (+evil|update-cursor-color))
 
-
-;; Modeline
 (use-package doom-modeline
-	:defer t
+  :defer t
   :hook (after-init . doom-modeline-init))
-(use-package hide-mode-line
-  :hook ((neotree-mode . hide-mode-line-mode)
-         (completion-list-mode . hide-mode-line-mode)
-         (completion-in-region-mode . hide-mode-line-mode)))
 
+(use-package hide-mode-line
+  :hook ((neotree-mode
+	  completion-list-mode
+	  completion-in-region-mode) . hide-mode-line-mode))
 
 ;;; Support Emojis in Emacs
 (use-package emojify
@@ -55,42 +52,15 @@
   :custom
   (emojify-display-style 'unicode)
   :hook
-  ((markdown-mode . emojify-mode)
-   (git-commit-mode . emojify-mode)
-   (magit-status-mode . emojify-mode)
-   (magit-log-mode . emojify-mode)))
+  ((markdown-mode
+    git-commit-mode
+    magit-status-mode
+    magit-log-mode) . emojify-mode))
 
 ;; TODO try out shackle instead
 ;; (use-package popwin
 ;;   :defer 3
 ;;   :hook (after-init . popwin-mode))
-
-(use-package shackle
-  :disabled
-  :diminish
-  :custom
-  (shackle-default-alignment 'below)
-  (shackle-default-size 8)
-  (shackle-rules
-   '(
-     ;; built-in (emacs)
-     ("*compilation*" :size 0.25 :noselect t :autokill t :autoclose t)
-     ("*ert*" :same t :modeline t)
-     ("*info*" :size 0.5 :select t :autokill t)
-     ("*Backtrace*" :size 20 :noselect t)
-     ("*Warnings*"  :size 12 :noselect t :autofit t)
-     ("*Messages*"  :size 12 :noselect t)
-     ("*Help*" :size 0.3 :autokill t)
-     (helpful-mode :size 0.3 :autokill t)
-     ("^\\*.*Shell Command.*\\*$" :regexp t :size 20 :noselect t :autokill t)
-     (apropos-mode :size 0.3 :autokill t :autoclose t)
-     (Buffer-menu-mode :size 20 :autokill t)
-     (comint-mode :noesc t)
-     (grep-mode :size 25 :noselect t :autokill t)
-     (profiler-report-mode :size 0.3 :regexp t :autokill t :modeline minimal)
-     (tabulated-list-mode :noesc t)
-     ("^ ?\\*" :regexp t :size 15 :noselect t :autokill t :autoclose t))))
-
 
 ;;; Resize all buffers at once with C-M-= / C-M--
 (use-package default-text-scale
