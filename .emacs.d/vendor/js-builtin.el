@@ -97,22 +97,27 @@
   :ensure nil
   :custom
   (recentf-auto-cleanup 200)
-  (recentf-max-saved-items 500)
+  (recentf-max-saved-items 300)
   (recentf-auto-cleanup 'never)
+  (recentf-filename-handlers '(file-truename abbreviate-file-name))
   (recentf-exclude
-   '("/tmp/" "\\.ido\\.last" "ido.last" "\\.git/config" "\\.git/COMMIT_EDITMSG"
-     "cache/recentf" "\\.emacs\\.d/elpa/.*" "\\.emacs\\.d/.cask/.*" ))
+   (list #'file-remote-p "\\.\\(?:gz\\|gif\\|svg\\|png\\|jpe?g\\)$"
+         "^/tmp/" "^/ssh:" "\\.?ido\\.last$" "\\.revive$" "/TAGS$"
+         "^/var/folders/.+$" "\\.git/config" "\\.git/COMMIT_EDITMSG"))
   :config
   (progn
+    (add-hook 'kill-emacs-hook #'recentf-cleanup)
     (add-to-list 'recentf-exclude "COMMIT_EDITMSG\\'")
     (add-to-list 'recentf-exclude no-littering-var-directory)
     (add-to-list 'recentf-exclude no-littering-etc-directory)
-    (setq recentf-auto-save-timer (run-with-idle-timer 600 t 'recentf-save-list))))
+    (setq recentf-auto-save-timer
+          (run-with-idle-timer 600 t 'recentf-save-list))))
 
 
 (use-package eldoc
   :ensure nil
-  :delight)
+  :delight
+  :hook ((ielm-mode eval-expression-minibuffer-setup) . eldoc-mode))
 
 (use-package eshell
   :commands (eshell eshell-mode)

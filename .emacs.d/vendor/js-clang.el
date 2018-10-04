@@ -14,7 +14,14 @@
     (setq-default irony-cdb-compilation-databases '(irony-cdb-clang-complete
                                                     iron-cdb-libclang))
 
-    (add-hook 'irony-mode-hook 'irony-cdb-autosetup-compile-options)))
+    (add-hook 'irony-mode-hook 'irony-cdb-autosetup-compile-options))
+  (with-eval-after-load 'smartparens
+    (sp-with-modes '(c++-mode objc-mode)
+      (sp-local-pair "<" ">"
+                     :when '(+cc-sp-point-is-template-p +cc-sp-point-after-include-p)
+                     :post-handlers '(("| " "SPC"))))
+    (sp-with-modes '(c-mode c++-mode objc-mode java-mode)
+      (sp-local-pair "/*!" "*/" :post-handlers '(("||\n[i]" "RET") ("[d-1]< | " "SPC"))))))
 
 (use-package irony-eldoc
   :hook (irony-mode . irony-eldoc))

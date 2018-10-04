@@ -159,7 +159,6 @@
                     (message "File '%s' successfully removed" filename)))))
             :which-key "delete file and kill buffer")
     "f f" '(counsel-find-file :which-key "find file")
-    "f t" '(neotree-toggle :which-key "toggle file tree")
     "f e d" '((lambda ()
                 (interactive)
                 (find-file-existing user-init-file))
@@ -180,26 +179,6 @@
     "g" '(:ignore t :which-key "Go to")
     "g d" '(dumb-jump-go :which-key "definition")
     "g D" '(dumb-jump-go-other-window :which-key "definition (other window)")
-
-
-    ;;; Projects
-    "p"   '(:ignore t :which-key "Projects")
-    "p !" '(projectile-run-shell-command-in-root :which-key "run command")
-    "p %" '(projectile-replace-regexp :which-key "replace regexp")
-    ;; "p a" '(projectile-toggle-between-implementation-and-test :which-key "toggle test")
-    "p I" '(projectile-invalidate-cache :which-key "clear cache")
-    "p R" '(projectile-replace :which-key "replace")
-    "p b" '(counsel-projectile-switch-to-buffer :which-key "switch to buffer")
-    "p d" '(counsel-projectile-find-dir :which-key "find directory")
-    "p f" '(counsel-projectile-find-file :which-key "open file")
-    "p k" '(projectile-kill-buffers :which-key "kill buffers")
-    "p p" '(counsel-projectile-switch-project :which-key "open project")
-    "p r" '(projectile-recentf :which-key "recent files")
-    "p t" '(neotree-projectile-action :which-key "project tree")
-    "p T" '(doom/ivy-tasks :which-key "List project tasks")
-
-    ;; Does not seem to work
-    ;; "p s" '(counsel-projectile-rg :which-key "search in project")
 
     ;;; Quit
     "q"   '(:ignore t :which-key "Quit")
@@ -266,14 +245,38 @@
 
 ;;; File Tree
 (use-package neotree
-  :after all-the-icons
+  :commands (neotree-show
+             neotree-hide
+             neotree-toggle
+             neotree-dir
+             neotree-find
+             neo-global--with-buffer
+             neo-global--window-exists-p)
   :custom
   (neo-create-file-auto-open t)
   (neo-modern-sidebar t)
-  (neo-point-auto-indent t)
+  (neo-point-auto-indent nil)
   (neo-theme (if (display-graphic-p) 'icons 'arrow))
   (neo-window-fixed-size nil)
-  (neo-window-width 25)
+  (neo-window-width 28)
+  (neo-show-hidden-files t)
+  (neo-keymap-style 'concise)
+  (neo-hidden-regexp-list
+   '(;; vcs folders
+     "^\\.\\(?:git\\|hg\\|svn\\)$"
+     ;; compiled files
+     "\\.\\(?:pyc\\|o\\|elc\\|lock\\|css.map\\|class\\)$"
+     ;; generated files, caches or local pkgs
+     "^\\(?:node_modules\\|vendor\\|.\\(project\\|cask\\|yardoc\\|sass-cache\\)\\)$"
+     ;; org-mode folders
+     "^\\.\\(?:sync\\|export\\|attach\\)$"
+     ;; temp files
+     "~$"
+     "^#.*#$"))
+  :config
+  (global-keymap
+   "ft" '(neotree-toggle :which-key "toggle file tree")
+   "pt" '(neotree-projectile-action :which-key "project tree"))
   :general
   (general-nmap neotree-mode-map
     "RET" 'neotree-enter
@@ -314,11 +317,16 @@
   (ivy-initial-inputs-alist nil)
   (ivy-re-builders-alist
    ;; allow input not in order
-   '((t   . ivy--regex-ignore-order)))
+   '((t . ivy--regex-ignore-order)))
   (ivy-use-selectable-prompt t))
+
 (use-package doom-todo-ivy
   :commands doom/ivy-tasks
-  :load-path "vendor/")
+  :load-path "vendor/"
+  :config
+  (global-keymap
+   "p T" '(doom/ivy-tasks :which-key "List project tasks")))
+
 (use-package ivy-rich
   :disabled
   :load-path "vendor/"
@@ -387,17 +395,35 @@
              counsel-projectile-git-grep
              counsel-projectile-org-capture
              counsel-projectile-org-agenda)
-  :after projectile)
+  :after projectile
+  :config
+  (global-keymap
+   "pb" '(counsel-projectile-switch-to-buffer
+          :which-key "switch to buffer")
+   "pd" '(counsel-projectile-find-dir
+          :which-key "find directory")
+   "pf" '(counsel-projectile-find-file
+          :which-key "open file")
+   "pp" '(counsel-projectile-switch-project
+          :which-key "open project")
+   "ps" '(counsel-projectile-rg
+          :which-key "search in project")))
 
 (use-package counsel-dash
   :commands counsel-dash
   :hook
-  ((lisp-mode . (lambda () (setq-local counsel-dash-docsets '("Common_Lisp"))))
-   (emacs-lisp-mode . (lambda () (setq-local counsel-dash-docsets '("Emacs_Lisp"))))
-   (ruby-mode . (lambda () (setq-local counsel-dash-docsets '("Ruby"))))
-   (projectile-rails-mode . (lambda () (setq-local counsel-dash-docsets '("Ruby_on_Rails_5"))))
-   (sql-mode . (lambda () (setq-local counsel-dash-docsets '("PostgreSQL"))))
-   (web-mode . (lambda () (setq-local counsel-dash-docsets '("Javascript" "HTML")))))
+  ((lisp-mode . (lambda ()
+                  (setq-local counsel-dash-docsets '("Common_Lisp"))))
+   (emacs-lisp-mode . (lambda ()
+                        (setq-local counsel-dash-docsets '("Emacs_Lisp"))))
+   (ruby-mode . (lambda ()
+                  (setq-local counsel-dash-docsets '("Ruby"))))
+   (projectile-rails-mode . (lambda ()
+                              (setq-local counsel-dash-docsets '("Ruby_on_Rails_5"))))
+   (sql-mode . (lambda ()
+                 (setq-local counsel-dash-docsets '("PostgreSQL"))))
+   (web-mode . (lambda ()
+                 (setq-local counsel-dash-docsets '("Javascript" "HTML")))))
   :custom
   (counsel-dash-browser-func 'eww)
   (counsel-dash-common-docsets '()))
@@ -433,17 +459,40 @@
 (use-package flyspell
   ;; Disable on Windows because `aspell' 0.6+ isn't available.
   :if (not (eq system-type 'windows-nt))
+  :commands flyspell-mode
   :hook
-  ((markdown-mode org-mode) . turn-on-flyspell)
+  (text-mode . turn-on-flyspell)
   (prog-mode . flyspell-prog-mode)
   :delight
+  :config
+  (defun js|flyspell-mode-toggle ()
+    "Toggle flyspell mode."
+    (interactive)
+    (if flyspell-mode
+        (flyspell-mode -1)
+      (flyspell-mode 1)))
+  
+  (global-keymap
+   "S" '(:ignore t :which-key "Spelling")
+   "Sb" 'flyspell-buffer
+   "Sn" 'flyspell-goto-next-error
+   "tS" 'js|flyspell-mode-toggle)
   :custom
-  (ispell-silently-savep t)
-  (ispell-program-name "aspell")
+  ;; (ispell-silently-savep t)
+  (ispell-program-name (executable-find "aspell"))
+  (ispell-list-command "--list")
   (ispell-extra-args '("--sug-mode=ultra"
-                       "--lang=en_US")))
+                       "--lang=en_US"
+                       "--dont-tex-check-comments")))
+(use-package flyspell-correct
+  :commands (flyspell-correct-word-generic
+             flyspell-correct-previous-word-generic))
 (use-package flyspell-correct-ivy
-  :requires  ivy)
+  :commands (flyspell-correct-ivy)
+  :requires ivy
+  :init
+  (setq flyspell-correct-interface #'flyspell-correct-ivy))
+
 (use-package writegood-mode
   :defer t
   :hook (text-mode . writegood-mode))
@@ -474,12 +523,25 @@
     (define-key projectile-mode-map (kbd "s-p") 'projectile-command-map)
     (define-key projectile-mode-map (kbd "C-c p") 'projectile-command-map)
     (add-to-list 'projectile-project-root-files ".clang_complete")
+
+    (global-keymap
+      ;;; Projects
+     "p"   '(:ignore t :which-key "Projects")
+     "p!" '(projectile-run-shell-command-in-root :which-key "run command")
+     "p%" '(projectile-replace-regexp :which-key "replace regexp")
+     ;; "p a" '(projectile-toggle-between-implementation-and-test :which-key "toggle test")
+     "pI" '(projectile-invalidate-cache :which-key "clear cache")
+     "pR" '(projectile-replace :which-key "replace")
+     "pk" '(projectile-kill-buffers :which-key "kill buffers")
+     "pr" '(projectile-recentf :which-key "recent files"))
+    
     (projectile-mode +1)))
 
 ;;; direnv
 (use-package direnv
   :defer 2
   :ensure-system-package direnv)
+
 (use-package erlang
   :mode "\\.erl$")
 

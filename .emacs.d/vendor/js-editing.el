@@ -85,7 +85,41 @@
   (evil-shift-width 2)
   (evil-want-integration nil)
   :config
+  (setq evil-want-visual-char-semi-exclusive t
+        evil-magic t
+        evil-echo-state t
+        evil-indent-convert-tabs t
+        evil-ex-search-vim-style-regexp t
+        evil-ex-substitute-global t
+        evil-ex-visual-char-range t  ; column range for ex commands
+        evil-insert-skip-empty-lines t
+        evil-mode-line-format 'nil
+        evil-respect-visual-line-mode t
+        ;; more vim-like behavior
+        evil-symbol-word-search t
+        ;; don't activate mark on shift-click
+        shift-select-mode nil
+        ;; cursor appearance
+        evil-default-cursor '+evil-default-cursor
+        evil-normal-state-cursor 'box
+        ;; evil-emacs-state-cursor  '(box +evil-emacs-cursor)
+        evil-insert-state-cursor 'bar
+        evil-visual-state-cursor 'hollow)
   (fset 'evil-visual-update-x-selection 'ignore)
+  ;; Change the cursor color in emacs mode
+  (defvar +evil--default-cursor-color
+    (or (ignore-errors (frame-parameter nil 'cursor-color))
+        "#ffffff"))
+
+  (defun +evil-default-cursor () (set-cursor-color +evil--default-cursor-color))
+  (defun +evil-emacs-cursor () (set-cursor-color (face-foreground 'warning)))
+  
+  (defun +evil|update-cursor-color ()
+    (setq +evil--default-cursor-color (face-background 'cursor)))
+  (add-hook 'doom-load-theme-hook #'+evil|update-cursor-color)
+  (defun +evil|update-shift-width ()
+    (setq evil-shift-width tab-width))
+  (add-hook 'after-change-major-mode-hook #'+evil|update-shift-width t)
   :general
   (general-define-key
    :states 'insert
@@ -176,7 +210,6 @@
   :defer t)
 
 (use-package smartparens
-  :commands (sp-pair sp-local-pair sp-with-modes)
   :config
   (require 'smartparens-config)
   (setq sp-highlight-pair-overlay nil
@@ -208,10 +241,22 @@
   ;; smartparens breaks evil-mode's replace state
   (add-hook 'evil-replace-state-entry-hook #'turn-off-smartparens-mode)
   (add-hook 'evil-replace-state-exit-hook  #'turn-on-smartparens-mode)
-
   (smartparens-global-mode +1))
 
-(use-package yasnippet)
+(use-package yasnippet
+  :hook ((text-mode prog-mode snippet-mode) . yas-minor-mode-on)
+  :commands (yas-minor-mode yas-minor-mode-on yas-expand yas-expand-snippet
+                            yas-lookup-snippet yas-insert-snippet yas-new-snippet
+                            yas-visit-snippet-file snippet-mode)
+  :config
+  (setq yas-also-auto-indent-first-line t
+        yas-triggers-in-field t) ; Allow nested snippets
+
+  ;; fix an error caused by smartparens interfering with yasnippet bindings
+  (advice-add #'yas-expand :before #'sp-remove-active-pair-overlay)
+
+  ;; Exit snippets on ESC from normal mode
+  (add-hook '+evil-esc-hook #'yas-exit-all-snippets))
 
 (provide 'js-editing)
 

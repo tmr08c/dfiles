@@ -36,5 +36,17 @@ the rest of the arguments are treated exactly like they are in
     :keymaps ',(intern (format "%s-map" (eval mode)))
     ,@bindings))
 
+
+
+(defun js|smartparens-pair-newline (id action context)
+  (save-excursion
+    (newline)
+    (indent-according-to-mode)))
+
+(defun js|smartparens-pair-newline-and-indent (id action context)
+  (js|smartparens-pair-newline id action context)
+  (indent-according-to-mode))
+
+
 (provide 'core)
 ;;; core.el ends here

@@ -141,7 +141,12 @@ bin/doom while packages at compile-time (not a runtime though)."
 	("<up>" . sly-mrepl-previous-input-or-button)
 	("<down>" . sly-mrepl-next-input-or-button)
 	("<C-up>" . sly-mrepl-previous-input-or-button)
-	("<C-down>" . sly-mrepl-next-input-or-button)))
+	("<C-down>" . sly-mrepl-next-input-or-button))
+  :config
+  (with-eval-after-load 'smartparens
+    (sp-with-modes '(sly-mrepl-mode)
+		   (sp-local-pair "'" "'" :actions nil)
+		   (sp-local-pair "`" "`" :actions nil))))
 
 (use-package sly-repl-ansi-color
   :requires sly
@@ -225,8 +230,9 @@ bin/doom while packages at compile-time (not a runtime though)."
 ;;   (auto-compile-display-buffer nil)
 ;; 	(auto-compile-use-mode-line nil))
 
-;; (use-package highlight-quoted
-;; 	:commands highlight-quoted-mode)
+(use-package highlight-quoted
+  :hook (emacs-lisp-mode . highlight-quoted-mode)
+  :commands highlight-quoted-mode)
 
 ;; (use-package macrostep
 ;; 	:commands macrostep-expand

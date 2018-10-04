@@ -17,7 +17,6 @@
 ;; This is MUCH faster than using set-face-attribute
 (add-to-list 'default-frame-alist '(font . "Fira Mono:13"))
 
-
 ;; Appearance
 ;; Theme Emacs for dark color scheme
 (add-to-list 'default-frame-alist '(ns-transparent-titlebar . t))
@@ -32,8 +31,12 @@
 
 ;;; Theme
 (use-package doom-themes
-  :defer t
-  :init (load-theme 'doom-molokai t))
+  :demand
+  ;; :custom
+  ;; (doom-molokai-brighter-comments t)
+  :init
+  (load-theme 'doom-molokai t)
+  (+evil|update-cursor-color))
 
 
 ;; Modeline

@@ -31,6 +31,7 @@
   (web-mode-code-indent-offset 2)
   (web-mode-enable-auto-quoting nil)
   (web-mode-enable-current-element-highlight t))
+
 (use-package company-web
   :hook web-mode
   :config
@@ -43,7 +44,9 @@
   ;;       ("," . self-with-space)
   ;;       ("{" . open-brackets-newline-and-indent))
   :custom
-  (css-indent-offset 2))
+  (css-indent-offset 2)
+  :config
+  (add-to-list 'company-backends 'company-css))
 
 (use-package scss-mode
   :mode "\\.scss$")
@@ -53,6 +56,11 @@
 
 (use-package web-beautify
   :hook web-mode)
+
+(with-eval-after-load 'smartparens
+  (sp-with-modes '(css-mode scss-mode less-css-mode stylus-mode)
+    (sp-local-pair "/*" "*/"
+                   :post-handlers '(("[d-3]||\n[i]" "RET") ("| " "SPC")))))
 
 (provide 'js-web)
 ;;; js-web.el ends here
