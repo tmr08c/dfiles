@@ -625,10 +625,10 @@
         ;; :desc "Next buffer"             :n "]" #'next-buffer
         ;; :desc "Previous buffer"         :n "[" #'previous-buffer
         ;; :desc "Save buffer"             :n "s" #'save-buffer
-        ;; :desc "Pop scratch buffer"      :n "x" #'doom/open-scratch-buffer
-        :desc "Bury buffer"             :n "z" #'bury-buffer
+        :desc "Pop scratch buffer"      :n "s" #'doom/open-scratch-buffer
+        :desc "Bury buffer"             :n "z" #'bury-buffer)
         ;; :desc "Sudo edit this file"     :n "S" #'doom/sudo-this-file
-        :desc "Scratch" :n "s"  (λ! ((switch-to-buffer (get-buffer-create "*scratch*")))))
+        ;; :desc "Scratch" :n "s"  (λ! ((switch-to-buffer (get-buffer-create "*scratch*")))))
 
       ;; (:desc "code" :prefix "c"
       ;;   :desc "List errors"               :n  "x" #'flycheck-list-errors
