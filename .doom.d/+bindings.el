@@ -541,23 +541,30 @@
       ;;   :desc "Spelling error"        :nv "s" #'evil-next-flyspell-error
       ;;   :desc "Spelling correction"   :n  "S" #'flyspell-correct-word-generic)
 
+      ;; (:desc "buffers" :prefix "b"
+      ;;   :desc "List Buffers" :n "b" #'ivy-switch-buffer
+      ;;   :desc "Next Buffer" :n "n" #'next-buffer
+      ;;   :desc "Previous Buffer" :n "p" #'previous-buffer
+      ;;   :desc "Close Buffer" :n "d" (λ! ((kill-buffer (current-buffer))))
+      ;;   :desc "Scratch" :n "s"  (λ! ((switch-to-buffer (get-buffer-create "*scratch*")))))
+
       (:desc "spelling" :prefix "S"
         :desc "Spelling Buffer" :nv "b" #'flyspell-buffer
         :desc "Next Error"      :nv "n" #'evil-next-flyspell-error
         :desc "Previous Error"  :nv "p" #'evil-prev-flyspell-error)
 
-      (:desc "search" :prefix "/"
-        (:when (featurep! :completion ivy)
-          :desc "Buffer"                 :nv "b" #'swiper
-          :desc "Project"                :nv "p" #'+ivy/project-search
-          :desc "Directory"              :nv "d" #'+ivy/project-search-from-cwd)
-        (:when (featurep! :completion helm)
-          :desc "Buffer"                 :nv "b" #'swiper-helm
-          :desc "Project"                :nv "p" #'+helm/project-search
-          :desc "Directory"              :nv "d" #'+helm/project-search-from-cwd)
-        :desc "Symbols"                :nv "i" #'imenu
-        :desc "Symbols across buffers" :nv "I" #'imenu-anywhere
-        :desc "Online providers"       :nv "o" #'+lookup/online-select)
+      ;; (:desc "search" :prefix "/"
+      ;;   (:when (featurep! :completion ivy)
+      ;;     :desc "Buffer"                 :nv "b" #'swiper
+      ;;     :desc "Project"                :nv "p" #'+ivy/project-search
+      ;;     :desc "Directory"              :nv "d" #'+ivy/project-search-from-cwd)
+      ;;   (:when (featurep! :completion helm)
+      ;;     :desc "Buffer"                 :nv "b" #'swiper-helm
+      ;;     :desc "Project"                :nv "p" #'+helm/project-search
+      ;;     :desc "Directory"              :nv "d" #'+helm/project-search-from-cwd)
+      ;;   :desc "Symbols"                :nv "i" #'imenu
+      ;;   :desc "Symbols across buffers" :nv "I" #'imenu-anywhere
+      ;;   :desc "Online providers"       :nv "o" #'+lookup/online-select)
 
       (:desc "workspace" :prefix [tab]
         :desc "Display tab bar"          :n [tab] #'+workspace/display
@@ -588,13 +595,13 @@
       (:desc "windows" :prefix "w"
         :desc "Close Window" :n "d" #'delete-window
         :desc "Window Left" :n "h" #'evil-window-left
-        :desc "Window Left" :n "<left>" #'evil-window-left
+        ;; :desc "Window Left" :n "<left>" #'evil-window-left
         :desc "Window Down" :n "j" #'evil-window-down
-        :desc "Window Down" :n "<down>" #'evil-window-right
+        ;; :desc "Window Down" :n "<down>" #'evil-window-right
         :desc "Window Up" :n "k" #'evil-window-up
-        :desc "Window Up" :n "<up>" #'evil-window-right
+        ;; :desc "Window Up" :n "<up>" #'evil-window-right
         :desc "Window Right" :n "l" #'evil-window-right
-        :desc "Window Right" :n "<right>" #'evil-window-right
+        ;; :desc "Window Right" :n "<right>" #'evil-window-right
         :desc "Balance Windows" :n "=" #'balance-windows
         :desc "Split Vertical" :n "/" (λ! ((split-window-horizontally)
                                                (other-window 1)))
@@ -602,6 +609,7 @@
                                                (other-window 1))))
 
       (:desc "buffer" :prefix "b"
+        :desc "List Buffers" :n "b" #'ivy-switch-buffer
         :desc "New empty buffer"        :n "n" #'evil-buffer-new
         (:when (featurep! :feature workspaces)
           :desc "Switch workspace buffer" :n "b" #'persp-switch-to-buffer
@@ -609,29 +617,31 @@
         (:unless (featurep! :feature workspaces)
           :desc "Switch buffer"           :n "b" #'switch-to-buffer)
         :desc "Kill buffer"             :n "k" #'kill-this-buffer
+        :desc "Close buffer"            :n "d" #'kill-this-buffer
         :desc "Kill other buffers"      :n "o" #'doom/kill-other-buffers
-        :desc "Toggle narrowing"        :nv "-" #'doom/clone-and-narrow-buffer
+        ;; :desc "Toggle narrowing"        :nv "-" #'doom/clone-and-narrow-buffer
         :desc "Next buffer"             :n "n" #'next-buffer
         :desc "Previous buffer"         :n "p" #'previous-buffer
-        :desc "Next buffer"             :n "]" #'next-buffer
-        :desc "Previous buffer"         :n "[" #'previous-buffer
-        :desc "Save buffer"             :n "s" #'save-buffer
-        :desc "Pop scratch buffer"      :n "x" #'doom/open-scratch-buffer
+        ;; :desc "Next buffer"             :n "]" #'next-buffer
+        ;; :desc "Previous buffer"         :n "[" #'previous-buffer
+        ;; :desc "Save buffer"             :n "s" #'save-buffer
+        ;; :desc "Pop scratch buffer"      :n "x" #'doom/open-scratch-buffer
         :desc "Bury buffer"             :n "z" #'bury-buffer
-        :desc "Sudo edit this file"     :n "S" #'doom/sudo-this-file)
+        ;; :desc "Sudo edit this file"     :n "S" #'doom/sudo-this-file
+        :desc "Scratch" :n "s"  (λ! ((switch-to-buffer (get-buffer-create "*scratch*")))))
 
-      (:desc "code" :prefix "c"
-        :desc "List errors"               :n  "x" #'flycheck-list-errors
-        :desc "Evaluate buffer/region"    :n  "e" #'+eval/buffer
-                                          :v  "e" #'+eval/region
-        :desc "Evaluate & replace region" :nv "E" #'+eval:replace-region
-        :desc "Format buffer/region"      :n  "f" #'+format/buffer
-                                          :v  "f" #'+format/region
-        :desc "Build tasks"               :nv "b" #'+eval/build
-        :desc "Jump to definition"        :n  "d" #'+lookup/definition
-        :desc "Jump to references"        :n  "D" #'+lookup/references
-        :desc "Open REPL"                 :n  "r" #'+eval/open-repl
-                                          :v  "r" #'+eval:repl)
+      ;; (:desc "code" :prefix "c"
+      ;;   :desc "List errors"               :n  "x" #'flycheck-list-errors
+      ;;   :desc "Evaluate buffer/region"    :n  "e" #'+eval/buffer
+      ;;                                     :v  "e" #'+eval/region
+      ;;   :desc "Evaluate & replace region" :nv "E" #'+eval:replace-region
+      ;;   :desc "Format buffer/region"      :n  "f" #'+format/buffer
+      ;;                                     :v  "f" #'+format/region
+      ;;   :desc "Build tasks"               :nv "b" #'+eval/build
+      ;;   :desc "Jump to definition"        :n  "d" #'+lookup/definition
+      ;;   :desc "Jump to references"        :n  "D" #'+lookup/references
+      ;;   :desc "Open REPL"                 :n  "r" #'+eval/open-repl
+      ;;                                     :v  "r" #'+eval:repl)
 
       (:desc "file" :prefix "f"
         :desc "Find file"                 :n "." #'find-file
@@ -650,30 +660,33 @@
         :desc "Browse private config"       :n "P" #'+default/browse-config
         :desc "Delete this file"            :n "X" #'doom/delete-this-file)
 
-      (:desc "git" :prefix "g"
-        :desc "Magit blame"           :n  "b" #'magit-blame
-        :desc "Magit commit"          :n  "c" #'magit-commit
-        :desc "Magit clone"           :n  "C" #'+magit/clone
-        :desc "Magit dispatch"        :n  "d" #'magit-dispatch-popup
-        :desc "Magit find-file"       :n  "f" #'magit-find-file
-        :desc "Magit status"          :n  "g" #'magit-status
-        :desc "Magit file delete"     :n  "x" #'magit-file-delete
-        :desc "List gists"            :n  "G" #'+gist:list
-        :desc "Initialize repo"       :n  "i" #'magit-init
-        :desc "Browse issues tracker" :n  "I" #'+vc/git-browse-issues
-        :desc "Magit buffer log"      :n  "l" #'magit-log-buffer-file
-        :desc "List repositories"     :n  "L" #'magit-list-repositories
-        :desc "Browse remote"         :n  "o" #'+vc/git-browse
-        :desc "Magit push popup"      :n  "p" #'magit-push-popup
-        :desc "Magit pull popup"      :n  "P" #'magit-pull-popup
-        :desc "Git revert hunk"       :n  "r" #'git-gutter:revert-hunk
-        :desc "Git revert file"       :n  "R" #'vc-revert
-        :desc "Git stage hunk"        :n  "s" #'git-gutter:stage-hunk
-        :desc "Git stage file"        :n  "S" #'magit-stage-file
-        :desc "Git time machine"      :n  "t" #'git-timemachine-toggle
-        :desc "Git unstage file"      :n  "U" #'magit-unstage-file
-        :desc "Next hunk"             :nv "]" #'git-gutter:next-hunk
-        :desc "Previous hunk"         :nv "[" #'git-gutter:previous-hunk)
+      (:desc "go to" :prefix "g"
+        :desc "Definition"                :n "d" #'dump-jump-go
+        :desc "Definition (other window)" :n "D" #'dump-jump-go-other-window)
+      ;; (:desc "git" :prefix "g"
+      ;;   :desc "Magit blame"           :n  "b" #'magit-blame
+      ;;   :desc "Magit commit"          :n  "c" #'magit-commit
+      ;;   :desc "Magit clone"           :n  "C" #'+magit/clone
+      ;;   :desc "Magit dispatch"        :n  "d" #'magit-dispatch-popup
+      ;;   :desc "Magit find-file"       :n  "f" #'magit-find-file
+      ;;   :desc "Magit status"          :n  "g" #'magit-status
+      ;;   :desc "Magit file delete"     :n  "x" #'magit-file-delete
+      ;;   :desc "List gists"            :n  "G" #'+gist:list
+      ;;   :desc "Initialize repo"       :n  "i" #'magit-init
+      ;;   :desc "Browse issues tracker" :n  "I" #'+vc/git-browse-issues
+      ;;   :desc "Magit buffer log"      :n  "l" #'magit-log-buffer-file
+      ;;   :desc "List repositories"     :n  "L" #'magit-list-repositories
+      ;;   :desc "Browse remote"         :n  "o" #'+vc/git-browse
+      ;;   :desc "Magit push popup"      :n  "p" #'magit-push-popup
+      ;;   :desc "Magit pull popup"      :n  "P" #'magit-pull-popup
+      ;;   :desc "Git revert hunk"       :n  "r" #'git-gutter:revert-hunk
+      ;;   :desc "Git revert file"       :n  "R" #'vc-revert
+      ;;   :desc "Git stage hunk"        :n  "s" #'git-gutter:stage-hunk
+      ;;   :desc "Git stage file"        :n  "S" #'magit-stage-file
+      ;;   :desc "Git time machine"      :n  "t" #'git-timemachine-toggle
+      ;;   :desc "Git unstage file"      :n  "U" #'magit-unstage-file
+      ;;   :desc "Next hunk"             :nv "]" #'git-gutter:next-hunk
+      ;;   :desc "Previous hunk"         :nv "[" #'git-gutter:previous-hunk)
 
       (:desc "help" :prefix "h"
         :n "h" help-map
@@ -735,7 +748,7 @@
         :desc "Terminal"              :n  "t" #'+term/open
         :desc "Terminal in popup"     :n  "T" #'+term/open-popup-in-project
         :desc "Eshell"                :n  "e" #'+eshell/open
-        :desc "Eshell in popup"       :n  "E" #'+eshell/open-popup
+        :desc "Eshell in popup"       :n  "E" #'+eshell/open-popup)
 
         ;; (:when (featurep! :collab floobits)
         ;;   :desc "floobits" :prefix "f"
@@ -757,7 +770,7 @@
         ;;   :desc "Send project to Launchbar" :n "L" #'+macos/send-project-to-launchbar)
 
         ;; (:when (featurep! :tools docker)
-        ;;   :desc "Docker"                    :n "D" #'docker))
+        ;;   :desc "Docker"                    :n "D" #'docker)
 
       (:desc "project" :prefix "p"
         :desc "Switch to buffer"              :n  "b"  #'projectile-switch-to-buffer
@@ -799,14 +812,17 @@
       ;;     :desc "Browse remote files"    :n "." #'ssh-deploy-browse-remote-handler
       ;;     :desc "Detect remote changes"  :n ">" #'ssh-deploy-remote-changes-handler))
 
-      (:when (featurep! :feature snippets)
-        (:desc "snippets" :prefix "s"
-          :desc "New snippet"           :n  "n" #'yas-new-snippet
-          :desc "Insert snippet"        :nv "i" #'yas-insert-snippet
-          :desc "Find snippet"          :n  "s" #'+default/find-in-snippets
-          :desc "Find snippet for mode" :n  "S" #'+default/browse-snippets
-          :desc "Find global snippet"   :n  "/" #'yas-visit-snippet-file
-          :desc "Reload snippets"       :n  "r" #'yas-reload-all))
+      ;; (:when (featurep! :feature snippets)
+      ;;   (:desc "snippets" :prefix "s"
+      ;;     :desc "New snippet"           :n  "n" #'yas-new-snippet
+      ;;     :desc "Insert snippet"        :nv "i" #'yas-insert-snippet
+      ;;     :desc "Find snippet"          :n  "s" #'+default/find-in-snippets
+      ;;     :desc "Find snippet for mode" :n  "S" #'+default/browse-snippets
+      ;;     :desc "Find global snippet"   :n  "/" #'yas-visit-snippet-file
+      ;;     :desc "Reload snippets"       :n  "r" #'yas-reload-all))
+
+      (:desc "search" :prefix "s"
+        :desc "Search Buffer" :n "s" #'swiper)
 
       (:desc "toggle" :prefix "t"
         :desc "Flyspell"               :n "s" #'flyspell-mode
