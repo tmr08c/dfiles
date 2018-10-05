@@ -511,15 +511,15 @@
       ;; :desc "Blink cursor line"       :n "DEL" #'+nav-flash/blink-cursor
       ;; :desc "Jump to bookmark"        :n "RET" #'bookmark-jump
 
-      (:when (featurep! :feature workspaces)
-        :desc "Switch workspace buffer" :n "," #'persp-switch-to-buffer
-        :desc "Switch buffer"           :n "<" #'switch-to-buffer)
-      (:unless (featurep! :feature workspaces)
-        :desc "Switch buffer"           :n "," #'switch-to-buffer)
+      ;; (:when (featurep! :feature workspaces)
+      ;;   :desc "Switch workspace buffer" :n "," #'persp-switch-to-buffer
+      ;;   :desc "Switch buffer"           :n "<" #'switch-to-buffer)
+      ;; (:unless (featurep! :feature workspaces)
+      ;;   :desc "Switch buffer"           :n "," #'switch-to-buffer)
 
       ;; C-u is used by evil
-      :desc "Universal argument"      :n "u"  #'universal-argument
-      :desc "window"                  :n "w"  evil-window-map
+      ;; :desc "Universal argument"      :n "u"  #'universal-argument
+      ;; :desc "window"                  :n "w"  evil-window-map
 
       ;; (:desc "previous..." :prefix "["
       ;;   :desc "Text size"             :nv "[" #'text-scale-decrease
@@ -540,6 +540,11 @@
       ;;   :desc "Workspace"             :nv "w" #'+workspace/switch-right
       ;;   :desc "Spelling error"        :nv "s" #'evil-next-flyspell-error
       ;;   :desc "Spelling correction"   :n  "S" #'flyspell-correct-word-generic)
+
+      (:desc "spelling" :prefix "S"
+        :desc "Spelling Buffer" :nv "b" #'flyspell-buffer
+        :desc "Next Error"      :nv "n" #'evil-next-flyspell-error
+        :desc "Previous Error"  :nv "p" #'evil-prev-flyspell-error)
 
       (:desc "search" :prefix "/"
         (:when (featurep! :completion ivy)
@@ -579,6 +584,22 @@
         :desc "Switch to 8th workspace"  :n "8"   (λ! (+workspace/switch-to 7))
         :desc "Switch to 9th workspace"  :n "9"   (λ! (+workspace/switch-to 8))
         :desc "Switch to last workspace" :n "0"   #'+workspace/switch-to-last)
+
+      (:desc "windows" :prefix "w"
+        :desc "Close Window" :n "d" #'delete-window
+        :desc "Window Left" :n "h" #'evil-window-left
+        :desc "Window Left" :n "<left>" #'evil-window-left
+        :desc "Window Down" :n "j" #'evil-window-down
+        :desc "Window Down" :n "<down>" #'evil-window-right
+        :desc "Window Up" :n "k" #'evil-window-up
+        :desc "Window Up" :n "<up>" #'evil-window-right
+        :desc "Window Right" :n "l" #'evil-window-right
+        :desc "Window Right" :n "<right>" #'evil-window-right
+        :desc "Balance Windows" :n "=" #'balance-windows
+        :desc "Split Vertical" :n "/" (λ! ((split-window-horizontally)
+                                               (other-window 1)))
+        :desc "Split Horizontal" :n "-" (λ! ((split-window-vertically)
+                                               (other-window 1))))
 
       (:desc "buffer" :prefix "b"
         :desc "New empty buffer"        :n "n" #'evil-buffer-new
@@ -716,38 +737,51 @@
         :desc "Eshell"                :n  "e" #'+eshell/open
         :desc "Eshell in popup"       :n  "E" #'+eshell/open-popup
 
-        (:when (featurep! :collab floobits)
-          :desc "floobits" :prefix "f"
-          :n "c" #'floobits-clear-highlights
-          :n "f" #'floobits-follow-user
-          :n "j" #'floobits-join-workspace
-          :n "l" #'floobits-leave-workspace
-          :n "R" #'floobits-share-dir-private
-          :n "s" #'floobits-summon
-          :n "t" #'floobits-follow-mode-toggle
-          :n "U" #'floobits-share-dir-public)
+        ;; (:when (featurep! :collab floobits)
+        ;;   :desc "floobits" :prefix "f"
+        ;;   :n "c" #'floobits-clear-highlights
+        ;;   :n "f" #'floobits-follow-user
+        ;;   :n "j" #'floobits-join-workspace
+        ;;   :n "l" #'floobits-leave-workspace
+        ;;   :n "R" #'floobits-share-dir-private
+        ;;   :n "s" #'floobits-summon
+        ;;   :n "t" #'floobits-follow-mode-toggle
+        ;;   :n "U" #'floobits-share-dir-public)
 
-        (:when (featurep! :tools macos)
-          :desc "Reveal in Finder"          :n "o" #'+macos/reveal-in-finder
-          :desc "Reveal project in Finder"  :n "O" #'+macos/reveal-project-in-finder
-          :desc "Send to Transmit"          :n "u" #'+macos/send-to-transmit
-          :desc "Send project to Transmit"  :n "U" #'+macos/send-project-to-transmit
-          :desc "Send to Launchbar"         :n "l" #'+macos/send-to-launchbar
-          :desc "Send project to Launchbar" :n "L" #'+macos/send-project-to-launchbar)
+        ;; (:when (featurep! :tools macos)
+        ;;   :desc "Reveal in Finder"          :n "o" #'+macos/reveal-in-finder
+        ;;   :desc "Reveal project in Finder"  :n "O" #'+macos/reveal-project-in-finder
+        ;;   :desc "Send to Transmit"          :n "u" #'+macos/send-to-transmit
+        ;;   :desc "Send project to Transmit"  :n "U" #'+macos/send-project-to-transmit
+        ;;   :desc "Send to Launchbar"         :n "l" #'+macos/send-to-launchbar
+        ;;   :desc "Send project to Launchbar" :n "L" #'+macos/send-project-to-launchbar)
 
-        (:when (featurep! :tools docker)
-          :desc "Docker"                    :n "D" #'docker))
+        ;; (:when (featurep! :tools docker)
+        ;;   :desc "Docker"                    :n "D" #'docker))
 
       (:desc "project" :prefix "p"
-        :desc "Browse project"          :n  "." #'+default/browse-project
-        :desc "Find file in project"    :n  "/" #'projectile-find-file
-        :desc "Run cmd in project root" :nv "!" #'projectile-run-shell-command-in-root
-        :desc "Compile project"         :n  "c" #'projectile-compile-project
-        :desc "Find other file"         :n  "o" #'projectile-find-other-file
-        :desc "Switch project"          :n  "p" #'projectile-switch-project
-        :desc "Recent project files"    :n  "r" #'projectile-recentf
-        :desc "List project tasks"      :n  "t" #'+ivy/tasks
-        :desc "Invalidate cache"        :n  "x" #'projectile-invalidate-cache)
+        :desc "Switch to buffer"              :n  "b"  #'projectile-switch-to-buffer
+        :desc "Find Directory"                :n  "d"  #'projectile-find-dir
+        :desc "Open File"                     :n  "f"  #'projectile-find-file
+        :desc "Switch project"                :n  "p" #'projectile-switch-project
+        :desc "Search project"                :n  "s" #'counsel-projectile-rg
+        :desc "List project tasks"            :n  "T" #'+ivy/tasks
+        :desc "Run cmd in project root"       :nv "!" #'projectile-run-shell-command-in-root
+        :desc "Replace expression in Project" :n  "%" #'projectile-replace-regexp
+        :desc "Invalidate cache"              :n  "x" #'projectile-invalidate-cache
+        :desc "Recent project files"          :n  "r" #'projectile-recentf
+        :desc "Replace"                       :n  "R" #'projectile-replace)
+
+
+        ;; :desc "Browse project"          :n  "." #'+default/browse-project
+        ;; :desc "Find file in project"    :n  "/" #'projectile-find-file
+        ;; :desc "Run cmd in project root" :nv "!" #'projectile-run-shell-command-in-root
+        ;; :desc "Compile project"         :n  "c" #'projectile-compile-project
+        ;; :desc "Find other file"         :n  "o" #'projectile-find-other-file
+        ;; :desc "Switch project"          :n  "p" #'projectile-switch-project
+        ;; :desc "Recent project files"    :n  "r" #'projectile-recentf
+        ;; :desc "List project tasks"      :n  "t" #'+ivy/tasks
+        ;; :desc "Invalidate cache"        :n  "x" #'projectile-invalidate-cache)
 
       (:desc "quit" :prefix "q"
         :desc "Quit Emacs"             :n "q" #'evil-quit-all
@@ -756,14 +790,14 @@
         :desc "Restart & restore Doom" :n "r" #'+workspace/restart-emacs-then-restore
         :desc "Restart Doom"           :n "R" #'restart-emacs)
 
-      (:when (featurep! :tools upload)
-        (:desc "remote" :prefix "r"
-          :desc "Upload local"           :n "u" #'ssh-deploy-upload-handler
-          :desc "Upload local (force)"   :n "U" #'ssh-deploy-upload-handler-forced
-          :desc "Download remote"        :n "d" #'ssh-deploy-download-handler
-          :desc "Diff local & remote"    :n "D" #'ssh-deploy-diff-handler
-          :desc "Browse remote files"    :n "." #'ssh-deploy-browse-remote-handler
-          :desc "Detect remote changes"  :n ">" #'ssh-deploy-remote-changes-handler))
+      ;; (:when (featurep! :tools upload)
+      ;;   (:desc "remote" :prefix "r"
+      ;;     :desc "Upload local"           :n "u" #'ssh-deploy-upload-handler
+      ;;     :desc "Upload local (force)"   :n "U" #'ssh-deploy-upload-handler-forced
+      ;;     :desc "Download remote"        :n "d" #'ssh-deploy-download-handler
+      ;;     :desc "Diff local & remote"    :n "D" #'ssh-deploy-diff-handler
+      ;;     :desc "Browse remote files"    :n "." #'ssh-deploy-browse-remote-handler
+      ;;     :desc "Detect remote changes"  :n ">" #'ssh-deploy-remote-changes-handler))
 
       (:when (featurep! :feature snippets)
         (:desc "snippets" :prefix "s"
@@ -781,7 +815,7 @@
         :desc "Frame fullscreen"       :n "F" #'toggle-frame-fullscreen
         :desc "Indent guides"          :n "i" #'highlight-indentation-mode
         :desc "Indent guides (column)" :n "I" #'highlight-indentation-current-column-mode
-        :desc "Impatient mode"         :n "h" #'+impatient-mode/toggle
+        ;; :desc "Impatient mode"         :n "h" #'+impatient-mode/toggle
         :desc "Big mode"               :n "b" #'doom-big-font-mode
         :desc "Evil goggles"           :n "g" #'evil-goggles-mode
         :desc "org-tree-slide mode"    :n "p" #'+org-present/start))
