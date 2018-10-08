@@ -603,10 +603,10 @@
         :desc "Window Right" :n "l" #'evil-window-right
         ;; :desc "Window Right" :n "<right>" #'evil-window-right
         :desc "Balance Windows" :n "=" #'balance-windows
-        :desc "Split Vertical" :n "/" (λ! ((split-window-horizontally)
-                                               (other-window 1)))
-        :desc "Split Horizontal" :n "-" (λ! ((split-window-vertically)
-                                               (other-window 1))))
+        :desc "Split Vertical" :n "/" (λ! (split-window-horizontally)
+                                          (other-window 1))
+        :desc "Split Horizontal" :n "-" (λ! (split-window-vertically)
+                                            (other-window 1)))
 
       (:desc "buffer" :prefix "b"
         :desc "List Buffers" :n "b" #'ivy-switch-buffer
@@ -627,8 +627,9 @@
         ;; :desc "Save buffer"             :n "s" #'save-buffer
         :desc "Pop scratch buffer"      :n "s" #'doom/open-scratch-buffer
         :desc "Bury buffer"             :n "z" #'bury-buffer)
-        ;; :desc "Sudo edit this file"     :n "S" #'doom/sudo-this-file
-        ;; :desc "Scratch" :n "s"  (λ! ((switch-to-buffer (get-buffer-create "*scratch*")))))
+      ;; :desc "Sudo edit this file"     :n "S" #'doom/sudo-this-file
+      ;; :desc "Scratch" :n "s"  (λ! ((switch-to-buffer (get-buffer-create "*scratch*")))))
+
 
       ;; (:desc "code" :prefix "c"
       ;;   :desc "List errors"               :n  "x" #'flycheck-list-errors
@@ -642,8 +643,13 @@
       ;;   :desc "Jump to references"        :n  "D" #'+lookup/references
       ;;   :desc "Open REPL"                 :n  "r" #'+eval/open-repl
       ;;                                     :v  "r" #'+eval:repl)
-
       (:desc "file" :prefix "f"
+        (:when (featurep! :ui neotree)
+          :desc "Browse file tree"          :n "t" #'neotree-toggle)
+
+        (:when (featurep! :ui treemacs)
+          :desc "Browse file tree"          :n  "t" #'treemacs)
+
         :desc "Find file"                 :n "." #'find-file
         :desc "Sudo find file"            :n ">" #'doom/sudo-find-file
         :desc "Find file in project"      :n "/" #'projectile-find-file
@@ -662,54 +668,59 @@
 
       (:desc "go to" :prefix "g"
         :desc "Definition"                :n "d" #'dump-jump-go
-        :desc "Definition (other window)" :n "D" #'dump-jump-go-other-window)
-      ;; (:desc "git" :prefix "g"
-      ;;   :desc "Magit blame"           :n  "b" #'magit-blame
-      ;;   :desc "Magit commit"          :n  "c" #'magit-commit
-      ;;   :desc "Magit clone"           :n  "C" #'+magit/clone
-      ;;   :desc "Magit dispatch"        :n  "d" #'magit-dispatch-popup
-      ;;   :desc "Magit find-file"       :n  "f" #'magit-find-file
-      ;;   :desc "Magit status"          :n  "g" #'magit-status
-      ;;   :desc "Magit file delete"     :n  "x" #'magit-file-delete
-      ;;   :desc "List gists"            :n  "G" #'+gist:list
-      ;;   :desc "Initialize repo"       :n  "i" #'magit-init
-      ;;   :desc "Browse issues tracker" :n  "I" #'+vc/git-browse-issues
-      ;;   :desc "Magit buffer log"      :n  "l" #'magit-log-buffer-file
-      ;;   :desc "List repositories"     :n  "L" #'magit-list-repositories
-      ;;   :desc "Browse remote"         :n  "o" #'+vc/git-browse
-      ;;   :desc "Magit push popup"      :n  "p" #'magit-push-popup
-      ;;   :desc "Magit pull popup"      :n  "P" #'magit-pull-popup
-      ;;   :desc "Git revert hunk"       :n  "r" #'git-gutter:revert-hunk
-      ;;   :desc "Git revert file"       :n  "R" #'vc-revert
-      ;;   :desc "Git stage hunk"        :n  "s" #'git-gutter:stage-hunk
-      ;;   :desc "Git stage file"        :n  "S" #'magit-stage-file
-      ;;   :desc "Git time machine"      :n  "t" #'git-timemachine-toggle
-      ;;   :desc "Git unstage file"      :n  "U" #'magit-unstage-file
-      ;;   :desc "Next hunk"             :nv "]" #'git-gutter:next-hunk
-      ;;   :desc "Previous hunk"         :nv "[" #'git-gutter:previous-hunk)
+        :desc "Definition (other window)" :n "D" #'dump-jump-go-other-window
+        :desc "Magit blame"           :n  "b" #'magit-blame
+        :desc "Magit commit"          :n  "C" #'magit-commit
+        :desc "Magit clone"           :n  "c" #'+magit/clone
+        :desc "Magit dispatch"        :n  "d" #'magit-dispatch-popup
+        ;;   :desc "Magit status"          :n  "g" #'magit-status
+        :desc "Magit file delete"     :n  "x" #'magit-file-delete
+        :desc "List gists"            :n  "G" #'+gist:list
+        :desc "Initialize repo"       :n  "i" #'magit-init
+        :desc "Browse issues tracker" :n  "I" #'+vc/git-browse-issues
+        (:desc "file" :prefix "f"
+          :desc "Magit buffer log"      :n  "l" #'magit-log-buffer-file
+          :desc "Magit find-file"       :n  "f" #'magit-find-file
+          :desc "Magit Diff"            :n  "d" #'magit-diff-buffer-file-popup)
+        :desc "List repositories"     :n  "L" #'magit-list-repositories
+        ;;   :desc "Browse remote"         :n  "o" #'+vc/git-browse
+        ;;   :desc "Magit push popup"      :n  "p" #'magit-push-popup
+        ;;   :desc "Magit pull popup"      :n  "P" #'magit-pull-popup
+        ;;   :desc "Git revert hunk"       :n  "r" #'git-gutter:revert-hunk
+        ;;   :desc "Git revert file"       :n  "R" #'vc-revert
+        ;;   :desc "Git stage hunk"        :n  "s" #'git-gutter:stage-hunk
+        :desc "Magit status"        :n  "s" #'magit-status
+        :desc "Git stage file"        :n  "S" #'magit-stage-file
+        ;;   :desc "Git time machine"      :n  "t" #'git-timemachine-toggle
+        :desc "Git unstage file"      :n  "U" #'magit-unstage-file
+        ;;   :desc "Next hunk"             :nv "]" #'git-gutter:next-hunk
+        ;;   :desc "Previous hunk"         :nv "[" #'git-gutter:previous-hunk)
+        )
 
       (:desc "help" :prefix "h"
         :n "h" help-map
+        (:desc "describe" :prefix "d"
+          :desc "Describe DOOM module"  :n  "P" #'doom/describe-module
+          :desc "Describe function"     :n  "f" #'describe-function
+          :desc "Describe face"         :n  "F" #'describe-face
+          :desc "Describe key"          :n  "k" #'describe-key
+          :desc "Describe mode"         :n  "m" #'describe-mode
+          :desc "Describe variable"     :n  "v" #'describe-variable
+          :desc "Describe at point"     :n  "c" #'helpful-at-point
+          :desc "What minor modes"      :n  "M" #'doom/describe-active-minor-mode)
         :desc "Apropos"               :n  "a" #'apropos
         :desc "Open Bug Report"       :n  "b" #'doom/open-bug-report
         :desc "Describe char"         :n  "c" #'describe-char
-        :desc "Describe DOOM module"  :n  "d" #'doom/describe-module
         :desc "Open Doom manual"      :n  "D" #'doom/open-manual
         :desc "Open vanilla sandbox"  :n  "E" #'doom/open-vanilla-sandbox
-        :desc "Describe function"     :n  "f" #'describe-function
-        :desc "Describe face"         :n  "F" #'describe-face
         :desc "Info"                  :n  "i" #'info-lookup-symbol
-        :desc "Describe key"          :n  "k" #'describe-key
         :desc "Find documentation"    :n  "K" #'+lookup/documentation
         :desc "Find library"          :n  "l" #'find-library
         :desc "Command log"           :n  "L" #'global-command-log-mode
-        :desc "View *Messages*"       :n  "m" #'view-echo-area-messages
-        :desc "Describe mode"         :n  "M" #'describe-mode
         :desc "Toggle profiler"       :n  "p" #'doom/toggle-profiler
         :desc "Reload theme"          :n  "r" #'doom/reload-theme
         :desc "Reload private config" :n  "R" #'doom/reload
         :desc "Describe DOOM setting" :n  "s" #'doom/describe-setters
-        :desc "Describe variable"     :n  "v" #'describe-variable
         :desc "Print Doom version"    :n  "V" #'doom/version
         :desc "Man pages"             :n  "w" #'+default/man-or-woman
         :desc "Describe at point"     :n  "." #'helpful-at-point
@@ -736,65 +747,71 @@
         :desc "Default browser"       :n  "b" #'browse-url-of-file
         :desc "Debugger"              :n  "d" #'+debug/open
         :desc "REPL"                  :n  "r" #'+eval/open-repl
-                                      :v  "r" #'+eval:repl
+        :v  "r" #'+eval:repl
         :desc "Dired"                 :n  "-" #'dired-jump
-        (:when (featurep! :ui neotree)
-          :desc "Project sidebar"              :n  "p" #'+neotree/open
-          :desc "Find file in project sidebar" :n  "P" #'+neotree/find-this-file)
-        (:when (featurep! :ui treemacs)
-          :desc "Project sidebar"              :n  "p" #'+treemacs/toggle
-          :desc "Find file in project sidebar" :n  "P" #'+treemacs/find-file)
+        ;; (:when (featurep! :ui neotree)
+        ;;   :desc "Project sidebar"              :n  "p" #'+neotree/open
+        ;;   :desc "Find file in project sidebar" :n  "P" #'+neotree/find-this-file)
+        ;; (:when (featurep! :ui treemacs)
+        ;;   :desc "Project sidebar"              :n  "p" #'+treemacs/toggle
+        ;;   :desc "Find file in project sidebar" :n  "P" #'+treemacs/find-file)
         :desc "Imenu sidebar"         :nv "i" #'imenu-list-smart-toggle
         :desc "Terminal"              :n  "t" #'+term/open
         :desc "Terminal in popup"     :n  "T" #'+term/open-popup-in-project
         :desc "Eshell"                :n  "e" #'+eshell/open
         :desc "Eshell in popup"       :n  "E" #'+eshell/open-popup)
 
-        ;; (:when (featurep! :collab floobits)
-        ;;   :desc "floobits" :prefix "f"
-        ;;   :n "c" #'floobits-clear-highlights
-        ;;   :n "f" #'floobits-follow-user
-        ;;   :n "j" #'floobits-join-workspace
-        ;;   :n "l" #'floobits-leave-workspace
-        ;;   :n "R" #'floobits-share-dir-private
-        ;;   :n "s" #'floobits-summon
-        ;;   :n "t" #'floobits-follow-mode-toggle
-        ;;   :n "U" #'floobits-share-dir-public)
+      ;; (:when (featurep! :collab floobits)
+      ;;   :desc "floobits" :prefix "f"
+      ;;   :n "c" #'floobits-clear-highlights
+      ;;   :n "f" #'floobits-follow-user
+      ;;   :n "j" #'floobits-join-workspace
+      ;;   :n "l" #'floobits-leave-workspace
+      ;;   :n "R" #'floobits-share-dir-private
+      ;;   :n "s" #'floobits-summon
+      ;;   :n "t" #'floobits-follow-mode-toggle
+      ;;   :n "U" #'floobits-share-dir-public)
 
-        ;; (:when (featurep! :tools macos)
-        ;;   :desc "Reveal in Finder"          :n "o" #'+macos/reveal-in-finder
-        ;;   :desc "Reveal project in Finder"  :n "O" #'+macos/reveal-project-in-finder
-        ;;   :desc "Send to Transmit"          :n "u" #'+macos/send-to-transmit
-        ;;   :desc "Send project to Transmit"  :n "U" #'+macos/send-project-to-transmit
-        ;;   :desc "Send to Launchbar"         :n "l" #'+macos/send-to-launchbar
-        ;;   :desc "Send project to Launchbar" :n "L" #'+macos/send-project-to-launchbar)
+      ;; (:when (featurep! :tools macos)
+      ;;   :desc "Reveal in Finder"          :n "o" #'+macos/reveal-in-finder
+      ;;   :desc "Reveal project in Finder"  :n "O" #'+macos/reveal-project-in-finder
+      ;;   :desc "Send to Transmit"          :n "u" #'+macos/send-to-transmit
+      ;;   :desc "Send project to Transmit"  :n "U" #'+macos/send-project-to-transmit
+      ;;   :desc "Send to Launchbar"         :n "l" #'+macos/send-to-launchbar
+      ;;   :desc "Send project to Launchbar" :n "L" #'+macos/send-project-to-launchbar)
 
-        ;; (:when (featurep! :tools docker)
-        ;;   :desc "Docker"                    :n "D" #'docker)
+      ;; (:when (featurep! :tools docker)
+      ;;   :desc "Docker"                    :n "D" #'docker)
 
       (:desc "project" :prefix "p"
-        :desc "Switch to buffer"              :n  "b"  #'projectile-switch-to-buffer
-        :desc "Find Directory"                :n  "d"  #'projectile-find-dir
-        :desc "Open File"                     :n  "f"  #'projectile-find-file
+        :desc "Switch to buffer"              :n  "b" #'projectile-switch-to-buffer
+        :desc "Find Directory"                :n  "d" #'projectile-find-dir
+        :desc "Open File"                     :n  "f" #'projectile-find-file
         :desc "Switch project"                :n  "p" #'projectile-switch-project
-        :desc "Search project"                :n  "s" #'counsel-projectile-rg
-        :desc "List project tasks"            :n  "T" #'+ivy/tasks
-        :desc "Run cmd in project root"       :nv "!" #'projectile-run-shell-command-in-root
-        :desc "Replace expression in Project" :n  "%" #'projectile-replace-regexp
-        :desc "Invalidate cache"              :n  "x" #'projectile-invalidate-cache
-        :desc "Recent project files"          :n  "r" #'projectile-recentf
-        :desc "Replace"                       :n  "R" #'projectile-replace)
+        (:when (featurep! :ui neotree)
+          :desc "Project sidebar"              :n  "t" #'+neotree/open)
+        ;; :desc "Find file in project sidebar" :n  "P" #'+neotree/find-this-file)
+        (:when (featurep! :ui treemacs)
+          :desc "Project sidebar"              :n  "t" #'+treemacs/toggle)
+        ;; :desc "Find file in project sidebar" :n  "P" #'+treemacs/find-file)
+        :desc "Search project"                :n  "s"  #'counsel-projectile-rg
+        :desc "List project tasks"            :n  "T"  #'+ivy/tasks
+        :desc "Run cmd in project root"       :nv "!"  #'projectile-run-shell-command-in-root
+        :desc "Replace expression in Project" :n  "%"  #'projectile-replace-regexp
+        :desc "Invalidate cache"              :n  "x"  #'projectile-invalidate-cache
+        :desc "Recent project files"          :n  "r"  #'projectile-recentf
+        :desc "Replace"                       :n  "R"  #'projectile-replace)
 
 
-        ;; :desc "Browse project"          :n  "." #'+default/browse-project
-        ;; :desc "Find file in project"    :n  "/" #'projectile-find-file
-        ;; :desc "Run cmd in project root" :nv "!" #'projectile-run-shell-command-in-root
-        ;; :desc "Compile project"         :n  "c" #'projectile-compile-project
-        ;; :desc "Find other file"         :n  "o" #'projectile-find-other-file
-        ;; :desc "Switch project"          :n  "p" #'projectile-switch-project
-        ;; :desc "Recent project files"    :n  "r" #'projectile-recentf
-        ;; :desc "List project tasks"      :n  "t" #'+ivy/tasks
-        ;; :desc "Invalidate cache"        :n  "x" #'projectile-invalidate-cache)
+      ;; :desc "Browse project"          :n  "." #'+default/browse-project
+      ;; :desc "Find file in project"    :n  "/" #'projectile-find-file
+      ;; :desc "Run cmd in project root" :nv "!" #'projectile-run-shell-command-in-root
+      ;; :desc "Compile project"         :n  "c" #'projectile-compile-project
+      ;; :desc "Find other file"         :n  "o" #'projectile-find-other-file
+      ;; :desc "Switch project"          :n  "p" #'projectile-switch-project
+      ;; :desc "Recent project files"    :n  "r" #'projectile-recentf
+      ;; :desc "List project tasks"      :n  "t" #'+ivy/tasks
+      ;; :desc "Invalidate cache"        :n  "x" #'projectile-invalidate-cache)
 
       (:desc "quit" :prefix "q"
         :desc "Quit Emacs"             :n "q" #'evil-quit-all
@@ -812,14 +829,14 @@
       ;;     :desc "Browse remote files"    :n "." #'ssh-deploy-browse-remote-handler
       ;;     :desc "Detect remote changes"  :n ">" #'ssh-deploy-remote-changes-handler))
 
-      ;; (:when (featurep! :feature snippets)
-      ;;   (:desc "snippets" :prefix "s"
-      ;;     :desc "New snippet"           :n  "n" #'yas-new-snippet
-      ;;     :desc "Insert snippet"        :nv "i" #'yas-insert-snippet
-      ;;     :desc "Find snippet"          :n  "s" #'+default/find-in-snippets
-      ;;     :desc "Find snippet for mode" :n  "S" #'+default/browse-snippets
-      ;;     :desc "Find global snippet"   :n  "/" #'yas-visit-snippet-file
-      ;;     :desc "Reload snippets"       :n  "r" #'yas-reload-all))
+      (:when (featurep! :feature snippets)
+        (:desc "snippets" :prefix "s"
+          :desc "New snippet"           :n  "n" #'yas-new-snippet
+          :desc "Insert snippet"        :nv "i" #'yas-insert-snippet
+          :desc "Find snippet"          :n  "s" #'+default/find-in-snippets
+          :desc "Find snippet for mode" :n  "S" #'+default/browse-snippets
+          :desc "Find global snippet"   :n  "/" #'yas-visit-snippet-file
+          :desc "Reload snippets"       :n  "r" #'yas-reload-all))
 
       (:desc "search" :prefix "s"
         :desc "Search Buffer" :n "s" #'swiper)
