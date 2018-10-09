@@ -626,23 +626,23 @@
         ;; :desc "Previous buffer"         :n "[" #'previous-buffer
         ;; :desc "Save buffer"             :n "s" #'save-buffer
         :desc "Pop scratch buffer"      :n "s" #'doom/open-scratch-buffer
-        :desc "Bury buffer"             :n "z" #'bury-buffer)
-      ;; :desc "Sudo edit this file"     :n "S" #'doom/sudo-this-file
+        :desc "Bury buffer"             :n "z" #'bury-buffer
+        :desc "Sudo edit this file"     :n "S" #'doom/sudo-this-file)
       ;; :desc "Scratch" :n "s"  (λ! ((switch-to-buffer (get-buffer-create "*scratch*")))))
 
 
-      ;; (:desc "code" :prefix "c"
-      ;;   :desc "List errors"               :n  "x" #'flycheck-list-errors
-      ;;   :desc "Evaluate buffer/region"    :n  "e" #'+eval/buffer
-      ;;                                     :v  "e" #'+eval/region
-      ;;   :desc "Evaluate & replace region" :nv "E" #'+eval:replace-region
-      ;;   :desc "Format buffer/region"      :n  "f" #'+format/buffer
-      ;;                                     :v  "f" #'+format/region
-      ;;   :desc "Build tasks"               :nv "b" #'+eval/build
-      ;;   :desc "Jump to definition"        :n  "d" #'+lookup/definition
-      ;;   :desc "Jump to references"        :n  "D" #'+lookup/references
-      ;;   :desc "Open REPL"                 :n  "r" #'+eval/open-repl
-      ;;                                     :v  "r" #'+eval:repl)
+      (:desc "code" :prefix "c"
+        :desc "List errors"               :n  "x" #'flycheck-list-errors
+        :desc "Evaluate buffer/region"    :n  "e" #'+eval/buffer
+                                          :v  "e" #'+eval/region
+        :desc "Evaluate & replace region" :nv "E" #'+eval:replace-region
+        :desc "Format buffer/region"      :n  "f" #'+format/buffer
+                                          :v  "f" #'+format/region
+        :desc "Build tasks"               :nv "b" #'+eval/build
+        :desc "Jump to definition"        :n  "d" #'+lookup/definition
+        :desc "Jump to references"        :n  "D" #'+lookup/references
+        :desc "Open REPL"                 :n  "r" #'+eval/open-repl
+                                          :v  "r" #'+eval:repl)
       (:desc "file" :prefix "f"
         (:when (featurep! :ui neotree)
           :desc "Browse file tree"          :n "t" #'neotree-toggle)
@@ -801,7 +801,6 @@
         :desc "Invalidate cache"              :n  "x"  #'projectile-invalidate-cache
         :desc "Recent project files"          :n  "r"  #'projectile-recentf
         :desc "Replace"                       :n  "R"  #'projectile-replace)
-
 
       ;; :desc "Browse project"          :n  "." #'+default/browse-project
       ;; :desc "Find file in project"    :n  "/" #'projectile-find-file
