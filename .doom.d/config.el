@@ -27,6 +27,8 @@
 (after! company
   (setq company-idle-delay 0.6
         company-minimum-prefix-length 2))
+(after! ivy
+  (setq ivy-re-builders-alist '((t . ivy--regex-ignore-order))))
 
 (after! projectile
   (setq projectile-globally-ignored-file-suffixes (append (list ".elc"))
