@@ -47,6 +47,7 @@
 (after! company
   (setq company-idle-delay 0.6
         company-minimum-prefix-length 2))
+
 (after! counsel
   (setq counsel-rg-base-command "rg -zS -M 150 --no-heading --line-number --color never %s ."))
 
