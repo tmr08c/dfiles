@@ -38,8 +38,6 @@
   (add-hook 'before-save-hook 'gofmt-before-save) ; run gofmt on save
 
   (defun my-go-mode-hook-fn ()
-    ;; (go-eldoc-setup)
-    ;; (setq-local company-backends '(company-go))
     (setq tab-width 2
           indent-tabs-mode 1)
     (flycheck-gometalinter-setup)
@@ -49,11 +47,43 @@
 (after! company
   (setq company-idle-delay 0.6
         company-minimum-prefix-length 2))
+(after! counsel
+  (setq counsel-rg-base-command "rg -zS -M 150 --no-heading --line-number --color never %s ."))
+
 (after! ivy
   (setq ivy-re-builders-alist '((t . ivy--regex-ignore-order))))
 
 (after! neotree
-  (setq neo-theme 'icons))
+  (setq neo-theme 'icons)
+
+  ;; Reset Neotree Keymap so +defaults are not merged in with our customizations.
+  (setq neotree-mode-map (make-sparse-keymap))
+  (map! :map neotree-mode-map
+        :n "RET" #'neotree-enter
+        :n "TAB" #'neotree-stretch-toggle
+        :n "q" #'neotree-hide
+        :n "|" #'neotree-enter-vertical-split
+        :n "-" #'neotree-enter-horizontal-split
+        :n "'" #'neotree-quick-look
+        :n "c" #'neotree-create-node
+        :n "C" #'neotree-copy-node
+        :n "d" #'neotree-delete-node
+        :n "gr" #'neotree-refresh
+
+        :n "h" #'+neotree/collapse-or-up
+        :n "H" #'neotree-select-previous-sibling-node
+        :n "j" #'neotree-next-line
+        :n "J" #'neotree-select-down-node
+        :n "k" #'neotree-previous-line
+        :n "K" #'neotree-select-up-node
+        :n "L" #'neotree-select-next-sibling-node
+
+        :n "l" #'+neotree/expand-or-open
+        :n "q" #'neotree-hide
+        :n "o" #'neotree-enter
+        :n "r" #'neotree-rename-node
+        :n "R" #'neotree-change-root
+        :n "I" #'neotree-hidden-file-toggle))
 
 (after! projectile
   (setq projectile-globally-ignored-file-suffixes (append (list ".elc"))
@@ -61,6 +91,10 @@
         projectile-track-known-projects-automatically nil
         counsel-projectile-sort-projects t
         projectile-ignored-projects nil))
+
+(after! swiper
+  (map!
+   :n "C-s" 'swiper))
 
 (after! which-key
   (setq which-key-idle-delay 0.8))
