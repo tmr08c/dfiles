@@ -16,15 +16,13 @@
 (defun startup/revert-file-name-handler-alist ()
   (setq file-name-handler-alist startup/file-name-handler-alist))
 
-(add-hook 'emacs-startup-hook 'startup/revert-file-name-handler-alist)
-(add-hook 'emacs-startup-hook 'startup/reset-gc)
+
+(add-hook 'after-init-hook 'startup/revert-file-name-handler-alist)
+(add-hook 'after-init-hook 'startup/reset-gc)
+;; (add-hook 'emacs-startup-hook 'startup/revert-file-name-handler-alist)
+;; (add-hook 'emacs-startup-hook 'startup/reset-gc)
 
 ;; Package initialize occurs automatically, before `user-init-file' is
 ;; loaded, but after `early-init-file'.
 (setq package-enable-at-startup nil)
-
-;; Prevent the glimpse of un-styled Emacs by setting these early.
-(add-to-list 'default-frame-alist '(tool-bar-lines . 0))
-(add-to-list 'default-frame-alist '(menu-bar-lines . 0))
-(add-to-list 'default-frame-alist '(vertical-scroll-bars))
 
