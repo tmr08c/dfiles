@@ -118,27 +118,27 @@
       ;;; Help bindings
       "?" '(counsel-descbinds :which-key "Help")
       "h" '(:ignore t :which-key "Help")
-      "h d f" '(counsel-describe-function :which-key "describe function")
-      "h d m" '(describe-mode :which-key "describe modes") ;; TODO: https://framagit.org/steckerhalter/discover-my-major
-      "h d v" '(counsel-describe-variable :which-key "describe variable")
+      "hdf" '(counsel-describe-function :which-key "describe function")
+      "hdm" '(describe-mode :which-key "describe modes") ;; TODO: https://framagit.org/steckerhalter/discover-my-major
+      "hdv" '(counsel-describe-variable :which-key "describe variable")
 
       ;;; Buffers
       "b"   '(:ignore t :which-key "Buffers")
-      "b b" '(ivy-switch-buffer :which-key "list buffers")
-      "b n" '(next-buffer :which-key "next buffer")
-      "b p" '(previous-buffer :which-key "prev buffer")
-      "b d" '((lambda ()
+      "bb" '(ivy-switch-buffer :which-key "list buffers")
+      "bn" '(next-buffer :which-key "next buffer")
+      "bp" '(previous-buffer :which-key "prev buffer")
+      "bd" '((lambda ()
                 (interactive)
                 (kill-buffer (current-buffer)))
               :which-key "close current buffer")
-      "b s" '((lambda ()
+      "bs" '((lambda ()
                 (interactive)
                 (switch-to-buffer (get-buffer-create "*scratch*")))
               :which-key "scratch buffer")
 
       ;;; Files
       "f"   '(:ignore t :which-key "Files")
-      "f D" '((lambda ()
+      "fD" '((lambda ()
                 (interactive)
                 (let ((filename (buffer-file-name))
                       (buffer (current-buffer))
@@ -150,37 +150,37 @@
                       (kill-buffer buffer)
                       (message "File '%s' successfully removed" filename)))))
               :which-key "delete file and kill buffer")
-      "f f" '(counsel-find-file :which-key "find file")
-      "f e d" '((lambda ()
+      "ff" '(counsel-find-file :which-key "find file")
+      "fed" '((lambda ()
                   (interactive)
-                  (find-file-existing user-init-file))
+                  (find-file-existing +literate-config-file))
                 :which-key "open emacs configuration")
 
 
       "d" '(:ignore t :which-key "Docs")
-      "d d" '((lambda ()
+      "dd" '((lambda ()
                 (interactive)
                 (counsel-dash
                  (if (use-region-p)
                      (buffer-substring-no-properties (region-beginning) (region-end))
                    (substring-no-properties (or (thing-at-point 'symbol) "")))))
               :which-key "Lookup thing at point")
-      "d D" '(counsel-dash :which-key "Lookup thing at point with docset")
+      "dD" '(counsel-dash :which-key "Lookup thing at point with docset")
 
 
       "g" '(:ignore t :which-key "Go to")
-      "g d" '(dumb-jump-go :which-key "definition")
-      "g D" '(dumb-jump-go-other-window :which-key "definition (other window)")
+      "gd" '(dumb-jump-go :which-key "definition")
+      "gD" '(dumb-jump-go-other-window :which-key "definition (other window)")
 
       ;;; Quit
       "q"   '(:ignore t :which-key "Quit")
-      "q q" '(kill-emacs :which-key "quit")
-      "q r" '(restart-emacs :which-key "restart")
+      "qq" '(kill-emacs :which-key "quit")
+      "qr" '(restart-emacs :which-key "restart")
 
       ;;; Search
       "s" '(:ignore t :which-key "Search")
-      "s s" '(swiper :which-key "search buffer")
-      "s S" '(lambda ()
+      "ss" '(swiper :which-key "search buffer")
+      "sS" '(lambda ()
                (interactive)
                (let ((input (if (region-active-p)
                                 (buffer-substring-no-properties
@@ -191,30 +191,30 @@
 
       ;;; Themes
       "t" '(:ignore t :which-key "Theme")
-      "t s" '(counsel-load-theme :which-key "switch theme")
+      "ts" '(counsel-load-theme :which-key "switch theme")
 
       ;;; Windows
       "w"   '(:ignore t :which-key "Windows")
-      "w d" '(delete-window :which-key "close window")
-      "w /" '((lambda ()
+      "wd" '(delete-window :which-key "close window")
+      "w/" '((lambda ()
                 (interactive)
                 (split-window-horizontally)
                 (other-window 1))
               :which-key "split vertical")
-      "w -" '((lambda ()
+      "w-" '((lambda ()
                 (interactive)
                 (split-window-vertically)
                 (other-window 1))
               :which-key "split horizontal")
-      "w h" '(evil-window-left :which-key "window left")
-      "w <left>" '(evil-window-left :which-key nil)
-      "w j" '(evil-window-down :which-key "window down")
-      "w <down>" '(evil-window-down :which-key nil)
-      "w k" '(evil-window-up :which-key "window up")
-      "w <up>" '(evil-window-up :which-key nil)
-      "w l" '(evil-window-right :which-key "window right")
-      "w <right>" '(evil-window-right :which-key nil)
-      "w =" '(balance-windows :which-key "balance window split")))
+      "wh" '(evil-window-left :which-key "window left")
+      "w<left>" '(evil-window-left :which-key nil)
+      "wj" '(evil-window-down :which-key "window down")
+      "w<down>" '(evil-window-down :which-key nil)
+      "wk" '(evil-window-up :which-key "window up")
+      "w<up>" '(evil-window-up :which-key nil)
+      "wl" '(evil-window-right :which-key "window right")
+      "w<right>" '(evil-window-right :which-key nil)
+      "w=" '(balance-windows :which-key "balance window split")))
 
   ;; Auto-update packages.
   ;;
