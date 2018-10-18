@@ -13,28 +13,7 @@
   (set-selection-coding-system 'utf-8)   ; perdy
   (setq locale-coding-system 'utf-8)     ; please
 
-  (add-to-list 'load-path "~/.emacs.d/vendor/")
-
-  ;; Get package repos configured
-  (require 'package)
-  (customize-set-variable
-   'package-archives
-   '(("melpa" . "https://melpa.org/packages/")
-     ("gnu" . "https://elpa.gnu.org/packages/")
-     ("org" . "https://orgmode.org/elpa/")))
-  (unless package--initialized
-    (package-initialize))
-
   (require 'core) ; Provides shared functions
-
-  ;; Bootstrap `use-package'
-  (unless (package-installed-p 'use-package)
-    (package-refresh-contents)
-    (package-install 'use-package))
-  (setq use-package-always-ensure t
-        use-package-compute-statistics t)
-  (eval-when-compile
-    (require 'use-package))
 
   ;; Used to benchmark init timings
   (use-package benchmark-init
