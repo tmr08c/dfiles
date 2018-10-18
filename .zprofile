@@ -28,12 +28,6 @@ if [[ -d ~/.platformio ]]; then
 fi
 
 if (( $+commands[emacs] )); then
-  if [ "$OS" = "Darwin" ]; then
-    # For emacs-for-osx
-    # alias emacs="open -a /Applications/Emacs $@"
-    alias emacs="open -a /usr/local/opt/emacs-plus/Emacs.app $@"
-  fi
-
   export EDITOR='emacs'
 elif (( $+commands[vim] )); then
   export EDITOR='vim'

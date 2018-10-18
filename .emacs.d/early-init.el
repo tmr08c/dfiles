@@ -28,5 +28,3 @@
 (add-to-list 'default-frame-alist '(menu-bar-lines . 0))
 (add-to-list 'default-frame-alist '(vertical-scroll-bars))
 
-;; Ensure Emacs is running out of this file's directory
-(setq user-emacs-directory (file-name-directory load-file-name))
