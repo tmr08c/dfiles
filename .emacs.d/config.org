@@ -599,7 +599,4 @@
   (require 'js-ui)
   (require 'js-vc)
   (require 'js-web)
-
-  (provide 'init)
-  ;;; init.el ends here
 #+END_SRC
