@@ -39,6 +39,7 @@
          (c++-mode . platformio-conditionally-enable)))
 
 (use-package clang-format
+  :disabled
   :after irony
   :config
   (progn

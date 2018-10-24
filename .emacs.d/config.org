@@ -1,602 +1,583 @@
 #+BEGIN_SRC emacs-lisp
-  ;; init.el --- Justin Smestad's Emacs init file -*- lexical-binding: t; -*-
-  ;;; Commentary:
+    ;; init.el --- Justin Smestad's Emacs init file -*- lexical-binding: t; -*-
+    ;;; Commentary:
 
-  ;;; Code:
+    ;;; Code:
 
-;;; Add load path for vendor directory
-(add-to-list 'load-path "~/.emacs.d/vendor/")
+  ;;; Add load path for vendor directory
+  (add-to-list 'load-path "~/.emacs.d/vendor/")
 
-  ;;; Get package repos configured
-  (require 'package)
-  (customize-set-variable
-   'package-archives
-   '(("melpa" . "https://melpa.org/packages/")
-     ("gnu" . "https://elpa.gnu.org/packages/")
-     ("org" . "https://orgmode.org/elpa/")))
-  (unless package--initialized
-    (package-initialize))
+    ;;; Get package repos configured
+    (require 'package)
+    (customize-set-variable
+     'package-archives
+     '(("melpa" . "https://melpa.org/packages/")
+       ("gnu" . "https://elpa.gnu.org/packages/")
+       ("org" . "https://orgmode.org/elpa/")))
+    (unless package--initialized
+      (package-initialize))
 
-  ;;; Bootstrap `use-package'
-  (unless (package-installed-p 'use-package)
-    (package-refresh-contents)
-    (package-install 'use-package))
+    ;;; Bootstrap `use-package'
+    (unless (package-installed-p 'use-package)
+      (package-refresh-contents)
+      (package-install 'use-package))
 
-(eval-when-compile
-  (require 'use-package))
-(setq use-package-always-ensure t
-      use-package-compute-statistics t)
-
-
-  ;; UTF-8 as the default coding system
-  (when (fboundp 'set-charset-priority)
-    (set-charset-priority 'unicode))     ; pretty
-  (prefer-coding-system        'utf-8)   ; pretty
-  (set-terminal-coding-system  'utf-8)   ; pretty
-  (set-keyboard-coding-system  'utf-8)   ; pretty
-  (set-selection-coding-system 'utf-8)   ; perdy
-  (setq locale-coding-system 'utf-8)     ; please
-
-  (require 'core) ; Provides shared functions
-
-  ;; Used to benchmark init timings
-  (use-package benchmark-init
-    :disabled
-    :config
-    ;; To disable collection of benchmark data after init is done.
-    (add-hook 'after-init-hook 'benchmark-init/deactivate))
-
-  ;; (use-package delight)
-  ;; (use-package dash)
-
-  ;; Ensure system has required packages and install if missing
-  (use-package exec-path-from-shell
-    :if (memq window-system '(mac ns x))
-    :custom
-    (exec-path-from-shell-variables '("SHELL" "MANPATH" "PATH" "GOPATH" "GOROOT" "PGHOST" "SSH_AUTH_SOCK" "LC_CTYPE" "LC_ALL" "LANG"))
-    ;; (exec-path-from-shell-check-startup-files nil)
-    (exec-path-from-shell-arguments '("-l"))
-    :config
-    (exec-path-from-shell-initialize))
-  (use-package use-package-ensure-system-package
-    :functions use-package-ensure-system-package-exists?
-    :requires (exec-path-from-shell))
-
-  ;; TODO I may benefit from this
-  ;; (use-package auto-compile
-  ;;   :demand t
-  ;;   :custom
-  ;;   (auto-compile-mode-line-counter t "Show compile info in the mode-line")
-  ;;   (auto-compile-source-recreate-deletes-dest t)
-  ;;   (auto-compile-toggle-deletes-nonlib-dest t)
-  ;;   (auto-compile-update-autoloads t)
-  ;;   (auto-compile-display-buffer nil "Don't display compile buffer")
-  ;;   :hook
-  ;;   (auto-compile-inhibit-compile . auto-compile-inhibit-compile-detached-git-head)
-  ;;   :config
-  ;;   (auto-compile-on-load-mode)
-  ;;   (auto-compile-on-save-mode))
-
-  ;; Save data files consistently:
-  ;; - `save-place-file'
-  ;; - `undo-tree-history-directory-alist'
-  ;; - `backup-directory-alist'
-  ;; - etc.
-  (use-package no-littering
-    :demand t
-    :config
-    (setq no-littering-var-directory
-          (expand-file-name "var/" user-emacs-directory))
-    (setq no-littering-etc-directory
-          (expand-file-name "etc/" user-emacs-directory))
-    (setq custom-file
-          (no-littering-expand-var-file-name "custom.el")))
-
-  (customize-set-variable 'user-full-name "Justin Smestad")
-  (customize-set-variable 'user-mail-address "justin.smestad@gmail.com")
+  (eval-when-compile
+    (require 'use-package))
+  (setq use-package-always-ensure t
+        use-package-compute-statistics t)
 
 
-  ;;; Key Bindings
-  (use-package general
-    :demand t
-    :functions space-leader-def
-    ;; :custom
-    ;; (general-default-prefix "SPC")
-    ;; (general-default-non-normal-prefix "C-SPC")
-    :config
-    (general-create-definer space-leader-def
-      :prefix "SPC"
-      :non-normal-prefix "C-SPC")
-    (general-evil-setup)
-    (space-leader-def
-      ;; :states '(normal visual insert emacs)
-      :states '(normal emacs)
+    ;; UTF-8 as the default coding system
+    (when (fboundp 'set-charset-priority)
+      (set-charset-priority 'unicode))     ; pretty
+    (prefer-coding-system        'utf-8)   ; pretty
+    (set-terminal-coding-system  'utf-8)   ; pretty
+    (set-keyboard-coding-system  'utf-8)   ; pretty
+    (set-selection-coding-system 'utf-8)   ; perdy
+    (setq locale-coding-system 'utf-8)     ; please
 
-      "SPC" '(counsel-M-x :which-key "M-x")
-      ;; "TAB" '(switch-to-other-buffer :which-key "prev buffer")
+    (require 'core) ; Provides shared functions
 
-      ;;; Help bindings
-      "?" '(counsel-descbinds :which-key "Help")
-      "h" '(:ignore t :which-key "Help")
-      "hdf" '(counsel-describe-function :which-key "describe function")
-      "hdm" '(describe-mode :which-key "describe modes") ;; TODO: https://framagit.org/steckerhalter/discover-my-major
-      "hdv" '(counsel-describe-variable :which-key "describe variable")
+    ;; Used to benchmark init timings
+    (use-package benchmark-init
+      :disabled
+      :config
+      ;; To disable collection of benchmark data after init is done.
+      (add-hook 'after-init-hook 'benchmark-init/deactivate))
 
-      ;;; Buffers
-      "b"   '(:ignore t :which-key "Buffers")
-      "bb" '(ivy-switch-buffer :which-key "list buffers")
-      "bn" '(next-buffer :which-key "next buffer")
-      "bp" '(previous-buffer :which-key "prev buffer")
-      "bd" '((lambda ()
-                (interactive)
-                (kill-buffer (current-buffer)))
-              :which-key "close current buffer")
-      "bs" '((lambda ()
-                (interactive)
-                (switch-to-buffer (get-buffer-create "*scratch*")))
-              :which-key "scratch buffer")
+    ;; (use-package delight)
+    ;; (use-package dash)
 
-      ;;; Files
-      "f"   '(:ignore t :which-key "Files")
-      "fD" '((lambda ()
-                (interactive)
-                (let ((filename (buffer-file-name))
-                      (buffer (current-buffer))
-                      (name (buffer-name)))
-                  (if (not (and filename (file-exists-p filename)))
-                      (ido-kill-buffer)
-                    (when (yes-or-no-p "Are you sure you want to delete this file? ")
-                      (delete-file filename t)
-                      (kill-buffer buffer)
-                      (message "File '%s' successfully removed" filename)))))
-              :which-key "delete file and kill buffer")
-      "ff" '(counsel-find-file :which-key "find file")
-      "fed" '((lambda ()
+    ;; Ensure system has required packages and install if missing
+    (use-package exec-path-from-shell
+      :if (memq window-system '(mac ns x))
+      :custom
+      (exec-path-from-shell-variables '("SHELL" "MANPATH" "PATH" "GOPATH" "GOROOT" "PGHOST" "SSH_AUTH_SOCK" "LC_CTYPE" "LC_ALL" "LANG"))
+      ;; (exec-path-from-shell-check-startup-files nil)
+      (exec-path-from-shell-arguments '("-l"))
+      :config
+      (exec-path-from-shell-initialize))
+    (use-package use-package-ensure-system-package
+      :functions use-package-ensure-system-package-exists?
+      :requires (exec-path-from-shell))
+
+    ;; TODO I may benefit from this
+    ;; (use-package auto-compile
+    ;;   :demand t
+    ;;   :custom
+    ;;   (auto-compile-mode-line-counter t "Show compile info in the mode-line")
+    ;;   (auto-compile-source-recreate-deletes-dest t)
+    ;;   (auto-compile-toggle-deletes-nonlib-dest t)
+    ;;   (auto-compile-update-autoloads t)
+    ;;   (auto-compile-display-buffer nil "Don't display compile buffer")
+    ;;   :hook
+    ;;   (auto-compile-inhibit-compile . auto-compile-inhibit-compile-detached-git-head)
+    ;;   :config
+    ;;   (auto-compile-on-load-mode)
+    ;;   (auto-compile-on-save-mode))
+
+    ;; Save data files consistently:
+    ;; - `save-place-file'
+    ;; - `undo-tree-history-directory-alist'
+    ;; - `backup-directory-alist'
+    ;; - etc.
+    (use-package no-littering
+      :demand t
+      :config
+      (setq no-littering-var-directory
+            (expand-file-name "var/" user-emacs-directory))
+      (setq no-littering-etc-directory
+            (expand-file-name "etc/" user-emacs-directory))
+      (setq custom-file
+            (no-littering-expand-var-file-name "custom.el")))
+
+    (customize-set-variable 'user-full-name "Justin Smestad")
+    (customize-set-variable 'user-mail-address "justin.smestad@gmail.com")
+
+
+    ;;; Key Bindings
+    (use-package general
+      :demand t
+      :functions space-leader-def
+      ;; :custom
+      ;; (general-default-prefix "SPC")
+      ;; (general-default-non-normal-prefix "C-SPC")
+      :config
+      (general-create-definer space-leader-def
+        :prefix "SPC"
+        :non-normal-prefix "C-SPC")
+      (general-evil-setup)
+      (space-leader-def
+        ;; :states '(normal visual insert emacs)
+        :states '(normal emacs)
+
+        "SPC" '(counsel-M-x :which-key "M-x")
+        ;; "TAB" '(switch-to-other-buffer :which-key "prev buffer")
+
+        ;;; Help bindings
+        "?" '(counsel-descbinds :which-key "Help")
+        "h" '(:ignore t :which-key "Help")
+        "hdf" '(counsel-describe-function :which-key "describe function")
+        "hdm" '(describe-mode :which-key "describe modes") ;; TODO: https://framagit.org/steckerhalter/discover-my-major
+        "hdv" '(counsel-describe-variable :which-key "describe variable")
+
+        ;;; Buffers
+        "b"   '(:ignore t :which-key "Buffers")
+        "bb" '(ivy-switch-buffer :which-key "list buffers")
+        "bn" '(next-buffer :which-key "next buffer")
+        "bp" '(previous-buffer :which-key "prev buffer")
+        "bd" '((lambda ()
                   (interactive)
-                  (find-file-existing +literate-config-file))
-                :which-key "open emacs configuration")
+                  (kill-buffer (current-buffer)))
+                :which-key "close current buffer")
+        "bs" '((lambda ()
+                  (interactive)
+                  (switch-to-buffer (get-buffer-create "*scratch*")))
+                :which-key "scratch buffer")
+
+        ;;; Files
+        "f"   '(:ignore t :which-key "Files")
+        "fD" '((lambda ()
+                  (interactive)
+                  (let ((filename (buffer-file-name))
+                        (buffer (current-buffer))
+                        (name (buffer-name)))
+                    (if (not (and filename (file-exists-p filename)))
+                        (ido-kill-buffer)
+                      (when (yes-or-no-p "Are you sure you want to delete this file? ")
+                        (delete-file filename t)
+                        (kill-buffer buffer)
+                        (message "File '%s' successfully removed" filename)))))
+                :which-key "delete file and kill buffer")
+        "ff" '(counsel-find-file :which-key "find file")
+        "fed" '((lambda ()
+                    (interactive)
+                    (find-file-existing +literate-config-file))
+                  :which-key "open emacs configuration")
 
 
-      "d" '(:ignore t :which-key "Docs")
-      "dd" '((lambda ()
-                (interactive)
-                (counsel-dash
-                 (if (use-region-p)
-                     (buffer-substring-no-properties (region-beginning) (region-end))
-                   (substring-no-properties (or (thing-at-point 'symbol) "")))))
-              :which-key "Lookup thing at point")
-      "dD" '(counsel-dash :which-key "Lookup thing at point with docset")
+        "d" '(:ignore t :which-key "Docs")
+        "dd" '((lambda ()
+                  (interactive)
+                  (counsel-dash
+                   (if (use-region-p)
+                       (buffer-substring-no-properties (region-beginning) (region-end))
+                     (substring-no-properties (or (thing-at-point 'symbol) "")))))
+                :which-key "Lookup thing at point")
+        "dD" '(counsel-dash :which-key "Lookup thing at point with docset")
 
 
-      "g" '(:ignore t :which-key "Go to")
-      "gd" '(dumb-jump-go :which-key "definition")
-      "gD" '(dumb-jump-go-other-window :which-key "definition (other window)")
+        "g" '(:ignore t :which-key "Go to")
+        "gd" '(dumb-jump-go :which-key "definition")
+        "gD" '(dumb-jump-go-other-window :which-key "definition (other window)")
 
-      ;;; Quit
-      "q"   '(:ignore t :which-key "Quit")
-      "qq" '(kill-emacs :which-key "quit")
-      "qr" '(restart-emacs :which-key "restart")
+        ;;; Quit
+        "q"   '(:ignore t :which-key "Quit")
+        "qq" '(kill-emacs :which-key "quit")
+        "qr" '(restart-emacs :which-key "restart")
 
-      ;;; Search
-      "s" '(:ignore t :which-key "Search")
-      "ss" '(swiper :which-key "search buffer")
-      "sS" '(lambda ()
-               (interactive)
-               (let ((input (if (region-active-p)
-                                (buffer-substring-no-properties
-                                 (region-beginning) (region-end))
-                              (thing-at-point 'symbol t))))
-                 (swiper input))
-               :which-key "search buffer")
+        ;;; Search
+        "s" '(:ignore t :which-key "Search")
+        "ss" '(swiper :which-key "search buffer")
+        "sS" '(lambda ()
+                 (interactive)
+                 (let ((input (if (region-active-p)
+                                  (buffer-substring-no-properties
+                                   (region-beginning) (region-end))
+                                (thing-at-point 'symbol t))))
+                   (swiper input))
+                 :which-key "search buffer")
 
-      ;;; Themes
-      "t" '(:ignore t :which-key "Theme")
-      "ts" '(counsel-load-theme :which-key "switch theme")
+        ;;; Themes
+        "t" '(:ignore t :which-key "Theme")
+        "ts" '(counsel-load-theme :which-key "switch theme")
 
-      ;;; Windows
-      "w"   '(:ignore t :which-key "Windows")
-      "wd" '(delete-window :which-key "close window")
-      "w/" '((lambda ()
-                (interactive)
-                (split-window-horizontally)
-                (other-window 1))
-              :which-key "split vertical")
-      "w-" '((lambda ()
-                (interactive)
-                (split-window-vertically)
-                (other-window 1))
-              :which-key "split horizontal")
-      "wh" '(evil-window-left :which-key "window left")
-      "w<left>" '(evil-window-left :which-key nil)
-      "wj" '(evil-window-down :which-key "window down")
-      "w<down>" '(evil-window-down :which-key nil)
-      "wk" '(evil-window-up :which-key "window up")
-      "w<up>" '(evil-window-up :which-key nil)
-      "wl" '(evil-window-right :which-key "window right")
-      "w<right>" '(evil-window-right :which-key nil)
-      "w=" '(balance-windows :which-key "balance window split")))
+        ;;; Windows
+        "w"   '(:ignore t :which-key "Windows")
+        "wd" '(delete-window :which-key "close window")
+        "w/" '((lambda ()
+                  (interactive)
+                  (split-window-horizontally)
+                  (other-window 1))
+                :which-key "split vertical")
+        "w-" '((lambda ()
+                  (interactive)
+                  (split-window-vertically)
+                  (other-window 1))
+                :which-key "split horizontal")
+        "wh" '(evil-window-left :which-key "window left")
+        "w<left>" '(evil-window-left :which-key nil)
+        "wj" '(evil-window-down :which-key "window down")
+        "w<down>" '(evil-window-down :which-key nil)
+        "wk" '(evil-window-up :which-key "window up")
+        "w<up>" '(evil-window-up :which-key nil)
+        "wl" '(evil-window-right :which-key "window right")
+        "w<right>" '(evil-window-right :which-key nil)
+        "w=" '(balance-windows :which-key "balance window split")))
 
-  ;; Auto-update packages.
-  ;;
-  (use-package auto-package-update
-    :commands auto-package-update-now
-    :requires no-littering
-    :custom
-    (auto-package-update-interval 7)
-    (auto-package-update-delete-old-versions t)
-    (auto-package-update-hide-results t)
-    (auto-package-update-prompt-before-update t)
-    (apu--last-update-day-filename
-     (no-littering-expand-var-file-name "auto-update-package-last-update-day")))
+    ;; Auto-update packages.
+    ;;
+    (use-package auto-package-update
+      :commands auto-package-update-now
+      :requires no-littering
+      :custom
+      (auto-package-update-interval 7)
+      (auto-package-update-delete-old-versions t)
+      (auto-package-update-hide-results t)
+      (auto-package-update-prompt-before-update t)
+      (apu--last-update-day-filename
+       (no-littering-expand-var-file-name "auto-update-package-last-update-day")))
 
-  ;; Global Modes
-  ;;
-  ;;; ace-window (for better window switching)
-  (use-package ace-window
-    :disabled)
+    ;; Global Modes
+    ;;
+    ;;; ace-window (for better window switching)
+    (use-package ace-window
+      :disabled)
 
-  ;;; File Tree
-  (use-package neotree
-    :commands (neotree-show
-               neotree-hide
-               neotree-toggle
-               neotree-dir
-               neotree-find
-               neo-global--with-buffer
-               neo-global--window-exists-p)
-    :custom
-    (neo-create-file-auto-open t)
-    (neo-modern-sidebar t)
-    (neo-point-auto-indent nil)
-    (neo-theme (if (display-graphic-p) 'icons 'arrow))
-    (neo-window-fixed-size nil)
-    (neo-window-width 28)
-    (neo-show-hidden-files t)
-    (neo-keymap-style 'concise)
-    (neo-hidden-regexp-list
-     '(;; vcs folders
-       "^\\.\\(?:git\\|hg\\|svn\\)$"
-       ;; compiled files
-       "\\.\\(?:pyc\\|o\\|elc\\|lock\\|css.map\\|class\\)$"
-       ;; generated files, caches or local pkgs
-       "^\\(?:node_modules\\|vendor\\|.\\(project\\|cask\\|yardoc\\|sass-cache\\)\\)$"
-       ;; org-mode folders
-       "^\\.\\(?:sync\\|export\\|attach\\)$"
-       ;; temp files
-       "~$"
-       "^#.*#$"))
-    :config
-    (global-keymap
-     "ft" '(neotree-toggle :which-key "toggle file tree")
-     "pt" '(neotree-projectile-action :which-key "project tree"))
-    :general
-    (general-nmap neotree-mode-map
-      "RET" 'neotree-enter
-      "TAB" 'neotree-stretch-toggle
-      "q" 'neotree-hide
-      "|" 'neotree-enter-vertical-split
-      "-" 'neotree-enter-horizontal-split
-      "'" 'neotree-quick-look
-      "c" 'neotree-create-node
-      "C" 'neotree-copy-node
-      "d" 'neotree-delete-node
-      "gr" 'neotree-refresh
-      "H" 'neotree-select-previous-sibling-node
-      "j" 'neotree-next-line
-      "J" 'neotree-select-down-node
-      "k" 'neotree-previous-line
-      "K" 'neotree-select-up-node
-      "L" 'neotree-select-next-sibling-node
-      "q" 'neotree-hide
-      "o" 'neotree-enter
-      "r" 'neotree-rename-node
-      "R" 'neotree-change-root
-      "I" 'neotree-hidden-file-toggle))
-
-  (use-package amx
-    :hook (after-init . amx-initialize))
-
-  ;;; Ivy for completion
-  (use-package ivy
-    :demand
-    :delight
-    :custom
-    (ivy-use-virtual-buffers t)
-    (ivy-count-format "(%d/%d) ")
-    (ivy-wrap t)
-    (ivy-display-style 'fancy)
-    (ivy-format-function 'ivy-format-function-line)
-    (ivy-initial-inputs-alist nil)
-    (ivy-re-builders-alist
-     ;; allow input not in order
-     '((t . ivy--regex-ignore-order)))
-    (ivy-use-selectable-prompt t))
-
-  (use-package doom-todo-ivy
-    :commands doom/ivy-tasks
-    :load-path "vendor/"
-    :config
-    (global-keymap
-     "p T" '(doom/ivy-tasks :which-key "List project tasks")))
-
-  (use-package ivy-rich
-    :disabled
-    :load-path "vendor/"
-    ;; :defer 2
-    :after ivy
-    :custom
-    (ivy-virtual-abbreviate 'full)
-    (ivy-rich-switch-buffer-align-virtual-buffer t)
-    (ivy-rich-path-style 'abbrev)
-    :config
-    (ivy-rich-mode 1))
-
-  (use-package ivy-posframe
-    :hook (ivy-mode . ivy-posframe-enable)
-    :defines ivy-posframe-parameters
-    :preface
-    ;; This function searches the entire `obarray' just to populate
-    ;; `ivy-display-functions-props'. There are 15k entries in mine! This is
-    ;; wasteful, so...
-    (advice-add #'ivy-posframe-setup :override #'ignore)
-    :config
-    (setq ivy-fixed-height-minibuffer nil
-          ivy-posframe-parameters
-          `((min-width . 90)
-            (min-height . ,ivy-height)
-            (internal-border-width . 10)))
-
-    ;; ... let's do it manually instead
-    (unless (assq 'ivy-posframe-display-at-frame-bottom-left ivy-display-functions-props)
-      (dolist (fn (list 'ivy-posframe-display-at-frame-bottom-left
-                        'ivy-posframe-display-at-frame-center
-                        'ivy-posframe-display-at-point
-                        'ivy-posframe-display-at-frame-bottom-window-center
-                        'ivy-posframe-display
-                        'ivy-posframe-display-at-window-bottom-left
-                        'ivy-posframe-display-at-window-center
-                        '+ivy-display-at-frame-center-near-bottom))
-        (push (cons fn '(:cleanup ivy-posframe-cleanup)) ivy-display-functions-props)))
-    ;; default to posframe display function
-    (setf (alist-get t ivy-display-functions-alist) #'+ivy-display-at-frame-center-near-bottom)
-
-    ;; posframe doesn't work well with async sources
-    (dolist (fn '(swiper counsel-ag counsel-grep counsel-git-grep))
-      (setf (alist-get fn ivy-display-functions-alist) #'ivy-display-function-fallback)))
-
-  ;;; Ado-ado
-  (use-package counsel
-    :commands (counsel-M-x counsel-find-file)
-    :custom
-    (counsel-mode-override-describe-bindings t)
-    :general
-    (general-define-key
-     "M-x" 'counsel-M-x
-     "C-x C-f" 'counsel-find-file))
-
-  (use-package counsel-projectile
-    :commands (counsel-projectile-find-file
-               counsel-projectile-find-file-dwim
-               counsel-projectile-find-dir
-               counsel-projectile-switch-to-buffer
-               counsel-projectile-grep
-               counsel-projectile-ag
-               counsel-projectile-rg
-               counsel-projectile-switch-project
-               counsel-projectile
-               counsel-projectile-git-grep
-               counsel-projectile-org-capture
-               counsel-projectile-org-agenda)
-    :after projectile
-    :config
-    (global-keymap
-     "pb" '(counsel-projectile-switch-to-buffer
-            :which-key "switch to buffer")
-     "pd" '(counsel-projectile-find-dir
-            :which-key "find directory")
-     "pf" '(counsel-projectile-find-file
-            :which-key "open file")
-     "pp" '(counsel-projectile-switch-project
-            :which-key "open project")
-     "ps" '(counsel-projectile-rg
-            :which-key "search in project")))
-
-  (use-package counsel-dash
-    :commands counsel-dash
-    :hook
-    ((lisp-mode . (lambda ()
-                    (setq-local counsel-dash-docsets '("Common_Lisp"))))
-     (emacs-lisp-mode . (lambda ()
-                          (setq-local counsel-dash-docsets '("Emacs_Lisp"))))
-     (ruby-mode . (lambda ()
-                    (setq-local counsel-dash-docsets '("Ruby"))))
-     (projectile-rails-mode . (lambda ()
-                                (setq-local counsel-dash-docsets '("Ruby_on_Rails_5"))))
-     (sql-mode . (lambda ()
-                   (setq-local counsel-dash-docsets '("PostgreSQL"))))
-     (web-mode . (lambda ()
-                   (setq-local counsel-dash-docsets '("Javascript" "HTML")))))
-    :custom
-    (counsel-dash-browser-func 'eww)
-    (counsel-dash-common-docsets '()))
-
-  (use-package counsel-etags
-    :requires counsel
-    :commands (counsel-etags-find-tag-at-point
-               counsel-etags-scan-code
-               counsel-etags-grep
-               counsel-etags-grep-symbol-at-point
-               counsel-etags-recent-tag
-               counsel-etags-find-tag
-               counsel-etags-list-tag))
-
-  (use-package rg
-    :commands (rg rg-project rg-dwim rg-literal))
-
-  ;; Search regex
-  (use-package swiper
-    :general
-    (general-define-key
-     "C-s" 'swiper))
-
-  (use-package flycheck
-    :hook (prog-mode . flycheck-mode)
-    :custom
-    (flycheck-rubocop-lint-only t)
-    (flycheck-check-syntax-automatically '(mode-enabled save))
-    (flycheck-disabled-checkers '(ruby-rubylint)))
-  (use-package flycheck-pos-tip
-    :hook (flycheck-mode . flycheck-pos-tip-mode))
-
-  (use-package flyspell
-    ;; Disable on Windows because `aspell' 0.6+ isn't available.
-    :if (not (eq system-type 'windows-nt))
-    :commands flyspell-mode
-    :hook
-    (text-mode . turn-on-flyspell)
-    (prog-mode . flyspell-prog-mode)
-    :delight
-    :config
-    (defun js|flyspell-mode-toggle ()
-      "Toggle flyspell mode."
-      (interactive)
-      (if flyspell-mode
-          (flyspell-mode -1)
-        (flyspell-mode 1)))
-  
-    (global-keymap
-     "S" '(:ignore t :which-key "Spelling")
-     "Sb" 'flyspell-buffer
-     "Sn" 'flyspell-goto-next-error
-     "tS" 'js|flyspell-mode-toggle)
-    :custom
-    ;; (ispell-silently-savep t)
-    (ispell-program-name (executable-find "aspell"))
-    (ispell-list-command "--list")
-    (ispell-extra-args '("--sug-mode=ultra"
-                         "--lang=en_US"
-                         "--dont-tex-check-comments")))
-  (use-package flyspell-correct
-    :commands (flyspell-correct-word-generic
-               flyspell-correct-previous-word-generic))
-  (use-package flyspell-correct-ivy
-    :commands (flyspell-correct-ivy)
-    :requires ivy
-    :init
-    (setq flyspell-correct-interface #'flyspell-correct-ivy))
-
-  (use-package writegood-mode
-    :defer t
-    :hook (text-mode . writegood-mode))
-
-  ;;; TODO Workspaces
-  ;; (use-package persp-mode)
-  ;;; TODO workgroups
-  ;; (use-package workgroups)
-
-  (use-package js-editing
-    :load-path "vendor/")
-
-  ;; Development Modes
-
-  ;;; ALL
-  ;;;
-  ;;; Projectile
-  (use-package projectile
-    :demand
-    :delight ;;'(:eval (concat " " (projectile-project-name)))
-    :config
-    (progn
-      (setq projectile-indexing-method 'alien
-            projectile-completion-system 'ivy
-            projectile-enable-caching nil
-            projectile-switch-project-action 'counsel-projectile-find-file
-            projectile-sort-order 'recentf)
-      (define-key projectile-mode-map (kbd "s-p") 'projectile-command-map)
-      (define-key projectile-mode-map (kbd "C-c p") 'projectile-command-map)
-      (add-to-list 'projectile-project-root-files ".clang_complete")
-
+    ;;; File Tree
+    (use-package neotree
+      :custom
+      (neo-create-file-auto-open t)
+      (neo-modern-sidebar t)
+      (neo-point-auto-indent nil)
+      (neo-theme (if (display-graphic-p) 'icons 'arrow))
+      (neo-window-fixed-size nil)
+      (neo-window-width 28)
+      (neo-show-hidden-files t)
+      (neo-keymap-style 'concise)
+      ;; (neo-hidden-regexp-list
+      ;;  '(;; vcs folders
+      ;;    "^\\.\\(?:git\\|hg\\|svn\\)$"
+      ;;    ;; compiled files
+      ;;    "\\.\\(?:pyc\\|o\\|elc\\|lock\\|css.map\\|class\\)$"
+      ;;    ;; generated files, caches or local pkgs
+      ;;    "^\\(?:node_modules\\|vendor\\|.\\(project\\|cask\\|yardoc\\|sass-cache\\)\\)$"
+      ;;    ;; org-mode folders
+      ;;    "^\\.\\(?:sync\\|export\\|attach\\)$"
+      ;;    ;; temp files
+      ;;    "~$"
+      ;;    "^#.*#$"))
+      :config
       (global-keymap
-        ;;; Projects
-       "p"   '(:ignore t :which-key "Projects")
-       "p!" '(projectile-run-shell-command-in-root :which-key "run command")
-       "p%" '(projectile-replace-regexp :which-key "replace regexp")
-       ;; "p a" '(projectile-toggle-between-implementation-and-test :which-key "toggle test")
-       "pI" '(projectile-invalidate-cache :which-key "clear cache")
-       "pR" '(projectile-replace :which-key "replace")
-       "pk" '(projectile-kill-buffers :which-key "kill buffers")
-       "pr" '(projectile-recentf :which-key "recent files"))
+       "ft" '(neotree-toggle :which-key "toggle file tree")
+       "pt" '(neotree-projectile-action :which-key "project tree"))
+      :general
+      (general-nmap neotree-mode-map
+        "RET" 'neotree-enter
+        "TAB" 'neotree-stretch-toggle
+        "q" 'neotree-hide
+        "|" 'neotree-enter-vertical-split
+        "-" 'neotree-enter-horizontal-split
+        "'" 'neotree-quick-look
+        "c" 'neotree-create-node
+        "C" 'neotree-copy-node
+        "d" 'neotree-delete-node
+        "gr" 'neotree-refresh
+        "H" 'neotree-select-previous-sibling-node
+        "j" 'neotree-next-line
+        "J" 'neotree-select-down-node
+        "k" 'neotree-previous-line
+        "K" 'neotree-select-up-node
+        "L" 'neotree-select-next-sibling-node
+        "q" 'neotree-hide
+        "o" 'neotree-enter
+        "r" 'neotree-rename-node
+        "R" 'neotree-change-root
+        "I" 'neotree-hidden-file-toggle))
+
+    (use-package amx
+      :hook (after-init . amx-initialize))
+
+    ;;; Ivy for completion
+    (use-package ivy
+      :demand
+      :delight
+      :custom
+      (ivy-use-virtual-buffers t)
+      (ivy-count-format "(%d/%d) ")
+      (ivy-wrap t)
+      (ivy-display-style 'fancy)
+      (ivy-format-function 'ivy-format-function-line)
+      (ivy-initial-inputs-alist nil)
+      (ivy-re-builders-alist
+       ;; allow input not in order
+       '((t . ivy--regex-ignore-order)))
+      (ivy-use-selectable-prompt t))
+
+    (use-package doom-todo-ivy
+      :commands doom/ivy-tasks
+      :load-path "vendor/"
+      :config
+      (global-keymap
+       "p T" '(doom/ivy-tasks :which-key "List project tasks")))
+
+    (use-package ivy-rich
+      :disabled
+      :load-path "vendor/"
+      ;; :defer 2
+      :after ivy
+      :custom
+      (ivy-virtual-abbreviate 'full)
+      (ivy-rich-switch-buffer-align-virtual-buffer t)
+      (ivy-rich-path-style 'abbrev)
+      :config
+      (ivy-rich-mode 1))
+
+    (use-package ivy-posframe
+      :hook (ivy-mode . ivy-posframe-enable)
+      :defines ivy-posframe-parameters
+      :preface
+      ;; This function searches the entire `obarray' just to populate
+      ;; `ivy-display-functions-props'. There are 15k entries in mine! This is
+      ;; wasteful, so...
+      (advice-add #'ivy-posframe-setup :override #'ignore)
+      :config
+      (setq ivy-fixed-height-minibuffer nil
+            ivy-posframe-parameters
+            `((min-width . 90)
+              (min-height . ,ivy-height)
+              (internal-border-width . 10)))
+
+      ;; ... let's do it manually instead
+      (unless (assq 'ivy-posframe-display-at-frame-bottom-left ivy-display-functions-props)
+        (dolist (fn (list 'ivy-posframe-display-at-frame-bottom-left
+                          'ivy-posframe-display-at-frame-center
+                          'ivy-posframe-display-at-point
+                          'ivy-posframe-display-at-frame-bottom-window-center
+                          'ivy-posframe-display
+                          'ivy-posframe-display-at-window-bottom-left
+                          'ivy-posframe-display-at-window-center
+                          '+ivy-display-at-frame-center-near-bottom))
+          (push (cons fn '(:cleanup ivy-posframe-cleanup)) ivy-display-functions-props)))
+      ;; default to posframe display function
+      (setf (alist-get t ivy-display-functions-alist) #'+ivy-display-at-frame-center-near-bottom)
+
+      ;; posframe doesn't work well with async sources
+      (dolist (fn '(swiper counsel-ag counsel-grep counsel-git-grep))
+        (setf (alist-get fn ivy-display-functions-alist) #'ivy-display-function-fallback)))
+
+    ;;; Ado-ado
+    (use-package counsel
+      :commands (counsel-M-x counsel-find-file)
+      :custom
+      (counsel-mode-override-describe-bindings t)
+      :general
+      (general-define-key
+       "M-x" 'counsel-M-x
+       "C-x C-f" 'counsel-find-file))
+
+    (use-package counsel-projectile
+      :after projectile
+      :config
+      (global-keymap
+       "pb" '(counsel-projectile-switch-to-buffer
+              :which-key "switch to buffer")
+       "pd" '(counsel-projectile-find-dir
+              :which-key "find directory")
+       "pf" '(counsel-projectile-find-file
+              :which-key "open file")
+       "pp" '(counsel-projectile-switch-project
+              :which-key "open project")
+       "ps" '(counsel-projectile-rg
+              :which-key "search in project")))
+
+    (use-package counsel-dash
+      :commands counsel-dash
+      :hook
+      ((lisp-mode . (lambda ()
+                      (setq-local counsel-dash-docsets '("Common_Lisp"))))
+       (emacs-lisp-mode . (lambda ()
+                            (setq-local counsel-dash-docsets '("Emacs_Lisp"))))
+       (ruby-mode . (lambda ()
+                      (setq-local counsel-dash-docsets '("Ruby"))))
+       (projectile-rails-mode . (lambda ()
+                                  (setq-local counsel-dash-docsets '("Ruby_on_Rails_5"))))
+       (sql-mode . (lambda ()
+                     (setq-local counsel-dash-docsets '("PostgreSQL"))))
+       (web-mode . (lambda ()
+                     (setq-local counsel-dash-docsets '("Javascript" "HTML")))))
+      :custom
+      (counsel-dash-browser-func 'eww)
+      (counsel-dash-common-docsets '()))
+
+    (use-package counsel-etags
+      :requires counsel
+      :commands (counsel-etags-find-tag-at-point
+                 counsel-etags-scan-code
+                 counsel-etags-grep
+                 counsel-etags-grep-symbol-at-point
+                 counsel-etags-recent-tag
+                 counsel-etags-find-tag
+                 counsel-etags-list-tag))
+
+    (use-package rg
+      :commands (rg rg-project rg-dwim rg-literal))
+
+    ;; Search regex
+    (use-package swiper
+      :general
+      (general-define-key
+       "C-s" 'swiper))
+
+    (use-package flycheck
+      :hook (prog-mode . flycheck-mode)
+      :custom
+      (flycheck-rubocop-lint-only t)
+      (flycheck-check-syntax-automatically '(mode-enabled save))
+      (flycheck-disabled-checkers '(ruby-rubylint)))
+    (use-package flycheck-pos-tip
+      :hook (flycheck-mode . flycheck-pos-tip-mode))
+
+    (use-package flyspell
+      ;; Disable on Windows because `aspell' 0.6+ isn't available.
+      :if (not (eq system-type 'windows-nt))
+      :commands flyspell-mode
+      :hook
+      (text-mode . turn-on-flyspell)
+      (prog-mode . flyspell-prog-mode)
+      :delight
+      :config
+      (defun js|flyspell-mode-toggle ()
+        "Toggle flyspell mode."
+        (interactive)
+        (if flyspell-mode
+            (flyspell-mode -1)
+          (flyspell-mode 1)))
+  
+      (global-keymap
+       "S" '(:ignore t :which-key "Spelling")
+       "Sb" 'flyspell-buffer
+       "Sn" 'flyspell-goto-next-error
+       "tS" 'js|flyspell-mode-toggle)
+      :custom
+      ;; (ispell-silently-savep t)
+      (ispell-program-name (executable-find "aspell"))
+      (ispell-list-command "--list")
+      (ispell-extra-args '("--sug-mode=ultra"
+                           "--lang=en_US"
+                           "--dont-tex-check-comments")))
+    (use-package flyspell-correct
+      :commands (flyspell-correct-word-generic
+                 flyspell-correct-previous-word-generic))
+    (use-package flyspell-correct-ivy
+      :commands (flyspell-correct-ivy)
+      :requires ivy
+      :init
+      (setq flyspell-correct-interface #'flyspell-correct-ivy))
+
+    (use-package writegood-mode
+      :defer t
+      :hook (text-mode . writegood-mode))
+
+    ;;; TODO Workspaces
+    ;; (use-package persp-mode)
+    ;;; TODO workgroups
+    ;; (use-package workgroups)
+
+    (use-package js-editing
+      :load-path "vendor/")
+
+    ;; Development Modes
+
+    ;;; ALL
+    ;;;
+    ;;; Projectile
+    (use-package projectile
+      :demand
+      :delight ;;'(:eval (concat " " (projectile-project-name)))
+      :config
+      (progn
+        (setq projectile-indexing-method 'alien
+              projectile-completion-system 'ivy
+              projectile-enable-caching nil
+              projectile-switch-project-action 'counsel-projectile-find-file
+              projectile-sort-order 'recentf)
+        (define-key projectile-mode-map (kbd "s-p") 'projectile-command-map)
+        (define-key projectile-mode-map (kbd "C-c p") 'projectile-command-map)
+        (add-to-list 'projectile-project-root-files ".clang_complete")
+
+        (global-keymap
+          ;;; Projects
+         "p"   '(:ignore t :which-key "Projects")
+         "p!" '(projectile-run-shell-command-in-root :which-key "run command")
+         "p%" '(projectile-replace-regexp :which-key "replace regexp")
+         ;; "p a" '(projectile-toggle-between-implementation-and-test :which-key "toggle test")
+         "pI" '(projectile-invalidate-cache :which-key "clear cache")
+         "pR" '(projectile-replace :which-key "replace")
+         "pk" '(projectile-kill-buffers :which-key "kill buffers")
+         "pr" '(projectile-recentf :which-key "recent files"))
     
-      (projectile-mode +1)))
+        (projectile-mode +1)))
 
-  ;;; direnv
-  (use-package direnv
-    :defer 2
-    :ensure-system-package direnv)
+    ;;; direnv
+    (use-package direnv
+      :defer 2
+      :ensure-system-package direnv)
 
-  (use-package erlang
-    :mode "\\.erl$")
+    (use-package erlang
+      :mode "\\.erl$")
 
-  ;; Python
-  (use-package python-mode
-    :mode "\\.py")
-  (use-package anaconda-mode
-    :hook python-mode)
-  (use-package pyenv-mode
-    :if (executable-find "pyenv")
-    :commands (pyenv-mode-versions)
-    :hook python-mode)
+    ;; Python
+    (use-package python-mode
+      :mode "\\.py")
+    (use-package anaconda-mode
+      :hook python-mode)
+    (use-package pyenv-mode
+      :if (executable-find "pyenv")
+      :commands (pyenv-mode-versions)
+      :hook python-mode)
 
-  ;; (use-package lsp-python
-  ;;   :after lsp-mode
-  ;;   :hook (python-mode . lsp-python-enable))
+    ;; (use-package lsp-python
+    ;;   :after lsp-mode
+    ;;   :hook (python-mode . lsp-python-enable))
 
-  ;; Highlight TODOs
-  (use-package hl-todo
-    :hook (after-init . global-hl-todo-mode))
+    ;; Highlight TODOs
+    (use-package hl-todo
+      :hook (after-init . global-hl-todo-mode))
 
-  ;; Adjust the built-in Emacs packages
-  (defalias 'yes-or-no-p 'y-or-n-p)
+    ;; Adjust the built-in Emacs packages
+    (defalias 'yes-or-no-p 'y-or-n-p)
 
-  (setq byte-compile-warnings '(not free-vars unresolved noruntime lexical make-local)
-        idle-update-delay 2 ; update ui less often (0.5 default)
-        create-lockfiles nil
-        cua-mode t
-        desktop-save-mode nil
-        indent-tabs-mode nil
-        initial-scratch-message nil
-        load-prefer-newer t
-        sentence-end-double-space nil
-        ;; keep the point out of the minibuffer
-        minibuffer-prompt-properties '(read-only t point-entered minibuffer-avoid-prompt face minibuffer-prompt)
-        ;; security
-        gnutls-verify-error (not (getenv "INSECURE")) ; you shouldn't use this
-        tls-checktrust gnutls-verify-error
-        tls-program (list "gnutls-cli --x509cafile %t -p %p %h"
-                          ;; compatibility fallbacks
-                          "gnutls-cli -p %p %h"
-                          "openssl s_client -connect %h:%p -no_ssl2 -no_ssl3 -ign_eof"))
+    (setq byte-compile-warnings '(not free-vars unresolved noruntime lexical make-local)
+          idle-update-delay 2 ; update ui less often (0.5 default)
+          create-lockfiles nil
+          cua-mode t
+          desktop-save-mode nil
+          indent-tabs-mode nil
+          initial-scratch-message nil
+          load-prefer-newer t
+          sentence-end-double-space nil
+          ;; keep the point out of the minibuffer
+          minibuffer-prompt-properties '(read-only t point-entered minibuffer-avoid-prompt face minibuffer-prompt)
+          ;; security
+          gnutls-verify-error (not (getenv "INSECURE")) ; you shouldn't use this
+          tls-checktrust gnutls-verify-error
+          tls-program (list "gnutls-cli --x509cafile %t -p %p %h"
+                            ;; compatibility fallbacks
+                            "gnutls-cli -p %p %h"
+                            "openssl s_client -connect %h:%p -no_ssl2 -no_ssl3 -ign_eof"))
 
-  ;; Platform Specific
-  (use-package linux
-    :load-path "vendor/"
-    :if (eq system-type 'gnu/linux))
-  (use-package osx
-    :load-path "vendor/"
-    :if (eq system-type 'darwin))
+    ;; Platform Specific
+    (use-package linux
+      :load-path "vendor/"
+      :if (eq system-type 'gnu/linux))
+    (use-package osx
+      :load-path "vendor/"
+      :if (eq system-type 'darwin))
 
-  (require 'js-altmodes)
-  (require 'js-builtin)
-  (require 'js-clang)
-  (require 'js-completion)
-  (require 'js-elixir)
-  (require 'js-golang)
-  (require 'js-javascript)
-  (require 'js-lisp)
-  (require 'js-org)
-  (require 'js-ruby)
-  (require 'js-scala)
-  (require 'js-ui)
-  (require 'js-vc)
-  (require 'js-web)
+    (require 'js-altmodes)
+    (require 'js-builtin)
+    (require 'js-clang)
+    (require 'js-completion)
+    (require 'js-elixir)
+    (require 'js-golang)
+    (require 'js-javascript)
+    (require 'js-lisp)
+    (require 'js-org)
+    (require 'js-ruby)
+    (require 'js-scala)
+    (require 'js-ui)
+    (require 'js-vc)
+    (require 'js-web)
 #+END_SRC
