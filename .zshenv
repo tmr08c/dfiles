@@ -1,6 +1,2 @@
-# Ensure that a non-login, non-interactive shell has a defined environment.
-# (Only once) if it was not sourced before, becuase .zshenv is always sourced
-if [[ ( "$SHLVL" -eq 1 && ! -o LOGIN ) && -s "${ZDOTDIR:-$HOME}/.zprofile" ]]; then
-  source "${ZDOTDIR:-$HOME}/.zprofile"
-fi
+source "${ZDOTDIR:-$HOME}/.zprofile"
 [[ -f ~/.zshenv.local ]] && source ~/.zshenv.local
