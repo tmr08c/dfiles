@@ -43,9 +43,9 @@ autoload -Uz compinit
 compinit
 
 # asdf
-if [[ -d ~/.asdf ]]; then
-  . ~/.asdf/completions/asdf.bash
-fi
+# if [[ -d ~/.asdf ]]; then
+  # . ~/.asdf/completions/asdf.bash
+# fi
 
 [[ -f ~/.zshrc.local ]] && source ~/.zshrc.local
 [[ -f ~/.zshrc.private ]] && source ~/.zshrc.private
