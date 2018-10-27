@@ -35,6 +35,9 @@ else
 
     echo "Install Python dependencies"
     sudo dnf install -y -q zlib-devel bzip2 bzip2-devel readline-devel sqlite sqlite-devel openssl-devel tk-devel libffi-devel
+
+    echo "Install Erlang dependencies"
+    sudo dnf install -y -q autoconf ncurses-devel wxGTK-devel wxBase openssl-devel java-1.8.0-openjdk-devel libiodbc unixODBC.x86_64 erlang-odbc.x86_64 libxslt fop
   else
     distro=$(lsb_release -i | cut -f2-)
 
