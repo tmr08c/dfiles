@@ -26,17 +26,11 @@
   default = simple
 [pull]
   ff = only
-[credential]
-  helper = osxkeychain
 [init]
   templatedir = ~/.git_template
 [branch]
   autosetupmerge = always
-[user]
-  signingkey = 1CAE895F6E08EA26
 [fetch]
   prune = true
-[gpg]
-	program = gpg2
 [url "git@github.com:"]
-	insteadOf = https://github.com/
+  insteadOf = https://github.com/
