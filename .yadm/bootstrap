@@ -25,7 +25,7 @@ else
 
   if [ -f /etc/redhat-release ]; then
     echo "Fedora / RHEL detected"
-    sudo dnf install -y -q direnv util-linux-user vim mozilla-fira-mono-fonts mozilla-fira-sans-fonts google-roboto-mono-fonts google-roboto-slab-fonts aspell-en pinentry-gnome3 pinentry-qt4 clang cmake clang-devel pop-gtk-theme pop-icon-theme
+    sudo dnf install -y -q direnv util-linux-user vim mozilla-fira-mono-fonts mozilla-fira-sans-fonts google-roboto-mono-fonts google-roboto-slab-fonts aspell-en clang cmake clang-devel pop-gtk-theme pop-icon-theme
 
     echo "Configure Yubikey dependencies"
     sudo dnf install -y -q pcsc-lite yubioath-desktop powertop
