@@ -38,6 +38,9 @@ else
 
     echo "Install Erlang dependencies"
     sudo dnf install -y -q autoconf ncurses-devel wxGTK-devel wxBase openssl-devel java-1.8.0-openjdk-devel libiodbc unixODBC.x86_64 erlang-odbc.x86_64 libxslt fop
+    
+    echo "Install Printer dependencies"
+    sudo dnf install -y -q libnsl
   else
     distro=$(lsb_release -i | cut -f2-)
 
