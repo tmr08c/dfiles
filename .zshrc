@@ -13,20 +13,20 @@ path=(
 )
 
 # Rust
-if [[ -d ~/.cargo ]]; then
-  path=(
-    $HOME/.cargo/bin
-    $path
-  )
-fi
+# if [[ -d ~/.cargo ]]; then
+#   path=(
+#     $HOME/.cargo/bin
+#     $path
+#   )
+# fi
 
 # PlatformIO
-if [[ -d ~/.platformio ]]; then
-  path=(
-    $path
-    $HOME/.platformio/penv/bin
-  )
-fi
+# if [[ -d ~/.platformio ]]; then
+#   path=(
+#     $path
+#     $HOME/.platformio/penv/bin
+#   )
+# fi
 
 if (( $+commands[emacs] )); then
   export EDITOR='emacs'
@@ -41,7 +41,7 @@ if (( $+commands[psql] )); then
   export PGUSER='postgres'
 fi
 
-source $HOME/.asdf/asdf.sh
+# source $HOME/.asdf/asdf.sh
 
 # Disable "flow control"
 setopt noflowcontrol

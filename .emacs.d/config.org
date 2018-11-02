@@ -1,44 +1,94 @@
 #+BEGIN_SRC emacs-lisp
-    ;; init.el --- Justin Smestad's Emacs init file -*- lexical-binding: t; -*-
-    ;;; Commentary:
+;; -*- lexical-binding: t; -*-
+;;; Commentary:
 
-    ;;; Code:
+;;; Code:
 
-  ;;; Add load path for vendor directory
-  (add-to-list 'load-path "~/.emacs.d/vendor/")
+;;; Add load path for vendor directory
+(add-to-list 'load-path "~/.emacs.d/vendor/")
 
-    ;;; Get package repos configured
-    (require 'package)
-    (customize-set-variable
-     'package-archives
-     '(("melpa" . "https://melpa.org/packages/")
-       ("gnu" . "https://elpa.gnu.org/packages/")
-       ("org" . "https://orgmode.org/elpa/")))
-    (unless package--initialized
-      (package-initialize))
+;;; Get package repos configured
+(require 'package)
+(customize-set-variable
+'package-archives
+'(("melpa" . "https://melpa.org/packages/")
+("gnu" . "https://elpa.gnu.org/packages/")
+("org" . "https://orgmode.org/elpa/")))
+(unless package--initialized
+(package-initialize))
 
-    ;;; Bootstrap `use-package'
-    (unless (package-installed-p 'use-package)
-      (package-refresh-contents)
-      (package-install 'use-package))
+;;; Bootstrap `use-package'
+(unless (package-installed-p 'use-package)
+(package-refresh-contents)
+(package-install 'use-package))
 
-  (eval-when-compile
-    (require 'use-package))
-  (setq use-package-always-ensure t
-        use-package-compute-statistics t)
+(eval-when-compile
+(require 'use-package))
+(setq use-package-always-ensure t
+      use-package-compute-statistics t)
+#+END_SRC
 
+UTF-8 as the default for everything.
 
-    ;; UTF-8 as the default coding system
-    (when (fboundp 'set-charset-priority)
-      (set-charset-priority 'unicode))     ; pretty
-    (prefer-coding-system        'utf-8)   ; pretty
-    (set-terminal-coding-system  'utf-8)   ; pretty
-    (set-keyboard-coding-system  'utf-8)   ; pretty
-    (set-selection-coding-system 'utf-8)   ; perdy
-    (setq locale-coding-system 'utf-8)     ; please
+#+BEGIN_SRC emacs-lisp
+(when (fboundp 'set-charset-priority)
+  (set-charset-priority 'unicode))     ; pretty
 
-    (require 'core) ; Provides shared functions
+(prefer-coding-system        'utf-8)   ; pretty
+(set-terminal-coding-system  'utf-8)   ; pretty
+(set-keyboard-coding-system  'utf-8)   ; pretty
+(set-selection-coding-system 'utf-8)   ; perdy
 
+(setq locale-coding-system 'utf-8)     ; please
+#+END_SRC
+
+Provide shared functions for things like the global and major-mode keymaps.
+
+#+BEGIN_SRC emacs-lisp
+(defmacro global-keymap (&rest bindings)
+  "Add global BINDINGS as key bindings under `space-leader-def`.
+All of the arguments are treated exactly like they are in
+'general' package."
+  `(space-leader-def
+     :states '(normal emacs)
+     ,@bindings))
+
+(defmacro keymap-for-mode (mode key def &rest bindings)
+  "Add KEY and DEF as key bindings under `space-leader-def` for MODE.
+mode should be a quoted symbol corresponding to a valid major mode.
+the rest of the arguments are treated exactly like they are in
+'general' package."
+  (let (mode-bindings)
+    (while key
+      (push def mode-bindings)
+      (push (concat "m" key) mode-bindings)
+      (setq key (pop bindings) def (pop bindings)))
+    `(space-leader-def
+       :states 'normal
+       :keymaps ',(intern (format "%s-map" (eval mode)))
+       ,@mode-bindings)))
+
+(defmacro evil-keymap-for-mode (mode &rest bindings)
+  "Add BINDINGS to evil for the provided MODE.
+mode should be a quoted symbol corresponding to a valid major mode.
+the rest of the arguments are treated exactly like they are in
+'general' package."
+  `(general-define-key
+    :states 'normal
+    :keymaps ',(intern (format "%s-map" (eval mode)))
+    ,@bindings))
+
+(defun js|smartparens-pair-newline (id action context)
+  (save-excursion
+    (newline)
+    (indent-according-to-mode)))
+
+(defun js|smartparens-pair-newline-and-indent (id action context)
+  (js|smartparens-pair-newline id action context)
+  (indent-according-to-mode))
+#+END_SRC
+
+#+BEGIN_SRC emacs-lisp
     ;; Used to benchmark init timings
     (use-package benchmark-init
       :disabled
@@ -91,11 +141,16 @@
             (expand-file-name "etc/" user-emacs-directory))
       (setq custom-file
             (no-littering-expand-var-file-name "custom.el")))
+#+END_SRC
 
-    (customize-set-variable 'user-full-name "Justin Smestad")
-    (customize-set-variable 'user-mail-address "justin.smestad@gmail.com")
+Identity
 
+#+BEGIN_SRC emacs-lisp
+(customize-set-variable 'user-full-name "Justin Smestad")
+(customize-set-variable 'user-mail-address "justin.smestad@gmail.com")
+#+END_SRC
 
+#+BEGIN_SRC emacs-lisp
     ;;; Key Bindings
     (use-package general
       :demand t
