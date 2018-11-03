@@ -87,9 +87,6 @@ fi
 autoload -Uz compinit
 compinit
 
-# asdf
-source ~/.asdf/completions/asdf.bash
-
 [[ -f ~/.zshrc.local ]] && source ~/.zshrc.local
 [[ -f ~/.zshrc.private ]] && source ~/.zshrc.private
 
