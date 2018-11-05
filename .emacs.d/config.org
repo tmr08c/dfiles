@@ -52,7 +52,9 @@
   - [[#visual][Visual]]
     - [[#ui-theme-etc][UI, Theme, etc.]]
     - [[#highlight-todo--fixme-comments][Highlight TODO & FIXME comments]]
-  - [[#personalizations-needs-to-be-broken-down][Personalizations (needs to be broken down)]]
+  - [[#preferences][Preferences]]
+    - [[#indentation][Indentation]]
+    - [[#other][Other]]
   - [[#operating-systems][Operating Systems]]
     - [[#linux][Linux]]
     - [[#macos][macOS]]
@@ -73,11 +75,11 @@
 
    ;;; Get package repos configured
    (require 'package)
-   (customize-set-variable
-   'package-archives
-   '(("melpa" . "https://melpa.org/packages/")
-   ("gnu" . "https://elpa.gnu.org/packages/")
-   ("org" . "https://orgmode.org/elpa/")))
+   (add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/"))
+   (add-to-list 'package-archives '("org" . "https://orgmode.org/elpa/") t)
+   (setq package-archive-priorities '(("org" . 3)
+                                      ("melpa" . 2)
+                                      ("gnu" . 1)))
  #+END_SRC
 
 *** use-package
@@ -92,7 +94,7 @@
      (package-install 'use-package))
 
      (eval-when-compile
-     (require 'use-package))
+       (require 'use-package))
    (setq use-package-always-ensure t
          use-package-compute-statistics t)
  #+END_SRC
@@ -361,9 +363,9 @@
 Read files to set coding style options according to current project
 
 #+BEGIN_SRC emacs-lisp
-(use-package editorconfig
-  :disabled
-  :config (editorconfig-mode 1))
+  (use-package editorconfig
+    :defer t
+    :config (editorconfig-mode 1))
 #+END_SRC
 
 *** Projectile
@@ -545,473 +547,474 @@ Dyanmically load ENV variables from .envrc, if present.
   #+END_SRC
 
 *** Company
-  #+BEGIN_SRC emacs-lisp
-    ;;; Auto-completion framework for most modes
-    (use-package company
-      :defer t
-      :delight
-      :defines company-backends
-      :hook (after-init . global-company-mode)
-      :custom
-      ;; (company-begin-commands '(self-insert-command)) ; start autocompletion only after typing
-      (company-dabbrev-downcase nil)
-      (company-dabbrev-ignore-case nil)
-      (company-dabbrev-code-other-buffers t)
-      (company-echo-delay 0) ; remove annoying blinking
-      (company-idle-delay 0.6)
-      (company-minimum-prefix-length 2)
-      (company-require-match 'never)
-      (company-selection-wrap-around t)
-      (company-tooltip-align-annotations t)
-      (company-tooltip-flip-when-above t)
-      (company-tooltip-limit 14)
-      (company-global-modes
-       '(not eshell-mode comint-mode erc-mode message-mode help-mode gud-mode))
-      (company-frontends '(company-pseudo-tooltip-frontend
-                           company-echo-metadata-frontend))
-      (company-transformers '(company-sort-by-occurrence))
-      (company-backends '()))
+Auto-completion framework for most modes
+
+#+BEGIN_SRC emacs-lisp
+  (use-package company
+    :defer t
+    :delight
+    :defines company-backends
+    :hook (after-init . global-company-mode)
+    :custom
+    ;; (company-begin-commands '(self-insert-command)) ; start autocompletion only after typing
+    (company-dabbrev-downcase nil)
+    (company-dabbrev-ignore-case nil)
+    (company-dabbrev-code-other-buffers t)
+    (company-echo-delay 0) ; remove annoying blinking
+    (company-idle-delay 0.6)
+    (company-minimum-prefix-length 2)
+    (company-require-match 'never)
+    (company-selection-wrap-around t)
+    (company-tooltip-align-annotations t)
+    (company-tooltip-flip-when-above t)
+    (company-tooltip-limit 14)
+    (company-global-modes
+     '(not eshell-mode comint-mode erc-mode message-mode help-mode gud-mode))
+    (company-frontends '(company-pseudo-tooltip-frontend
+                         company-echo-metadata-frontend))
+    (company-transformers '(company-sort-by-occurrence))
+    (company-backends '()))
 
 
-    (use-package company-async-files
-      :defer t
-      :no-require t
-      :load-path "vendor/"
-      :requires company)
+  (use-package company-async-files
+    :defer t
+    :no-require t
+    :load-path "vendor/"
+    :requires company)
 
-    (use-package company-box
-      :disabled
-      :defer t
-      :hook (company-mode . company-box-mode)
-      :config
-      (setq company-box-backends-colors nil
-            company-box-max-candidates 50
-            company-box-icons-yasnippet (all-the-icons-material "short_text" :height 0.8 :face 'all-the-icons-green)
-            company-box-icons-unknown (all-the-icons-material "find_in_page" :height 0.8 :face 'all-the-icons-purple)
-            company-box-icons-elisp
-            (list (all-the-icons-material "functions"                        :height 0.8 :face 'all-the-icons-red)
-                  (all-the-icons-material "check_circle"                     :height 0.8 :face 'all-the-icons-blue)
-                  (all-the-icons-material "stars"                            :height 0.8 :face 'all-the-icons-orange)
-                  (all-the-icons-material "format_paint"                     :height 0.8 :face 'all-the-icons-pink))
-            company-box-icons-lsp
-            '((1  . (all-the-icons-material "text_fields"              :height 0.8 :face 'all-the-icons-green)) ; text
-              (2  . (all-the-icons-material "functions"                :height 0.8 :face 'all-the-icons-red))   ; method
-              (3  . (all-the-icons-material "functions"                :height 0.8 :face 'all-the-icons-red))   ; function
-              (4  . (all-the-icons-material "functions"                :height 0.8 :face 'all-the-icons-red))   ; constructor
-              (5  . (all-the-icons-material "functions"                :height 0.8 :face 'all-the-icons-red))   ; field
-              (6  . (all-the-icons-material "adjust"                   :height 0.8 :face 'all-the-icons-blue))  ; variable
-              (7  . (all-the-icons-material "class"                    :height 0.8 :face 'all-the-icons-red))   ; class
-              (8  . (all-the-icons-material "settings_input_component" :height 0.8 :face 'all-the-icons-red))   ; interface
-              (9  . (all-the-icons-material "view_module"              :height 0.8 :face 'all-the-icons-red))   ; module
-              (10 . (all-the-icons-material "settings"                 :height 0.8 :face 'all-the-icons-red))   ; property
-              (11 . (all-the-icons-material "straighten"               :height 0.8 :face 'all-the-icons-red))   ; unit
-              (12 . (all-the-icons-material "filter_1"                 :height 0.8 :face 'all-the-icons-red))   ; value
-              (13 . (all-the-icons-material "plus_one"                 :height 0.8 :face 'all-the-icons-red))   ; enum
-              (14 . (all-the-icons-material "filter_center_focus"      :height 0.8 :face 'all-the-icons-red))   ; keyword
-              (15 . (all-the-icons-material "short_text"               :height 0.8 :face 'all-the-icons-red))   ; snippet
-              (16 . (all-the-icons-material "color_lens"               :height 0.8 :face 'all-the-icons-red))   ; color
-              (17 . (all-the-icons-material "insert_drive_file"        :height 0.8 :face 'all-the-icons-red))   ; file
-              (18 . (all-the-icons-material "collections_bookmark"     :height 0.8 :face 'all-the-icons-red))   ; reference
-              (19 . (all-the-icons-material "folder"                   :height 0.8 :face 'all-the-icons-red))   ; folder
-              (20 . (all-the-icons-material "people"                   :height 0.8 :face 'all-the-icons-red))   ; enumMember
-              (21 . (all-the-icons-material "pause_circle_filled"      :height 0.8 :face 'all-the-icons-red))   ; constant
-              (22 . (all-the-icons-material "streetview"               :height 0.8 :face 'all-the-icons-red))   ; struct
-              (23 . (all-the-icons-material "event"                    :height 0.8 :face 'all-the-icons-red))   ; event
-              (24 . (all-the-icons-material "control_point"            :height 0.8 :face 'all-the-icons-red))   ; operator
-              (25 . (all-the-icons-material "class"                    :height 0.8 :face 'all-the-icons-red))))
+  (use-package company-box
+    :disabled
+    :defer t
+    :hook (company-mode . company-box-mode)
+    :config
+    (setq company-box-backends-colors nil
+          company-box-max-candidates 50
+          company-box-icons-yasnippet (all-the-icons-material "short_text" :height 0.8 :face 'all-the-icons-green)
+          company-box-icons-unknown (all-the-icons-material "find_in_page" :height 0.8 :face 'all-the-icons-purple)
+          company-box-icons-elisp
+          (list (all-the-icons-material "functions"                        :height 0.8 :face 'all-the-icons-red)
+                (all-the-icons-material "check_circle"                     :height 0.8 :face 'all-the-icons-blue)
+                (all-the-icons-material "stars"                            :height 0.8 :face 'all-the-icons-orange)
+                (all-the-icons-material "format_paint"                     :height 0.8 :face 'all-the-icons-pink))
+          company-box-icons-lsp
+          '((1  . (all-the-icons-material "text_fields"              :height 0.8 :face 'all-the-icons-green)) ; text
+            (2  . (all-the-icons-material "functions"                :height 0.8 :face 'all-the-icons-red))   ; method
+            (3  . (all-the-icons-material "functions"                :height 0.8 :face 'all-the-icons-red))   ; function
+            (4  . (all-the-icons-material "functions"                :height 0.8 :face 'all-the-icons-red))   ; constructor
+            (5  . (all-the-icons-material "functions"                :height 0.8 :face 'all-the-icons-red))   ; field
+            (6  . (all-the-icons-material "adjust"                   :height 0.8 :face 'all-the-icons-blue))  ; variable
+            (7  . (all-the-icons-material "class"                    :height 0.8 :face 'all-the-icons-red))   ; class
+            (8  . (all-the-icons-material "settings_input_component" :height 0.8 :face 'all-the-icons-red))   ; interface
+            (9  . (all-the-icons-material "view_module"              :height 0.8 :face 'all-the-icons-red))   ; module
+            (10 . (all-the-icons-material "settings"                 :height 0.8 :face 'all-the-icons-red))   ; property
+            (11 . (all-the-icons-material "straighten"               :height 0.8 :face 'all-the-icons-red))   ; unit
+            (12 . (all-the-icons-material "filter_1"                 :height 0.8 :face 'all-the-icons-red))   ; value
+            (13 . (all-the-icons-material "plus_one"                 :height 0.8 :face 'all-the-icons-red))   ; enum
+            (14 . (all-the-icons-material "filter_center_focus"      :height 0.8 :face 'all-the-icons-red))   ; keyword
+            (15 . (all-the-icons-material "short_text"               :height 0.8 :face 'all-the-icons-red))   ; snippet
+            (16 . (all-the-icons-material "color_lens"               :height 0.8 :face 'all-the-icons-red))   ; color
+            (17 . (all-the-icons-material "insert_drive_file"        :height 0.8 :face 'all-the-icons-red))   ; file
+            (18 . (all-the-icons-material "collections_bookmark"     :height 0.8 :face 'all-the-icons-red))   ; reference
+            (19 . (all-the-icons-material "folder"                   :height 0.8 :face 'all-the-icons-red))   ; folder
+            (20 . (all-the-icons-material "people"                   :height 0.8 :face 'all-the-icons-red))   ; enumMember
+            (21 . (all-the-icons-material "pause_circle_filled"      :height 0.8 :face 'all-the-icons-red))   ; constant
+            (22 . (all-the-icons-material "streetview"               :height 0.8 :face 'all-the-icons-red))   ; struct
+            (23 . (all-the-icons-material "event"                    :height 0.8 :face 'all-the-icons-red))   ; event
+            (24 . (all-the-icons-material "control_point"            :height 0.8 :face 'all-the-icons-red))   ; operator
+            (25 . (all-the-icons-material "class"                    :height 0.8 :face 'all-the-icons-red))))
 
-      ;; Until sebastiencs/company-box#40 is merged
-      (defun +company*box-frontend-even-if-single (command)
-        (cond ((eq command 'hide)
-               (company-box-hide))
-              ((equal company-candidates-length 0)
-               (company-box-hide))
-              ((eq command 'update)
-               (company-box-show))
-              ((eq command 'post-command)
-               (company-box--post-command))))
-      (advice-add #'company-box-frontend :override #'+company*box-frontend-even-if-single))
-    ;; :load-path "vendor/company-box/")
+    ;; Until sebastiencs/company-box#40 is merged
+    (defun +company*box-frontend-even-if-single (command)
+      (cond ((eq command 'hide)
+             (company-box-hide))
+            ((equal company-candidates-length 0)
+             (company-box-hide))
+            ((eq command 'update)
+             (company-box-show))
+            ((eq command 'post-command)
+             (company-box--post-command))))
+    (advice-add #'company-box-frontend :override #'+company*box-frontend-even-if-single))
+  ;; :load-path "vendor/company-box/")
 
-    (use-package company-prescient
-      :hook (company-mode . company-prescient-mode)
-      :config
-      (prescient-persist-mode +1))
+  (use-package company-prescient
+    :hook (company-mode . company-prescient-mode)
+    :config
+    (prescient-persist-mode +1))
 
-    ;; (use-package company-quickhelp
-    ;;   :hook (company-mode . company-quickhelp-mode)
-    ;;   :custom
-    ;;   (company-quickhelp-delay 0.1)
-    ;;   :general
-    ;;   (general-def 'insert company-quickhelp-mode-map
-    ;;     "C-k" 'company-select-previous))
+  ;; (use-package company-quickhelp
+  ;;   :hook (company-mode . company-quickhelp-mode)
+  ;;   :custom
+  ;;   (company-quickhelp-delay 0.1)
+  ;;   :general
+  ;;   (general-def 'insert company-quickhelp-mode-map
+  ;;     "C-k" 'company-select-previous))
 
-    (use-package company-flx
-      :hook (company-mode . company-flx-mode))
+  (use-package company-flx
+    :hook (company-mode . company-flx-mode))
 
-    (use-package company-posframe
-      :disabled
-      :delight
-      :hook (company-mode . company-posframe-mode))
+  (use-package company-posframe
+    :disabled
+    :delight
+    :hook (company-mode . company-posframe-mode))
 
-    ;; General
-    (use-package company-emoji
-      :no-require t
-      :defer 5
-      :hook ((markdown-mode git-commit-mode magit-status-mode magit-log-mode) . (lambda ()
-                                                                                  (set (make-local-variable 'company-backends) '(company-emoji)))))
+  ;; General
+  (use-package company-emoji
+    :no-require t
+    :defer 5
+    :hook ((markdown-mode git-commit-mode magit-status-mode magit-log-mode) . (lambda ()
+                                                                                (set (make-local-variable 'company-backends) '(company-emoji)))))
 
-    ;; C/C++
-    (use-package company-irony
-      :no-require t
-      :hook irony-mode
-      :custom
-      (company-irony-ignore-case 'smart))
+  ;; C/C++
+  (use-package company-irony
+    :no-require t
+    :hook irony-mode
+    :custom
+    (company-irony-ignore-case 'smart))
 
-    (use-package company-irony-c-headers
-      :no-require t
-      :after company-irony
-      :hook (irony-mode . (lambda ()
-                            (set (make-local-variable 'company-backends) '((company-irony-c-headers company-irony company-etags))))))
+  (use-package company-irony-c-headers
+    :no-require t
+    :after company-irony
+    :hook (irony-mode . (lambda ()
+                          (set (make-local-variable 'company-backends) '((company-irony-c-headers company-irony company-etags))))))
 
-    ;; Python
-    (use-package company-anaconda
-      :no-require t
-      :hook (python-mode . (lambda ()
-                             (set (make-local-variable 'company-backends) '(company-anaconda)))))
+  ;; Python
+  (use-package company-anaconda
+    :no-require t
+    :hook (python-mode . (lambda ()
+                           (set (make-local-variable 'company-backends) '(company-anaconda)))))
 
-    ;; Golang
-    (use-package company-go
-      :no-require t
-      :load-path "vendor/"
-      :hook (go-mode . (lambda ()
-                         (set (make-local-variable 'company-backends) '(company-go))))
-      :custom
-      (company-go-show-annotation t))
+  ;; Golang
+  (use-package company-go
+    :no-require t
+    :load-path "vendor/"
+    :hook (go-mode . (lambda ()
+                       (set (make-local-variable 'company-backends) '(company-go))))
+    :custom
+    (company-go-show-annotation t))
 
-    ;; Shell
-    (use-package company-shell
-      :custom
-      (company-shell-delete-duplicates t)
-      :hook (sh-mode . (lambda ()
-                         (set (make-local-variable 'company-backends) '(company-shell company-async-files)))))
+  ;; Shell
+  (use-package company-shell
+    :custom
+    (company-shell-delete-duplicates t)
+    :hook (sh-mode . (lambda ()
+                       (set (make-local-variable 'company-backends) '(company-shell company-async-files)))))
 
-    ;;; Language Server Mode
-    (use-package eglot
-      :disabled ;; Works but not as good as company-go
-      :after company
-      :config
-      (progn
-        (add-to-list
-         'eglot-server-programs
-         '(go-mode . ("go-langserver" "-gocodecompletion")))))
+  ;;; Language Server Mode
+  (use-package eglot
+    :disabled ;; Works but not as good as company-go
+    :after company
+    :config
+    (progn
+      (add-to-list
+       'eglot-server-programs
+       '(go-mode . ("go-langserver" "-gocodecompletion")))))
 
-    (use-package lsp-mode
-      :disabled ;; TODO: replace with eglot
-      :hook prog-mode
-      :custom
-      (lsp-message-project-root-warning t))
+  (use-package lsp-mode
+    :disabled ;; TODO: replace with eglot
+    :hook prog-mode
+    :custom
+    (lsp-message-project-root-warning t))
 
-    (use-package lsp-ui
-      :disabled
-      :hook (lsp-mode . lsp-ui-mode))
+  (use-package lsp-ui
+    :disabled
+    :hook (lsp-mode . lsp-ui-mode))
 
-    (use-package company-lsp
-      :disabled
-      :after (company lsp-mode)
-      :custom
-      (company-lsp-async t)
-      (company-lsp-enable-snippet t)
-      :config
-      (push 'company-lsp company-backends))
+  (use-package company-lsp
+    :disabled
+    :after (company lsp-mode)
+    :custom
+    (company-lsp-async t)
+    (company-lsp-enable-snippet t)
+    :config
+    (push 'company-lsp company-backends))
 
 
-    (custom-set-faces
-     '(company-tooltip-common
-       ((t (:inherit company-tooltip :weight bold :underline nil))))
-     '(company-tooltip-common-selection
-       ((t (:inherit company-tooltip-selection :weight bold :underline nil)))))
+  (custom-set-faces
+   '(company-tooltip-common
+     ((t (:inherit company-tooltip :weight bold :underline nil))))
+   '(company-tooltip-common-selection
+     ((t (:inherit company-tooltip-selection :weight bold :underline nil)))))
   #+END_SRC
 
 ** Languages
 *** Complete
 **** Golang
-   #+BEGIN_SRC emacs-lisp
-     (use-package go-mode
-       :mode "\\.go$"
-       :requires (company)
-       :config
-       (add-hook 'before-save-hook 'gofmt-before-save)
-       (defun my-go-mode-hook-fn ()
-         (go-eldoc-setup)
-         ;; (set (make-local-variable 'company-backends) '(company-go))
-         (setq-local company-backends '(company-go))
-         (setq tab-width 2
-               indent-tabs-mode 1)
-         (flycheck-gometalinter-setup)
-         (flycheck-mode 1))
-       (add-hook 'go-mode-hook #'my-go-mode-hook-fn)
-       (keymap-for-mode 'go-mode
-                        "t" '(:ignore t :which-key "test")
-                        "ta" '(js/go-run-test-current-suite :which-key "run suite")
-                        "tt" '(js/go-run-test-current-function :which-key "run current function")
-                        "tg" '(:ignore t :which-key "generate")
-                        "tgf" '(go-gen-test-exported :which-key "all exported functions")
-                        "tga" '(go-gen-test-all :which-key "all functions")
-                        "tgs" '(go-gen-test-dwim :which-key "selected region")
+#+BEGIN_SRC emacs-lisp
+  (use-package go-mode
+  :mode "\\.go$"
+  :requires (company)
+  :config
+  (add-hook 'before-save-hook 'gofmt-before-save)
+  (defun my-go-mode-hook-fn ()
+      (go-eldoc-setup)
+      ;; (set (make-local-variable 'company-backends) '(company-go))
+      (setq-local company-backends '(company-go))
+      (setq tab-width 2
+          indent-tabs-mode 1)
+      (flycheck-gometalinter-setup)
+      (flycheck-mode 1))
+  (add-hook 'go-mode-hook #'my-go-mode-hook-fn)
+  (keymap-for-mode 'go-mode
+                  "t" '(:ignore t :which-key "test")
+                  "ta" '(js/go-run-test-current-suite :which-key "run suite")
+                  "tt" '(js/go-run-test-current-function :which-key "run current function")
+                  "tg" '(:ignore t :which-key "generate")
+                  "tgf" '(go-gen-test-exported :which-key "all exported functions")
+                  "tga" '(go-gen-test-all :which-key "all functions")
+                  "tgs" '(go-gen-test-dwim :which-key "selected region")
 
-                        ;; Go To
-                        "g" '(:ignore t :which-key "goto")
-                        "gc" '(go-coverage :which-key "coverage")
+                  ;; Go To
+                  "g" '(:ignore t :which-key "goto")
+                  "gc" '(go-coverage :which-key "coverage")
 
-                        ;; Imports
-                        "i" '(:ignore t :which-key "imports")
-                        "ia" '(go-import-add :which-key "add")
-                        "ig" '(go-import-add :which-key "goto")
-                        "ir" '(go-remove-unused-imports :which-key "remove unused")
+                  ;; Imports
+                  "i" '(:ignore t :which-key "imports")
+                  "ia" '(go-import-add :which-key "add")
+                  "ig" '(go-import-add :which-key "goto")
+                  "ir" '(go-remove-unused-imports :which-key "remove unused")
 
-                        ;; Execute
-                        "x" '(:ignore t :which-key "execute")
-                        "xx" '(js/go-run-main :which-key "run main")
+                  ;; Execute
+                  "x" '(:ignore t :which-key "execute")
+                  "xx" '(js/go-run-main :which-key "run main")
 
-                        ;; Refactoring
-                        "r" '(:ignore t :which-key "refactoring")
-                        "ri" '(go-impl :which-key "implement interface")
-                        "rs" '(go-fill-struct :which-key "fill struct")
-                        "rd" '(godoctor-godoc :which-key "godoc")
-                        "re" '(godoctor-extract :which-key "extract")
-                        "rn" '(godoctor-rename :which-key "rename")
-                        ;; "rN" '(go-rename :which-key "rename")
-                        "rt" '(godoctor-toggle :which-key "toggle")
+                  ;; Refactoring
+                  "r" '(:ignore t :which-key "refactoring")
+                  "ri" '(go-impl :which-key "implement interface")
+                  "rs" '(go-fill-struct :which-key "fill struct")
+                  "rd" '(godoctor-godoc :which-key "godoc")
+                  "re" '(godoctor-extract :which-key "extract")
+                  "rn" '(godoctor-rename :which-key "rename")
+                  ;; "rN" '(go-rename :which-key "rename")
+                  "rt" '(godoctor-toggle :which-key "toggle")
 
-                        ;; Help
-                        "h" '(:ignore t :which-key "help")
-                        "hh" '(godoc-at-point :which-key "godoc at point"))
-       :custom
-       (gofmt-command "goimports")
-       ;; :ensure-system-package
-       ;; ((gocode . "go get -u github.com/mdempsky/gocode")
-       ;;  (gometalinter . "go get -u github.com/alecthomas/gometalinter")
-       ;;  (godoc . "go get -u golang.org/x/tools/cmd/godoc")
-       ;;  (goimports . "go get -u golang.org/x/tools/cmd/goimports")
-       ;;  (guru . "go get -u golang.org/x/tools/cmd/guru"))
-       )
+                  ;; Help
+                  "h" '(:ignore t :which-key "help")
+                  "hh" '(godoc-at-point :which-key "godoc at point"))
+  :custom
+  (gofmt-command "goimports")
+  ;; :ensure-system-package
+  ;; ((gocode . "go get -u github.com/mdempsky/gocode")
+  ;;  (gometalinter . "go get -u github.com/alecthomas/gometalinter")
+  ;;  (godoc . "go get -u golang.org/x/tools/cmd/godoc")
+  ;;  (goimports . "go get -u golang.org/x/tools/cmd/goimports")
+  ;;  (guru . "go get -u golang.org/x/tools/cmd/guru"))
+  )
 
-     (use-package go-eldoc
-       :commands go-eldoc-setup)
+  (use-package go-eldoc
+  :commands go-eldoc-setup)
 
-     (use-package flycheck-gometalinter
-       :commands flycheck-gometalinter-setup
-       ;; :hook (go-mode . flycheck-gometalinter-setup)
-       :custom
-       ;; skip linting for vendor dirs
-       (flycheck-gometalinter-vendor t)
-       ;; use in test files
-       (flycheck-gometalinter-test t)
-       ;; only use fast linters
-       (flycheck-gometalinter-fast t)
-       ;; explicitly disable 'gotype' & 'govet' linters (also currently broken Nix overlays)
-       (flycheck-gometalinter-disable-linters
-        '("gosec" "gotype" "vet" "vetshadow" "megacheck" "interfacer" "ineffassign")))
+  (use-package flycheck-gometalinter
+  :commands flycheck-gometalinter-setup
+  ;; :hook (go-mode . flycheck-gometalinter-setup)
+  :custom
+  ;; skip linting for vendor dirs
+  (flycheck-gometalinter-vendor t)
+  ;; use in test files
+  (flycheck-gometalinter-test t)
+  ;; only use fast linters
+  (flycheck-gometalinter-fast t)
+  ;; explicitly disable 'gotype' & 'govet' linters (also currently broken Nix overlays)
+  (flycheck-gometalinter-disable-linters
+  '("gosec" "gotype" "vet" "vetshadow" "megacheck" "interfacer" "ineffassign")))
 
-     (use-package go-projectile
-       :hook (go-mode . go-projectile-mode))
+  (use-package go-projectile
+  :hook (go-mode . go-projectile-mode))
 
-     (use-package go-gen-test
-       :commands (go-gen-test-exported
-                  go-gen-test-all
-                  go-gen-test-dwim)
-       ;; :ensure-system-package
-       ;; (gotests . "go get -u github.com/cweill/gotests/...")
-       )
+  (use-package go-gen-test
+  :commands (go-gen-test-exported
+              go-gen-test-all
+              go-gen-test-dwim)
+  ;; :ensure-system-package
+  ;; (gotests . "go get -u github.com/cweill/gotests/...")
+  )
 
-     (use-package go-fill-struct
-       :commands (go-fill-struct)
-       ;; :ensure-system-package
-       ;; (fillstruct . "go get -u github.com/davidrjenni/reftools/cmd/fillstruct")
-       )
+  (use-package go-fill-struct
+  :commands (go-fill-struct)
+  ;; :ensure-system-package
+  ;; (fillstruct . "go get -u github.com/davidrjenni/reftools/cmd/fillstruct")
+  )
 
-      (use-package godoctor
-        :commands (godoctor-godoc
-                   godoctor-extract
-                   godoctor-rename
-                   godoctor-toggle))
+  (use-package godoctor
+  :commands (godoctor-godoc
+              godoctor-extract
+              godoctor-rename
+              godoctor-toggle))
 
-     (use-package go-rename
-       :commands (go-rename)
-       ;; :ensure-system-package
-       ;; (gorename . "go get -u golang.org/x/tools/cmd/gorename")
-       )
+  (use-package go-rename
+  :commands (go-rename)
+  ;; :ensure-system-package
+  ;; (gorename . "go get -u golang.org/x/tools/cmd/gorename")
+  )
 
-     (use-package go-impl
-       :commands go-impl
-       ;; :ensure-system-package
-       ;; (impl . "go get -u github.com/josharian/impl")
-       )
+  (use-package go-impl
+  :commands go-impl
+  ;; :ensure-system-package
+  ;; (impl . "go get -u github.com/josharian/impl")
+  )
 
-     ;; Taken from js
-     (defun js/go-run-tests (args)
-       (interactive)
-       (compilation-start (concat "go test " args " " go-use-test-args)
-                          nil (lambda (n) go-test-buffer-name) nil))
+  ;; Taken from js
+  (defun js/go-run-tests (args)
+  (interactive)
+  (compilation-start (concat "go test " args " " go-use-test-args)
+                      nil (lambda (n) go-test-buffer-name) nil))
 
-     (defun js/go-run-test-current-function ()
-       (interactive)
-       (if (string-match "_test\\.go" buffer-file-name)
-           (let ((test-method (if go-use-gocheck-for-testing
-                                  "-check.f"
-                                "-run")))
-             (save-excursion
-               (re-search-backward "^func[ ]+\\(([[:alnum:]]*?[ ]?[*]?[[:alnum:]]+)[ ]+\\)?\\(Test[[:alnum:]_]+\\)(.*)")
-               (js/go-run-tests (concat test-method "='" (match-string-no-properties 2) "$'"))))
-         (message "Must be in a _test.go file to run go-run-test-current-function")))
+  (defun js/go-run-test-current-function ()
+  (interactive)
+  (if (string-match "_test\\.go" buffer-file-name)
+      (let ((test-method (if go-use-gocheck-for-testing
+                              "-check.f"
+                          "-run")))
+          (save-excursion
+          (re-search-backward "^func[ ]+\\(([[:alnum:]]*?[ ]?[*]?[[:alnum:]]+)[ ]+\\)?\\(Test[[:alnum:]_]+\\)(.*)")
+          (js/go-run-tests (concat test-method "='" (match-string-no-properties 2) "$'"))))
+      (message "Must be in a _test.go file to run go-run-test-current-function")))
 
-     (defun js/go-run-test-current-suite ()
-       (interactive)
-       (if (string-match "_test\.go" buffer-file-name)
-           (if go-use-gocheck-for-testing
-               (save-excursion
-                 (re-search-backward "^func[ ]+\\(([[:alnum:]]*?[ ]?[*]?\\([[:alnum:]]+\\))[ ]+\\)?Test[[:alnum:]_]+(.*)")
-                 (js/go-run-tests (concat "-check.f='" (match-string-no-properties 2) "'")))
-             (message "Gocheck is needed to test the current suite"))
-         (message "Must be in a _test.go file to run go-test-current-suite")))
+  (defun js/go-run-test-current-suite ()
+  (interactive)
+  (if (string-match "_test\.go" buffer-file-name)
+      (if go-use-gocheck-for-testing
+          (save-excursion
+              (re-search-backward "^func[ ]+\\(([[:alnum:]]*?[ ]?[*]?\\([[:alnum:]]+\\))[ ]+\\)?Test[[:alnum:]_]+(.*)")
+              (js/go-run-tests (concat "-check.f='" (match-string-no-properties 2) "'")))
+          (message "Gocheck is needed to test the current suite"))
+      (message "Must be in a _test.go file to run go-test-current-suite")))
 
 
-     (defun js/go-run-main ()
-       (interactive)
-       (shell-command
-        (format "go run %s"
-                (shell-quote-argument (or (file-remote-p (buffer-file-name (buffer-base-buffer)) 'localname)
-                                          (buffer-file-name (buffer-base-buffer)))))))
-   #+END_SRC
+  (defun js/go-run-main ()
+  (interactive)
+  (shell-command
+  (format "go run %s"
+          (shell-quote-argument (or (file-remote-p (buffer-file-name (buffer-base-buffer)) 'localname)
+                                      (buffer-file-name (buffer-base-buffer)))))))
+#+END_SRC
 
 **** Ruby
 
-   #+BEGIN_SRC emacs-lisp
-     (use-package ruby-mode
-       :ensure nil
-       :ensure-system-package
-       ((ruby-lint   . "gem install ruby-lint")
-        (ripper-tags . "gem install ripper-tags")
-        (pry . "gem install pry"))
-       :hook (ruby-mode . flycheck-mode)
-       :config
-       (add-hook 'ruby-mode-hook
-                 '(lambda ()
-                    (setq evil-shift-width ruby-indent-level)))
-       (keymap-for-mode 'ruby-mode
-                        "T" '(:ignore t :which-key "toggle")
-                        "T'" 'ruby-toggle-string-quotes
-                        "T{" 'ruby-toggle-block)
-       :custom
-       (ruby-insert-encoding-magic-comment nil)
-       (ruby-align-to-stmt-keywords
-        '(if while unless until begin case for def)))
+#+BEGIN_SRC emacs-lisp
+  (use-package ruby-mode
+    :ensure nil
+    :ensure-system-package
+    ((ruby-lint   . "gem install ruby-lint")
+     (ripper-tags . "gem install ripper-tags")
+     (pry . "gem install pry"))
+    :hook (ruby-mode . flycheck-mode)
+    :config
+    (add-hook 'ruby-mode-hook
+              '(lambda ()
+                 (setq evil-shift-width ruby-indent-level)))
+    (keymap-for-mode 'ruby-mode
+                     "T" '(:ignore t :which-key "toggle")
+                     "T'" 'ruby-toggle-string-quotes
+                     "T{" 'ruby-toggle-block)
+    :custom
+    (ruby-insert-encoding-magic-comment nil)
+    (ruby-align-to-stmt-keywords
+     '(if while unless until begin case for def)))
 
-     (use-package bundler
-       :hook (ruby-mode . bundler-mode)
-       :config
-       (keymap-for-mode 'ruby-mode
-                        "b" '(:ignore t :which-key "bundle")
-                        "bc" 'bundle-check
-                        "bi" 'bundle-install
-                        "bs" 'bundle-console
-                        "bu" 'bundle-update
-                        "bx" 'bundle-exec
-                        "bo" 'bundle-open))
+  (use-package bundler
+    :hook (ruby-mode . bundler-mode)
+    :config
+    (keymap-for-mode 'ruby-mode
+                     "b" '(:ignore t :which-key "bundle")
+                     "bc" 'bundle-check
+                     "bi" 'bundle-install
+                     "bs" 'bundle-console
+                     "bu" 'bundle-update
+                     "bx" 'bundle-exec
+                     "bo" 'bundle-open))
 
-     (use-package inf-ruby
-       :custom
-       (inf-ruby-console-environment "development")
-       :hook
-       (after-init . inf-ruby-switch-setup)
-       :config
-       (keymap-for-mode 'ruby-mode
-                        "s" '(:ignore t :which-key "repl")
-                        "sb" 'ruby-send-buffer
-                        "sB" 'ruby-send-buffer-and-go
-                        "sf" 'ruby-send-definition
-                        "sF" 'ruby-send-definition-and-go
-                        "sl" 'ruby-send-line
-                        "sL" 'ruby-send-line-and-go
-                        "sr" 'ruby-send-region
-                        "sR" 'ruby-send-region-and-go
-                        "ss" 'ruby-switch-to-inf))
+  (use-package inf-ruby
+    :custom
+    (inf-ruby-console-environment "development")
+    :hook
+    (after-init . inf-ruby-switch-setup)
+    :config
+    (keymap-for-mode 'ruby-mode
+                     "s" '(:ignore t :which-key "repl")
+                     "sb" 'ruby-send-buffer
+                     "sB" 'ruby-send-buffer-and-go
+                     "sf" 'ruby-send-definition
+                     "sF" 'ruby-send-definition-and-go
+                     "sl" 'ruby-send-line
+                     "sL" 'ruby-send-line-and-go
+                     "sr" 'ruby-send-region
+                     "sR" 'ruby-send-region-and-go
+                     "ss" 'ruby-switch-to-inf))
 
-     (use-package company-inf-ruby
-       :after inf-ruby
-       :config
-       (add-to-list 'company-backends 'company-inf-ruby))
+  (use-package company-inf-ruby
+    :after inf-ruby
+    :config
+    (add-to-list 'company-backends 'company-inf-ruby))
 
-     ;; Not available yet on MELPA
-     ;; (use-package lsp-ruby
-     ;;   :requires lsp-mode
-     ;;   :hook (ruby-mode . lsp-ruby-enable))
+  ;; Not available yet on MELPA
+  ;; (use-package lsp-ruby
+  ;;   :requires lsp-mode
+  ;;   :hook (ruby-mode . lsp-ruby-enable))
 
-     ;; (use-package robe
-     ;;   :disabled
-     ;;   :hook (ruby-mode . robe-mode)
-     ;;   :config (add-to-list 'company-backends 'company-robe))
+  ;; (use-package robe
+  ;;   :disabled
+  ;;   :hook (ruby-mode . robe-mode)
+  ;;   :config (add-to-list 'company-backends 'company-robe))
 
-     (use-package rspec-mode
-       :hook (ruby-mode . rspec-mode)
-       :custom
-       (compilation-scroll-output 'first-error)
-       (rspec-autosave-buffer t)
-       :config
-       (add-hook 'rspec-compilation-mode-hook 'inf-ruby-auto-enter nil t)
-       (with-eval-after-load 'smartparens
-         (sp-with-modes 'ruby-mode
-           (sp-local-pair
-            "{" "}"
-            :pre-handlers '(sp-ruby-pre-handler)
-            :post-handlers '(sp-ruby-post-handler
-                             (js|smartparens-pair-newline-and-indent "RET"))
-            :suffix "")))
-       (keymap-for-mode 'ruby-mode
-                        "t" '(:ignore t :which-key "test")
-                        "ta"    'rspec-verify-all
-                        "tb"    'rspec-verify
-                        "tc"    'rspec-verify-continue
-                        "td"    'ruby/rspec-verify-directory
-                        "te"    'rspec-toggle-example-pendingness
-                        "tf"    'rspec-verify-method
-                        "tl"    'rspec-run-last-failed
-                        "tm"    'rspec-verify-matching
-                        "tr"    'rspec-rerun
-                        "tt"    'rspec-verify-single
-                        "t~"    'rspec-toggle-spec-and-target-find-example
-                        "t TAB" 'rspec-toggle-spec-and-target))
+  (use-package rspec-mode
+    :hook (ruby-mode . rspec-mode)
+    :custom
+    (compilation-scroll-output 'first-error)
+    (rspec-autosave-buffer t)
+    :config
+    (add-hook 'rspec-compilation-mode-hook 'inf-ruby-auto-enter nil t)
+    (with-eval-after-load 'smartparens
+      (sp-with-modes 'ruby-mode
+        (sp-local-pair
+         "{" "}"
+         :pre-handlers '(sp-ruby-pre-handler)
+         :post-handlers '(sp-ruby-post-handler
+                          (js|smartparens-pair-newline-and-indent "RET"))
+         :suffix "")))
+    (keymap-for-mode 'ruby-mode
+                     "t" '(:ignore t :which-key "test")
+                     "ta"    'rspec-verify-all
+                     "tb"    'rspec-verify
+                     "tc"    'rspec-verify-continue
+                     "td"    'ruby/rspec-verify-directory
+                     "te"    'rspec-toggle-example-pendingness
+                     "tf"    'rspec-verify-method
+                     "tl"    'rspec-run-last-failed
+                     "tm"    'rspec-verify-matching
+                     "tr"    'rspec-rerun
+                     "tt"    'rspec-verify-single
+                     "t~"    'rspec-toggle-spec-and-target-find-example
+                     "t TAB" 'rspec-toggle-spec-and-target))
 
-     (use-package rubocop
-       :ensure-system-package
-       (rubocop . "gem install rubocop")
-       :hook (ruby-mode . rubocop-mode)
-       :config
-       (keymap-for-mode 'ruby-mode
-                        "rr" '(:ignore t :which-key "Rubocop")
-                        "rrd" 'rubocop-check-directory
-                        "rrD" 'rubocop-autocorrect-directory
-                        "rrf" 'rubocop-check-current-file
-                        "rrF" 'rubocop-autocorrect-current-file
-                        "rrp" 'rubocop-check-project
-                        "rrP" 'rubocop-autocorrect-project))
+  (use-package rubocop
+    :ensure-system-package
+    (rubocop . "gem install rubocop")
+    :hook (ruby-mode . rubocop-mode)
+    :config
+    (keymap-for-mode 'ruby-mode
+                     "rr" '(:ignore t :which-key "Rubocop")
+                     "rrd" 'rubocop-check-directory
+                     "rrD" 'rubocop-autocorrect-directory
+                     "rrf" 'rubocop-check-current-file
+                     "rrF" 'rubocop-autocorrect-current-file
+                     "rrp" 'rubocop-check-project
+                     "rrP" 'rubocop-autocorrect-project))
 
-     (use-package rbenv
-       :hook (ruby-mode . global-rbenv-mode))
+  (use-package rbenv
+    :hook (ruby-mode . global-rbenv-mode))
 
-     (use-package yard-mode
-       :hook (ruby-mode . yard-mode))
+  (use-package yard-mode
+    :hook (ruby-mode . yard-mode))
 
-     (use-package ruby-hash-syntax
-       :requires ruby-mode
-       :config
-       (keymap-for-mode 'ruby-mode
-                        "fh" 'ruby-hash-syntax-toggle))
+  (use-package ruby-hash-syntax
+    :requires ruby-mode
+    :config
+    (keymap-for-mode 'ruby-mode
+                     "fh" 'ruby-hash-syntax-toggle))
 
-     (use-package projectile-rails
-       :requires projectile
-       :hook (projectile-mode . projectile-rails-on))
+  (use-package projectile-rails
+    :requires projectile
+    :hook (projectile-mode . projectile-rails-on))
    #+END_SRC
 
 **** SQL
@@ -1603,62 +1606,62 @@ Dyanmically load ENV variables from .envrc, if present.
 
 **** Web
 
-   #+BEGIN_SRC emacs-lisp
-     (use-package web-mode
-       :mode
-       (("\\.html\\'"       . web-mode)
-        ("\\.erb\\'"        . web-mode)
-        ("\\.eex\\'"        . web-mode)
-        ("\\.php\\'"        . web-mode)
-        ("\\.hbs\\'"        . web-mode)
-        ("\\.handlebars\\'" . web-mode)
-        ("\\.mustache\\'"   . web-mode)
-        ("\\.inky-erb\\'"   . web-mode)
-        ("\\.inky\\'"       . web-mode)
-        ("\\.hbs\\'"        . web-mode))
-       ;; :bind
-       ;; (:map web-mode-map
-       ;;       ("," . self-with-space)
-       ;;       ("<C-return>" . html-newline-dwim))
-       :config
-       (add-hook 'web-mode-hook #'turn-off-smartparens-mode)
-       :custom
-       (web-mode-markup-indent-offset 2)
-       (web-mode-css-indent-offset 2)
-       (web-mode-code-indent-offset 2)
-       (web-mode-enable-auto-quoting nil)
-       (web-mode-enable-current-element-highlight t))
+#+BEGIN_SRC emacs-lisp
+  (use-package web-mode
+    :mode
+    (("\\.html\\'"       . web-mode)
+     ("\\.erb\\'"        . web-mode)
+     ("\\.eex\\'"        . web-mode)
+     ("\\.php\\'"        . web-mode)
+     ("\\.hbs\\'"        . web-mode)
+     ("\\.handlebars\\'" . web-mode)
+     ("\\.mustache\\'"   . web-mode)
+     ("\\.inky-erb\\'"   . web-mode)
+     ("\\.inky\\'"       . web-mode)
+     ("\\.hbs\\'"        . web-mode))
+    ;; :bind
+    ;; (:map web-mode-map
+    ;;       ("," . self-with-space)
+    ;;       ("<C-return>" . html-newline-dwim))
+    :config
+    (add-hook 'web-mode-hook #'turn-off-smartparens-mode)
+    :custom
+    (web-mode-markup-indent-offset 2)
+    (web-mode-css-indent-offset 2)
+    (web-mode-code-indent-offset 2)
+    (web-mode-enable-auto-quoting nil)
+    (web-mode-enable-current-element-highlight t))
 
-     (use-package company-web
-       :hook web-mode
-       :config
-       (add-to-list 'company-backends 'company-web-html))
+  (use-package company-web
+    :hook web-mode
+    :config
+    (add-to-list 'company-backends 'company-web-html))
 
-     (use-package css-mode
-       :mode "\\.css\\.erb\\'"
-       ;; :bind
-       ;; (:map css-mode-map
-       ;;       ("," . self-with-space)
-       ;;       ("{" . open-brackets-newline-and-indent))
-       :custom
-       (css-indent-offset 2)
-       :config
-       (add-to-list 'company-backends 'company-css))
+  (use-package css-mode
+    :mode "\\.css\\.erb\\'"
+    ;; :bind
+    ;; (:map css-mode-map
+    ;;       ("," . self-with-space)
+    ;;       ("{" . open-brackets-newline-and-indent))
+    :custom
+    (css-indent-offset 2)
+    :config
+    (add-to-list 'company-backends 'company-css))
 
-     (use-package scss-mode
-       :mode "\\.scss$")
+  (use-package scss-mode
+    :mode "\\.scss$")
 
-     (use-package counsel-css
-       :hook (css-mode . counsel-css-imenu-setup))
+  (use-package counsel-css
+    :hook (css-mode . counsel-css-imenu-setup))
 
-     (use-package web-beautify
-       :hook web-mode)
+  (use-package web-beautify
+    :hook web-mode)
 
-     (with-eval-after-load 'smartparens
-       (sp-with-modes '(css-mode scss-mode less-css-mode stylus-mode)
-         (sp-local-pair "/*" "*/"
-                        :post-handlers '(("[d-3]||\n[i]" "RET") ("| " "SPC")))))
-   #+END_SRC
+  (with-eval-after-load 'smartparens
+    (sp-with-modes '(css-mode scss-mode less-css-mode stylus-mode)
+      (sp-local-pair "/*" "*/"
+                     :post-handlers '(("[d-3]||\n[i]" "RET") ("| " "SPC")))))
+#+END_SRC
 ** Search
 *** Swiper
 
@@ -1766,96 +1769,99 @@ Dyanmically load ENV variables from .envrc, if present.
 
 *** Neotree
 
-  Directory tree
+Directory tree
 
-  #+BEGIN_SRC emacs-lisp
-    ;;; File Tree
-    (use-package neotree
-      :custom
-      (neo-create-file-auto-open t)
-      (neo-modern-sidebar t)
-      (neo-point-auto-indent nil)
-      (neo-theme (if (display-graphic-p) 'icons 'arrow))
-      (neo-window-fixed-size nil)
-      (neo-window-width 28)
-      (neo-show-hidden-files t)
-      (neo-keymap-style 'concise)
-      ;; (neo-hidden-regexp-list
-      ;;  '(;; vcs folders
-      ;;    "^\\.\\(?:git\\|hg\\|svn\\)$"
-      ;;    ;; compiled files
-      ;;    "\\.\\(?:pyc\\|o\\|elc\\|lock\\|css.map\\|class\\)$"
-      ;;    ;; generated files, caches or local pkgs
-      ;;    "^\\(?:node_modules\\|vendor\\|.\\(project\\|cask\\|yardoc\\|sass-cache\\)\\)$"
-      ;;    ;; org-mode folders
-      ;;    "^\\.\\(?:sync\\|export\\|attach\\)$"
-      ;;    ;; temp files
-      ;;    "~$"
-      ;;    "^#.*#$"))
-      :config
-      (global-keymap
-       "ft" '(neotree-toggle :which-key "toggle file tree")
-       "pt" '(neotree-projectile-action :which-key "project tree"))
-      :general
-      (general-nmap neotree-mode-map
-        "RET" 'neotree-enter
-        "TAB" 'neotree-stretch-toggle
-        "q" 'neotree-hide
-        "|" 'neotree-enter-vertical-split
-        "-" 'neotree-enter-horizontal-split
-        "'" 'neotree-quick-look
-        "c" 'neotree-create-node
-        "C" 'neotree-copy-node
-        "d" 'neotree-delete-node
-        "gr" 'neotree-refresh
-        "H" 'neotree-select-previous-sibling-node
-        "j" 'neotree-next-line
-        "J" 'neotree-select-down-node
-        "k" 'neotree-previous-line
-        "K" 'neotree-select-up-node
-        "L" 'neotree-select-next-sibling-node
-        "q" 'neotree-hide
-        "o" 'neotree-enter
-        "r" 'neotree-rename-node
-        "R" 'neotree-change-root
-        "I" 'neotree-hidden-file-toggle))
+#+BEGIN_SRC emacs-lisp
+  ;;; File Tree
+  (use-package neotree
+    :custom
+    (neo-create-file-auto-open t)
+    (neo-modern-sidebar t)
+    (neo-point-auto-indent nil)
+    (neo-theme (if (display-graphic-p) 'icons 'arrow))
+    (neo-window-fixed-size nil)
+    (neo-window-width 28)
+    (neo-show-hidden-files t)
+    (neo-keymap-style 'concise)
+    ;; (neo-hidden-regexp-list
+    ;;  '(;; vcs folders
+    ;;    "^\\.\\(?:git\\|hg\\|svn\\)$"
+    ;;    ;; compiled files
+    ;;    "\\.\\(?:pyc\\|o\\|elc\\|lock\\|css.map\\|class\\)$"
+    ;;    ;; generated files, caches or local pkgs
+    ;;    "^\\(?:node_modules\\|vendor\\|.\\(project\\|cask\\|yardoc\\|sass-cache\\)\\)$"
+    ;;    ;; org-mode folders
+    ;;    "^\\.\\(?:sync\\|export\\|attach\\)$"
+    ;;    ;; temp files
+    ;;    "~$"
+    ;;    "^#.*#$"))
+    :config
+    (global-keymap
+     "ft" '(neotree-toggle :which-key "toggle file tree")
+     "pt" '(neotree-projectile-action :which-key "project tree"))
+    :general
+    (general-nmap neotree-mode-map
+      "RET" 'neotree-enter
+      "TAB" 'neotree-stretch-toggle
+      "q" 'neotree-hide
+      "|" 'neotree-enter-vertical-split
+      "-" 'neotree-enter-horizontal-split
+      "'" 'neotree-quick-look
+      "c" 'neotree-create-node
+      "C" 'neotree-copy-node
+      "d" 'neotree-delete-node
+      "gr" 'neotree-refresh
+      "H" 'neotree-select-previous-sibling-node
+      "j" 'neotree-next-line
+      "J" 'neotree-select-down-node
+      "k" 'neotree-previous-line
+      "K" 'neotree-select-up-node
+      "L" 'neotree-select-next-sibling-node
+      "q" 'neotree-hide
+      "o" 'neotree-enter
+      "r" 'neotree-rename-node
+      "R" 'neotree-change-root
+      "I" 'neotree-hidden-file-toggle))
 
   #+END_SRC
 ** Tools
 *** Org Mode
 
-  #+BEGIN_SRC emacs-lisp
-    (use-package org
-      :pin melpa
-      :ensure nil
-      :defer 5
-      :config
-      (setq org-src-tab-acts-natively t)
-      :custom
-      (org-todo-keywords '((sequence "☛ TODO(t)" "|" "✔ DONE(d)")
-                           (sequence "⚑ WAITING(w)" "|")
-                           (sequence "|" "✘ CANCELED(c)"))))
-    (use-package toc-org
-      :custom
-      (toc-org-max-depth 10)
-      :hook (org-mode . toc-org-enable))
-    ;; (use-package org-bullets
-    ;;   :hook
-    ;;   (org-mode . org-bullets-mode))
+#+BEGIN_SRC emacs-lisp
+  (use-package org
+    :pin org
+    :ensure t
+    :mode ("\\.org\'" . org-mode)
+    :custom
+    (org-directory "~/org")
+    :config
+    (progn
+      (setq org-src-tab-acts-natively t
+            org-src-fontify-natively t)
+      (setq org-todo-keywords '((sequence "☛ TODO(t)" "|" "✔ DONE(d)")
+                                (sequence "⚑ WAITING(w)" "|")
+                                (sequence "|" "✘ CANCELED(c)")))))
+  (use-package toc-org
+    :custom
+    (toc-org-max-depth 10)
+    :hook (org-mode . toc-org-enable))
+  ;; (use-package org-bullets
+  ;;   :hook
+  ;;   (org-mode . org-bullets-mode))
 
-    (use-package org-projectile
-      ;; :defer 5
-      ;; :after org
-      :hook (projectile-before-switch-project-hook . org-projectile-per-project)
-      :config
-      (progn
-        (setq org-projectile-per-project-filepath "TODO.org")
-        (setq org-agenda-files (append org-agenda-files (org-projectile-todo-files))))
-      :general
-      (space-leader-def 'normal
-        "o c" 'org-capture
-        "p c" 'org-projectile-projectile-project-todo-completing-read))
-  #+END_SRC
+  (use-package org-projectile
+    ;; :defer 5
+    ;; :after org
+    :hook (projectile-before-switch-project-hook . org-projectile-per-project)
+    :config
+    (progn
+      (setq org-projectile-per-project-filepath "TODO.org")
+      (setq org-agenda-files (append org-agenda-files (org-projectile-todo-files))))
+    :general
+    (space-leader-def 'normal
+      "o c" 'org-capture
+      "p c" 'org-projectile-projectile-project-todo-completing-read))
+#+END_SRC
 
 *** PDF
 
@@ -1999,29 +2005,38 @@ Dyanmically load ENV variables from .envrc, if present.
 
   #+END_SRC
 
-** Personalizations (needs to be broken down)
-   #+BEGIN_SRC emacs-lisp
-     ;; Adjust the built-in Emacs packages
-     (defalias 'yes-or-no-p 'y-or-n-p)
+** Preferences
+*** Indentation
 
-     (setq byte-compile-warnings '(not free-vars unresolved noruntime lexical make-local)
-           idle-update-delay 2 ; update ui less often (0.5 default)
-           create-lockfiles nil
-           cua-mode t
-           desktop-save-mode nil
-           indent-tabs-mode nil
-           initial-scratch-message nil
-           load-prefer-newer t
-           sentence-end-double-space nil
-           ;; keep the point out of the minibuffer
-           minibuffer-prompt-properties '(read-only t point-entered minibuffer-avoid-prompt face minibuffer-prompt)
-           ;; security
-           gnutls-verify-error (not (getenv "INSECURE")) ; you shouldn't use this
-           tls-checktrust gnutls-verify-error
-           tls-program (list "gnutls-cli --x509cafile %t -p %p %h"
-                             ;; compatibility fallbacks
-                             "gnutls-cli -p %p %h"
-                             "openssl s_client -connect %h:%p -no_ssl2 -no_ssl3 -ign_eof"))
+#+BEGIN_SRC emacs-lisp
+(setq-default tab-width 4
+              indent-tabs-mode nil)
+#+END_SRC
+
+*** Other
+
+#+BEGIN_SRC emacs-lisp
+       ;; Adjust the built-in Emacs packages
+       (defalias 'yes-or-no-p 'y-or-n-p)
+
+       (setq byte-compile-warnings '(not free-vars unresolved noruntime lexical make-local)
+	     idle-update-delay 2 ; update ui less often (0.5 default)
+	     create-lockfiles nil
+	     cua-mode t
+	     desktop-save-mode nil
+	     indent-tabs-mode nil
+	     initial-scratch-message nil
+	     load-prefer-newer t
+	     sentence-end-double-space nil
+	     ;; keep the point out of the minibuffer
+	     minibuffer-prompt-properties '(read-only t point-entered minibuffer-avoid-prompt face minibuffer-prompt)
+	     ;; security
+	     gnutls-verify-error (not (getenv "INSECURE")) ; you shouldn't use this
+	     tls-checktrust gnutls-verify-error
+	     tls-program (list "gnutls-cli --x509cafile %t -p %p %h"
+			       ;; compatibility fallbacks
+			       "gnutls-cli -p %p %h"
+			       "openssl s_client -connect %h:%p -no_ssl2 -no_ssl3 -ign_eof"))
 
    #+END_SRC
 
