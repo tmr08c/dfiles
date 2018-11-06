@@ -11,6 +11,8 @@ fi
 source "$ZPLG_HOME/bin/zplugin.zsh"
 autoload -Uz _zplugin
 
+zplugin snippet OMZ::plugins/ssh-agent/ssh-agent.plugin.zsh
+
 zplugin light zsh-users/zsh-completions
 zplugin light djui/alias-tips
 zplugin light greymd/docker-zsh-completion
