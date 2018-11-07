@@ -41,6 +41,15 @@ else
     
     echo "Install Printer dependencies"
     sudo dnf install -y -q libnsl
+  elif [ -f /etc/SUSE-brand ]; then
+    echo "SUSE detected"
+    sudo zypper install direnv zsh
+
+    echo "Python dependencies"
+    sudo zypper install gcc automake openssl-devel ncurses-devel readline-devel zlib-devel tk-devel libffi-devel
+       
+    echo "Install Ruby dependencies"
+    sudo zypper install gcc automake gdbm-devel libffi-devel libyaml-devel libopenssl-devel ncurses-devel readline-devel zlib-devel postgresql postgresql-devel
   else
     distro=$(lsb_release -i | cut -f2-)
 

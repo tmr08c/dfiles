@@ -12,6 +12,7 @@ source "$ZPLG_HOME/bin/zplugin.zsh"
 autoload -Uz _zplugin
 
 zplugin snippet OMZ::plugins/ssh-agent/ssh-agent.plugin.zsh
+zplugin snippet OMZ::plugins/asdf/asdf.plugin.zsh
 
 zplugin light zsh-users/zsh-completions
 zplugin light djui/alias-tips
