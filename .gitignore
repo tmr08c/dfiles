@@ -12,3 +12,5 @@ tmp/**/*
 zeus.json
 .idea/**/*
 *.private
+.tool-versions
+
