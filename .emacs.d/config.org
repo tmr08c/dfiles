@@ -1,5 +1,6 @@
 #+TITLE: Emacs Literate Configuration
 #+AUTHOR: Justin Smestad
+#+PROPERTY: header-args :tangle yes
 
 * Configuration
 :PROPERTIES:
@@ -46,9 +47,6 @@
   - [[#movement][Movement]]
     - [[#evil][Evil]]
     - [[#neotree][Neotree]]
-  - [[#tools][Tools]]
-    - [[#org-mode][Org Mode]]
-    - [[#pdf][PDF]]
   - [[#visual][Visual]]
     - [[#ui-theme-etc][UI, Theme, etc.]]
     - [[#highlight-todo--fixme-comments][Highlight TODO & FIXME comments]]
@@ -59,6 +57,9 @@
     - [[#linux][Linux]]
     - [[#macos][macOS]]
   - [[#built-in-modes-break-down][Built-in modes (Break down)]]
+  - [[#tools][Tools]]
+    - [[#org-mode][Org Mode]]
+    - [[#pdf][PDF]]
 
 ** Identity
 
@@ -101,61 +102,57 @@
 
 *** Package Updater
   Auto-update packages.
-  #+BEGIN_SRC emacs-lisp
-    (use-package auto-package-update
-      :commands auto-package-update-now
-      :requires no-littering
-      :custom
-      (auto-package-update-interval 7)
-      (auto-package-update-delete-old-versions t)
-      (auto-package-update-hide-results t)
-      (auto-package-update-prompt-before-update t)
-      (apu--last-update-day-filename
-       (no-littering-expand-var-file-name "auto-update-package-last-update-day")))
-  #+END_SRC
+#+BEGIN_SRC emacs-lisp
+  (use-package auto-package-update
+    :commands auto-package-update-now
+    :requires no-littering
+    :custom
+    (auto-package-update-interval 7)
+    (auto-package-update-delete-old-versions t)
+    (auto-package-update-hide-results t)
+    (auto-package-update-prompt-before-update t)
+    (apu--last-update-day-filename
+     (no-littering-expand-var-file-name "auto-update-package-last-update-day")))
+#+END_SRC
 
 *** Character Encoding
   Everything in UTF-8... and I mean everything.
 
-  #+BEGIN_SRC emacs-lisp
-    (when (fboundp 'set-charset-priority)
-      (set-charset-priority 'unicode))     ; pretty
+#+BEGIN_SRC emacs-lisp
+  (when (fboundp 'set-charset-priority)
+    (set-charset-priority 'unicode))     ; pretty
 
-    (prefer-coding-system        'utf-8)   ; pretty
-    (set-terminal-coding-system  'utf-8)   ; pretty
-    (set-keyboard-coding-system  'utf-8)   ; pretty
-    (set-selection-coding-system 'utf-8)   ; perdy
+  (prefer-coding-system        'utf-8)   ; pretty
+  (set-terminal-coding-system  'utf-8)   ; pretty
+  (set-keyboard-coding-system  'utf-8)   ; pretty
+  (set-selection-coding-system 'utf-8)   ; perdy
 
-    (setq locale-coding-system 'utf-8)     ; please
+  (setq locale-coding-system 'utf-8)     ; please
   #+END_SRC
 
 *** Debugging Tool
   If my Emacs configuration is running a little slow, enable the benchmark-init package to see what is taking so long.
-  #+BEGIN_SRC emacs-lisp
-    ;; Used to benchmark init timings
-    (use-package benchmark-init
-      :disabled
-      :config
-      ;; To disable collection of benchmark data after init is done.
-      (add-hook 'after-init-hook 'benchmark-init/deactivate))
-  #+END_SRC
+#+BEGIN_SRC emacs-lisp
+  (use-package benchmark-init
+    :disabled
+    :config
+    (add-hook 'after-init-hook 'benchmark-init/deactivate))
+#+END_SRC
 
 *** Run-time environment
   Ensure the required system packages are installed, and copy over $PATH and other important environment variables.
 
-  #+BEGIN_SRC emacs-lisp
-    (use-package exec-path-from-shell
-      :if (memq window-system '(mac ns x))
-      ;; :custom
-      ;; (exec-path-from-shell-variables '("SHELL" "MANPATH" "PATH" "GOPATH" "GOROOT" "PGHOST" "SSH_AUTH_SOCK" "LC_CTYPE" "LC_ALL" "LANG"))
-      ;; (exec-path-from-shell-check-startup-files nil)
-      :config
-      (setq exec-path-from-shell-arguments '("-l"))
-      (exec-path-from-shell-initialize))
-    (use-package use-package-ensure-system-package
+#+BEGIN_SRC emacs-lisp
+  (use-package exec-path-from-shell
+    :if (memq window-system '(mac ns x))
+    :config
+    (setq exec-path-from-shell-arguments '("-l"))
+    (exec-path-from-shell-initialize))
+
+  (use-package use-package-ensure-system-package
       :functions use-package-ensure-system-package-exists?
       :requires (exec-path-from-shell))
-  #+END_SRC
+#+END_SRC
 
 *** Tame files inside of my ~/.emacs.d directory
   Save data files consistently:
@@ -177,21 +174,20 @@
 ** Keybindings
 *** Keybinding help menu
     
-  #+BEGIN_SRC emacs-lisp
-    (use-package which-key
-      :defer 1
-      :delight
-      :init (which-key-mode)
-      :custom
-      (which-key-sort-order 'which-key-prefix-then-key-order)
-      (which-key-sort-uppercase-first nil)
-      (which-key-add-column-padding 1)
-      (which-key-max-display-columns nil)
-      (which-key-min-display-lines 6)
-      (which-key-side-window-max-width 0.33)
-      ;; (which-key-idle-delay 0.05)
-      (which-key-setup-side-window-right-bottom))
-  #+END_SRC
+#+BEGIN_SRC emacs-lisp
+  (use-package which-key
+    :defer 1
+    :delight
+    :init (which-key-mode)
+    :custom
+    (which-key-sort-order 'which-key-prefix-then-key-order)
+    (which-key-sort-uppercase-first nil)
+    (which-key-add-column-padding 1)
+    (which-key-max-display-columns nil)
+    (which-key-min-display-lines 6)
+    (which-key-side-window-max-width 0.33)
+    (which-key-setup-side-window-right-bottom))
+#+END_SRC
 
 *** general.el
   #+BEGIN_SRC emacs-lisp
@@ -317,34 +313,34 @@
 
 *** Global keybinding configuration macro
 
- #+BEGIN_SRC emacs-lisp
-   (defmacro global-keymap (&rest bindings)
-     "Add global BINDINGS as key bindings under `space-leader-def`.
-   All of the arguments are treated exactly like they are in
-   'general' package."
-     `(space-leader-def
-        :states '(normal emacs)
-        ,@bindings))
- #+END_SRC
+#+BEGIN_SRC emacs-lisp
+  (defmacro global-keymap (&rest bindings)
+    "Add global BINDINGS as key bindings under `space-leader-def`.
+  All of the arguments are treated exactly like they are in
+  'general' package."
+    `(space-leader-def
+       :states '(normal emacs)
+       ,@bindings))
+#+END_SRC
 
 *** Major Mode keybinding configuration macro
 
- #+BEGIN_SRC emacs-lisp
-   (defmacro keymap-for-mode (mode key def &rest bindings)
-     "Add KEY and DEF as key bindings under `space-leader-def` for MODE.
-   mode should be a quoted symbol corresponding to a valid major mode.
-   the rest of the arguments are treated exactly like they are in
-   'general' package."
-     (let (mode-bindings)
-       (while key
-         (push def mode-bindings)
-         (push (concat "m" key) mode-bindings)
-         (setq key (pop bindings) def (pop bindings)))
-       `(space-leader-def
-          :states 'normal
-          :keymaps ',(intern (format "%s-map" (eval mode)))
-          ,@mode-bindings)))
- #+END_SRC
+#+BEGIN_SRC emacs-lisp
+  (defmacro keymap-for-mode (mode key def &rest bindings)
+    "Add KEY and DEF as key bindings under `space-leader-def` for MODE.
+  mode should be a quoted symbol corresponding to a valid major mode.
+  the rest of the arguments are treated exactly like they are in
+  'general' package."
+    (let (mode-bindings)
+      (while key
+        (push def mode-bindings)
+        (push (concat "m" key) mode-bindings)
+        (setq key (pop bindings) def (pop bindings)))
+      `(space-leader-def
+         :states 'normal
+         :keymaps ',(intern (format "%s-map" (eval mode)))
+         ,@mode-bindings)))
+#+END_SRC
 
 *** Evil keybinding macro for major mode
  #+BEGIN_SRC emacs-lisp
@@ -401,20 +397,20 @@ Read files to set coding style options according to current project
   #+END_SRC
 
 *** Direnv
-Dyanmically load ENV variables from .envrc, if present.
-  #+BEGIN_SRC emacs-lisp
-    (use-package direnv
-            :defer 2
-            :ensure-system-package direnv)
-  #+END_SRC
+Dynamically load ENV variables from .envrc, if present.
+#+BEGIN_SRC emacs-lisp
+  (use-package direnv
+    :defer 2
+    :ensure-system-package direnv)
+#+END_SRC
 
 ** Auto-Completion
 *** amx
-  A more active fork of smex.
-  #+BEGIN_SRC emacs-lisp
-    (use-package amx
-      :hook (after-init . amx-initialize))
-  #+END_SRC
+A more active fork of smex.
+#+BEGIN_SRC emacs-lisp
+  (use-package amx
+    :hook (after-init . amx-initialize))
+#+END_SRC
 
 *** Ivy
   Buffer completion. Like Helm, but lighter and easier to understand.
@@ -1824,83 +1820,6 @@ Directory tree
       "I" 'neotree-hidden-file-toggle))
 
   #+END_SRC
-** Tools
-*** Org Mode
-
-#+BEGIN_SRC emacs-lisp
-  (use-package org
-    :pin org
-    :ensure t
-    :mode ("\\.org\'" . org-mode)
-    :custom
-    (org-directory "~/org")
-    :config
-    (progn
-      (setq org-src-tab-acts-natively t
-            org-src-fontify-natively t)
-      (setq org-todo-keywords '((sequence "☛ TODO(t)" "|" "✔ DONE(d)")
-                                (sequence "⚑ WAITING(w)" "|")
-                                (sequence "|" "✘ CANCELED(c)")))))
-  (use-package toc-org
-    :custom
-    (toc-org-max-depth 10)
-    :hook (org-mode . toc-org-enable))
-  ;; (use-package org-bullets
-  ;;   :hook
-  ;;   (org-mode . org-bullets-mode))
-
-  (use-package org-projectile
-    ;; :defer 5
-    ;; :after org
-    :hook (projectile-before-switch-project-hook . org-projectile-per-project)
-    :config
-    (progn
-      (setq org-projectile-per-project-filepath "TODO.org")
-      (setq org-agenda-files (append org-agenda-files (org-projectile-todo-files))))
-    :general
-    (space-leader-def 'normal
-      "o c" 'org-capture
-      "p c" 'org-projectile-projectile-project-todo-completing-read))
-#+END_SRC
-
-*** PDF
-
-  #+BEGIN_SRC emacs-lisp
-  (use-package pdf-tools
-    :defer t
-    :mode ("\\.pdf\\'" . pdf-view-mode)
-    :config
-    (pdf-tools-install)
-    (setq-default pdf-view-display-size 'fit-page)
-    (keymap-for-mode 'pdf-view
-                     ;; Slicing image
-                     "sm" 'pdf-view-set-slice-using-mouse
-                     "sb" 'pdf-view-set-slice-from-bounding-box
-                     "sr" 'pdf-view-reset-slice
-                     ;; Annotations
-                     "a" '(:ignore t :which-key "annotations")
-                     "aD" 'pdf-annot-delete
-                     "at"	'pdf-annot-attachment-dired
-                     "ah"	'pdf-annot-add-highlight-markup-annotation
-                     "al"	'pdf-annot-list-annotations
-                     "am"	'pdf-annot-add-markup-annotation
-                     "ao"	'pdf-annot-add-strikeout-markup-annotation
-                     "as"	'pdf-annot-add-squiggly-markup-annotation
-                     "at"	'pdf-annot-add-text-annotation
-                     "au"	'pdf-annot-add-underline-markup-annotation
-                     ;; Fit image to window
-                     "f" '(:ignore t :which-key "fit")
-                     "fw" 'pdf-view-fit-width-to-window
-                     "fh" 'pdf-view-fit-height-to-window
-                     "fp" 'pdf-view-fit-page-to-window
-                     ;; Other
-                     "s" '(:ignore t :which-key "slice/search")
-                     "ss" 'pdf-occur
-                     "p" 'pdf-misc-print-document
-                     "O" 'pdf-outline
-                     "n" 'pdf-view-midnight-minor-mode))
-  #+END_SRC
-
 ** Visual
 *** UI, Theme, etc.
 
@@ -1916,7 +1835,7 @@ Directory tree
           frame-resize-pixelwise t)
 
     ;; This is MUCH faster than using set-face-attribute
-    (add-to-list 'default-frame-alist '(font . "Fira Mono:13"))
+    (add-to-list 'default-frame-alist '(font . "FiraCode:13"))
 
     ;; Appearance
     ;; Theme Emacs for dark color scheme
@@ -2208,8 +2127,267 @@ Directory tree
        "hhk" 'helpful-key
        "hhm" 'helpful-macro
        "hhv" 'helpful-variable))
+#+END_SRC
 
 
- #+END_SRC
 
 
+** Tools
+
+*** Org Mode
+
+#+BEGIN_SRC emacs-lisp
+  (use-package org
+    :pin org
+    :ensure t
+    :mode "\\.org\'"
+    :config
+    (progn
+      (js/org-keybindings)
+      (setq org-src-tab-acts-natively t
+            org-src-fontify-natively t
+            org-directory "~/org"
+            org-default-notes-file (expand-file-name "notes.org" org-directory))
+      (setq org-todo-keywords '((sequence "☛ TODO(t)" "|" "✔ DONE(d)")
+                                (sequence "⚑ WAITING(w)" "|")
+                                (sequence "|" "✘ CANCELED(c)")))))
+
+  (defun js/org-keybindings ()
+    "Define all keybindings we use in org mode."
+    (keymap-for-mode 'org-mode
+                     "'" 'org-edit-special
+                     "c" 'org-capture
+
+                     ;; Clock
+                     ;; These keybindings should match those under the "aoC" prefix (below)
+                     "C" '(:ignore t :which-key "clocks")
+                     "Cc" 'org-clock-cancel
+                     "Cd" 'org-clock-display
+                     "Ce" 'org-evaluate-time-range
+                     "Cg" 'org-clock-goto
+                     "Ci" 'org-clock-in
+                     "CI" 'org-clock-in-last
+                     "Cj" 'org-clock-jump-to-current-clock
+                     "Co" 'org-clock-out
+                     "CR" 'org-clock-report
+                     "Cr" 'org-resolve-clocks
+
+                     "d" '(:ignore t :which-key "dates")
+                     "dd" 'org-deadline
+                     "ds" 'org-schedule
+                     "dt" 'org-time-stamp
+                     "dT" 'org-time-stamp-inactive
+                     "ee" 'org-export-dispatch
+                     "fi" 'org-feed-goto-inbox
+                     "fu" 'org-feed-update-all
+
+                     "a" 'org-agenda
+
+                     "p" 'org-priority
+
+                     "T" '(:ignore t :which-key "toggles")
+                     "Tc" 'org-toggle-checkbox
+                     "Te" 'org-toggle-pretty-entities
+                     "Ti" 'org-toggle-inline-images
+                     "Tl" 'org-toggle-link-display
+                     "Tt" 'org-show-todo-tree
+                     "TT" 'org-todo
+                     "TV" 'space-doc-mode
+                     "Tx" 'org-toggle-latex-fragment
+
+                     ;; More cycling options (timestamps, headlines, items, properties)
+                     "L" 'org-shiftright
+                     "H" 'org-shiftleft
+                     "J" 'org-shiftdown
+                     "K" 'org-shiftup
+
+                     ;; Change between TODO sets
+                     "C-S-l" 'org-shiftcontrolright
+                     "C-S-h" 'org-shiftcontrolleft
+                     "C-S-j" 'org-shiftcontroldown
+                     "C-S-k" 'org-shiftcontrolup
+
+                     ;; Subtree editing
+                     "s" '(:ignore t :which-key "trees/subtrees")
+                     "sa" 'org-toggle-archive-tag
+                     "sA" 'org-archive-subtree
+                     "sb" 'org-tree-to-indirect-buffer
+                     "sh" 'org-promote-subtree
+                     "sj" 'org-move-subtree-down
+                     "sk" 'org-move-subtree-up
+                     "sl" 'org-demote-subtree
+                     "sn" 'org-narrow-to-subtree
+                     "sN" 'widen
+                     "sr" 'org-refile
+                     "ss" 'org-sparse-tree
+                     "sS" 'org-sort
+
+                     ;; tables
+                     "t" '(:ignore t :which-key "tables")
+                     "ta" 'org-table-align
+                     "tb" 'org-table-blank-field
+                     "tc" 'org-table-convert
+                     "tdc" 'org-table-delete-column
+                     "tdr" 'org-table-kill-row
+                     "te" 'org-table-eval-formula
+                     "tE" 'org-table-export
+                     "th" 'org-table-previous-field
+                     "tH" 'org-table-move-column-left
+
+                     "ti" '(:ignore t :which-key "insert")
+                     "tic" 'org-table-insert-column
+                     "tih" 'org-table-insert-hline
+                     "tiH" 'org-table-hline-and-move
+                     "tir" 'org-table-insert-row
+
+                     "tI" 'org-table-import
+                     "tj" 'org-table-next-row
+                     "tJ" 'org-table-move-row-down
+                     "tK" 'org-table-move-row-up
+                     "tl" 'org-table-next-field
+                     "tL" 'org-table-move-column-right
+                     "tn" 'org-table-create
+                     "tN" 'org-table-create-with-table.el
+                     "tr" 'org-table-recalculate
+                     "ts" 'org-table-sort-lines
+
+                     "tt" '(:ignore t :which-key "toggle")
+                     "ttf" 'org-table-toggle-formula-debugger
+                     "tto" 'org-table-toggle-coordinate-overlays
+
+                     "tw" 'org-table-wrap-region
+
+                     ;; Source blocks / org-babel
+                     "b" '(:ignore t :which-key "babel")
+                     "bp"     'org-babel-previous-src-block
+                     "bn"     'org-babel-next-src-block
+                     "be"     'org-babel-execute-maybe
+                     "bo"     'org-babel-open-src-block-result
+                     "bv"     'org-babel-expand-src-block
+                     "bu"     'org-babel-goto-src-block-head
+                     "bg"     'org-babel-goto-named-src-block
+                     "br"     'org-babel-goto-named-result
+                     "bb"     'org-babel-execute-buffer
+                     "bs"     'org-babel-execute-subtree
+                     "bd"     'org-babel-demarcate-block
+                     "bt"     'org-babel-tangle
+                     "bf"     'org-babel-tangle-file
+                     "bc"     'org-babel-check-src-block
+                     "bj"     'org-babel-insert-header-arg
+                     "bl"     'org-babel-load-in-session
+                     "bi"     'org-babel-lob-ingest
+                     "bI"     'org-babel-view-src-block-info
+                     "bz"     'org-babel-switch-to-session
+                     "bZ"     'org-babel-switch-to-session-with-code
+                     "ba"     'org-babel-sha1-hash
+                     "bx"     'org-babel-do-key-sequence-in-edit-buffer
+                     "b."     'spacemacs/org-babel-transient-state/body
+                     ;; Multi-purpose keys
+                     "," 'org-ctrl-c-ctrl-c
+                     "*" 'org-ctrl-c-star
+                     "-" 'org-ctrl-c-minus
+                     "#" 'org-update-statistics-cookies
+                     "RET"   'org-ctrl-c-ret
+                     "M-RET" 'org-meta-return
+                     ;; attachments
+                     "A" 'org-attach
+                     ;; insertion
+                     "i" '(:ignore t :which-key "insert")
+                     "id" 'org-insert-drawer
+                     "ie" 'org-set-effort
+                     "if" 'org-footnote-new
+                     "ih" 'org-insert-heading
+                     "iH" 'org-insert-heading-after-current
+                     "iK" 'spacemacs/insert-keybinding-org
+                     "il" 'org-insert-link
+                     "in" 'org-add-note
+                     "ip" 'org-set-property
+                     "is" 'org-insert-subheading
+                     "it" 'org-set-tags
+
+                     "x" '(:ignore t :which-key "text")
+                     ;; region manipulation
+
+                     ;; "xb" (spacemacs|org-emphasize spacemacs/org-bold ?*)
+                     ;; "xc" (spacemacs|org-emphasize spacemacs/org-code ?~)
+                     ;; "xi" (spacemacs|org-emphasize spacemacs/org-italic ?/)
+                     "xo" 'org-open-at-point
+                     ;; "xr" (spacemacs|org-emphasize spacemacs/org-clear ? )
+                     ;; "xs" (spacemacs|org-emphasize spacemacs/org-strike-through ?+)
+                     ;; "xu" (spacemacs|org-emphasize spacemacs/org-underline ?_)
+                     ;; "xv" (spacemacs|org-emphasize spacemacs/org-verbatim ?=) )
+                     ))
+#+END_SRC
+
+Generate Table of Contents generation in org-mode.
+
+#+BEGIN_SRC emacs-lisp
+  (use-package toc-org
+    :custom
+    (toc-org-max-depth 10)
+    :hook (org-mode . toc-org-enable))
+#+END_SRC
+
+Add project support to track TODOs per project.
+
+#+BEGIN_SRC emacs-lisp
+  (use-package org-projectile
+    :hook (projectile-before-switch-project-hook . org-projectile-per-project)
+    :config
+    (progn
+      (setq org-projectile-per-project-filepath "TODO.org"
+            setq org-agenda-files (append org-agenda-files (org-projectile-todo-files)))
+      (global-keymap
+       "pc" 'org-projectile-projectile-project-todo-completing-read)))
+#+END_SRC
+
+Add special keybindings to org mode that work well with evil mode.
+
+#+BEGIN_SRC emacs-lisp
+  (use-package evil-org
+    :hook org-mode
+    :custom
+    (evil-org-use-additional-insert t)
+    (evil-org-key-theme '(textobjects
+                          navigation
+                          additional
+                          todo)))
+#+END_SRC
+
+*** PDF
+
+#+BEGIN_SRC emacs-lisp
+  (use-package pdf-tools
+    :defer t
+    :mode ("\\.pdf\\'" . pdf-view-mode)
+    :config
+    (pdf-tools-install)
+    (setq-default pdf-view-display-size 'fit-page)
+    (keymap-for-mode 'pdf-view
+                     ;; Slicing image
+                     "sm" 'pdf-view-set-slice-using-mouse
+                     "sb" 'pdf-view-set-slice-from-bounding-box
+                     "sr" 'pdf-view-reset-slice
+                     ;; Annotations
+                     "a" '(:ignore t :which-key "annotations")
+                     "aD" 'pdf-annot-delete
+                     "at"	'pdf-annot-attachment-dired
+                     "ah"	'pdf-annot-add-highlight-markup-annotation
+                     "al"	'pdf-annot-list-annotations
+                     "am"	'pdf-annot-add-markup-annotation
+                     "ao"	'pdf-annot-add-strikeout-markup-annotation
+                     "as"	'pdf-annot-add-squiggly-markup-annotation
+                     "at"	'pdf-annot-add-text-annotation
+                     "au"	'pdf-annot-add-underline-markup-annotation
+                     ;; Fit image to window
+                     "f" '(:ignore t :which-key "fit")
+                     "fw" 'pdf-view-fit-width-to-window
+                     "fh" 'pdf-view-fit-height-to-window
+                     "fp" 'pdf-view-fit-page-to-window
+                     ;; Other
+                     "s" '(:ignore t :which-key "slice/search")
+                     "ss" 'pdf-occur
+                     "p" 'pdf-misc-print-document
+                     "O" 'pdf-outline
+                     "n" 'pdf-view-midnight-minor-mode))
+  #+END_SRC
