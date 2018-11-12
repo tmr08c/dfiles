@@ -1878,31 +1878,37 @@ Use `fd` to escape from evil-insert-mode.
     (smartparens-global-mode +1))
 #+END_SRC
 
+**** Rainbow Delimiters
+Highlight matching delimiters with unique colors.
 #+BEGIN_SRC emacs-lisp
-  ;; Rainbow Delimiters
-  ;; Highlight matching delimiters with unique colors.
   (use-package rainbow-delimiters
     :defer t
     :hook (prog-mode . rainbow-delimiters-mode))
+#+END_SRC
 
-
-  ;; Adapt to foreign indentation offsets
+Adapt to foreign indentation offsets
+#+BEGIN_SRC emacs-lisp
   (use-package dtrt-indent
     :defer t
     :delight
     :custom (dtrt-indent-min-quality 60)
     :init (dtrt-indent-global-mode))
+#+END_SRC
 
+#+BEGIN_SRC emacs-lisp
   (use-package aggressive-indent
     :defer t
     :hook ((emacs-lisp-mode . aggressive-indent-mode)
-           ;; (ruby-mode . aggressive-indent-mode)
            (css-mode . aggressive-indent-mode)))
+#+END_SRC
 
+#+BEGIN_SRC emacs-lisp
   (use-package adaptive-wrap
     :defer t
     :config (adaptive-wrap-prefix-mode))
-
+#+END_SRC
+**** Jump to Definition
+#+BEGIN_SRC emacs-lisp
   (use-package dumb-jump
     :commands (dump-jump-go
                dumb-jump-go-other-window
@@ -1911,7 +1917,9 @@ Use `fd` to escape from evil-insert-mode.
                dumb-jump-go-prefer-external-other-window)
     :custom
     (dumb-jump-selector 'ivy))
-
+#+END_SRC
+**** Whitespace Management
+#+BEGIN_SRC emacs-lisp
   (use-package whitespace
     :defer 5
     :custom
@@ -1925,7 +1933,9 @@ Use `fd` to escape from evil-insert-mode.
        (space-mark ?\ [?·] [?.])))
     :config
     (add-hook 'before-save 'delete-trailing-whitespace))
+#+END_SRC
 
+#+BEGIN_SRC emacs-lisp
   (use-package ws-butler
     :delight
     :defer t
@@ -1934,7 +1944,9 @@ Use `fd` to escape from evil-insert-mode.
           (append ws-butler-global-exempt-modes
                   '(special-mode comint-mode term-mode eshell-mode)))
     (ws-butler-global-mode))
+#+END_SRC
 
+#+BEGIN_SRC emacs-lisp
   (use-package autorevert
     :ensure nil
     :defer t
@@ -1942,17 +1954,23 @@ Use `fd` to escape from evil-insert-mode.
     :config
     (setq auto-revert-verbose nil)
     (global-auto-revert-mode +1))
+#+END_SRC
 
+#+BEGIN_SRC emacs-lisp
   (use-package undo-tree
     :delight
     :custom
     (undo-tree-auto-save-history nil)
     :hook (after-init . global-undo-tree-mode))
+#+END_SRC
 
+#+BEGIN_SRC emacs-lisp
   (use-package unfill
     :disabled
     :bind ([remap fill-paragraph] . #'unfill-toggle))
+#+END_SRC
 
+#+BEGIN_SRC emacs-lisp
   ;; (use-package evil-collection
   ;;   :requires evil
   ;;   :defer 5
@@ -1965,15 +1983,21 @@ Use `fd` to escape from evil-insert-mode.
   ;;                                ruby-mode))
   ;;   :init
   ;;   (evil-mode . evil-collection-init))
+#+END_SRC
 
+#+BEGIN_SRC emacs-lisp
   (use-package evil-surround
     :defer 5
     :init (global-evil-surround-mode 1))
+#+END_SRC
 
+#+BEGIN_SRC emacs-lisp
   (use-package evil-matchit
     :defer 5
     :init (global-evil-matchit-mode))
+#+END_SRC
 
+#+BEGIN_SRC emacs-lisp
   (use-package evil-goggles
     :defer 5
     :delight
@@ -1982,21 +2006,31 @@ Use `fd` to escape from evil-insert-mode.
     (evil-goggles-enable-delete nil)
     :init
     (evil-goggles-mode))
+#+END_SRC
 
+#+BEGIN_SRC emacs-lisp
   (use-package evil-easymotion
     :defer 5
     :delight)
+#+END_SRC
 
+#+BEGIN_SRC emacs-lisp
   (use-package evil-quickscope
     :defer t
     :delight
     :init (global-evil-quickscope-mode 1))
 
+#+END_SRC
+
+#+BEGIN_SRC emacs-lisp
   (use-package evil-commentary
     :defer t
     :delight
     :init (evil-commentary-mode))
 
+#+END_SRC
+
+#+BEGIN_SRC emacs-lisp
   (use-package hideshow
     :functions hs-toggle-hiding
     :ensure nil
@@ -2010,21 +2044,33 @@ Use `fd` to escape from evil-insert-mode.
           (hs-toggle-hiding))))
     :hook (prog-mode . hs-minor-mode))
 
+#+END_SRC
+
+#+BEGIN_SRC emacs-lisp
   ;; (use-package evil-mc
   ;;   :hook (evil-mode . global-evil-mc-mode))
   ;; (use-package evil-mc-extras
   ;;   :hook (global-evil-mc-mode . global-evil-mc-extras-mode))
 
+#+END_SRC
+
+#+BEGIN_SRC emacs-lisp
   ;; (use-package multiple-cursors
   ;;   :disabled
   ;;   :bind (("C->" . mc/mark-next-like-this)
   ;;          ("C-<" . mc/mark-previous-like-this)
   ;;          ("C-*" . mc/mark-all-like-this)))
 
+#+END_SRC
+
+#+BEGIN_SRC emacs-lisp
   (use-package evil-string-inflection
     :requires evil
     :defer t)
 
+#+END_SRC
+
+#+BEGIN_SRC emacs-lisp
   (use-package yasnippet
     :defer 5
     :hook ((text-mode prog-mode snippet-mode) . yas-minor-mode-on)
