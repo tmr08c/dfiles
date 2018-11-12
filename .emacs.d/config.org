@@ -94,12 +94,26 @@
      (package-refresh-contents)
      (package-install 'use-package))
 
-     (eval-when-compile
-       (require 'use-package))
-   (setq use-package-always-ensure t
-         use-package-compute-statistics t)
+   (setq use-package-compute-statistics t
+         use-package-always-ensure t
+         ;; use-package-verbose t
+         use-package-minimum-reported-time 0.01)
+
+   (eval-when-compile
+     (require 'use-package))
  #+END_SRC
 
+**** QUELPA keyword
+
+
+ #+BEGIN_SRC emacs-lisp
+   (use-package quelpa
+     :defer t
+     :custom
+     (quelpa-update-melpa-p nil))
+
+   (use-package quelpa-use-package)
+ #+END_SRC
 *** Package Updater
   Auto-update packages.
 #+BEGIN_SRC emacs-lisp
@@ -173,7 +187,7 @@
 
 ** Keybindings
 *** Keybinding help menu
-    
+
 #+BEGIN_SRC emacs-lisp
   (use-package which-key
     :defer 1
@@ -367,32 +381,32 @@ Read files to set coding style options according to current project
 *** Projectile
 
   #+BEGIN_SRC emacs-lisp
-        (use-package projectile
-          :demand
-          :delight ;;'(:eval (concat " " (projectile-project-name)))
-          :config
-          (progn
-            (setq projectile-indexing-method 'alien
-                  projectile-completion-system 'ivy
-                  projectile-enable-caching nil
-                  projectile-switch-project-action 'counsel-projectile-find-file
-                  projectile-sort-order 'recentf)
-            (define-key projectile-mode-map (kbd "s-p") 'projectile-command-map)
-            (define-key projectile-mode-map (kbd "C-c p") 'projectile-command-map)
-            (add-to-list 'projectile-project-root-files ".clang_complete")
+    (use-package projectile
+      :defer t
+      :delight ;;'(:eval (concat " " (projectile-project-name)))
+      :config
+      (progn
+        (setq projectile-indexing-method 'alien
+              projectile-completion-system 'ivy
+              projectile-enable-caching nil
+              projectile-switch-project-action 'counsel-projectile-find-file
+              projectile-sort-order 'recentf)
+        (define-key projectile-mode-map (kbd "s-p") 'projectile-command-map)
+        (define-key projectile-mode-map (kbd "C-c p") 'projectile-command-map)
+        (add-to-list 'projectile-project-root-files ".clang_complete")
 
-            (global-keymap
+        (global-keymap
               ;;; Projects
-             "p"   '(:ignore t :which-key "Projects")
-             "p!" '(projectile-run-shell-command-in-root :which-key "run command")
-             "p%" '(projectile-replace-regexp :which-key "replace regexp")
-             ;; "p a" '(projectile-toggle-between-implementation-and-test :which-key "toggle test")
-             "pI" '(projectile-invalidate-cache :which-key "clear cache")
-             "pR" '(projectile-replace :which-key "replace")
-             "pk" '(projectile-kill-buffers :which-key "kill buffers")
-             "pr" '(projectile-recentf :which-key "recent files"))
+         "p"   '(:ignore t :which-key "Projects")
+         "p!" '(projectile-run-shell-command-in-root :which-key "run command")
+         "p%" '(projectile-replace-regexp :which-key "replace regexp")
+         ;; "p a" '(projectile-toggle-between-implementation-and-test :which-key "toggle test")
+         "pI" '(projectile-invalidate-cache :which-key "clear cache")
+         "pR" '(projectile-replace :which-key "replace")
+         "pk" '(projectile-kill-buffers :which-key "kill buffers")
+         "pr" '(projectile-recentf :which-key "recent files"))
 
-            (projectile-mode +1)))
+        (projectile-mode +1)))
 
   #+END_SRC
 
@@ -432,6 +446,7 @@ A more active fork of smex.
       (ivy-use-selectable-prompt t))
 
     (use-package doom-todo-ivy
+      :ensure nil
       :commands doom/ivy-tasks
       :load-path "vendor/"
       :config
@@ -575,6 +590,7 @@ Auto-completion framework for most modes
   (use-package company-async-files
     :defer t
     :no-require t
+    :ensure nil
     :load-path "vendor/"
     :requires company)
 
@@ -662,27 +678,25 @@ Auto-completion framework for most modes
 
   ;; C/C++
   (use-package company-irony
-    :no-require t
+    :after irony-mode
     :hook irony-mode
     :custom
     (company-irony-ignore-case 'smart))
 
   (use-package company-irony-c-headers
-    :no-require t
     :after company-irony
     :hook (irony-mode . (lambda ()
                           (set (make-local-variable 'company-backends) '((company-irony-c-headers company-irony company-etags))))))
 
   ;; Python
   (use-package company-anaconda
-    :no-require t
+    :after python-mode
     :hook (python-mode . (lambda ()
                            (set (make-local-variable 'company-backends) '(company-anaconda)))))
 
   ;; Golang
   (use-package company-go
-    :no-require t
-    :load-path "vendor/"
+    :after go-mode
     :hook (go-mode . (lambda ()
                        (set (make-local-variable 'company-backends) '(company-go))))
     :custom
@@ -737,116 +751,116 @@ Auto-completion framework for most modes
 **** Golang
 #+BEGIN_SRC emacs-lisp
   (use-package go-mode
-  :mode "\\.go$"
-  :requires (company)
-  :config
-  (add-hook 'before-save-hook 'gofmt-before-save)
-  (defun my-go-mode-hook-fn ()
+    :mode "\\.go\\'"
+    :requires (company)
+    :config
+    (add-hook 'before-save-hook 'gofmt-before-save)
+    (defun my-go-mode-hook-fn ()
       (go-eldoc-setup)
       ;; (set (make-local-variable 'company-backends) '(company-go))
       (setq-local company-backends '(company-go))
       (setq tab-width 2
-          indent-tabs-mode 1)
+            indent-tabs-mode 1)
       (flycheck-gometalinter-setup)
       (flycheck-mode 1))
-  (add-hook 'go-mode-hook #'my-go-mode-hook-fn)
-  (keymap-for-mode 'go-mode
-                  "t" '(:ignore t :which-key "test")
-                  "ta" '(js/go-run-test-current-suite :which-key "run suite")
-                  "tt" '(js/go-run-test-current-function :which-key "run current function")
-                  "tg" '(:ignore t :which-key "generate")
-                  "tgf" '(go-gen-test-exported :which-key "all exported functions")
-                  "tga" '(go-gen-test-all :which-key "all functions")
-                  "tgs" '(go-gen-test-dwim :which-key "selected region")
+    (add-hook 'go-mode-hook #'my-go-mode-hook-fn)
+    (keymap-for-mode 'go-mode
+                     "t" '(:ignore t :which-key "test")
+                     "ta" '(js/go-run-test-current-suite :which-key "run suite")
+                     "tt" '(js/go-run-test-current-function :which-key "run current function")
+                     "tg" '(:ignore t :which-key "generate")
+                     "tgf" '(go-gen-test-exported :which-key "all exported functions")
+                     "tga" '(go-gen-test-all :which-key "all functions")
+                     "tgs" '(go-gen-test-dwim :which-key "selected region")
 
-                  ;; Go To
-                  "g" '(:ignore t :which-key "goto")
-                  "gc" '(go-coverage :which-key "coverage")
+                     ;; Go To
+                     "g" '(:ignore t :which-key "goto")
+                     "gc" '(go-coverage :which-key "coverage")
 
-                  ;; Imports
-                  "i" '(:ignore t :which-key "imports")
-                  "ia" '(go-import-add :which-key "add")
-                  "ig" '(go-import-add :which-key "goto")
-                  "ir" '(go-remove-unused-imports :which-key "remove unused")
+                     ;; Imports
+                     "i" '(:ignore t :which-key "imports")
+                     "ia" '(go-import-add :which-key "add")
+                     "ig" '(go-import-add :which-key "goto")
+                     "ir" '(go-remove-unused-imports :which-key "remove unused")
 
-                  ;; Execute
-                  "x" '(:ignore t :which-key "execute")
-                  "xx" '(js/go-run-main :which-key "run main")
+                     ;; Execute
+                     "x" '(:ignore t :which-key "execute")
+                     "xx" '(js/go-run-main :which-key "run main")
 
-                  ;; Refactoring
-                  "r" '(:ignore t :which-key "refactoring")
-                  "ri" '(go-impl :which-key "implement interface")
-                  "rs" '(go-fill-struct :which-key "fill struct")
-                  "rd" '(godoctor-godoc :which-key "godoc")
-                  "re" '(godoctor-extract :which-key "extract")
-                  "rn" '(godoctor-rename :which-key "rename")
-                  ;; "rN" '(go-rename :which-key "rename")
-                  "rt" '(godoctor-toggle :which-key "toggle")
+                     ;; Refactoring
+                     "r" '(:ignore t :which-key "refactoring")
+                     "ri" '(go-impl :which-key "implement interface")
+                     "rs" '(go-fill-struct :which-key "fill struct")
+                     "rd" '(godoctor-godoc :which-key "godoc")
+                     "re" '(godoctor-extract :which-key "extract")
+                     "rn" '(godoctor-rename :which-key "rename")
+                     ;; "rN" '(go-rename :which-key "rename")
+                     "rt" '(godoctor-toggle :which-key "toggle")
 
-                  ;; Help
-                  "h" '(:ignore t :which-key "help")
-                  "hh" '(godoc-at-point :which-key "godoc at point"))
-  :custom
-  (gofmt-command "goimports")
-  ;; :ensure-system-package
-  ;; ((gocode . "go get -u github.com/mdempsky/gocode")
-  ;;  (gometalinter . "go get -u github.com/alecthomas/gometalinter")
-  ;;  (godoc . "go get -u golang.org/x/tools/cmd/godoc")
-  ;;  (goimports . "go get -u golang.org/x/tools/cmd/goimports")
-  ;;  (guru . "go get -u golang.org/x/tools/cmd/guru"))
-  )
+                     ;; Help
+                     "h" '(:ignore t :which-key "help")
+                     "hh" '(godoc-at-point :which-key "godoc at point"))
+    :custom
+    (gofmt-command "goimports")
+    ;; :ensure-system-package
+    ;; ((gocode . "go get -u github.com/mdempsky/gocode")
+    ;;  (gometalinter . "go get -u github.com/alecthomas/gometalinter")
+    ;;  (godoc . "go get -u golang.org/x/tools/cmd/godoc")
+    ;;  (goimports . "go get -u golang.org/x/tools/cmd/goimports")
+    ;;  (guru . "go get -u golang.org/x/tools/cmd/guru"))
+    )
 
   (use-package go-eldoc
-  :commands go-eldoc-setup)
+    :commands go-eldoc-setup)
 
   (use-package flycheck-gometalinter
-  :commands flycheck-gometalinter-setup
-  ;; :hook (go-mode . flycheck-gometalinter-setup)
-  :custom
-  ;; skip linting for vendor dirs
-  (flycheck-gometalinter-vendor t)
-  ;; use in test files
-  (flycheck-gometalinter-test t)
-  ;; only use fast linters
-  (flycheck-gometalinter-fast t)
-  ;; explicitly disable 'gotype' & 'govet' linters (also currently broken Nix overlays)
-  (flycheck-gometalinter-disable-linters
-  '("gosec" "gotype" "vet" "vetshadow" "megacheck" "interfacer" "ineffassign")))
+    :commands flycheck-gometalinter-setup
+    ;; :hook (go-mode . flycheck-gometalinter-setup)
+    :custom
+    ;; skip linting for vendor dirs
+    (flycheck-gometalinter-vendor t)
+    ;; use in test files
+    (flycheck-gometalinter-test t)
+    ;; only use fast linters
+    (flycheck-gometalinter-fast t)
+    ;; explicitly disable 'gotype' & 'govet' linters (also currently broken Nix overlays)
+    (flycheck-gometalinter-disable-linters
+     '("gosec" "gotype" "vet" "vetshadow" "megacheck" "interfacer" "ineffassign")))
 
   (use-package go-projectile
-  :hook (go-mode . go-projectile-mode))
+    :hook (go-mode . go-projectile-mode))
 
   (use-package go-gen-test
-  :commands (go-gen-test-exported
-              go-gen-test-all
-              go-gen-test-dwim)
-  ;; :ensure-system-package
-  ;; (gotests . "go get -u github.com/cweill/gotests/...")
-  )
+    :commands (go-gen-test-exported
+               go-gen-test-all
+               go-gen-test-dwim)
+    ;; :ensure-system-package
+    ;; (gotests . "go get -u github.com/cweill/gotests/...")
+    )
 
   (use-package go-fill-struct
-  :commands (go-fill-struct)
-  ;; :ensure-system-package
-  ;; (fillstruct . "go get -u github.com/davidrjenni/reftools/cmd/fillstruct")
-  )
+    :commands (go-fill-struct)
+    ;; :ensure-system-package
+    ;; (fillstruct . "go get -u github.com/davidrjenni/reftools/cmd/fillstruct")
+    )
 
   (use-package godoctor
-  :commands (godoctor-godoc
-              godoctor-extract
-              godoctor-rename
-              godoctor-toggle))
+    :commands (godoctor-godoc
+               godoctor-extract
+               godoctor-rename
+               godoctor-toggle))
 
   (use-package go-rename
-  :commands (go-rename)
-  ;; :ensure-system-package
-  ;; (gorename . "go get -u golang.org/x/tools/cmd/gorename")
-  )
+    :commands (go-rename)
+    ;; :ensure-system-package
+    ;; (gorename . "go get -u golang.org/x/tools/cmd/gorename")
+    )
 
   (use-package go-impl
-  :commands go-impl
-  ;; :ensure-system-package
-  ;; (impl . "go get -u github.com/josharian/impl")
-  )
+    :commands go-impl
+    ;; :ensure-system-package
+    ;; (impl . "go get -u github.com/josharian/impl")
+    )
 
   ;; Taken from js
   (defun js/go-run-tests (args)
@@ -920,10 +934,10 @@ Auto-completion framework for most modes
                      "bo" 'bundle-open))
 
   (use-package inf-ruby
+    :hook ((ruby-mode . inf-ruby-minor-mode)
+           (compilation-filter-hook . inf-ruby-auto-enter))
     :custom
     (inf-ruby-console-environment "development")
-    :hook
-    (after-init . inf-ruby-switch-setup)
     :config
     (keymap-for-mode 'ruby-mode
                      "s" '(:ignore t :which-key "repl")
@@ -1016,34 +1030,34 @@ Auto-completion framework for most modes
 **** SQL
 
    #+BEGIN_SRC emacs-lisp
-   (use-package sql
-     :defer t
-     :custom
-     (sql-set-product-feature 'postgres :prompt-regexp "^[-[:alnum:]_]*=[#>] ")
-     (sql-set-product-feature 'postgres :prompt-cont-regexp
-                              "^[-[:alnum:]_]*[-(][#>] ")
-     :config
-     (progn
-       (defun my-sql-login-hook ()
-         "Custom SQL log-in behaviours. See `sql-login-hook'."
-         ;; n.b. If you are looking for a response and need to parse the
-         ;; response, use `sql-redirect-value' instead of `comint-send-string'.
-         (when (eq sql-product 'postgres)
-           (let ((proc (get-buffer-process (current-buffer))))
-             ;; Output each query before executing it. (n.b. this also avoids
-             ;; the psql prompt breaking the alignment of query results.)
-             (comint-send-string proc "\\set ECHO queries\n"))))
-       (add-hook 'sql-login-hook 'my-sql-login-hook)
-       (add-hook 'sql-interactive-mode-hook
-                 (lambda ()
-                   (toggle-truncate-lines t)))))
+     (use-package sql
+       :ensure nil
+       :mode "\\.sql$"
+       :custom
+       (sql-set-product-feature 'postgres :prompt-regexp "^[-[:alnum:]_]*=[#>] ")
+       (sql-set-product-feature 'postgres :prompt-cont-regexp
+                                "^[-[:alnum:]_]*[-(][#>] ")
+       :config
+       (progn
+         (defun my-sql-login-hook ()
+           "Custom SQL log-in behaviours. See `sql-login-hook'."
+           ;; n.b. If you are looking for a response and need to parse the
+           ;; response, use `sql-redirect-value' instead of `comint-send-string'.
+           (when (eq sql-product 'postgres)
+             (let ((proc (get-buffer-process (current-buffer))))
+               ;; Output each query before executing it. (n.b. this also avoids
+               ;; the psql prompt breaking the alignment of query results.)
+               (comint-send-string proc "\\set ECHO queries\n"))))
+         (add-hook 'sql-login-hook 'my-sql-login-hook)
+         (add-hook 'sql-interactive-mode-hook
+                   (lambda ()
+                     (toggle-truncate-lines t)))))
 
-   (use-package sql-indent
-     :pin gnu
-     :hook (sql-mode . sqlind-minor-mode))
+     (use-package sql-indent
+       :hook (sql-mode . sqlind-minor-mode))
 
-   (use-package sqlup-mode
-     :hook (sql-mode sql-interactive-mode-hook))
+     (use-package sqlup-mode
+       :hook (sql-mode . sql-interactive-mode-hook))
    #+END_SRC
 
 **** CSV
@@ -1116,6 +1130,7 @@ Auto-completion framework for most modes
 
 
   (use-package sly
+    :requires evil
     :hook ((lisp-mode emacs-lisp-mode) . (lambda ()  (sly-setup '(sly-fancy))))
     :defer t
     :custom
@@ -1228,7 +1243,7 @@ Auto-completion framework for most modes
                        "tu" 'sly-untrace-all)))
 
   (use-package sly-mrepl
-    :ensure nil ;; built-in sly
+    :ensure nil ;; built-in to sly
     :defines sly-mrepl-mode-map
     :bind
     (:map sly-mrepl-mode-map
@@ -1582,18 +1597,6 @@ Auto-completion framework for most modes
        "zF" 'js2-mode-toggle-hide-functions
        "zC" 'js2-mode-toggle-hide-comments)
 
-     (use-package tern
-       :disabled
-       :ensure-system-package (tern . "npm i -g tern")
-       :requires js2-mode
-       :hook
-       (js2-mode . tern-mode))
-
-     (use-package company-tern
-       :requires (company tern)
-       :config
-       (add-to-list 'company-backends #'company-tern))
-
      (use-package nodejs-repl
        :ensure-system-package node
        :defer t)
@@ -1607,6 +1610,17 @@ Auto-completion framework for most modes
                             (list rjsx-JSX rjsx-JSX-ATTR rjsx-JSX-IDENT rjsx-JSX-MEMBER)))))
    #+END_SRC
 
+**** TypeScript
+   #+BEGIN_SRC emacs-lisp
+     (use-package typescript-mode
+       :defer t)
+
+     (use-package tide
+       :after (typescript-mode company flycheck)
+       :hook ((typescript-mode . tide-setup)
+              (typescript-mode . tide-hl-identifier-mode)
+              (before-save . tide-format-before-save)))
+   #+END_SRC
 **** Web
 
 #+BEGIN_SRC emacs-lisp
@@ -1762,7 +1776,6 @@ Auto-completion framework for most modes
 *** Evil
 #+BEGIN_SRC emacs-lisp
   (use-package evil
-    :ensure t
     :init (evil-mode 1)
     :custom
     (evil-want-C-u-scroll t)
@@ -1798,7 +1811,7 @@ Auto-completion framework for most modes
 
     (defun +evil-default-cursor () (set-cursor-color +evil--default-cursor-color))
     (defun +evil-emacs-cursor () (set-cursor-color (face-foreground 'warning)))
-  
+
     (defun +evil|update-cursor-color ()
       (setq +evil--default-cursor-color (face-background 'cursor)))
     (add-hook 'doom-load-theme-hook #'+evil|update-cursor-color)
@@ -1820,7 +1833,7 @@ Use `fd` to escape from evil-insert-mode.
 #+BEGIN_SRC emacs-lisp
   (use-package evil-escape
     :requires evil
-    :hook (evil-mode . evil-escape-mode)
+    :init (evil-escape-mode 1)
     :delight
     :custom
     (evil-escape-delay 0.2))
@@ -1829,44 +1842,204 @@ Use `fd` to escape from evil-insert-mode.
 **** SmartParens
 
 #+BEGIN_SRC emacs-lisp
-(use-package smartparens
-  :config
-  (require 'smartparens-config)
-  (setq sp-highlight-pair-overlay nil
-        sp-highlight-wrap-overlay nil
-        sp-highlight-wrap-tag-overlay nil
-        sp-show-pair-from-inside t
-        sp-cancel-autoskip-on-backward-movement nil
-        sp-show-pair-delay 0.1
-        sp-max-pair-length 4
-        sp-max-prefix-length 50
-        sp-escape-quotes-after-insert nil)
-  ;; Smartparens' navigation feature is neat, but does not justify how expensive
-  ;; it is. It's also less useful for evil users. This may need to be
-  ;; reactivated for non-evil users though. Needs more testing!
-  (defun js|disable-smartparens-navigate-skip-match ()
-    (setq sp-navigate-skip-match nil
-          sp-navigate-consider-sgml-tags nil))
-  (add-hook 'after-change-major-mode-hook #'js|disable-smartparens-navigate-skip-match)
+  (use-package smartparens
+    :defer 2
+    :config
+    (require 'smartparens-config)
+    (setq sp-highlight-pair-overlay nil
+          sp-highlight-wrap-overlay nil
+          sp-highlight-wrap-tag-overlay nil
+          sp-show-pair-from-inside t
+          sp-cancel-autoskip-on-backward-movement nil
+          sp-show-pair-delay 0.1
+          sp-max-pair-length 4
+          sp-max-prefix-length 50
+          sp-escape-quotes-after-insert nil)
+    ;; Smartparens' navigation feature is neat, but does not justify how expensive
+    ;; it is. It's also less useful for evil users. This may need to be
+    ;; reactivated for non-evil users though. Needs more testing!
+    (defun js|disable-smartparens-navigate-skip-match ()
+      (setq sp-navigate-skip-match nil
+            sp-navigate-consider-sgml-tags nil))
+    (add-hook 'after-change-major-mode-hook #'js|disable-smartparens-navigate-skip-match)
 
-  ;; autopairing in `eval-expression' and `evil-ex'
-  (defun js|init-smartparens-in-eval-expression ()
-    "Enable `smartparens-mode' in the minibuffer, during `eval-expression' or
-`evil-ex'."
-    (when (memq this-command '(eval-expression evil-ex))
-      (smartparens-mode)))
-  (add-hook 'minibuffer-setup-hook #'js|init-smartparens-in-eval-expression)
-  (sp-local-pair 'minibuffer-inactive-mode "'" nil :actions nil)
+    ;; autopairing in `eval-expression' and `evil-ex'
+    (defun js|init-smartparens-in-eval-expression ()
+      "Enable `smartparens-mode' in the minibuffer, during `eval-expression' or
+    `evil-ex'."
+      (when (memq this-command '(eval-expression evil-ex))
+        (smartparens-mode)))
+    (add-hook 'minibuffer-setup-hook #'js|init-smartparens-in-eval-expression)
+    (sp-local-pair 'minibuffer-inactive-mode "'" nil :actions nil)
 
-  ;; smartparens breaks evil-mode's replace state
-  (add-hook 'evil-replace-state-entry-hook #'turn-off-smartparens-mode)
-  (add-hook 'evil-replace-state-exit-hook  #'turn-on-smartparens-mode)
-  (smartparens-global-mode +1))
+    ;; smartparens breaks evil-mode's replace state
+    (add-hook 'evil-replace-state-entry-hook #'turn-off-smartparens-mode)
+    (add-hook 'evil-replace-state-exit-hook  #'turn-on-smartparens-mode)
+    (smartparens-global-mode +1))
 #+END_SRC
 
 #+BEGIN_SRC emacs-lisp
-  (use-package js-editing
-    :load-path "vendor/")
+  ;; Rainbow Delimiters
+  ;; Highlight matching delimiters with unique colors.
+  (use-package rainbow-delimiters
+    :defer t
+    :hook (prog-mode . rainbow-delimiters-mode))
+
+
+  ;; Adapt to foreign indentation offsets
+  (use-package dtrt-indent
+    :defer t
+    :delight
+    :custom (dtrt-indent-min-quality 60)
+    :init (dtrt-indent-global-mode))
+
+  (use-package aggressive-indent
+    :defer t
+    :hook ((emacs-lisp-mode . aggressive-indent-mode)
+           ;; (ruby-mode . aggressive-indent-mode)
+           (css-mode . aggressive-indent-mode)))
+
+  (use-package adaptive-wrap
+    :defer t
+    :config (adaptive-wrap-prefix-mode))
+
+  (use-package dumb-jump
+    :commands (dump-jump-go
+               dumb-jump-go-other-window
+               dump-jump-go-prompt
+               dump-jump-go-prefer-external
+               dumb-jump-go-prefer-external-other-window)
+    :custom
+    (dumb-jump-selector 'ivy))
+
+  (use-package whitespace
+    :defer 5
+    :custom
+    (whitespace-line-column fill-column)
+    (whitespace-style
+     '(face indentation tabs tab-mark spaces space-mark newline newline-mark
+            trailing lines-tail))
+    (whitespace-display-mappings
+     '((tab-mark ?\t [?› ?\t])
+       (newline-mark ?\n [?¬ ?\n])
+       (space-mark ?\ [?·] [?.])))
+    :config
+    (add-hook 'before-save 'delete-trailing-whitespace))
+
+  (use-package ws-butler
+    :delight
+    :defer t
+    :config
+    (setq ws-butler-global-exempt-modes
+          (append ws-butler-global-exempt-modes
+                  '(special-mode comint-mode term-mode eshell-mode)))
+    (ws-butler-global-mode))
+
+  (use-package autorevert
+    :ensure nil
+    :defer t
+    :delight auto-revert-mode
+    :config
+    (setq auto-revert-verbose nil)
+    (global-auto-revert-mode +1))
+
+  (use-package undo-tree
+    :delight
+    :custom
+    (undo-tree-auto-save-history nil)
+    :hook (after-init . global-undo-tree-mode))
+
+  (use-package unfill
+    :disabled
+    :bind ([remap fill-paragraph] . #'unfill-toggle))
+
+  ;; (use-package evil-collection
+  ;;   :requires evil
+  ;;   :defer 5
+  ;;   :custom
+  ;;   (evil-collection-setup-minibuffer t)
+  ;;   (evil-collection-company-use-tng nil)
+  ;;   (evil-collection-mode-list '(go-mode
+  ;;                                ivy
+  ;;                                (pdf pdf-view)
+  ;;                                ruby-mode))
+  ;;   :init
+  ;;   (evil-mode . evil-collection-init))
+
+  (use-package evil-surround
+    :defer 5
+    :init (global-evil-surround-mode 1))
+
+  (use-package evil-matchit
+    :defer 5
+    :init (global-evil-matchit-mode))
+
+  (use-package evil-goggles
+    :defer 5
+    :delight
+    :custom
+    (evil-goggles-duration 0.1)
+    (evil-goggles-enable-delete nil)
+    :init
+    (evil-goggles-mode))
+
+  (use-package evil-easymotion
+    :defer 5
+    :delight)
+
+  (use-package evil-quickscope
+    :defer t
+    :delight
+    :init (global-evil-quickscope-mode 1))
+
+  (use-package evil-commentary
+    :defer t
+    :delight
+    :init (evil-commentary-mode))
+
+  (use-package hideshow
+    :functions hs-toggle-hiding
+    :ensure nil
+    :delight
+    :config
+    (progn
+      (defun toggle-fold ()
+        (interactive)
+        (save-excursion
+          (end-of-line)
+          (hs-toggle-hiding))))
+    :hook (prog-mode . hs-minor-mode))
+
+  ;; (use-package evil-mc
+  ;;   :hook (evil-mode . global-evil-mc-mode))
+  ;; (use-package evil-mc-extras
+  ;;   :hook (global-evil-mc-mode . global-evil-mc-extras-mode))
+
+  ;; (use-package multiple-cursors
+  ;;   :disabled
+  ;;   :bind (("C->" . mc/mark-next-like-this)
+  ;;          ("C-<" . mc/mark-previous-like-this)
+  ;;          ("C-*" . mc/mark-all-like-this)))
+
+  (use-package evil-string-inflection
+    :requires evil
+    :defer t)
+
+  (use-package yasnippet
+    :defer 5
+    :hook ((text-mode prog-mode snippet-mode) . yas-minor-mode-on)
+    :commands (yas-minor-mode yas-minor-mode-on yas-expand yas-expand-snippet
+                              yas-lookup-snippet yas-insert-snippet yas-new-snippet
+                              yas-visit-snippet-file snippet-mode)
+    :config
+    (setq yas-also-auto-indent-first-line t
+          yas-triggers-in-field t) ; Allow nested snippets
+
+    ;; fix an error caused by smartparens interfering with yasnippet bindings
+    (advice-add #'yas-expand :before #'sp-remove-active-pair-overlay)
+
+    ;; Exit snippets on ESC from normal mode
+    (add-hook '+evil-esc-hook #'yas-exit-all-snippets))
 #+END_SRC
 
 *** Neotree
@@ -1876,32 +2049,16 @@ Directory tree
 #+BEGIN_SRC emacs-lisp
   ;;; File Tree
   (use-package neotree
-    :custom
-    (neo-create-file-auto-open t)
-    (neo-modern-sidebar t)
-    (neo-point-auto-indent nil)
-    (neo-theme (if (display-graphic-p) 'icons 'arrow))
-    (neo-window-fixed-size nil)
-    (neo-window-width 28)
-    (neo-show-hidden-files t)
-    (neo-keymap-style 'concise)
-    ;; (neo-hidden-regexp-list
-    ;;  '(;; vcs folders
-    ;;    "^\\.\\(?:git\\|hg\\|svn\\)$"
-    ;;    ;; compiled files
-    ;;    "\\.\\(?:pyc\\|o\\|elc\\|lock\\|css.map\\|class\\)$"
-    ;;    ;; generated files, caches or local pkgs
-    ;;    "^\\(?:node_modules\\|vendor\\|.\\(project\\|cask\\|yardoc\\|sass-cache\\)\\)$"
-    ;;    ;; org-mode folders
-    ;;    "^\\.\\(?:sync\\|export\\|attach\\)$"
-    ;;    ;; temp files
-    ;;    "~$"
-    ;;    "^#.*#$"))
+    :commands (neotree-toggle neotree-projectile-action)
     :config
-    (global-keymap
-     "ft" '(neotree-toggle :which-key "toggle file tree")
-     "pt" '(neotree-projectile-action :which-key "project tree"))
-    :general
+    (setq neo-create-file-auto-open t
+          neo-modern-sidebar t
+          neo-point-auto-indent nil
+          neo-theme (if (display-graphic-p) 'icons 'arrow)
+          neo-window-fixed-size nil
+          neo-window-width 28
+          neo-show-hidden-files t
+          neo-keymap-style 'concise)
     (general-nmap neotree-mode-map
       "RET" 'neotree-enter
       "TAB" 'neotree-stretch-toggle
@@ -1925,6 +2082,9 @@ Directory tree
       "R" 'neotree-change-root
       "I" 'neotree-hidden-file-toggle))
 
+  (global-keymap
+   "ft" 'neotree-toggle
+   "pt" 'neotree-projectile-action)
   #+END_SRC
 ** Visual
 *** UI, Theme, etc.
@@ -1948,12 +2108,7 @@ Directory tree
     (add-to-list 'default-frame-alist '(ns-transparent-titlebar . t))
     (add-to-list 'default-frame-alist '(ns-appearance . dark))
 
-    (use-package all-the-icons
-      :commands (all-the-icons-faicon
-                 all-the-icons-icon-for-buffer
-                 all-the-icons-icon-for-file
-                 all-the-icons-icon-for-mode
-                 all-the-icons-install-fonts))
+    (use-package all-the-icons)
 
     (use-package doom-themes
       :demand
@@ -1998,6 +2153,7 @@ Directory tree
       :commands restart-emacs)
 
     (use-package winum
+      :defer t
       :config
       (progn
         (setq winum-auto-assign-0-to-minibuffer nil
@@ -2045,23 +2201,23 @@ Directory tree
        (defalias 'yes-or-no-p 'y-or-n-p)
 
        (setq byte-compile-warnings '(not free-vars unresolved noruntime lexical make-local)
-	     idle-update-delay 2 ; update ui less often (0.5 default)
-	     create-lockfiles nil
-	     cua-mode t
-	     desktop-save-mode nil
-	     indent-tabs-mode nil
-	     initial-scratch-message nil
-	     load-prefer-newer t
-	     sentence-end-double-space nil
-	     ;; keep the point out of the minibuffer
-	     minibuffer-prompt-properties '(read-only t point-entered minibuffer-avoid-prompt face minibuffer-prompt)
-	     ;; security
-	     gnutls-verify-error (not (getenv "INSECURE")) ; you shouldn't use this
-	     tls-checktrust gnutls-verify-error
-	     tls-program (list "gnutls-cli --x509cafile %t -p %p %h"
-			       ;; compatibility fallbacks
-			       "gnutls-cli -p %p %h"
-			       "openssl s_client -connect %h:%p -no_ssl2 -no_ssl3 -ign_eof"))
+         idle-update-delay 2 ; update ui less often (0.5 default)
+         create-lockfiles nil
+         cua-mode t
+         desktop-save-mode nil
+         indent-tabs-mode nil
+         initial-scratch-message nil
+         load-prefer-newer t
+         sentence-end-double-space nil
+         ;; keep the point out of the minibuffer
+         minibuffer-prompt-properties '(read-only t point-entered minibuffer-avoid-prompt face minibuffer-prompt)
+         ;; security
+         gnutls-verify-error (not (getenv "INSECURE")) ; you shouldn't use this
+         tls-checktrust gnutls-verify-error
+         tls-program (list "gnutls-cli --x509cafile %t -p %p %h"
+                   ;; compatibility fallbacks
+                   "gnutls-cli -p %p %h"
+                   "openssl s_client -connect %h:%p -no_ssl2 -no_ssl3 -ign_eof"))
 
    #+END_SRC
 
@@ -2069,6 +2225,7 @@ Directory tree
 *** Linux
   #+BEGIN_SRC emacs-lisp
       (use-package linux
+        :ensure nil
         :load-path "vendor/"
         :if (eq system-type 'gnu/linux))
   #+END_SRC
@@ -2076,6 +2233,7 @@ Directory tree
 *** macOS
   #+BEGIN_SRC emacs-lisp
       (use-package osx
+        :ensure nil
         :load-path "vendor/"
         :if (eq system-type 'darwin))
   #+END_SRC
@@ -2242,22 +2400,7 @@ Directory tree
 
 *** Org Mode
 
-#+BEGIN_SRC emacs-lisp
-  (use-package org
-    :pin org
-    :ensure t
-    :mode "\\.org\'"
-    :config
-    (progn
-      (js/org-keybindings)
-      (setq org-src-tab-acts-natively t
-            org-src-fontify-natively t
-            org-directory "~/org"
-            org-default-notes-file (expand-file-name "notes.org" org-directory))
-      (setq org-todo-keywords '((sequence "☛ TODO(t)" "|" "✔ DONE(d)")
-                                (sequence "⚑ WAITING(w)" "|")
-                                (sequence "|" "✘ CANCELED(c)")))))
-
+    #+BEGIN_SRC emacs-lisp
   (defun js/org-keybindings ()
     "Define all keybindings we use in org mode."
     (keymap-for-mode 'org-mode
@@ -2425,6 +2568,25 @@ Directory tree
                      ))
 #+END_SRC
 
+#+BEGIN_SRC emacs-lisp
+  (use-package org
+    :defer 3
+    :pin org
+    :mode "\\.org\'"
+    :config
+    (progn
+      (js/org-keybindings)
+      (setq org-src-tab-acts-natively t
+            org-src-fontify-natively t
+            org-directory "~/org"
+            org-default-notes-file (expand-file-name "notes.org" org-directory))
+      (setq org-todo-keywords '((sequence "☛ TODO(t)" "|" "✔ DONE(d)")
+                                (sequence "⚑ WAITING(w)" "|")
+                                (sequence "|" "✘ CANCELED(c)")))))
+
+#+END_SRC
+
+
 Generate Table of Contents generation in org-mode.
 
 #+BEGIN_SRC emacs-lisp
@@ -2464,7 +2626,6 @@ Add special keybindings to org mode that work well with evil mode.
 
 #+BEGIN_SRC emacs-lisp
   (use-package pdf-tools
-    :defer t
     :mode ("\\.pdf\\'" . pdf-view-mode)
     :config
     (pdf-tools-install)
