@@ -76,59 +76,6 @@
   :disabled
   :bind ([remap fill-paragraph] . #'unfill-toggle))
 
-(use-package evil
-  :ensure t
-  :init (evil-mode 1)
-  :custom
-  (evil-want-C-u-scroll t)
-  (evil-want-Y-yank-to-eol t)
-  (evil-shift-width 2)
-  (evil-want-integration nil)
-  :config
-  (setq evil-want-visual-char-semi-exclusive t
-        evil-magic t
-        evil-echo-state t
-        evil-indent-convert-tabs t
-        evil-ex-search-vim-style-regexp t
-        evil-ex-substitute-global t
-        evil-ex-visual-char-range t  ; column range for ex commands
-        evil-insert-skip-empty-lines t
-        evil-mode-line-format 'nil
-        evil-respect-visual-line-mode t
-        ;; more vim-like behavior
-        evil-symbol-word-search t
-        ;; don't activate mark on shift-click
-        shift-select-mode nil
-        ;; cursor appearance
-        evil-default-cursor '+evil-default-cursor
-        evil-normal-state-cursor 'box
-        ;; evil-emacs-state-cursor  '(box +evil-emacs-cursor)
-        evil-insert-state-cursor 'bar
-        evil-visual-state-cursor 'hollow)
-  (fset 'evil-visual-update-x-selection 'ignore)
-  ;; Change the cursor color in emacs mode
-  (defvar +evil--default-cursor-color
-    (or (ignore-errors (frame-parameter nil 'cursor-color))
-        "#ffffff"))
-
-  (defun +evil-default-cursor () (set-cursor-color +evil--default-cursor-color))
-  (defun +evil-emacs-cursor () (set-cursor-color (face-foreground 'warning)))
-  
-  (defun +evil|update-cursor-color ()
-    (setq +evil--default-cursor-color (face-background 'cursor)))
-  (add-hook 'doom-load-theme-hook #'+evil|update-cursor-color)
-  (defun +evil|update-shift-width ()
-    (setq evil-shift-width tab-width))
-  (add-hook 'after-change-major-mode-hook #'+evil|update-shift-width t)
-  :general
-  (general-define-key
-   :states 'insert
-   "C-v" 'cua-paste
-   "C-c" 'cua-copy-region
-   "C-x" 'cua-cut-region
-   "C-z" 'undo-tree-undo
-   "C-Z" 'undo-tree-redo))
-
 ;; (use-package evil-collection
 ;;   :requires evil
 ;;   :defer 5
@@ -149,14 +96,6 @@
 (use-package evil-matchit
   :defer 5
   :init (global-evil-matchit-mode))
-
-(use-package evil-escape
-  :requires evil
-  :delight
-  :custom
-  (evil-escape-delay 0.2)
-  :init
-  (evil-escape-mode))
 
 (use-package evil-goggles
   :defer 5
@@ -208,40 +147,6 @@
 (use-package evil-string-inflection
   :requires evil
   :defer t)
-
-(use-package smartparens
-  :config
-  (require 'smartparens-config)
-  (setq sp-highlight-pair-overlay nil
-        sp-highlight-wrap-overlay nil
-        sp-highlight-wrap-tag-overlay nil
-        sp-show-pair-from-inside t
-        sp-cancel-autoskip-on-backward-movement nil
-        sp-show-pair-delay 0.1
-        sp-max-pair-length 4
-        sp-max-prefix-length 50
-        sp-escape-quotes-after-insert nil)
-  ;; Smartparens' navigation feature is neat, but does not justify how expensive
-  ;; it is. It's also less useful for evil users. This may need to be
-  ;; reactivated for non-evil users though. Needs more testing!
-  (defun js|disable-smartparens-navigate-skip-match ()
-    (setq sp-navigate-skip-match nil
-          sp-navigate-consider-sgml-tags nil))
-  (add-hook 'after-change-major-mode-hook #'js|disable-smartparens-navigate-skip-match)
-
-  ;; autopairing in `eval-expression' and `evil-ex'
-  (defun js|init-smartparens-in-eval-expression ()
-    "Enable `smartparens-mode' in the minibuffer, during `eval-expression' or
-`evil-ex'."
-    (when (memq this-command '(eval-expression evil-ex))
-      (smartparens-mode)))
-  (add-hook 'minibuffer-setup-hook #'js|init-smartparens-in-eval-expression)
-  (sp-local-pair 'minibuffer-inactive-mode "'" nil :actions nil)
-
-  ;; smartparens breaks evil-mode's replace state
-  (add-hook 'evil-replace-state-entry-hook #'turn-off-smartparens-mode)
-  (add-hook 'evil-replace-state-exit-hook  #'turn-on-smartparens-mode)
-  (smartparens-global-mode +1))
 
 (use-package yasnippet
   :hook ((text-mode prog-mode snippet-mode) . yas-minor-mode-on)
