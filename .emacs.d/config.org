@@ -60,6 +60,8 @@
   - [[#tools][Tools]]
     - [[#org-mode][Org Mode]]
     - [[#pdf][PDF]]
+  - [[#apps][Apps]]
+    - [[#riot--matrix-client][Riot / Matrix client]]
 
 ** Identity
 
@@ -113,6 +115,7 @@
      (quelpa-update-melpa-p nil))
 
    (use-package quelpa-use-package)
+   (quelpa-use-package-activate-advice)
  #+END_SRC
 *** Package Updater
   Auto-update packages.
@@ -382,7 +385,13 @@ Read files to set coding style options according to current project
 
   #+BEGIN_SRC emacs-lisp
     (use-package projectile
-      :defer t
+      :commands (projectile-run-shell-command-in-root
+                 projectile-replace-regexp
+                 projectile-toggle-between-implementation-and-test
+                 projectile-invalidate-cache
+                 projectile-replace
+                 projectile-kill-buffers
+                 projectile-recentf)
       :delight ;;'(:eval (concat " " (projectile-project-name)))
       :config
       (progn
@@ -395,19 +404,18 @@ Read files to set coding style options according to current project
         (define-key projectile-mode-map (kbd "C-c p") 'projectile-command-map)
         (add-to-list 'projectile-project-root-files ".clang_complete")
 
-        (global-keymap
-              ;;; Projects
-         "p"   '(:ignore t :which-key "Projects")
-         "p!" '(projectile-run-shell-command-in-root :which-key "run command")
-         "p%" '(projectile-replace-regexp :which-key "replace regexp")
-         ;; "p a" '(projectile-toggle-between-implementation-and-test :which-key "toggle test")
-         "pI" '(projectile-invalidate-cache :which-key "clear cache")
-         "pR" '(projectile-replace :which-key "replace")
-         "pk" '(projectile-kill-buffers :which-key "kill buffers")
-         "pr" '(projectile-recentf :which-key "recent files"))
-
         (projectile-mode +1)))
 
+
+    (global-keymap
+     "p"  '(:ignore t :which-key "Projects")
+     "p!" '(projectile-run-shell-command-in-root :which-key "run command")
+     "p%" '(projectile-replace-regexp :which-key "replace regexp")
+     ;; "p a" '(projectile-toggle-between-implementation-and-test :which-key "toggle test")
+     "pI" '(projectile-invalidate-cache :which-key "clear cache")
+     "pR" '(projectile-replace :which-key "replace")
+     "pk" '(projectile-kill-buffers :which-key "kill buffers")
+     "pr" '(projectile-recentf :which-key "recent files"))
   #+END_SRC
 
 *** Direnv
@@ -502,7 +510,6 @@ A more active fork of smex.
 *** Counsel
 
   #+BEGIN_SRC emacs-lisp
-    ;;; Ado-ado
     (use-package counsel
       :commands (counsel-M-x counsel-find-file)
       :custom
@@ -513,19 +520,23 @@ A more active fork of smex.
        "C-x C-f" 'counsel-find-file))
 
     (use-package counsel-projectile
-      :after projectile
-      :config
-      (global-keymap
-       "pb" '(counsel-projectile-switch-to-buffer
-              :which-key "switch to buffer")
-       "pd" '(counsel-projectile-find-dir
-              :which-key "find directory")
-       "pf" '(counsel-projectile-find-file
-              :which-key "open file")
-       "pp" '(counsel-projectile-switch-project
-              :which-key "open project")
-       "ps" '(counsel-projectile-rg
-              :which-key "search in project")))
+      :commands (counsel-projectile-switch-to-buffer
+                 counsel-projectile-find-dir
+                 counsel-projectile-find-file
+                 counsel-projectile-switch-project
+                 counsel-projectile-rg))
+
+    (global-keymap
+     "pb" '(counsel-projectile-switch-to-buffer
+            :which-key "switch to buffer")
+     "pd" '(counsel-projectile-find-dir
+            :which-key "find directory")
+     "pf" '(counsel-projectile-find-file
+            :which-key "open file")
+     "pp" '(counsel-projectile-switch-project
+            :which-key "open project")
+     "ps" '(counsel-projectile-rg
+            :which-key "search in project"))
 
     (use-package counsel-dash
       :commands counsel-dash
@@ -2704,3 +2715,15 @@ Add special keybindings to org mode that work well with evil mode.
                      "O" 'pdf-outline
                      "n" 'pdf-view-midnight-minor-mode))
   #+END_SRC
+
+** Apps
+*** Riot / Matrix client
+
+This package is currently disabled. I am not able to log in successfully.
+
+#+BEGIN_SRC emacs-lisp
+  (use-package matrix-client
+    :disabled ;; not ready for prime time yet
+    :quelpa (matrix-client :fetcher github
+                           :repo "jgkamat/matrix-client-el"))
+#+END_SRC
