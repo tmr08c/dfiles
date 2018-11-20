@@ -2158,7 +2158,7 @@ Directory tree
           frame-resize-pixelwise t)
 
     ;; This is MUCH faster than using set-face-attribute
-    (add-to-list 'default-frame-alist '(font . "FiraCode:13"))
+    (add-to-list 'default-frame-alist '(font . "Fira Code:13"))
 
     ;; Appearance
     ;; Theme Emacs for dark color scheme

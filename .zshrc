@@ -41,8 +41,6 @@ if (( $+commands[psql] )); then
   export PGUSER='postgres'
 fi
 
-# source $HOME/.asdf/asdf.sh
-
 # Disable "flow control"
 setopt noflowcontrol
 

@@ -8,3 +8,4 @@ alias cdhbapi="npm --version >/dev/null 2>&1 && cd ~/code/homebot/api"
 alias cdhbweb="npm --version >/dev/null 2>&1 && cd ~/code/homebot/web"
 
 alias tmux="direnv exec / tmux"
+alias vim="nvim"
