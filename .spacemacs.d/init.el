@@ -44,7 +44,8 @@ This function should only modify configuration layer settings."
           ivy-enable-advanced-buffer-information t
           ivy-re-builders-alist ;; allow input not in order
           '((t . ivy--regex-ignore-order)))
-     ;; auto-completion
+     (auto-completion :variables
+                      auto-completion-enable-sort-by-usage t)
      better-defaults
      common-lisp
      csv
@@ -55,6 +56,7 @@ This function should only modify configuration layer settings."
      dash
      docker
      go
+     ;; gtags
      ;; git
      html
      javascript
@@ -67,6 +69,7 @@ This function should only modify configuration layer settings."
      (org :variables
           org-enable-hugo-support t
           org-enable-trello-support t)
+     osx
      (ruby :variables
            ruby-test-runner 'rspec)
      ruby-on-rails
@@ -536,7 +539,7 @@ This function is called at the very end of Spacemacs initialization."
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  '(package-selected-packages
-   '(direnv yaml-mode xterm-color ws-butler winum which-key wgrep web-mode web-beautify volatile-highlights vi-tilde-fringe uuidgen use-package unfill toml-mode toc-org tide terraform-mode tern tagedit symon string-inflection sql-indent spaceline-all-the-icons smex slime slim-mode shell-pop seeing-is-believing scss-mode sass-mode rvm ruby-tools ruby-test-mode ruby-refactor ruby-hash-syntax rubocop rspec-mode robe restart-emacs rbenv rainbow-delimiters racer pug-mode projectile-rails prettier-js popwin persp-mode password-generator paradox ox-hugo overseer org-trello org-projectile org-present org-pomodoro org-mime org-download org-bullets org-brain open-junk-file ob-elixir neotree nameless mwim multi-term move-text monokai-theme mmm-mode minitest markdown-toc lorem-ipsum livid-mode link-hint json-navigator js2-refactor js-doc ivy-xref ivy-rtags ivy-rich ivy-purpose ivy-hydra insert-shebang indent-guide impatient-mode hungry-delete hl-todo highlight-parentheses highlight-numbers highlight-indentation helm-make google-translate google-c-style golden-ratio godoctor go-tag go-rename go-impl go-guru go-gen-test go-fill-struct go-eldoc gnuplot git-gutter-fringe git-gutter-fringe+ gh-md font-lock+ flycheck-rust flycheck-rtags flycheck-pos-tip flycheck-mix flycheck-credo flycheck-bashate flx-ido fish-mode fill-column-indicator feature-mode fancy-battery eyebrowse expand-region evil-visualstar evil-visual-mark-mode evil-unimpaired evil-tutor evil-surround evil-org evil-numbers evil-nerd-commenter evil-matchit evil-lisp-state evil-lion evil-indent-plus evil-iedit-state evil-goggles evil-exchange evil-escape evil-ediff evil-cleverparens evil-args evil-anzu eval-sexp-fu eshell-z eshell-prompt-extras esh-help erlang emmet-mode elisp-slime-nav editorconfig dumb-jump dotenv-mode doom-themes doom-modeline dockerfile-mode docker disaster diminish diff-hl define-word dash-at-point csv-mode counsel-projectile counsel-dash counsel-css column-enforce-mode clean-aindent-mode clang-format chruby centered-cursor-mode cargo bundler browse-at-remote auto-highlight-symbol auto-compile alchemist aggressive-indent ace-window ace-link)))
+   '(reveal-in-osx-finder osx-trash osx-dictionary launchctl ggtags counsel-gtags yasnippet-snippets yaml-mode xterm-color ws-butler winum which-key wgrep web-mode web-beautify volatile-highlights vi-tilde-fringe uuidgen use-package unfill toml-mode toc-org tide tagedit symon string-inflection sql-indent spaceline-all-the-icons smex slime-company slim-mode shell-pop seeing-is-believing scss-mode sass-mode rvm ruby-tools ruby-test-mode ruby-refactor ruby-hash-syntax rubocop rspec-mode robe restart-emacs rbenv rainbow-delimiters racer pug-mode projectile-rails prettier-js popwin persp-mode password-generator paradox ox-hugo overseer org-trello org-projectile org-present org-pomodoro org-mime org-download org-bullets org-brain open-junk-file ob-elixir neotree nameless mwim multi-term move-text monokai-theme mmm-mode minitest markdown-toc lorem-ipsum livid-mode link-hint json-navigator js2-refactor js-doc ivy-yasnippet ivy-xref ivy-rtags ivy-rich ivy-purpose ivy-hydra insert-shebang indent-guide impatient-mode hungry-delete hl-todo highlight-parentheses highlight-numbers highlight-indentation helm-make google-translate google-c-style golden-ratio godoctor go-tag go-rename go-impl go-guru go-gen-test go-fill-struct go-eldoc gnuplot git-gutter-fringe git-gutter-fringe+ gh-md fuzzy font-lock+ flycheck-rust flycheck-rtags flycheck-pos-tip flycheck-mix flycheck-credo flycheck-bashate flx-ido fish-mode fill-column-indicator feature-mode fancy-battery eyebrowse expand-region evil-visualstar evil-visual-mark-mode evil-unimpaired evil-tutor evil-surround evil-org evil-numbers evil-nerd-commenter evil-matchit evil-lisp-state evil-lion evil-indent-plus evil-iedit-state evil-goggles evil-exchange evil-escape evil-ediff evil-cleverparens evil-args evil-anzu eval-sexp-fu eshell-z eshell-prompt-extras esh-help erlang emmet-mode elisp-slime-nav editorconfig dumb-jump dotenv-mode doom-themes doom-modeline dockerfile-mode docker disaster direnv diminish diff-hl define-word dash-at-point csv-mode counsel-projectile counsel-dash counsel-css company-web company-terraform company-tern company-statistics company-shell company-rtags company-go company-c-headers common-lisp-snippets column-enforce-mode clean-aindent-mode clang-format chruby centered-cursor-mode cargo bundler browse-at-remote auto-yasnippet auto-highlight-symbol auto-compile alchemist aggressive-indent ace-window ace-link ac-ispell)))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
