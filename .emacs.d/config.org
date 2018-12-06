@@ -71,6 +71,7 @@
  #+END_SRC
 
 ** Emacs Initialization
+
 *** Package Sources
  #+BEGIN_SRC emacs-lisp
    ;;; Add load path for vendor directory
@@ -160,34 +161,36 @@
   Ensure the required system packages are installed, and copy over $PATH and other important environment variables.
 
 #+BEGIN_SRC emacs-lisp
-  (use-package exec-path-from-shell
-    :if (memq window-system '(mac ns x))
-    :config
-    (setq exec-path-from-shell-arguments '("-l"))
-    (exec-path-from-shell-initialize))
+(use-package exec-path-from-shell
+  :if (memq window-system '(mac ns x))
+  :config
+  (setq exec-path-from-shell-arguments '("-l"))
+  (exec-path-from-shell-initialize))
 
-  (use-package use-package-ensure-system-package
-      :functions use-package-ensure-system-package-exists?
-      :requires (exec-path-from-shell))
+(use-package use-package-ensure-system-package
+  :functions use-package-ensure-system-package-exists?
+  :requires (exec-path-from-shell))
 #+END_SRC
 
 *** Tame files inside of my ~/.emacs.d directory
   Save data files consistently:
-    - `save-place-file'
-    - `undo-tree-history-directory-alist'
-    - `backup-directory-alist'
-  #+BEGIN_SRC emacs-lisp
-    (use-package no-littering
-      :demand t
-      :config
-      (setq no-littering-var-directory
-            (expand-file-name "var/" user-emacs-directory))
-      (setq no-littering-etc-directory
-            (expand-file-name "etc/" user-emacs-directory))
-      (setq custom-file
-            (no-littering-expand-var-file-name "custom.el")))
+    - `save-place-file`
+    - `undo-tree-history-directory-alist`
+    - `backup-directory-alist`
+      
+#+BEGIN_SRC emacs-lisp
+(use-package no-littering
+  :demand t
+  :config
+  (setq no-littering-var-directory
+        (expand-file-name "var/" user-emacs-directory))
+  (setq no-littering-etc-directory
+        (expand-file-name "etc/" user-emacs-directory))
+  (setq custom-file
+        (no-littering-expand-var-file-name "custom.el")))
   #+END_SRC
 
+  
 ** Keybindings
 *** Keybinding help menu
 
@@ -371,6 +374,7 @@
        :keymaps ',(intern (format "%s-map" (eval mode)))
        ,@bindings))
  #+END_SRC
+ 
 ** Project Configuration
 *** Editorconfig
 Read files to set coding style options according to current project
@@ -425,6 +429,7 @@ Dynamically load ENV variables from .envrc, if present.
     :defer 2
     :ensure-system-package direnv)
 #+END_SRC
+
 
 ** Auto-Completion
 *** amx
@@ -757,6 +762,7 @@ Auto-completion framework for most modes
      ((t (:inherit company-tooltip-selection :weight bold :underline nil)))))
   #+END_SRC
 
+  
 ** Languages
 *** Complete
 **** Golang
@@ -1632,6 +1638,7 @@ Auto-completion framework for most modes
               (typescript-mode . tide-hl-identifier-mode)
               (before-save . tide-format-before-save)))
    #+END_SRC
+ 
 **** Web
 
 #+BEGIN_SRC emacs-lisp
@@ -1679,6 +1686,9 @@ Auto-completion framework for most modes
   (use-package scss-mode
     :mode "\\.scss$")
 
+  (use-package ssass-mode
+    :mode "\\.sass$")
+
   (use-package counsel-css
     :hook (css-mode . counsel-css-imenu-setup))
 
@@ -1690,6 +1700,7 @@ Auto-completion framework for most modes
       (sp-local-pair "/*" "*/"
                      :post-handlers '(("[d-3]||\n[i]" "RET") ("| " "SPC")))))
 #+END_SRC
+
 ** Search
 *** Swiper
 
@@ -1708,6 +1719,7 @@ Auto-completion framework for most modes
       :commands (rg rg-project rg-dwim rg-literal))
   #+END_SRC
 
+  
 ** Editing
 *** SmartParens Fn
   #+BEGIN_SRC emacs-lisp
@@ -1775,6 +1787,7 @@ Auto-completion framework for most modes
     (setq flyspell-correct-interface #'flyspell-correct-ivy))
 #+END_SRC
 
+
 ** Write Good
 
 #+BEGIN_SRC emacs-lisp
@@ -1782,6 +1795,7 @@ Auto-completion framework for most modes
     :defer t
     :hook (text-mode . writegood-mode))
 #+END_SRC
+
 
 ** Movement
 *** Evil
@@ -2143,6 +2157,7 @@ Directory tree
    "ft" 'neotree-toggle
    "pt" 'neotree-projectile-action)
   #+END_SRC
+  
 ** Visual
 *** UI, Theme, etc.
 
@@ -2243,6 +2258,7 @@ Directory tree
 
   #+END_SRC
 
+  
 ** Preferences
 *** Indentation
 
@@ -2278,6 +2294,7 @@ Directory tree
 
    #+END_SRC
 
+   
 ** Operating Systems
 *** Linux
   #+BEGIN_SRC emacs-lisp
@@ -2295,6 +2312,7 @@ Directory tree
         :if (eq system-type 'darwin))
   #+END_SRC
 
+  
 ** Built-in modes (Break down)
 
  #+BEGIN_SRC emacs-lisp
@@ -2458,171 +2476,172 @@ Directory tree
 *** Org Mode
 
     #+BEGIN_SRC emacs-lisp
-  (defun js/org-keybindings ()
-    "Define all keybindings we use in org mode."
-    (keymap-for-mode 'org-mode
-                     "'" 'org-edit-special
-                     "c" 'org-capture
+(defun js/org-keybindings ()
+  "Define all keybindings we use in org mode."
+  (keymap-for-mode 'org-mode
+                   "'" 'org-edit-special
+                   "c" 'org-capture
 
-                     ;; Clock
-                     ;; These keybindings should match those under the "aoC" prefix (below)
-                     "C" '(:ignore t :which-key "clocks")
-                     "Cc" 'org-clock-cancel
-                     "Cd" 'org-clock-display
-                     "Ce" 'org-evaluate-time-range
-                     "Cg" 'org-clock-goto
-                     "Ci" 'org-clock-in
-                     "CI" 'org-clock-in-last
-                     "Cj" 'org-clock-jump-to-current-clock
-                     "Co" 'org-clock-out
-                     "CR" 'org-clock-report
-                     "Cr" 'org-resolve-clocks
+                   ;; Clock
+                   ;; These keybindings should match those under the "aoC" prefix (below)
+                   "C" '(:ignore t :which-key "clocks")
+                   "Cc" 'org-clock-cancel
+                   "Cd" 'org-clock-display
+                   "Ce" 'org-evaluate-time-range
+                   "Cg" 'org-clock-goto
+                   "Ci" 'org-clock-in
+                   "CI" 'org-clock-in-last
+                   "Cj" 'org-clock-jump-to-current-clock
+                   "Co" 'org-clock-out
+                   "CR" 'org-clock-report
+                   "Cr" 'org-resolve-clocks
 
-                     "d" '(:ignore t :which-key "dates")
-                     "dd" 'org-deadline
-                     "ds" 'org-schedule
-                     "dt" 'org-time-stamp
-                     "dT" 'org-time-stamp-inactive
-                     "ee" 'org-export-dispatch
-                     "fi" 'org-feed-goto-inbox
-                     "fu" 'org-feed-update-all
+                   "d" '(:ignore t :which-key "dates")
+                   "dd" 'org-deadline
+                   "ds" 'org-schedule
+                   "dt" 'org-time-stamp
+                   "dT" 'org-time-stamp-inactive
+                   "ee" 'org-export-dispatch
+                   "fi" 'org-feed-goto-inbox
+                   "fu" 'org-feed-update-all
 
-                     "a" 'org-agenda
+                   "a" 'org-agenda
 
-                     "p" 'org-priority
+                   "p" 'org-priority
 
-                     "T" '(:ignore t :which-key "toggles")
-                     "Tc" 'org-toggle-checkbox
-                     "Te" 'org-toggle-pretty-entities
-                     "Ti" 'org-toggle-inline-images
-                     "Tl" 'org-toggle-link-display
-                     "Tt" 'org-show-todo-tree
-                     "TT" 'org-todo
-                     "TV" 'space-doc-mode
-                     "Tx" 'org-toggle-latex-fragment
+                   "T" '(:ignore t :which-key "toggles")
+                   "Tc" 'org-toggle-checkbox
+                   "Te" 'org-toggle-pretty-entities
+                   "Ti" 'org-toggle-inline-images
+                   "Tl" 'org-toggle-link-display
+                   "Tt" 'org-show-todo-tree
+                   "TT" 'org-todo
+                   "TV" 'space-doc-mode
+                   "Tx" 'org-toggle-latex-fragment
 
-                     ;; More cycling options (timestamps, headlines, items, properties)
-                     "L" 'org-shiftright
-                     "H" 'org-shiftleft
-                     "J" 'org-shiftdown
-                     "K" 'org-shiftup
+                   ;; More cycling options (timestamps, headlines, items, properties)
+                   "L" 'org-shiftright
+                   "H" 'org-shiftleft
+                   "J" 'org-shiftdown
+                   "K" 'org-shiftup
 
-                     ;; Change between TODO sets
-                     "C-S-l" 'org-shiftcontrolright
-                     "C-S-h" 'org-shiftcontrolleft
-                     "C-S-j" 'org-shiftcontroldown
-                     "C-S-k" 'org-shiftcontrolup
+                   ;; Change between TODO sets
+                   "C-S-l" 'org-shiftcontrolright
+                   "C-S-h" 'org-shiftcontrolleft
+                   "C-S-j" 'org-shiftcontroldown
+                   "C-S-k" 'org-shiftcontrolup
 
-                     ;; Subtree editing
-                     "s" '(:ignore t :which-key "trees/subtrees")
-                     "sa" 'org-toggle-archive-tag
-                     "sA" 'org-archive-subtree
-                     "sb" 'org-tree-to-indirect-buffer
-                     "sh" 'org-promote-subtree
-                     "sj" 'org-move-subtree-down
-                     "sk" 'org-move-subtree-up
-                     "sl" 'org-demote-subtree
-                     "sn" 'org-narrow-to-subtree
-                     "sN" 'widen
-                     "sr" 'org-refile
-                     "ss" 'org-sparse-tree
-                     "sS" 'org-sort
+                   ;; Subtree editing
+                   "s" '(:ignore t :which-key "trees/subtrees")
+                   "sa" 'org-toggle-archive-tag
+                   "sA" 'org-archive-subtree
+                   "sb" 'org-tree-to-indirect-buffer
+                   "sh" 'org-promote-subtree
+                   "sj" 'org-move-subtree-down
+                   "sk" 'org-move-subtree-up
+                   "sl" 'org-demote-subtree
+                   "sn" 'org-narrow-to-subtree
+                   "sN" 'widen
+                   "sr" 'org-refile
+                   "ss" 'org-sparse-tree
+                   "sS" 'org-sort
 
-                     ;; tables
-                     "t" '(:ignore t :which-key "tables")
-                     "ta" 'org-table-align
-                     "tb" 'org-table-blank-field
-                     "tc" 'org-table-convert
-                     "tdc" 'org-table-delete-column
-                     "tdr" 'org-table-kill-row
-                     "te" 'org-table-eval-formula
-                     "tE" 'org-table-export
-                     "th" 'org-table-previous-field
-                     "tH" 'org-table-move-column-left
+                   ;; tables
+                   "t" '(:ignore t :which-key "tables")
+                   "ta" 'org-table-align
+                   "tb" 'org-table-blank-field
+                   "tc" 'org-table-convert
+                   "tdc" 'org-table-delete-column
+                   "tdr" 'org-table-kill-row
+                   "te" 'org-table-eval-formula
+                   "tE" 'org-table-export
+                   "th" 'org-table-previous-field
+                   "tH" 'org-table-move-column-left
 
-                     "ti" '(:ignore t :which-key "insert")
-                     "tic" 'org-table-insert-column
-                     "tih" 'org-table-insert-hline
-                     "tiH" 'org-table-hline-and-move
-                     "tir" 'org-table-insert-row
+                   "ti" '(:ignore t :which-key "insert")
+                   "tic" 'org-table-insert-column
+                   "tih" 'org-table-insert-hline
+                   "tiH" 'org-table-hline-and-move
+                   "tir" 'org-table-insert-row
 
-                     "tI" 'org-table-import
-                     "tj" 'org-table-next-row
-                     "tJ" 'org-table-move-row-down
-                     "tK" 'org-table-move-row-up
-                     "tl" 'org-table-next-field
-                     "tL" 'org-table-move-column-right
-                     "tn" 'org-table-create
-                     "tN" 'org-table-create-with-table.el
-                     "tr" 'org-table-recalculate
-                     "ts" 'org-table-sort-lines
+                   "tI" 'org-table-import
+                   "tj" 'org-table-next-row
+                   "tJ" 'org-table-move-row-down
+                   "tK" 'org-table-move-row-up
+                   "tl" 'org-table-next-field
+                   "tL" 'org-table-move-column-right
+                   "tn" 'org-table-create
+                   "tN" 'org-table-create-with-table.el
+                   "tr" 'org-table-recalculate
+                   "ts" 'org-table-sort-lines
 
-                     "tt" '(:ignore t :which-key "toggle")
-                     "ttf" 'org-table-toggle-formula-debugger
-                     "tto" 'org-table-toggle-coordinate-overlays
+                   "tt" '(:ignore t :which-key "toggle")
+                   "ttf" 'org-table-toggle-formula-debugger
+                   "tto" 'org-table-toggle-coordinate-overlays
 
-                     "tw" 'org-table-wrap-region
+                   "tw" 'org-table-wrap-region
 
-                     ;; Source blocks / org-babel
-                     "b" '(:ignore t :which-key "babel")
-                     "bp"     'org-babel-previous-src-block
-                     "bn"     'org-babel-next-src-block
-                     "be"     'org-babel-execute-maybe
-                     "bo"     'org-babel-open-src-block-result
-                     "bv"     'org-babel-expand-src-block
-                     "bu"     'org-babel-goto-src-block-head
-                     "bg"     'org-babel-goto-named-src-block
-                     "br"     'org-babel-goto-named-result
-                     "bb"     'org-babel-execute-buffer
-                     "bs"     'org-babel-execute-subtree
-                     "bd"     'org-babel-demarcate-block
-                     "bt"     'org-babel-tangle
-                     "bf"     'org-babel-tangle-file
-                     "bc"     'org-babel-check-src-block
-                     "bj"     'org-babel-insert-header-arg
-                     "bl"     'org-babel-load-in-session
-                     "bi"     'org-babel-lob-ingest
-                     "bI"     'org-babel-view-src-block-info
-                     "bz"     'org-babel-switch-to-session
-                     "bZ"     'org-babel-switch-to-session-with-code
-                     "ba"     'org-babel-sha1-hash
-                     "bx"     'org-babel-do-key-sequence-in-edit-buffer
-                     "b."     'spacemacs/org-babel-transient-state/body
-                     ;; Multi-purpose keys
-                     "," 'org-ctrl-c-ctrl-c
-                     "*" 'org-ctrl-c-star
-                     "-" 'org-ctrl-c-minus
-                     "#" 'org-update-statistics-cookies
-                     "RET"   'org-ctrl-c-ret
-                     "M-RET" 'org-meta-return
-                     ;; attachments
-                     "A" 'org-attach
-                     ;; insertion
-                     "i" '(:ignore t :which-key "insert")
-                     "id" 'org-insert-drawer
-                     "ie" 'org-set-effort
-                     "if" 'org-footnote-new
-                     "ih" 'org-insert-heading
-                     "iH" 'org-insert-heading-after-current
-                     "iK" 'spacemacs/insert-keybinding-org
-                     "il" 'org-insert-link
-                     "in" 'org-add-note
-                     "ip" 'org-set-property
-                     "is" 'org-insert-subheading
-                     "it" 'org-set-tags
+                   ;; Source blocks / org-babel
+                   "b" '(:ignore t :which-key "babel")
+                   "bp" 'org-babel-previous-src-block
+                   "bn" 'org-babel-next-src-block
+                   "be" 'org-babel-execute-maybe
+                   "bo" 'org-babel-open-src-block-result
+                   "bv" 'org-babel-expand-src-block
+                   "bu" 'org-babel-goto-src-block-head
+                   "bg" 'org-babel-goto-named-src-block
+                   "br" 'org-babel-goto-named-result
+                   "bb" 'org-babel-execute-buffer
+                   "bs" 'org-babel-execute-subtree
+                   "bd" 'org-babel-demarcate-block
+                   "bt" 'org-babel-tangle
+                   "bf" 'org-babel-tangle-file
+                   "bc" 'org-babel-check-src-block
+                   "bj" 'org-babel-insert-header-arg
+                   "bl" 'org-babel-load-in-session
+                   "bi" 'org-babel-lob-ingest
+                   "bI" 'org-babel-view-src-block-info
+                   "bz" 'org-babel-switch-to-session
+                   "bZ" 'org-babel-switch-to-session-with-code
+                   "ba" 'org-babel-sha1-hash
+                   "bx" 'org-babel-do-key-sequence-in-edit-buffer
+                   ;; "b." 'spacemacs/org-babel-transient-state/body
 
-                     "x" '(:ignore t :which-key "text")
-                     ;; region manipulation
+                   ;; Multi-purpose keys
+                   "," 'org-ctrl-c-ctrl-c
+                   "*" 'org-ctrl-c-star
+                   "-" 'org-ctrl-c-minus
+                   "#" 'org-update-statistics-cookies
+                   "RET"   'org-ctrl-c-ret
+                   "M-RET" 'org-meta-return
+                   ;; attachments
+                   "A" 'org-attach
+                   ;; insertion
+                   "i" '(:ignore t :which-key "insert")
+                   "id" 'org-insert-drawer
+                   "ie" 'org-set-effort
+                   "if" 'org-footnote-new
+                   "ih" 'org-insert-heading
+                   "iH" 'org-insert-heading-after-current
+                   "iK" 'spacemacs/insert-keybinding-org
+                   "il" 'org-insert-link
+                   "in" 'org-add-note
+                   "ip" 'org-set-property
+                   "is" 'org-insert-subheading
+                   "it" 'org-set-tags
 
-                     ;; "xb" (spacemacs|org-emphasize spacemacs/org-bold ?*)
-                     ;; "xc" (spacemacs|org-emphasize spacemacs/org-code ?~)
-                     ;; "xi" (spacemacs|org-emphasize spacemacs/org-italic ?/)
-                     "xo" 'org-open-at-point
-                     ;; "xr" (spacemacs|org-emphasize spacemacs/org-clear ? )
-                     ;; "xs" (spacemacs|org-emphasize spacemacs/org-strike-through ?+)
-                     ;; "xu" (spacemacs|org-emphasize spacemacs/org-underline ?_)
-                     ;; "xv" (spacemacs|org-emphasize spacemacs/org-verbatim ?=) )
-                     ))
+                   "x" '(:ignore t :which-key "text")
+                   ;; region manipulation
+
+                   ;; "xb" (spacemacs|org-emphasize spacemacs/org-bold ?*)
+                   ;; "xc" (spacemacs|org-emphasize spacemacs/org-code ?~)
+                   ;; "xi" (spacemacs|org-emphasize spacemacs/org-italic ?/)
+                   "xo" 'org-open-at-point
+                   ;; "xr" (spacemacs|org-emphasize spacemacs/org-clear ? )
+                   ;; "xs" (spacemacs|org-emphasize spacemacs/org-strike-through ?+)
+                   ;; "xu" (spacemacs|org-emphasize spacemacs/org-underline ?_)
+                   ;; "xv" (spacemacs|org-emphasize spacemacs/org-verbatim ?=) )
+                   ))
 #+END_SRC
 
 #+BEGIN_SRC emacs-lisp
@@ -2716,6 +2735,7 @@ Add special keybindings to org mode that work well with evil mode.
                      "n" 'pdf-view-midnight-minor-mode))
   #+END_SRC
 
+  
 ** Apps
 *** Riot / Matrix client
 
