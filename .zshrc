@@ -92,4 +92,3 @@ source ~/.zpluginrc
 
 # Aliases
 [[ -f ~/.aliases ]] && source ~/.aliases
-

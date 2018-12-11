@@ -1,16 +1,12 @@
 #+TITLE: Emacs Literate Configuration
 #+AUTHOR: Justin Smestad
 #+PROPERTY: header-args :tangle yes
+#+STARTUP: indent
 
-* Configuration
-:PROPERTIES:
-:VISIBILITY: children
-:END:
 
-** Table of Contents :TOC_3_gh:
+* Table of Contents                                                :TOC_3_gh:
 - [[#configuration][Configuration]]
-  - [[#identity][Identity]]
-  - [[#emacs-initialization][Emacs Initialization]]
+  - [[#boot][Boot]]
     - [[#package-sources][Package Sources]]
     - [[#use-package][use-package]]
     - [[#package-updater][Package Updater]]
@@ -19,59 +15,62 @@
     - [[#run-time-environment][Run-time environment]]
     - [[#tame-files-inside-of-my-emacsd-directory][Tame files inside of my ~/.emacs.d directory]]
   - [[#keybindings][Keybindings]]
-    - [[#keybinding-help-menu][Keybinding help menu]]
+    - [[#which-key][Which Key]]
     - [[#generalel][general.el]]
-    - [[#global-keybinding-configuration-macro][Global keybinding configuration macro]]
-    - [[#major-mode-keybinding-configuration-macro][Major Mode keybinding configuration macro]]
-    - [[#evil-keybinding-macro-for-major-mode][Evil keybinding macro for major mode]]
-  - [[#project-configuration][Project Configuration]]
+    - [[#keybinding-macro-functions][Keybinding Macro Functions]]
+    - [[#evil][Evil]]
+    - [[#evil-extensions][Evil Extensions]]
+  - [[#utilities][Utilities]]
     - [[#editorconfig][Editorconfig]]
     - [[#projectile][Projectile]]
     - [[#direnv][Direnv]]
-  - [[#auto-completion][Auto-Completion]]
     - [[#amx][amx]]
     - [[#ivy][Ivy]]
     - [[#counsel][Counsel]]
     - [[#company][Company]]
+    - [[#neotree][Neotree]]
+    - [[#smartparens][SmartParens]]
+    - [[#rainbow-delimiters][Rainbow Delimiters]]
+    - [[#indentation][Indentation]]
+    - [[#jump-to-definition][Jump to Definition]]
+    - [[#whitespace-management][Whitespace Management]]
+    - [[#auto-revert][Auto Revert]]
+    - [[#undo-tree][Undo Tree]]
+    - [[#unfill][Unfill]]
+    - [[#code-folding][Code Folding]]
+    - [[#code-snippets][Code Snippets]]
+    - [[#highlight-todo--fixme-comments][Highlight TODO & FIXME comments]]
+    - [[#swiper][Swiper]]
+    - [[#search-backends][Search Backends]]
   - [[#languages][Languages]]
     - [[#complete][Complete]]
     - [[#in-development--incomplete][In Development / Incomplete]]
-  - [[#search][Search]]
-    - [[#swiper][Swiper]]
-    - [[#ripgrep][Ripgrep]]
   - [[#editing][Editing]]
-    - [[#smartparens-fn][SmartParens Fn]]
     - [[#syntax-checking][Syntax Checking]]
     - [[#spell-checking][Spell Checking]]
-  - [[#write-good][Write Good]]
-  - [[#movement][Movement]]
-    - [[#evil][Evil]]
-    - [[#neotree][Neotree]]
-  - [[#visual][Visual]]
-    - [[#ui-theme-etc][UI, Theme, etc.]]
-    - [[#highlight-todo--fixme-comments][Highlight TODO & FIXME comments]]
+    - [[#write-good][Write Good]]
   - [[#preferences][Preferences]]
-    - [[#indentation][Indentation]]
-    - [[#other][Other]]
-  - [[#operating-systems][Operating Systems]]
-    - [[#linux][Linux]]
-    - [[#macos][macOS]]
   - [[#built-in-modes-break-down][Built-in modes (Break down)]]
-  - [[#tools][Tools]]
+    - [[#window-management][Window Management]]
+    - [[#file-management][File Management]]
+    - [[#version-control][Version Control]]
+    - [[#dired][Dired]]
+    - [[#line-numbers][Line Numbers]]
+    - [[#buffer-names][Buffer Names]]
+    - [[#shell-mode][Shell Mode]]
+    - [[#recent-files][Recent Files]]
+    - [[#eldoc][Eldoc]]
+    - [[#shell-emulator][Shell Emulator]]
+    - [[#better-help-buffers][Better Help buffers]]
     - [[#org-mode][Org Mode]]
+  - [[#tools][Tools]]
     - [[#pdf][PDF]]
   - [[#apps][Apps]]
     - [[#riot--matrix-client][Riot / Matrix client]]
+  - [[#os-specific-changes][OS-Specific changes]]
 
-** Identity
-
- #+BEGIN_SRC emacs-lisp
-   (customize-set-variable 'user-full-name "Justin Smestad")
-   (customize-set-variable 'user-mail-address "justin.smestad@gmail.com")
- #+END_SRC
-
-** Emacs Initialization
-
+* Configuration
+** Boot
 *** Package Sources
  #+BEGIN_SRC emacs-lisp
    ;;; Add load path for vendor directory
@@ -173,10 +172,10 @@
 #+END_SRC
 
 *** Tame files inside of my ~/.emacs.d directory
-  Save data files consistently:
-    - `save-place-file`
-    - `undo-tree-history-directory-alist`
-    - `backup-directory-alist`
+Save data files consistently:
+ - `save-place-file`
+ - `undo-tree-history-directory-alist`
+ - `backup-directory-alist`
       
 #+BEGIN_SRC emacs-lisp
 (use-package no-littering
@@ -189,10 +188,9 @@
   (setq custom-file
         (no-littering-expand-var-file-name "custom.el")))
   #+END_SRC
-
   
 ** Keybindings
-*** Keybinding help menu
+*** Which Key
 
 #+BEGIN_SRC emacs-lisp
   (use-package which-key
@@ -331,7 +329,7 @@
         "w=" '(balance-windows :which-key "balance window split")))
   #+END_SRC
 
-*** Global keybinding configuration macro
+*** Keybinding Macro Functions
 
 #+BEGIN_SRC emacs-lisp
   (defmacro global-keymap (&rest bindings)
@@ -342,8 +340,6 @@
        :states '(normal emacs)
        ,@bindings))
 #+END_SRC
-
-*** Major Mode keybinding configuration macro
 
 #+BEGIN_SRC emacs-lisp
   (defmacro keymap-for-mode (mode key def &rest bindings)
@@ -361,8 +357,8 @@
          :keymaps ',(intern (format "%s-map" (eval mode)))
          ,@mode-bindings)))
 #+END_SRC
-
-*** Evil keybinding macro for major mode
+ 
+*** Evil
  #+BEGIN_SRC emacs-lisp
    (defmacro evil-keymap-for-mode (mode &rest bindings)
      "Add BINDINGS to evil for the provided MODE.
@@ -374,8 +370,125 @@
        :keymaps ',(intern (format "%s-map" (eval mode)))
        ,@bindings))
  #+END_SRC
- 
-** Project Configuration
+
+#+BEGIN_SRC emacs-lisp
+  (use-package evil
+    :init (evil-mode 1)
+    :custom
+    (evil-want-C-u-scroll t)
+    (evil-want-Y-yank-to-eol t)
+    (evil-shift-width 2)
+    (evil-want-integration nil)
+    :config
+    (setq evil-want-visual-char-semi-exclusive t
+          evil-magic t
+          evil-echo-state t
+          evil-indent-convert-tabs t
+          evil-ex-search-vim-style-regexp t
+          evil-ex-substitute-global t
+          evil-ex-visual-char-range t  ; column range for ex commands
+          evil-insert-skip-empty-lines t
+          evil-mode-line-format 'nil
+          evil-respect-visual-line-mode t
+          ;; more vim-like behavior
+          evil-symbol-word-search t
+          ;; don't activate mark on shift-click
+          shift-select-mode nil
+          ;; cursor appearance
+          evil-default-cursor '+evil-default-cursor
+          evil-normal-state-cursor 'box
+          ;; evil-emacs-state-cursor  '(box +evil-emacs-cursor)
+          evil-insert-state-cursor 'bar
+          evil-visual-state-cursor 'hollow)
+    (fset 'evil-visual-update-x-selection 'ignore)
+    ;; Change the cursor color in emacs mode
+    (defvar +evil--default-cursor-color
+      (or (ignore-errors (frame-parameter nil 'cursor-color))
+          "#ffffff"))
+
+    (defun +evil-default-cursor () (set-cursor-color +evil--default-cursor-color))
+    (defun +evil-emacs-cursor () (set-cursor-color (face-foreground 'warning)))
+
+    (defun +evil|update-cursor-color ()
+      (setq +evil--default-cursor-color (face-background 'cursor)))
+    (add-hook 'doom-load-theme-hook #'+evil|update-cursor-color)
+    (defun +evil|update-shift-width ()
+      (setq evil-shift-width tab-width))
+    (add-hook 'after-change-major-mode-hook #'+evil|update-shift-width t)
+    :general
+    (general-define-key
+     :states 'insert
+     "C-v" 'cua-paste
+     "C-c" 'cua-copy-region
+     "C-x" 'cua-cut-region
+     "C-z" 'undo-tree-undo
+     "C-Z" 'undo-tree-redo))
+#+END_SRC
+
+*** Evil Extensions
+
+Use `fd` to escape from evil-insert-mode.
+#+BEGIN_SRC emacs-lisp
+  (use-package evil-escape
+    :requires evil
+    :init (evil-escape-mode 1)
+    :delight
+    :custom
+    (evil-escape-delay 0.2))
+#+END_SRC
+
+Highlight a region and use S-{ (or whatever you want to region with)
+#+BEGIN_SRC emacs-lisp
+  (use-package evil-surround
+    :defer 5
+    :init (global-evil-surround-mode 1))
+#+END_SRC
+
+Use % to cycle between blocks, parens, quotes, etc.
+#+BEGIN_SRC emacs-lisp
+  (use-package evil-matchit
+    :defer 5
+    :init (global-evil-matchit-mode))
+#+END_SRC
+
+#+BEGIN_SRC emacs-lisp
+  (use-package evil-goggles
+    :defer 5
+    :delight
+    :custom
+    (evil-goggles-duration 0.1)
+    (evil-goggles-enable-delete nil)
+    :init
+    (evil-goggles-mode))
+#+END_SRC
+
+#+BEGIN_SRC emacs-lisp
+  (use-package evil-easymotion
+    :defer 5
+    :delight)
+#+END_SRC
+
+#+BEGIN_SRC emacs-lisp
+  (use-package evil-quickscope
+    :defer t
+    :delight
+    :init (global-evil-quickscope-mode 1))
+#+END_SRC
+
+#+BEGIN_SRC emacs-lisp
+  (use-package evil-commentary
+    :defer t
+    :delight
+    :init (evil-commentary-mode))
+#+END_SRC
+
+#+BEGIN_SRC emacs-lisp
+  (use-package evil-string-inflection
+    :requires evil
+    :defer t)
+#+END_SRC
+
+** Utilities
 *** Editorconfig
 Read files to set coding style options according to current project
 
@@ -430,8 +543,6 @@ Dynamically load ENV variables from .envrc, if present.
     :ensure-system-package direnv)
 #+END_SRC
 
-
-** Auto-Completion
 *** amx
 A more active fork of smex.
 #+BEGIN_SRC emacs-lisp
@@ -440,138 +551,142 @@ A more active fork of smex.
 #+END_SRC
 
 *** Ivy
-  Buffer completion. Like Helm, but lighter and easier to understand.
+Buffer completion. Like Helm, but lighter and easier to understand.
 
-  #+BEGIN_SRC emacs-lisp
-    (use-package ivy
-      :demand
-      :delight
-      :custom
-      (ivy-use-virtual-buffers t)
-      (ivy-count-format "(%d/%d) ")
-      (ivy-wrap t)
-      (ivy-display-style 'fancy)
-      (ivy-format-function 'ivy-format-function-line)
-      (ivy-initial-inputs-alist nil)
-      (ivy-re-builders-alist
-       ;; allow input not in order
-       '((t . ivy--regex-ignore-order)))
-      (ivy-use-selectable-prompt t))
+#+BEGIN_SRC emacs-lisp
+  (use-package ivy
+    :demand
+    :delight
+    :custom
+    (ivy-use-virtual-buffers t)
+    (ivy-count-format "(%d/%d) ")
+    (ivy-wrap t)
+    (ivy-display-style 'fancy)
+    (ivy-format-function 'ivy-format-function-line)
+    (ivy-initial-inputs-alist nil)
+    (ivy-re-builders-alist
+     ;; allow input not in order
+     '((t . ivy--regex-ignore-order)))
+    (ivy-use-selectable-prompt t))
+#+END_SRC
 
-    (use-package doom-todo-ivy
-      :ensure nil
-      :commands doom/ivy-tasks
-      :load-path "vendor/"
-      :config
-      (global-keymap
-       "p T" '(doom/ivy-tasks :which-key "List project tasks")))
+#+BEGIN_SRC emacs-lisp
+  (use-package doom-todo-ivy
+    :ensure nil
+    :commands doom/ivy-tasks
+    :load-path "vendor/"
+    :config
+    (global-keymap
+     "p T" '(doom/ivy-tasks :which-key "List project tasks")))
+#+END_SRC
 
-    (use-package ivy-rich
-      :disabled
-      :load-path "vendor/"
-      ;; :defer 2
-      :after ivy
-      :custom
-      (ivy-virtual-abbreviate 'full)
-      (ivy-rich-switch-buffer-align-virtual-buffer t)
-      (ivy-rich-path-style 'abbrev)
-      :config
-      (ivy-rich-mode 1))
+#+BEGIN_SRC emacs-lisp
+  (use-package ivy-rich
+    :after ivy
+    :custom
+    (ivy-virtual-abbreviate 'full)
+    (ivy-rich-switch-buffer-align-virtual-buffer t)
+    (ivy-rich-path-style 'abbrev)
+    :config
+    (ivy-rich-mode 1))
+#+END_SRC
 
-    (use-package ivy-posframe
-      :hook (ivy-mode . ivy-posframe-enable)
-      :defines ivy-posframe-parameters
-      :preface
-      ;; This function searches the entire `obarray' just to populate
-      ;; `ivy-display-functions-props'. There are 15k entries in mine! This is
-      ;; wasteful, so...
-      (advice-add #'ivy-posframe-setup :override #'ignore)
-      :config
-      (setq ivy-fixed-height-minibuffer nil
-            ivy-posframe-parameters
-            `((min-width . 90)
-              (min-height . ,ivy-height)
-              (internal-border-width . 10)))
+This may not work on macOS yet...
+#+BEGIN_SRC emacs-lisp
+  (use-package ivy-posframe
+    :hook (ivy-mode . ivy-posframe-enable)
+    :defines ivy-posframe-parameters
+    :preface
+    ;; This function searches the entire `obarray' just to populate
+    ;; `ivy-display-functions-props'. There are 15k entries in mine! This is
+    ;; wasteful, so...
+    (advice-add #'ivy-posframe-setup :override #'ignore)
+    :config
+    (setq ivy-fixed-height-minibuffer nil
+          ivy-posframe-parameters
+          `((min-width . 90)
+            (min-height . ,ivy-height)
+            (internal-border-width . 10)))
 
-      ;; ... let's do it manually instead
-      (unless (assq 'ivy-posframe-display-at-frame-bottom-left ivy-display-functions-props)
-        (dolist (fn (list 'ivy-posframe-display-at-frame-bottom-left
-                          'ivy-posframe-display-at-frame-center
-                          'ivy-posframe-display-at-point
-                          'ivy-posframe-display-at-frame-bottom-window-center
-                          'ivy-posframe-display
-                          'ivy-posframe-display-at-window-bottom-left
-                          'ivy-posframe-display-at-window-center
-                          '+ivy-display-at-frame-center-near-bottom))
-          (push (cons fn '(:cleanup ivy-posframe-cleanup)) ivy-display-functions-props)))
-      ;; default to posframe display function
-      (setf (alist-get t ivy-display-functions-alist) #'+ivy-display-at-frame-center-near-bottom)
+    ;; ... let's do it manually instead
+    (unless (assq 'ivy-posframe-display-at-frame-bottom-left ivy-display-functions-props)
+      (dolist (fn (list 'ivy-posframe-display-at-frame-bottom-left
+                        'ivy-posframe-display-at-frame-center
+                        'ivy-posframe-display-at-point
+                        'ivy-posframe-display-at-frame-bottom-window-center
+                        'ivy-posframe-display
+                        'ivy-posframe-display-at-window-bottom-left
+                        'ivy-posframe-display-at-window-center
+                        '+ivy-display-at-frame-center-near-bottom))
+        (push (cons fn '(:cleanup ivy-posframe-cleanup)) ivy-display-functions-props)))
+    ;; default to posframe display function
+    (setf (alist-get t ivy-display-functions-alist) #'+ivy-display-at-frame-center-near-bottom)
 
-      ;; posframe doesn't work well with async sources
-      (dolist (fn '(swiper counsel-ag counsel-grep counsel-git-grep))
-        (setf (alist-get fn ivy-display-functions-alist) #'ivy-display-function-fallback)))
-  #+END_SRC
+    ;; posframe doesn't work well with async sources
+    (dolist (fn '(swiper counsel-ag counsel-grep counsel-git-grep))
+      (setf (alist-get fn ivy-display-functions-alist) #'ivy-display-function-fallback)))
+#+END_SRC
 
 *** Counsel
 
-  #+BEGIN_SRC emacs-lisp
-    (use-package counsel
-      :commands (counsel-M-x counsel-find-file)
-      :custom
-      (counsel-mode-override-describe-bindings t)
-      :general
-      (general-define-key
-       "M-x" 'counsel-M-x
-       "C-x C-f" 'counsel-find-file))
+#+BEGIN_SRC emacs-lisp
+  (use-package counsel
+    :commands (counsel-M-x counsel-find-file)
+    :custom
+    (counsel-mode-override-describe-bindings t)
+    :general
+    (general-define-key
+     "M-x" 'counsel-M-x
+     "C-x C-f" 'counsel-find-file))
 
-    (use-package counsel-projectile
-      :commands (counsel-projectile-switch-to-buffer
-                 counsel-projectile-find-dir
-                 counsel-projectile-find-file
-                 counsel-projectile-switch-project
-                 counsel-projectile-rg))
+  (use-package counsel-projectile
+    :commands (counsel-projectile-switch-to-buffer
+               counsel-projectile-find-dir
+               counsel-projectile-find-file
+               counsel-projectile-switch-project
+               counsel-projectile-rg))
 
-    (global-keymap
-     "pb" '(counsel-projectile-switch-to-buffer
-            :which-key "switch to buffer")
-     "pd" '(counsel-projectile-find-dir
-            :which-key "find directory")
-     "pf" '(counsel-projectile-find-file
-            :which-key "open file")
-     "pp" '(counsel-projectile-switch-project
-            :which-key "open project")
-     "ps" '(counsel-projectile-rg
-            :which-key "search in project"))
+  (global-keymap
+   "pb" '(counsel-projectile-switch-to-buffer
+          :which-key "switch to buffer")
+   "pd" '(counsel-projectile-find-dir
+          :which-key "find directory")
+   "pf" '(counsel-projectile-find-file
+          :which-key "open file")
+   "pp" '(counsel-projectile-switch-project
+          :which-key "open project")
+   "ps" '(counsel-projectile-rg
+          :which-key "search in project"))
 
-    (use-package counsel-dash
-      :commands counsel-dash
-      :hook
-      ((lisp-mode . (lambda ()
-                      (setq-local counsel-dash-docsets '("Common_Lisp"))))
-       (emacs-lisp-mode . (lambda ()
-                            (setq-local counsel-dash-docsets '("Emacs_Lisp"))))
-       (ruby-mode . (lambda ()
-                      (setq-local counsel-dash-docsets '("Ruby"))))
-       (projectile-rails-mode . (lambda ()
-                                  (setq-local counsel-dash-docsets '("Ruby_on_Rails_5"))))
-       (sql-mode . (lambda ()
-                     (setq-local counsel-dash-docsets '("PostgreSQL"))))
-       (web-mode . (lambda ()
-                     (setq-local counsel-dash-docsets '("Javascript" "HTML")))))
-      :custom
-      (counsel-dash-browser-func 'eww)
-      (counsel-dash-common-docsets '()))
+  (use-package counsel-dash
+    :commands counsel-dash
+    :hook
+    ((lisp-mode . (lambda ()
+                    (setq-local counsel-dash-docsets '("Common_Lisp"))))
+     (emacs-lisp-mode . (lambda ()
+                          (setq-local counsel-dash-docsets '("Emacs_Lisp"))))
+     (ruby-mode . (lambda ()
+                    (setq-local counsel-dash-docsets '("Ruby"))))
+     (projectile-rails-mode . (lambda ()
+                                (setq-local counsel-dash-docsets '("Ruby_on_Rails_5"))))
+     (sql-mode . (lambda ()
+                   (setq-local counsel-dash-docsets '("PostgreSQL"))))
+     (web-mode . (lambda ()
+                   (setq-local counsel-dash-docsets '("Javascript" "HTML")))))
+    :custom
+    (counsel-dash-browser-func 'eww)
+    (counsel-dash-common-docsets '()))
 
-    (use-package counsel-etags
-      :requires counsel
-      :commands (counsel-etags-find-tag-at-point
-                 counsel-etags-scan-code
-                 counsel-etags-grep
-                 counsel-etags-grep-symbol-at-point
-                 counsel-etags-recent-tag
-                 counsel-etags-find-tag
-                 counsel-etags-list-tag))
-  #+END_SRC
+  (use-package counsel-etags
+    :requires counsel
+    :commands (counsel-etags-find-tag-at-point
+               counsel-etags-scan-code
+               counsel-etags-grep
+               counsel-etags-grep-symbol-at-point
+               counsel-etags-recent-tag
+               counsel-etags-find-tag
+               counsel-etags-list-tag))
+#+END_SRC
 
 *** Company
 Auto-completion framework for most modes
@@ -762,7 +877,250 @@ Auto-completion framework for most modes
      ((t (:inherit company-tooltip-selection :weight bold :underline nil)))))
   #+END_SRC
 
+*** Neotree
+Directory tree
+
+#+BEGIN_SRC emacs-lisp
+  (use-package neotree
+    :commands (neotree-toggle neotree-projectile-action)
+    :config
+    (setq neo-create-file-auto-open t
+          neo-modern-sidebar t
+          neo-point-auto-indent nil
+          neo-theme (if (display-graphic-p) 'icons 'arrow)
+          neo-window-fixed-size nil
+          neo-window-width 28
+          neo-show-hidden-files t
+          neo-keymap-style 'concise)
+    (general-nmap neotree-mode-map
+      "RET" 'neotree-enter
+      "TAB" 'neotree-stretch-toggle
+      "q" 'neotree-hide
+      "|" 'neotree-enter-vertical-split
+      "-" 'neotree-enter-horizontal-split
+      "'" 'neotree-quick-look
+      "c" 'neotree-create-node
+      "C" 'neotree-copy-node
+      "d" 'neotree-delete-node
+      "gr" 'neotree-refresh
+      "H" 'neotree-select-previous-sibling-node
+      "j" 'neotree-next-line
+      "J" 'neotree-select-down-node
+      "k" 'neotree-previous-line
+      "K" 'neotree-select-up-node
+      "L" 'neotree-select-next-sibling-node
+      "q" 'neotree-hide
+      "o" 'neotree-enter
+      "r" 'neotree-rename-node
+      "R" 'neotree-change-root
+      "I" 'neotree-hidden-file-toggle))
+
+  (global-keymap
+   "ft" 'neotree-toggle
+   "pt" 'neotree-projectile-action)
+#+END_SRC
   
+*** SmartParens
+#+BEGIN_SRC emacs-lisp
+  (defun js|smartparens-pair-newline (id action context)
+    (save-excursion
+      (newline)
+      (indent-according-to-mode)))
+
+  (defun js|smartparens-pair-newline-and-indent (id action context)
+    (js|smartparens-pair-newline id action context)
+    (indent-according-to-mode))
+
+  (use-package smartparens
+    :defer 2
+    :config
+    (require 'smartparens-config)
+    (setq sp-highlight-pair-overlay nil
+          sp-highlight-wrap-overlay nil
+          sp-highlight-wrap-tag-overlay nil
+          sp-show-pair-from-inside t
+          sp-cancel-autoskip-on-backward-movement nil
+          sp-show-pair-delay 0.1
+          sp-max-pair-length 4
+          sp-max-prefix-length 50
+          sp-escape-quotes-after-insert nil)
+    ;; Smartparens' navigation feature is neat, but does not justify how expensive
+    ;; it is. It's also less useful for evil users. This may need to be
+    ;; reactivated for non-evil users though. Needs more testing!
+    (defun js|disable-smartparens-navigate-skip-match ()
+      (setq sp-navigate-skip-match nil
+            sp-navigate-consider-sgml-tags nil))
+    (add-hook 'after-change-major-mode-hook #'js|disable-smartparens-navigate-skip-match)
+
+    ;; autopairing in `eval-expression' and `evil-ex'
+    (defun js|init-smartparens-in-eval-expression ()
+      "Enable `smartparens-mode' in the minibuffer, during `eval-expression' or
+    `evil-ex'."
+      (when (memq this-command '(eval-expression evil-ex))
+        (smartparens-mode)))
+    (add-hook 'minibuffer-setup-hook #'js|init-smartparens-in-eval-expression)
+    (sp-local-pair 'minibuffer-inactive-mode "'" nil :actions nil)
+
+    ;; smartparens breaks evil-mode's replace state
+    (add-hook 'evil-replace-state-entry-hook #'turn-off-smartparens-mode)
+    (add-hook 'evil-replace-state-exit-hook  #'turn-on-smartparens-mode)
+    (smartparens-global-mode +1))
+#+END_SRC
+
+*** Rainbow Delimiters
+Highlight matching delimiters with unique colors.
+#+BEGIN_SRC emacs-lisp
+  (use-package rainbow-delimiters
+    :defer t
+    :hook (prog-mode . rainbow-delimiters-mode))
+#+END_SRC
+
+*** Indentation
+Adapt to foreign indentation offsets
+#+BEGIN_SRC emacs-lisp
+  (use-package dtrt-indent
+    :defer t
+    :delight
+    :custom (dtrt-indent-min-quality 60)
+    :init (dtrt-indent-global-mode))
+#+END_SRC
+
+In CSS and Emacs Lisp, be aggressive in reformatting
+#+BEGIN_SRC emacs-lisp
+  (use-package aggressive-indent
+    :defer t
+    :hook ((emacs-lisp-mode . aggressive-indent-mode)
+           (css-mode . aggressive-indent-mode)))
+#+END_SRC
+
+Help wrap long lines
+#+BEGIN_SRC emacs-lisp
+  (use-package adaptive-wrap
+    :defer t
+    :config (adaptive-wrap-prefix-mode))
+#+END_SRC
+
+*** Jump to Definition
+#+BEGIN_SRC emacs-lisp
+  (use-package dumb-jump
+    :commands (dump-jump-go
+               dumb-jump-go-other-window
+               dump-jump-go-prompt
+               dump-jump-go-prefer-external
+               dumb-jump-go-prefer-external-other-window)
+    :custom
+    (dumb-jump-selector 'ivy))
+#+END_SRC
+*** Whitespace Management
+#+BEGIN_SRC emacs-lisp
+  (use-package whitespace
+    :defer 5
+    :custom
+    (whitespace-line-column fill-column)
+    (whitespace-style
+     '(face indentation tabs tab-mark spaces space-mark newline newline-mark
+            trailing lines-tail))
+    (whitespace-display-mappings
+     '((tab-mark ?\t [?› ?\t])
+       (newline-mark ?\n [?¬ ?\n])
+       (space-mark ?\ [?·] [?.])))
+    :config
+    (add-hook 'before-save 'delete-trailing-whitespace))
+#+END_SRC
+
+#+BEGIN_SRC emacs-lisp
+  (use-package ws-butler
+    :delight
+    :defer t
+    :config
+    (setq ws-butler-global-exempt-modes
+          (append ws-butler-global-exempt-modes
+                  '(special-mode comint-mode term-mode eshell-mode)))
+    (ws-butler-global-mode))
+#+END_SRC
+
+*** Auto Revert
+#+BEGIN_SRC emacs-lisp
+  (use-package autorevert
+    :ensure nil
+    :defer t
+    :delight auto-revert-mode
+    :config
+    (setq auto-revert-verbose nil)
+    (global-auto-revert-mode +1))
+#+END_SRC
+
+*** Undo Tree
+#+BEGIN_SRC emacs-lisp
+  (use-package undo-tree
+    :delight
+    :custom
+    (undo-tree-auto-save-history nil)
+    :hook (after-init . global-undo-tree-mode))
+#+END_SRC
+
+*** Unfill
+#+BEGIN_SRC emacs-lisp
+  (use-package unfill
+    :disabled
+    :bind ([remap fill-paragraph] . #'unfill-toggle))
+#+END_SRC
+
+*** Code Folding
+#+BEGIN_SRC emacs-lisp
+  (use-package hideshow
+    :functions hs-toggle-hiding
+    :ensure nil
+    :delight
+    :config
+    (progn
+      (defun toggle-fold ()
+        (interactive)
+        (save-excursion
+          (end-of-line)
+          (hs-toggle-hiding))))
+    :hook (prog-mode . hs-minor-mode))
+#+END_SRC
+
+*** Code Snippets
+#+BEGIN_SRC emacs-lisp
+  (use-package yasnippet
+    :defer 5
+    :hook ((text-mode prog-mode snippet-mode) . yas-minor-mode-on)
+    :commands (yas-minor-mode yas-minor-mode-on yas-expand yas-expand-snippet
+                              yas-lookup-snippet yas-insert-snippet yas-new-snippet
+                              yas-visit-snippet-file snippet-mode)
+    :config
+    (setq yas-also-auto-indent-first-line t
+          yas-triggers-in-field t) ; Allow nested snippets
+
+    ;; fix an error caused by smartparens interfering with yasnippet bindings
+    (advice-add #'yas-expand :before #'sp-remove-active-pair-overlay)
+
+    ;; Exit snippets on ESC from normal mode
+    (add-hook '+evil-esc-hook #'yas-exit-all-snippets))
+#+END_SRC
+ 
+*** Highlight TODO & FIXME comments
+#+BEGIN_SRC emacs-lisp
+  (use-package hl-todo
+    :hook (after-init . global-hl-todo-mode))
+#+END_SRC
+*** Swiper
+#+BEGIN_SRC emacs-lisp
+  (use-package swiper
+    :general
+    (general-define-key
+     "C-s" 'swiper))
+#+END_SRC
+
+*** Search Backends
+Use Ripgrep where we can
+#+BEGIN_SRC emacs-lisp
+  (use-package rg
+    :commands (rg rg-project rg-dwim rg-literal))
+#+END_SRC
+
 ** Languages
 *** Complete
 **** Golang
@@ -1701,38 +2059,7 @@ Auto-completion framework for most modes
                      :post-handlers '(("[d-3]||\n[i]" "RET") ("| " "SPC")))))
 #+END_SRC
 
-** Search
-*** Swiper
-
-  #+BEGIN_SRC emacs-lisp
-    ;; Search regex
-    (use-package swiper
-      :general
-      (general-define-key
-       "C-s" 'swiper))
-  #+END_SRC
-
-*** Ripgrep
-
-  #+BEGIN_SRC emacs-lisp
-    (use-package rg
-      :commands (rg rg-project rg-dwim rg-literal))
-  #+END_SRC
-
-  
 ** Editing
-*** SmartParens Fn
-  #+BEGIN_SRC emacs-lisp
-    (defun js|smartparens-pair-newline (id action context)
-      (save-excursion
-        (newline)
-        (indent-according-to-mode)))
-
-    (defun js|smartparens-pair-newline-and-indent (id action context)
-      (js|smartparens-pair-newline id action context)
-      (indent-according-to-mode))
-  #+END_SRC
-
 *** Syntax Checking
  #+BEGIN_SRC emacs-lisp
    (use-package flycheck
@@ -1787,8 +2114,7 @@ Auto-completion framework for most modes
     (setq flyspell-correct-interface #'flyspell-correct-ivy))
 #+END_SRC
 
-
-** Write Good
+*** Write Good
 
 #+BEGIN_SRC emacs-lisp
   (use-package writegood-mode
@@ -1796,525 +2122,130 @@ Auto-completion framework for most modes
     :hook (text-mode . writegood-mode))
 #+END_SRC
 
+** Preferences
 
-** Movement
-*** Evil
+Tell Emacs who I am
 #+BEGIN_SRC emacs-lisp
-  (use-package evil
-    :init (evil-mode 1)
-    :custom
-    (evil-want-C-u-scroll t)
-    (evil-want-Y-yank-to-eol t)
-    (evil-shift-width 2)
-    (evil-want-integration nil)
-    :config
-    (setq evil-want-visual-char-semi-exclusive t
-          evil-magic t
-          evil-echo-state t
-          evil-indent-convert-tabs t
-          evil-ex-search-vim-style-regexp t
-          evil-ex-substitute-global t
-          evil-ex-visual-char-range t  ; column range for ex commands
-          evil-insert-skip-empty-lines t
-          evil-mode-line-format 'nil
-          evil-respect-visual-line-mode t
-          ;; more vim-like behavior
-          evil-symbol-word-search t
-          ;; don't activate mark on shift-click
-          shift-select-mode nil
-          ;; cursor appearance
-          evil-default-cursor '+evil-default-cursor
-          evil-normal-state-cursor 'box
-          ;; evil-emacs-state-cursor  '(box +evil-emacs-cursor)
-          evil-insert-state-cursor 'bar
-          evil-visual-state-cursor 'hollow)
-    (fset 'evil-visual-update-x-selection 'ignore)
-    ;; Change the cursor color in emacs mode
-    (defvar +evil--default-cursor-color
-      (or (ignore-errors (frame-parameter nil 'cursor-color))
-          "#ffffff"))
-
-    (defun +evil-default-cursor () (set-cursor-color +evil--default-cursor-color))
-    (defun +evil-emacs-cursor () (set-cursor-color (face-foreground 'warning)))
-
-    (defun +evil|update-cursor-color ()
-      (setq +evil--default-cursor-color (face-background 'cursor)))
-    (add-hook 'doom-load-theme-hook #'+evil|update-cursor-color)
-    (defun +evil|update-shift-width ()
-      (setq evil-shift-width tab-width))
-    (add-hook 'after-change-major-mode-hook #'+evil|update-shift-width t)
-    :general
-    (general-define-key
-     :states 'insert
-     "C-v" 'cua-paste
-     "C-c" 'cua-copy-region
-     "C-x" 'cua-cut-region
-     "C-z" 'undo-tree-undo
-     "C-Z" 'undo-tree-redo))
+  (customize-set-variable 'user-full-name "Justin Smestad")
+  (customize-set-variable 'user-mail-address "justin.smestad@gmail.com")
 #+END_SRC
 
-Use `fd` to escape from evil-insert-mode.
-
+Setup up the UI the way I like it
 #+BEGIN_SRC emacs-lisp
-  (use-package evil-escape
-    :requires evil
-    :init (evil-escape-mode 1)
-    :delight
-    :custom
-    (evil-escape-delay 0.2))
-#+END_SRC
+  ;; Use Github as the standard
+  ;; ref http://hilton.org.uk/blog/source-code-line-length
+  (setq fill-column 125
+        inhibit-startup-screen t
+        blink-matching-paren nil
+        visible-bell nil
+        ring-bell-function 'ignore
+        window-resize-pixelwise t
+        frame-resize-pixelwise t)
 
-**** SmartParens
+  ;; This is MUCH faster than using set-face-attribute
+  (add-to-list 'default-frame-alist '(font . "Fira Code:13"))
 
-#+BEGIN_SRC emacs-lisp
-  (use-package smartparens
-    :defer 2
-    :config
-    (require 'smartparens-config)
-    (setq sp-highlight-pair-overlay nil
-          sp-highlight-wrap-overlay nil
-          sp-highlight-wrap-tag-overlay nil
-          sp-show-pair-from-inside t
-          sp-cancel-autoskip-on-backward-movement nil
-          sp-show-pair-delay 0.1
-          sp-max-pair-length 4
-          sp-max-prefix-length 50
-          sp-escape-quotes-after-insert nil)
-    ;; Smartparens' navigation feature is neat, but does not justify how expensive
-    ;; it is. It's also less useful for evil users. This may need to be
-    ;; reactivated for non-evil users though. Needs more testing!
-    (defun js|disable-smartparens-navigate-skip-match ()
-      (setq sp-navigate-skip-match nil
-            sp-navigate-consider-sgml-tags nil))
-    (add-hook 'after-change-major-mode-hook #'js|disable-smartparens-navigate-skip-match)
+  ;; Appearance
+  ;; Theme Emacs for dark color scheme
+  (add-to-list 'default-frame-alist '(ns-transparent-titlebar . t))
+  (add-to-list 'default-frame-alist '(ns-appearance . dark))
 
-    ;; autopairing in `eval-expression' and `evil-ex'
-    (defun js|init-smartparens-in-eval-expression ()
-      "Enable `smartparens-mode' in the minibuffer, during `eval-expression' or
-    `evil-ex'."
-      (when (memq this-command '(eval-expression evil-ex))
-        (smartparens-mode)))
-    (add-hook 'minibuffer-setup-hook #'js|init-smartparens-in-eval-expression)
-    (sp-local-pair 'minibuffer-inactive-mode "'" nil :actions nil)
+  (use-package all-the-icons)
 
-    ;; smartparens breaks evil-mode's replace state
-    (add-hook 'evil-replace-state-entry-hook #'turn-off-smartparens-mode)
-    (add-hook 'evil-replace-state-exit-hook  #'turn-on-smartparens-mode)
-    (smartparens-global-mode +1))
-#+END_SRC
-
-**** Rainbow Delimiters
-Highlight matching delimiters with unique colors.
-#+BEGIN_SRC emacs-lisp
-  (use-package rainbow-delimiters
-    :defer t
-    :hook (prog-mode . rainbow-delimiters-mode))
-#+END_SRC
-
-Adapt to foreign indentation offsets
-#+BEGIN_SRC emacs-lisp
-  (use-package dtrt-indent
-    :defer t
-    :delight
-    :custom (dtrt-indent-min-quality 60)
-    :init (dtrt-indent-global-mode))
-#+END_SRC
-
-#+BEGIN_SRC emacs-lisp
-  (use-package aggressive-indent
-    :defer t
-    :hook ((emacs-lisp-mode . aggressive-indent-mode)
-           (css-mode . aggressive-indent-mode)))
-#+END_SRC
-
-#+BEGIN_SRC emacs-lisp
-  (use-package adaptive-wrap
-    :defer t
-    :config (adaptive-wrap-prefix-mode))
-#+END_SRC
-**** Jump to Definition
-#+BEGIN_SRC emacs-lisp
-  (use-package dumb-jump
-    :commands (dump-jump-go
-               dumb-jump-go-other-window
-               dump-jump-go-prompt
-               dump-jump-go-prefer-external
-               dumb-jump-go-prefer-external-other-window)
-    :custom
-    (dumb-jump-selector 'ivy))
-#+END_SRC
-**** Whitespace Management
-#+BEGIN_SRC emacs-lisp
-  (use-package whitespace
-    :defer 5
-    :custom
-    (whitespace-line-column fill-column)
-    (whitespace-style
-     '(face indentation tabs tab-mark spaces space-mark newline newline-mark
-            trailing lines-tail))
-    (whitespace-display-mappings
-     '((tab-mark ?\t [?› ?\t])
-       (newline-mark ?\n [?¬ ?\n])
-       (space-mark ?\ [?·] [?.])))
-    :config
-    (add-hook 'before-save 'delete-trailing-whitespace))
-#+END_SRC
-
-#+BEGIN_SRC emacs-lisp
-  (use-package ws-butler
-    :delight
-    :defer t
-    :config
-    (setq ws-butler-global-exempt-modes
-          (append ws-butler-global-exempt-modes
-                  '(special-mode comint-mode term-mode eshell-mode)))
-    (ws-butler-global-mode))
-#+END_SRC
-
-#+BEGIN_SRC emacs-lisp
-  (use-package autorevert
-    :ensure nil
-    :defer t
-    :delight auto-revert-mode
-    :config
-    (setq auto-revert-verbose nil)
-    (global-auto-revert-mode +1))
-#+END_SRC
-
-#+BEGIN_SRC emacs-lisp
-  (use-package undo-tree
-    :delight
-    :custom
-    (undo-tree-auto-save-history nil)
-    :hook (after-init . global-undo-tree-mode))
-#+END_SRC
-
-#+BEGIN_SRC emacs-lisp
-  (use-package unfill
-    :disabled
-    :bind ([remap fill-paragraph] . #'unfill-toggle))
-#+END_SRC
-
-#+BEGIN_SRC emacs-lisp
-  ;; (use-package evil-collection
-  ;;   :requires evil
-  ;;   :defer 5
-  ;;   :custom
-  ;;   (evil-collection-setup-minibuffer t)
-  ;;   (evil-collection-company-use-tng nil)
-  ;;   (evil-collection-mode-list '(go-mode
-  ;;                                ivy
-  ;;                                (pdf pdf-view)
-  ;;                                ruby-mode))
-  ;;   :init
-  ;;   (evil-mode . evil-collection-init))
-#+END_SRC
-
-#+BEGIN_SRC emacs-lisp
-  (use-package evil-surround
-    :defer 5
-    :init (global-evil-surround-mode 1))
-#+END_SRC
-
-#+BEGIN_SRC emacs-lisp
-  (use-package evil-matchit
-    :defer 5
-    :init (global-evil-matchit-mode))
-#+END_SRC
-
-#+BEGIN_SRC emacs-lisp
-  (use-package evil-goggles
-    :defer 5
-    :delight
-    :custom
-    (evil-goggles-duration 0.1)
-    (evil-goggles-enable-delete nil)
+  (use-package doom-themes
+    :demand
+    ;; :custom
+    ;; (doom-molokai-brighter-comments t)
     :init
-    (evil-goggles-mode))
-#+END_SRC
+    (load-theme 'doom-molokai t)
+    (+evil|update-cursor-color))
 
-#+BEGIN_SRC emacs-lisp
-  (use-package evil-easymotion
+  (use-package doom-modeline
+    :defer t
+    :hook (after-init . doom-modeline-init))
+
+  (use-package hide-mode-line
+    :hook ((neotree-mode
+            completion-list-mode
+            completion-in-region-mode) . hide-mode-line-mode))
+
+  ;;; Support Emojis in Emacs
+  (use-package emojify
     :defer 5
-    :delight)
-#+END_SRC
+    :custom
+    (emojify-display-style 'unicode)
+    :hook
+    ((markdown-mode
+      git-commit-mode
+      magit-status-mode
+      magit-log-mode) . emojify-mode))
 
-#+BEGIN_SRC emacs-lisp
-  (use-package evil-quickscope
+  ;; TODO try out shackle instead
+  ;; (use-package popwin
+  ;;   :defer 3
+  ;;   :hook (after-init . popwin-mode))
+
+  ;;; Resize all buffers at once with C-M-= / C-M--
+  (use-package default-text-scale
+    :defer 3
+    :init (default-text-scale-mode))
+
+  ;;; Restart Emacs
+  (use-package restart-emacs
+    :commands restart-emacs)
+
+  (use-package winum
     :defer t
-    :delight
-    :init (global-evil-quickscope-mode 1))
-
-#+END_SRC
-
-#+BEGIN_SRC emacs-lisp
-  (use-package evil-commentary
-    :defer t
-    :delight
-    :init (evil-commentary-mode))
-
-#+END_SRC
-
-#+BEGIN_SRC emacs-lisp
-  (use-package hideshow
-    :functions hs-toggle-hiding
-    :ensure nil
-    :delight
     :config
     (progn
-      (defun toggle-fold ()
-        (interactive)
-        (save-excursion
-          (end-of-line)
-          (hs-toggle-hiding))))
-    :hook (prog-mode . hs-minor-mode))
-
+      (setq winum-auto-assign-0-to-minibuffer nil
+            winum-auto-setup-mode-line nil
+            winum-keymap nil
+            winum-ignored-buffers '(" *which-key*"))
+      (defun winum-assign-0-to-neotree ()
+        (when (string-match-p (buffer-name) ".*\\*NeoTree\\*.*") 10))
+      (add-to-list 'winum-assign-functions #'winum-assign-0-to-neotree)
+      (global-keymap "`" 'winum-select-window-by-number
+                     ;; "²" 'winum-select-window-by-number
+                     "0" 'winum-select-window-0-or-10
+                     "1" 'winum-select-window-1
+                     "2" 'winum-select-window-2
+                     "3" 'winum-select-window-3
+                     "4" 'winum-select-window-4
+                     "5" 'winum-select-window-5
+                     "6" 'winum-select-window-6
+                     "7" 'winum-select-window-7
+                     "8" 'winum-select-window-8
+                     "9" 'winum-select-window-9)
+      (winum-mode)))
 #+END_SRC
 
+Set a bunch of settings
 #+BEGIN_SRC emacs-lisp
-  ;; (use-package evil-mc
-  ;;   :hook (evil-mode . global-evil-mc-mode))
-  ;; (use-package evil-mc-extras
-  ;;   :hook (global-evil-mc-mode . global-evil-mc-extras-mode))
+  (defalias 'yes-or-no-p 'y-or-n-p)
 
+  (setq byte-compile-warnings '(not free-vars unresolved noruntime lexical make-local)
+        idle-update-delay 2 ; update ui less often (0.5 default)
+        create-lockfiles nil
+        cua-mode t
+        desktop-save-mode nil
+        indent-tabs-mode nil
+        initial-scratch-message nil
+        load-prefer-newer t
+        sentence-end-double-space nil
+        ;; keep the point out of the minibuffer
+        minibuffer-prompt-properties '(read-only t point-entered minibuffer-avoid-prompt face minibuffer-prompt))
 #+END_SRC
 
+Spaces (2) over Tabs
 #+BEGIN_SRC emacs-lisp
-  ;; (use-package multiple-cursors
-  ;;   :disabled
-  ;;   :bind (("C->" . mc/mark-next-like-this)
-  ;;          ("C-<" . mc/mark-previous-like-this)
-  ;;          ("C-*" . mc/mark-all-like-this)))
-
-#+END_SRC
-
-#+BEGIN_SRC emacs-lisp
-  (use-package evil-string-inflection
-    :requires evil
-    :defer t)
-
-#+END_SRC
-
-#+BEGIN_SRC emacs-lisp
-  (use-package yasnippet
-    :defer 5
-    :hook ((text-mode prog-mode snippet-mode) . yas-minor-mode-on)
-    :commands (yas-minor-mode yas-minor-mode-on yas-expand yas-expand-snippet
-                              yas-lookup-snippet yas-insert-snippet yas-new-snippet
-                              yas-visit-snippet-file snippet-mode)
-    :config
-    (setq yas-also-auto-indent-first-line t
-          yas-triggers-in-field t) ; Allow nested snippets
-
-    ;; fix an error caused by smartparens interfering with yasnippet bindings
-    (advice-add #'yas-expand :before #'sp-remove-active-pair-overlay)
-
-    ;; Exit snippets on ESC from normal mode
-    (add-hook '+evil-esc-hook #'yas-exit-all-snippets))
-#+END_SRC
-
-*** Neotree
-
-Directory tree
-
-#+BEGIN_SRC emacs-lisp
-  ;;; File Tree
-  (use-package neotree
-    :commands (neotree-toggle neotree-projectile-action)
-    :config
-    (setq neo-create-file-auto-open t
-          neo-modern-sidebar t
-          neo-point-auto-indent nil
-          neo-theme (if (display-graphic-p) 'icons 'arrow)
-          neo-window-fixed-size nil
-          neo-window-width 28
-          neo-show-hidden-files t
-          neo-keymap-style 'concise)
-    (general-nmap neotree-mode-map
-      "RET" 'neotree-enter
-      "TAB" 'neotree-stretch-toggle
-      "q" 'neotree-hide
-      "|" 'neotree-enter-vertical-split
-      "-" 'neotree-enter-horizontal-split
-      "'" 'neotree-quick-look
-      "c" 'neotree-create-node
-      "C" 'neotree-copy-node
-      "d" 'neotree-delete-node
-      "gr" 'neotree-refresh
-      "H" 'neotree-select-previous-sibling-node
-      "j" 'neotree-next-line
-      "J" 'neotree-select-down-node
-      "k" 'neotree-previous-line
-      "K" 'neotree-select-up-node
-      "L" 'neotree-select-next-sibling-node
-      "q" 'neotree-hide
-      "o" 'neotree-enter
-      "r" 'neotree-rename-node
-      "R" 'neotree-change-root
-      "I" 'neotree-hidden-file-toggle))
-
-  (global-keymap
-   "ft" 'neotree-toggle
-   "pt" 'neotree-projectile-action)
-  #+END_SRC
-  
-** Visual
-*** UI, Theme, etc.
-
-  #+BEGIN_SRC emacs-lisp
-    ;; Use Github as the standard
-    ;; ref http://hilton.org.uk/blog/source-code-line-length
-    (setq fill-column 125
-          inhibit-startup-screen t
-          blink-matching-paren nil
-          visible-bell nil
-          ring-bell-function 'ignore
-          window-resize-pixelwise t
-          frame-resize-pixelwise t)
-
-    ;; This is MUCH faster than using set-face-attribute
-    (add-to-list 'default-frame-alist '(font . "Fira Code:13"))
-
-    ;; Appearance
-    ;; Theme Emacs for dark color scheme
-    (add-to-list 'default-frame-alist '(ns-transparent-titlebar . t))
-    (add-to-list 'default-frame-alist '(ns-appearance . dark))
-
-    (use-package all-the-icons)
-
-    (use-package doom-themes
-      :demand
-      ;; :custom
-      ;; (doom-molokai-brighter-comments t)
-      :init
-      (load-theme 'doom-molokai t)
-      (+evil|update-cursor-color))
-
-    (use-package doom-modeline
-      :defer t
-      :hook (after-init . doom-modeline-init))
-
-    (use-package hide-mode-line
-      :hook ((neotree-mode
-              completion-list-mode
-              completion-in-region-mode) . hide-mode-line-mode))
-
-    ;;; Support Emojis in Emacs
-    (use-package emojify
-      :defer 5
-      :custom
-      (emojify-display-style 'unicode)
-      :hook
-      ((markdown-mode
-        git-commit-mode
-        magit-status-mode
-        magit-log-mode) . emojify-mode))
-
-    ;; TODO try out shackle instead
-    ;; (use-package popwin
-    ;;   :defer 3
-    ;;   :hook (after-init . popwin-mode))
-
-    ;;; Resize all buffers at once with C-M-= / C-M--
-    (use-package default-text-scale
-      :defer 3
-      :init (default-text-scale-mode))
-
-    ;;; Restart Emacs
-    (use-package restart-emacs
-      :commands restart-emacs)
-
-    (use-package winum
-      :defer t
-      :config
-      (progn
-        (setq winum-auto-assign-0-to-minibuffer nil
-              winum-auto-setup-mode-line nil
-              winum-keymap nil
-              winum-ignored-buffers '(" *which-key*"))
-        (defun winum-assign-0-to-neotree ()
-          (when (string-match-p (buffer-name) ".*\\*NeoTree\\*.*") 10))
-        (add-to-list 'winum-assign-functions #'winum-assign-0-to-neotree)
-        (global-keymap "`" 'winum-select-window-by-number
-                       ;; "²" 'winum-select-window-by-number
-                       "0" 'winum-select-window-0-or-10
-                       "1" 'winum-select-window-1
-                       "2" 'winum-select-window-2
-                       "3" 'winum-select-window-3
-                       "4" 'winum-select-window-4
-                       "5" 'winum-select-window-5
-                       "6" 'winum-select-window-6
-                       "7" 'winum-select-window-7
-                       "8" 'winum-select-window-8
-                       "9" 'winum-select-window-9)
-        (winum-mode)))
-  #+END_SRC
-
-*** Highlight TODO & FIXME comments
-  #+BEGIN_SRC emacs-lisp
-    ;; Highlight TODOs
-    (use-package hl-todo
-      :hook (after-init . global-hl-todo-mode))
-
-  #+END_SRC
-
-  
-** Preferences
-*** Indentation
-
-#+BEGIN_SRC emacs-lisp
-(setq-default tab-width 4
+(setq-default tab-width 2
               indent-tabs-mode nil)
 #+END_SRC
-
-*** Other
-
-#+BEGIN_SRC emacs-lisp
-       ;; Adjust the built-in Emacs packages
-       (defalias 'yes-or-no-p 'y-or-n-p)
-
-       (setq byte-compile-warnings '(not free-vars unresolved noruntime lexical make-local)
-         idle-update-delay 2 ; update ui less often (0.5 default)
-         create-lockfiles nil
-         cua-mode t
-         desktop-save-mode nil
-         indent-tabs-mode nil
-         initial-scratch-message nil
-         load-prefer-newer t
-         sentence-end-double-space nil
-         ;; keep the point out of the minibuffer
-         minibuffer-prompt-properties '(read-only t point-entered minibuffer-avoid-prompt face minibuffer-prompt)
-         ;; security
-         gnutls-verify-error (not (getenv "INSECURE")) ; you shouldn't use this
-         tls-checktrust gnutls-verify-error
-         tls-program (list "gnutls-cli --x509cafile %t -p %p %h"
-                   ;; compatibility fallbacks
-                   "gnutls-cli -p %p %h"
-                   "openssl s_client -connect %h:%p -no_ssl2 -no_ssl3 -ign_eof"))
-
-   #+END_SRC
-
    
-** Operating Systems
-*** Linux
-  #+BEGIN_SRC emacs-lisp
-      (use-package linux
-        :ensure nil
-        :load-path "vendor/"
-        :if (eq system-type 'gnu/linux))
-  #+END_SRC
-
-*** macOS
-  #+BEGIN_SRC emacs-lisp
-      (use-package osx
-        :ensure nil
-        :load-path "vendor/"
-        :if (eq system-type 'darwin))
-  #+END_SRC
-
-  
 ** Built-in modes (Break down)
-
+*** Window Management
+Keep windows in Emacs from popping up everywhere. This section needs to be expanded, but it worked for now.
  #+BEGIN_SRC emacs-lisp
    (use-package window
      :ensure nil
@@ -2337,9 +2268,11 @@ Directory tree
          (reusable-frames . visible)
          (window-height   . 0.5))
         ("." nil (reusable-frames . visible)))))
-   #+END_SRC
+#+END_SRC
 
- #+BEGIN_SRC emacs-lisp
+*** File Management
+Warn about large files (over 20MB) 
+#+BEGIN_SRC emacs-lisp
    (use-package files
      :no-require t
      :ensure nil
@@ -2354,51 +2287,66 @@ Directory tree
      (auto-save-file-name-transforms
       `((".*" ,(no-littering-expand-var-file-name "auto-save/") t)))
      (large-file-warning-threshold (* 20 1000 1000) "20 megabytes."))
+#+END_SRC
 
-   ;; Version control
-   (use-package vc-hooks
-     :no-require t
-     :ensure nil
-     :demand t
-     :custom (vc-follow-symlinks t))
+*** Version Control
+#+BEGIN_SRC emacs-lisp
+  (use-package vc-hooks
+    :no-require t
+    :ensure nil
+    :demand t
+    :custom (vc-follow-symlinks t))
+#+END_SRC
 
+*** Dired
+I do not use this much, but I found it in enough configurations that I copied the changes.
+#+BEGIN_SRC emacs-lisp
+  (use-package dired
+    :no-require t
+    :ensure nil
+    :demand t
+    :commands (dired)
+    :custom
+    (dired-dwim-target t "Enable side-by-side `dired` buffer targets.")
+    (dired-recursive-copies 'always "Better recursion in `dired`.")
+    (dired-recursive-deletes 'top)
+    (delete-by-moving-to-trash t)
+    (dired-use-ls-dired nil))
+#+END_SRC
 
-   (use-package dired
-     :no-require t
-     :ensure nil
-     :demand t
-     :commands (dired)
-     :custom
-     (dired-dwim-target t "Enable side-by-side `dired` buffer targets.")
-     (dired-recursive-copies 'always "Better recursion in `dired`.")
-     (dired-recursive-deletes 'top)
-     (delete-by-moving-to-trash t)
-     (dired-use-ls-dired nil))
+*** Line Numbers
+Display Line Numbers
+#+BEGIN_SRC emacs-lisp
+  (use-package display-line-numbers
+    :ensure nil
+    :if (> emacs-major-version 25)
+    :hook (prog-mode . display-line-numbers-mode))
+#+END_SRC
 
-   ;; Line Numbers
-   (use-package display-line-numbers
-     :ensure nil
-     :if (> emacs-major-version 25)
-     :hook (prog-mode . display-line-numbers-mode))
+*** Buffer Names
+#+BEGIN_SRC emacs-lisp
+  (use-package uniquify
+    :no-require t
+    :ensure nil
+    :demand t
+    :custom (uniquify-buffer-name-style 'forward))
+#+END_SRC
 
-   ;; Fix Annoyances
-   (use-package uniquify
-     :no-require t
-     :ensure nil
-     :demand t
-     :custom (uniquify-buffer-name-style 'forward))
+*** Shell Mode
+#+BEGIN_SRC emacs-lisp
+  (use-package sh-mode
+    :ensure nil
+    :mode
+    (("\\.zshrc" . sh-mode)
+     ("bashrc$" . sh-mode)
+     ("bash_profile$" . sh-mode)
+     ("bash_aliases$" . sh-mode)
+     ("bash_local$" . sh-mode)
+     ("bash_completion$" . sh-mode)))
+#+END_SRC
 
-   ;; Shell
-   (use-package sh-mode
-     :ensure nil
-     :mode
-     (("\\.zshrc" . sh-mode)
-      ("bashrc$" . sh-mode)
-      ("bash_profile$" . sh-mode)
-      ("bash_aliases$" . sh-mode)
-      ("bash_local$" . sh-mode)
-      ("bash_completion$" . sh-mode)))
-
+*** Recent Files
+#+BEGIN_SRC emacs-lisp
    (use-package recentf
      :requires no-littering
      :defer t
@@ -2420,62 +2368,67 @@ Directory tree
        (add-to-list 'recentf-exclude no-littering-etc-directory)
        (setq recentf-auto-save-timer
              (run-with-idle-timer 600 t 'recentf-save-list))))
+#+END_SRC
 
-
+*** Eldoc
+#+BEGIN_SRC emacs-lisp
    (use-package eldoc
      :ensure nil
      :delight
      :hook ((ielm-mode eval-expression-minibuffer-setup) . eldoc-mode))
+#+END_SRC
 
-   (use-package eshell
-     :commands (eshell eshell-mode)
-     :custom
-     (eshell-visual-commands '("tmux" "htop" "bash" "zsh" "fish" "vim" "nvim"))
-     (eshell-visual-subcommands '(("git" "log" "l" "diff" "show")))
-     (eshell-history-size 10000)
-     (eshell-hist-ignoredups t)
-     (eshell-scroll-to-bottom-on-output 'this)
-     (eshell-scroll-to-bottom-on-input 'all)
-     (eshell-buffer-shorthand t)
-     (eshell-kill-processes-on-exit t))
+*** Shell Emulator
+eshell because I do not know any better 😂
+#+BEGIN_SRC emacs-lisp
+  (use-package eshell
+    :commands (eshell eshell-mode)
+    :custom
+    (eshell-visual-commands '("tmux" "htop" "bash" "zsh" "fish" "vim" "nvim"))
+    (eshell-visual-subcommands '(("git" "log" "l" "diff" "show")))
+    (eshell-history-size 10000)
+    (eshell-hist-ignoredups t)
+    (eshell-scroll-to-bottom-on-output 'this)
+    (eshell-scroll-to-bottom-on-input 'all)
+    (eshell-buffer-shorthand t)
+    (eshell-kill-processes-on-exit t))
+#+END_SRC
 
-   (use-package helpful
-     :after ivy
-     :defer t
-     :defines ivy-initial-inputs-alist
-     :bind (("C-c C-d" . helpful-at-point))
-     :config
-     (general-define-key
-      [remap describe-function] #'helpful-callable
-      [remap describe-command]  #'helpful-command
-      [remap describe-variable] #'helpful-variable
-      [remap describe-key] #'helpful-key)
-     (dolist (cmd '(helpful-callable
-                    helpful-variable
-                    helpful-function
-                    helpful-macro
-                    helpful-command))
-       (cl-pushnew `(,cmd . "^") ivy-initial-inputs-alist))
-     :general
-     (space-leader-def
-       :states '(normal visual insert emacs)
-       "hh" '(:ignore t :which-key "helpful")
-       "hhh" 'helpful-at-point
-       "hhc" 'helpful-command
-       "hhf" 'helpful-callable
-       "hhk" 'helpful-key
-       "hhm" 'helpful-macro
-       "hhv" 'helpful-variable))
+*** Better Help buffers
+#+BEGIN_SRC emacs-lisp
+  (use-package helpful
+    :after ivy
+    :defer t
+    :defines ivy-initial-inputs-alist
+    :bind (("C-c C-d" . helpful-at-point))
+    :config
+    (general-define-key
+     [remap describe-function] #'helpful-callable
+     [remap describe-command]  #'helpful-command
+     [remap describe-variable] #'helpful-variable
+     [remap describe-key] #'helpful-key)
+    (dolist (cmd '(helpful-callable
+                   helpful-variable
+                   helpful-function
+                   helpful-macro
+                   helpful-command))
+      (cl-pushnew `(,cmd . "^") ivy-initial-inputs-alist))
+    :general
+    (space-leader-def
+      :states '(normal visual insert emacs)
+      "hh" '(:ignore t :which-key "helpful")
+      "hhh" 'helpful-at-point
+      "hhc" 'helpful-command
+      "hhf" 'helpful-callable
+      "hhk" 'helpful-key
+      "hhm" 'helpful-macro
+      "hhv" 'helpful-variable))
 #+END_SRC
 
 
 
-
-** Tools
-
 *** Org Mode
-
-    #+BEGIN_SRC emacs-lisp
+#+BEGIN_SRC emacs-lisp
 (defun js/org-keybindings ()
   "Define all keybindings we use in org mode."
   (keymap-for-mode 'org-mode
@@ -2649,6 +2602,7 @@ Directory tree
     :defer 3
     :pin org
     :mode "\\.org\'"
+    :hook (org-mode . org-indent-mode)
     :config
     (progn
       (js/org-keybindings)
@@ -2698,6 +2652,8 @@ Add special keybindings to org mode that work well with evil mode.
                           todo)))
 #+END_SRC
 
+
+** Tools
 *** PDF
 
 #+BEGIN_SRC emacs-lisp
@@ -2735,7 +2691,6 @@ Add special keybindings to org mode that work well with evil mode.
                      "n" 'pdf-view-midnight-minor-mode))
   #+END_SRC
 
-  
 ** Apps
 *** Riot / Matrix client
 
@@ -2747,3 +2702,16 @@ This package is currently disabled. I am not able to log in successfully.
     :quelpa (matrix-client :fetcher github
                            :repo "jgkamat/matrix-client-el"))
 #+END_SRC
+** OS-Specific changes
+#+BEGIN_SRC emacs-lisp
+  (use-package linux
+    :ensure nil
+    :load-path "vendor/"
+    :if (eq system-type 'gnu/linux))
+
+  (use-package osx
+    :ensure nil
+    :load-path "vendor/"
+    :if (eq system-type 'darwin))
+#+END_SRC
+  
