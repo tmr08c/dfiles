@@ -26,6 +26,7 @@
     - [[#direnv][Direnv]]
     - [[#amx][amx]]
     - [[#ivy][Ivy]]
+    - [[#project-todos][Project TODOs]]
     - [[#counsel][Counsel]]
     - [[#company][Company]]
     - [[#neotree][Neotree]]
@@ -107,7 +108,6 @@
 
 **** QUELPA keyword
 
-
  #+BEGIN_SRC emacs-lisp
    (use-package quelpa
      :defer t
@@ -118,7 +118,7 @@
    (quelpa-use-package-activate-advice)
  #+END_SRC
 *** Package Updater
-  Auto-update packages.
+Auto-update packages.
 #+BEGIN_SRC emacs-lisp
   (use-package auto-package-update
     :commands auto-package-update-now
@@ -133,7 +133,7 @@
 #+END_SRC
 
 *** Character Encoding
-  Everything in UTF-8... and I mean everything.
+Everything in UTF-8... and I mean everything.
 
 #+BEGIN_SRC emacs-lisp
   (when (fboundp 'set-charset-priority)
@@ -148,7 +148,7 @@
   #+END_SRC
 
 *** Debugging Tool
-  If my Emacs configuration is running a little slow, enable the benchmark-init package to see what is taking so long.
+If my Emacs configuration is running a little slow, enable the benchmark-init package to see what is taking so long.
 #+BEGIN_SRC emacs-lisp
   (use-package benchmark-init
     :disabled
@@ -157,7 +157,7 @@
 #+END_SRC
 
 *** Run-time environment
-  Ensure the required system packages are installed, and copy over $PATH and other important environment variables.
+Ensure the required system packages are installed, and copy over $PATH and other important environment variables.
 
 #+BEGIN_SRC emacs-lisp
 (use-package exec-path-from-shell
@@ -208,126 +208,126 @@ Save data files consistently:
 #+END_SRC
 
 *** general.el
-  #+BEGIN_SRC emacs-lisp
-    (use-package general
-      :demand t
-      :functions space-leader-def
-      ;; :custom
-      ;; (general-default-prefix "SPC")
-      ;; (general-default-non-normal-prefix "C-SPC")
-      :config
-      (general-create-definer space-leader-def
-        :prefix "SPC"
-        :non-normal-prefix "C-SPC")
-      (general-evil-setup)
-      (space-leader-def
-        ;; :states '(normal visual insert emacs)
-        :states '(normal emacs)
+#+BEGIN_SRC emacs-lisp
+  (use-package general
+    :demand t
+    :functions space-leader-def
+    ;; :custom
+    ;; (general-default-prefix "SPC")
+    ;; (general-default-non-normal-prefix "C-SPC")
+    :config
+    (general-create-definer space-leader-def
+      :prefix "SPC"
+      :non-normal-prefix "C-SPC")
+    (general-evil-setup)
+    (space-leader-def
+      ;; :states '(normal visual insert emacs)
+      :states '(normal emacs)
 
-        "SPC" '(counsel-M-x :which-key "M-x")
-        ;; "TAB" '(switch-to-other-buffer :which-key "prev buffer")
+      "SPC" '(counsel-M-x :which-key "M-x")
+      ;; "TAB" '(switch-to-other-buffer :which-key "prev buffer")
 
-        ;;; Help bindings
-        "?" '(counsel-descbinds :which-key "Help")
-        "h" '(:ignore t :which-key "Help")
-        "hdf" '(counsel-describe-function :which-key "describe function")
-        "hdm" '(describe-mode :which-key "describe modes") ;; TODO: https://framagit.org/steckerhalter/discover-my-major
-        "hdv" '(counsel-describe-variable :which-key "describe variable")
+      ;;; Help bindings
+      "?" '(counsel-descbinds :which-key "Help")
+      "h" '(:ignore t :which-key "Help")
+      "hdf" '(counsel-describe-function :which-key "describe function")
+      "hdm" '(describe-mode :which-key "describe modes") ;; TODO: https://framagit.org/steckerhalter/discover-my-major
+      "hdv" '(counsel-describe-variable :which-key "describe variable")
 
-        ;;; Buffers
-        "b"   '(:ignore t :which-key "Buffers")
-        "bb" '(ivy-switch-buffer :which-key "list buffers")
-        "bn" '(next-buffer :which-key "next buffer")
-        "bp" '(previous-buffer :which-key "prev buffer")
-        "bd" '((lambda ()
-                  (interactive)
-                  (kill-buffer (current-buffer)))
-                :which-key "close current buffer")
-        "bs" '((lambda ()
-                  (interactive)
-                  (switch-to-buffer (get-buffer-create "*scratch*")))
-                :which-key "scratch buffer")
+      ;;; Buffers
+      "b"   '(:ignore t :which-key "Buffers")
+      "bb" '(ivy-switch-buffer :which-key "list buffers")
+      "bn" '(next-buffer :which-key "next buffer")
+      "bp" '(previous-buffer :which-key "prev buffer")
+      "bd" '((lambda ()
+               (interactive)
+               (kill-buffer (current-buffer)))
+             :which-key "close current buffer")
+      "bs" '((lambda ()
+               (interactive)
+               (switch-to-buffer (get-buffer-create "*scratch*")))
+             :which-key "scratch buffer")
 
-        ;;; Files
-        "f"   '(:ignore t :which-key "Files")
-        "fD" '((lambda ()
-                  (interactive)
-                  (let ((filename (buffer-file-name))
-                        (buffer (current-buffer))
-                        (name (buffer-name)))
-                    (if (not (and filename (file-exists-p filename)))
-                        (ido-kill-buffer)
-                      (when (yes-or-no-p "Are you sure you want to delete this file? ")
-                        (delete-file filename t)
-                        (kill-buffer buffer)
-                        (message "File '%s' successfully removed" filename)))))
-                :which-key "delete file and kill buffer")
-        "ff" '(counsel-find-file :which-key "find file")
-        "fed" '((lambda ()
-                    (interactive)
-                    (find-file-existing +literate-config-file))
-                  :which-key "open emacs configuration")
-
-
-        "d" '(:ignore t :which-key "Docs")
-        "dd" '((lambda ()
-                  (interactive)
-                  (counsel-dash
-                   (if (use-region-p)
-                       (buffer-substring-no-properties (region-beginning) (region-end))
-                     (substring-no-properties (or (thing-at-point 'symbol) "")))))
-                :which-key "Lookup thing at point")
-        "dD" '(counsel-dash :which-key "Lookup thing at point with docset")
+      ;;; Files
+      "f"   '(:ignore t :which-key "Files")
+      "fD" '((lambda ()
+               (interactive)
+               (let ((filename (buffer-file-name))
+                     (buffer (current-buffer))
+                     (name (buffer-name)))
+                 (if (not (and filename (file-exists-p filename)))
+                     (ido-kill-buffer)
+                   (when (yes-or-no-p "Are you sure you want to delete this file? ")
+                     (delete-file filename t)
+                     (kill-buffer buffer)
+                     (message "File '%s' successfully removed" filename)))))
+             :which-key "delete file and kill buffer")
+      "ff" '(counsel-find-file :which-key "find file")
+      "fed" '((lambda ()
+                (interactive)
+                (find-file-existing +literate-config-file))
+              :which-key "open emacs configuration")
 
 
-        "g" '(:ignore t :which-key "Go to")
-        "gd" '(dumb-jump-go :which-key "definition")
-        "gD" '(dumb-jump-go-other-window :which-key "definition (other window)")
+      "d" '(:ignore t :which-key "Docs")
+      "dd" '((lambda ()
+               (interactive)
+               (counsel-dash
+                (if (use-region-p)
+                    (buffer-substring-no-properties (region-beginning) (region-end))
+                  (substring-no-properties (or (thing-at-point 'symbol) "")))))
+             :which-key "Lookup thing at point")
+      "dD" '(counsel-dash :which-key "Lookup thing at point with docset")
 
-        ;;; Quit
-        "q"   '(:ignore t :which-key "Quit")
-        "qq" '(kill-emacs :which-key "quit")
-        "qr" '(restart-emacs :which-key "restart")
 
-        ;;; Search
-        "s" '(:ignore t :which-key "Search")
-        "ss" '(swiper :which-key "search buffer")
-        "sS" '(lambda ()
-                 (interactive)
-                 (let ((input (if (region-active-p)
-                                  (buffer-substring-no-properties
-                                   (region-beginning) (region-end))
-                                (thing-at-point 'symbol t))))
-                   (swiper input))
-                 :which-key "search buffer")
+      "g" '(:ignore t :which-key "Go to")
+      "gd" '(dumb-jump-go :which-key "definition")
+      "gD" '(dumb-jump-go-other-window :which-key "definition (other window)")
 
-        ;;; Themes
-        "t" '(:ignore t :which-key "Theme")
-        "ts" '(counsel-load-theme :which-key "switch theme")
+      ;;; Quit
+      "q"   '(:ignore t :which-key "Quit")
+      "qq" '(kill-emacs :which-key "quit")
+      "qr" '(restart-emacs :which-key "restart")
 
-        ;;; Windows
-        "w"   '(:ignore t :which-key "Windows")
-        "wd" '(delete-window :which-key "close window")
-        "w/" '((lambda ()
-                  (interactive)
-                  (split-window-horizontally)
-                  (other-window 1))
-                :which-key "split vertical")
-        "w-" '((lambda ()
-                  (interactive)
-                  (split-window-vertically)
-                  (other-window 1))
-                :which-key "split horizontal")
-        "wh" '(evil-window-left :which-key "window left")
-        "w<left>" '(evil-window-left :which-key nil)
-        "wj" '(evil-window-down :which-key "window down")
-        "w<down>" '(evil-window-down :which-key nil)
-        "wk" '(evil-window-up :which-key "window up")
-        "w<up>" '(evil-window-up :which-key nil)
-        "wl" '(evil-window-right :which-key "window right")
-        "w<right>" '(evil-window-right :which-key nil)
-        "w=" '(balance-windows :which-key "balance window split")))
-  #+END_SRC
+      ;;; Search
+      "s" '(:ignore t :which-key "Search")
+      "ss" '(swiper :which-key "search buffer")
+      "sS" '(lambda ()
+              (interactive)
+              (let ((input (if (region-active-p)
+                               (buffer-substring-no-properties
+                                (region-beginning) (region-end))
+                             (thing-at-point 'symbol t))))
+                (swiper input))
+              :which-key "search buffer")
+
+      ;;; Themes
+      "t" '(:ignore t :which-key "Theme")
+      "ts" '(counsel-load-theme :which-key "switch theme")
+
+      ;;; Windows
+      "w"   '(:ignore t :which-key "Windows")
+      "wd" '(delete-window :which-key "close window")
+      "w/" '((lambda ()
+               (interactive)
+               (split-window-horizontally)
+               (other-window 1))
+             :which-key "split vertical")
+      "w-" '((lambda ()
+               (interactive)
+               (split-window-vertically)
+               (other-window 1))
+             :which-key "split horizontal")
+      "wh" '(evil-window-left :which-key "window left")
+      "w<left>" '(evil-window-left :which-key nil)
+      "wj" '(evil-window-down :which-key "window down")
+      "w<down>" '(evil-window-down :which-key nil)
+      "wk" '(evil-window-up :which-key "window up")
+      "w<up>" '(evil-window-up :which-key nil)
+      "wl" '(evil-window-right :which-key "window right")
+      "w<right>" '(evil-window-right :which-key nil)
+      "w=" '(balance-windows :which-key "balance window split")))
+#+END_SRC
 
 *** Keybinding Macro Functions
 
@@ -571,16 +571,6 @@ Buffer completion. Like Helm, but lighter and easier to understand.
 #+END_SRC
 
 #+BEGIN_SRC emacs-lisp
-  (use-package doom-todo-ivy
-    :ensure nil
-    :commands doom/ivy-tasks
-    :load-path "vendor/"
-    :config
-    (global-keymap
-     "p T" '(doom/ivy-tasks :which-key "List project tasks")))
-#+END_SRC
-
-#+BEGIN_SRC emacs-lisp
   (use-package ivy-rich
     :after ivy
     :custom
@@ -594,6 +584,7 @@ Buffer completion. Like Helm, but lighter and easier to understand.
 This may not work on macOS yet...
 #+BEGIN_SRC emacs-lisp
   (use-package ivy-posframe
+    :disabled ;; Does not work on macOS
     :hook (ivy-mode . ivy-posframe-enable)
     :defines ivy-posframe-parameters
     :preface
@@ -625,6 +616,17 @@ This may not work on macOS yet...
     ;; posframe doesn't work well with async sources
     (dolist (fn '(swiper counsel-ag counsel-grep counsel-git-grep))
       (setf (alist-get fn ivy-display-functions-alist) #'ivy-display-function-fallback)))
+#+END_SRC
+
+*** Project TODOs
+#+BEGIN_SRC emacs-lisp
+  (use-package doom-todo-ivy
+    :ensure nil
+    :commands doom/ivy-tasks
+    :load-path "vendor/"
+    :config
+    (global-keymap
+     "p T" '(doom/ivy-tasks :which-key "List project tasks")))
 #+END_SRC
 
 *** Counsel
@@ -690,7 +692,6 @@ This may not work on macOS yet...
 
 *** Company
 Auto-completion framework for most modes
-
 #+BEGIN_SRC emacs-lisp
   (use-package company
     :defer t
@@ -716,7 +717,6 @@ Auto-completion framework for most modes
                          company-echo-metadata-frontend))
     (company-transformers '(company-sort-by-occurrence))
     (company-backends '()))
-
 
   (use-package company-async-files
     :defer t
