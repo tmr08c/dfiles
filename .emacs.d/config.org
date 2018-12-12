@@ -26,9 +26,6 @@
     - [[#direnv][Direnv]]
     - [[#amx][amx]]
     - [[#ivy][Ivy]]
-    - [[#project-todos][Project TODOs]]
-    - [[#counsel][Counsel]]
-    - [[#company][Company]]
     - [[#neotree][Neotree]]
     - [[#smartparens][SmartParens]]
     - [[#rainbow-delimiters][Rainbow Delimiters]]
@@ -41,6 +38,8 @@
     - [[#code-folding][Code Folding]]
     - [[#code-snippets][Code Snippets]]
     - [[#highlight-todo--fixme-comments][Highlight TODO & FIXME comments]]
+    - [[#highlight-numbers][Highlight Numbers]]
+    - [[#visual-fill-column][Visual Fill Column]]
     - [[#swiper][Swiper]]
     - [[#search-backends][Search Backends]]
   - [[#languages][Languages]]
@@ -613,112 +612,7 @@ This may not work on macOS yet...
     ;; default to posframe display function
     (setf (alist-get t ivy-display-functions-alist) #'+ivy-display-at-frame-center-near-bottom)
 
-    ;; posframe doesn't work well with async sources
-    (dolist (fn '(swiper counsel-ag counsel-grep counsel-git-grep))
-      (setf (alist-get fn ivy-display-functions-alist) #'ivy-display-function-fallback)))
-#+END_SRC
-
-*** Project TODOs
-#+BEGIN_SRC emacs-lisp
-  (use-package doom-todo-ivy
-    :ensure nil
-    :commands doom/ivy-tasks
-    :load-path "vendor/"
-    :config
-    (global-keymap
-     "p T" '(doom/ivy-tasks :which-key "List project tasks")))
-#+END_SRC
-
-*** Counsel
-
-#+BEGIN_SRC emacs-lisp
-  (use-package counsel
-    :commands (counsel-M-x counsel-find-file)
-    :custom
-    (counsel-mode-override-describe-bindings t)
-    :general
-    (general-define-key
-     "M-x" 'counsel-M-x
-     "C-x C-f" 'counsel-find-file))
-
-  (use-package counsel-projectile
-    :commands (counsel-projectile-switch-to-buffer
-               counsel-projectile-find-dir
-               counsel-projectile-find-file
-               counsel-projectile-switch-project
-               counsel-projectile-rg))
-
-  (global-keymap
-   "pb" '(counsel-projectile-switch-to-buffer
-          :which-key "switch to buffer")
-   "pd" '(counsel-projectile-find-dir
-          :which-key "find directory")
-   "pf" '(counsel-projectile-find-file
-          :which-key "open file")
-   "pp" '(counsel-projectile-switch-project
-          :which-key "open project")
-   "ps" '(counsel-projectile-rg
-          :which-key "search in project"))
-
-  (use-package counsel-dash
-    :commands counsel-dash
-    :hook
-    ((lisp-mode . (lambda ()
-                    (setq-local counsel-dash-docsets '("Common_Lisp"))))
-     (emacs-lisp-mode . (lambda ()
-                          (setq-local counsel-dash-docsets '("Emacs_Lisp"))))
-     (ruby-mode . (lambda ()
-                    (setq-local counsel-dash-docsets '("Ruby"))))
-     (projectile-rails-mode . (lambda ()
-                                (setq-local counsel-dash-docsets '("Ruby_on_Rails_5"))))
-     (sql-mode . (lambda ()
-                   (setq-local counsel-dash-docsets '("PostgreSQL"))))
-     (web-mode . (lambda ()
-                   (setq-local counsel-dash-docsets '("Javascript" "HTML")))))
-    :custom
-    (counsel-dash-browser-func 'eww)
-    (counsel-dash-common-docsets '()))
-
-  (use-package counsel-etags
-    :requires counsel
-    :commands (counsel-etags-find-tag-at-point
-               counsel-etags-scan-code
-               counsel-etags-grep
-               counsel-etags-grep-symbol-at-point
-               counsel-etags-recent-tag
-               counsel-etags-find-tag
-               counsel-etags-list-tag))
-#+END_SRC
-
-*** Company
-Auto-completion framework for most modes
-#+BEGIN_SRC emacs-lisp
-  (use-package company
-    :defer t
-    :delight
-    :defines company-backends
-    :hook (after-init . global-company-mode)
-    :custom
-    ;; (company-begin-commands '(self-insert-command)) ; start autocompletion only after typing
-    (company-dabbrev-downcase nil)
-    (company-dabbrev-ignore-case nil)
-    (company-dabbrev-code-other-buffers t)
-    (company-echo-delay 0) ; remove annoying blinking
-    (company-idle-delay 0.6)
-    (company-minimum-prefix-length 2)
-    (company-require-match 'never)
-    (company-selection-wrap-around t)
-    (company-tooltip-align-annotations t)
-    (company-tooltip-flip-when-above t)
-    (company-tooltip-limit 14)
-    (company-global-modes
-     '(not eshell-mode comint-mode erc-mode message-mode help-mode gud-mode))
-    (company-frontends '(company-pseudo-tooltip-frontend
-                         company-echo-metadata-frontend))
-    (company-transformers '(company-sort-by-occurrence))
-    (company-backends '()))
-
-  (use-package company-async-files
+    ;; posframe doesn't work well with async-files
     :defer t
     :no-require t
     :ensure nil
@@ -795,11 +689,6 @@ Auto-completion framework for most modes
   (use-package company-flx
     :hook (company-mode . company-flx-mode))
 
-  (use-package company-posframe
-    :disabled
-    :delight
-    :hook (company-mode . company-posframe-mode))
-
   ;; General
   (use-package company-emoji
     :no-require t
@@ -820,54 +709,51 @@ Auto-completion framework for most modes
                           (set (make-local-variable 'company-backends) '((company-irony-c-headers company-irony company-etags))))))
 
   ;; Python
-  (use-package company-anaconda
-    :after python-mode
-    :hook (python-mode . (lambda ()
-                           (set (make-local-variable 'company-backends) '(company-anaconda)))))
+  ;; (use-package company-anaconda
+  ;;   :after python-mode
+  ;;   :hook (python-mode . (lambda ()
+  ;;                          (set (make-local-variable 'company-backends) '(company-anaconda)))))
 
   ;; Golang
-  (use-package company-go
-    :after go-mode
-    :hook (go-mode . (lambda ()
-                       (set (make-local-variable 'company-backends) '(company-go))))
-    :custom
-    (company-go-show-annotation t))
+  ;; (use-package company-go
+  ;;   :after go-mode
+  ;;   :hook (go-mode . (lambda ()
+  ;;                      (set (make-local-variable 'company-backends) '(company-go))))
+  ;;   :custom
+  ;;   (company-go-show-annotation t))
 
   ;; Shell
-  (use-package company-shell
-    :custom
-    (company-shell-delete-duplicates t)
-    :hook (sh-mode . (lambda ()
-                       (set (make-local-variable 'company-backends) '(company-shell company-async-files)))))
-
-  ;;; Language Server Mode
-  (use-package eglot
-    :disabled ;; Works but not as good as company-go
-    :after company
-    :config
-    (progn
-      (add-to-list
-       'eglot-server-programs
-       '(go-mode . ("go-langserver" "-gocodecompletion")))))
+  ;; (use-package company-shell
+  ;;   :custom
+  ;;   (company-shell-delete-duplicates t)
+  ;;   :hook (sh-mode . (lambda ()
+  ;;                      (set (make-local-variable 'company-backends) '(company-shell company-async-files)))))
 
   (use-package lsp-mode
-    :disabled ;; TODO: replace with eglot
-    :hook prog-mode
-    :custom
-    (lsp-message-project-root-warning t))
+    :hook ((ruby-mode
+            js-mode js2-mode
+            typescript-mode
+            python-mode
+            web-mode
+            css-mode
+            go-mode) . lsp)
+    :config
+    (require 'lsp-clients)
+    (setq lsp-enable-snippet t))
+  ;; :commands (lsp-mode lsp-define-stdio-client)
+  ;; :hook prog-mode
+  ;; :custom
+  ;; (lsp-message-project-root-warning t))
 
-  (use-package lsp-ui
-    :disabled
-    :hook (lsp-mode . lsp-ui-mode))
+  ;; (use-package lsp-ui
+  ;;   :hook (lsp-mode . lsp-ui-mode)
+  ;;   :config
+  ;;   (setq lsp-ui-doc-max-height 8
+  ;;         lsp-ui-doc-max-width 35
+  ;;         lsp-ui-sideline-ignore-duplicate t))
 
   (use-package company-lsp
-    :disabled
-    :after (company lsp-mode)
-    :custom
-    (company-lsp-async t)
-    (company-lsp-enable-snippet t)
-    :config
-    (push 'company-lsp company-backends))
+    :hook (lsp-mode))
 
 
   (custom-set-faces
@@ -1015,16 +901,15 @@ Help wrap long lines
 #+BEGIN_SRC emacs-lisp
   (use-package whitespace
     :defer 5
-    :custom
-    (whitespace-line-column fill-column)
-    (whitespace-style
-     '(face indentation tabs tab-mark spaces space-mark newline newline-mark
-            trailing lines-tail))
-    (whitespace-display-mappings
-     '((tab-mark ?\t [?› ?\t])
-       (newline-mark ?\n [?¬ ?\n])
-       (space-mark ?\ [?·] [?.])))
     :config
+    (setq whitespace-line-column nil
+          whitespace-stylje
+          '(face indentation tabs tab-mark spaces space-mark newline newline-mark
+                 trailing lines-tail)
+          whitespace-display-mappings
+          '((tab-mark ?\t [?› ?\t])
+            (newline-mark ?\n [?¬ ?\n])
+            (space-mark ?\  [?·] [?.])))
     (add-hook 'before-save 'delete-trailing-whitespace))
 #+END_SRC
 
@@ -1105,6 +990,25 @@ Help wrap long lines
 #+BEGIN_SRC emacs-lisp
   (use-package hl-todo
     :hook (after-init . global-hl-todo-mode))
+#+END_SRC
+
+*** Highlight Numbers
+#+BEGIN_SRC emacs-lisp
+  (use-package highlight-numbers
+    :hook ((prog-mode conf-mode) . highlight-numbers-mode)
+    :config (setq highlight-numbers-generic-regexp "\\_<[[:digit:]]+\\(?:\\.[0-9]*\\)?\\_>"))
+#+END_SRC
+
+*** Visual Fill Column
+#+BEGIN_SRC emacs-lisp
+  (use-package visual-fill-column
+    :config
+    (setq-default
+     visual-fill-column-center-text t
+     visual-fill-column-width
+     ;; take Emacs 26 line numbers into account
+     (+ (if (boundp 'display-line-numbers) 6 0)
+        fill-column)))
 #+END_SRC
 *** Swiper
 #+BEGIN_SRC emacs-lisp
@@ -1936,66 +1840,81 @@ Use Ripgrep where we can
    #+END_SRC
 
 **** JavaScript
-   #+BEGIN_SRC emacs-lisp
-     (use-package js2-mode
-       :mode "\\.m?js\\'"
-       ;; :ensure-system-package
-       ;; (eslint_d . "npm install -g eslint_d")
-       ;; :bind
-       ;; (:map js2-mode-map
-       ;;       ("," . self-with-space)
-       ;;       ("=" . pad-equals)
-       ;;       (":" . self-with-space))
-       :hook
-       (js2-mode . js2-imenu-extras-mode)
-       ;; :custom
-       ;; (js2-mode-show-strict-warnings nil)
-       ;; (js2-highlight-level 3)
-       :config
-       (js/javascript-keybindings)
-       (defvaralias 'js-switch-indent-offset 'js2-basic-offset)
-       (setenv "NODE_NO_READLINE" "1"))
+#+BEGIN_SRC emacs-lisp
+  (use-package add-node-modules-path
+    :hook ((js-mode js2-mode typescript-mode) . add-node-modules-path))
 
-     (defun js/javascript-keybindings ()
-       "Define keybindings when working with Javascript."
-       "w" 'js2-mode-toggle-warnings-and-errors
+  (use-package prettier-js
+    :hook (js2-mode))
 
-       "h" '(:ignore t :which-key "help")
-       "g" '(:ignore t :which-key "goto")
-       "r" '(:ignore t :which-key "refactor")
+  (use-package js2-mode
+    :mode "\\.m?js\\'"
+    :hook
+    (js2-mode . js2-imenu-extras-mode)
+    :config
+    (js/javascript-keybindings)
+    (defvaralias 'js-switch-indent-offset 'js2-basic-offset)
+    (setq-default js2-basic-offset 2
+                  js-indent-level 2)
+    (setenv "NODE_NO_READLINE" "1"))
 
-       "z" '(:ignore t :which-key "folding")
-       "zc" 'js2-mode-hide-element
-       "zo" 'js2-mode-show-element
-       "zr" 'js2-mode-show-all
-       "ze" 'js2-mode-toggle-element
-       "zF" 'js2-mode-toggle-hide-functions
-       "zC" 'js2-mode-toggle-hide-comments)
+  (defun js/javascript-keybindings ()
+    "Define keybindings when working with JavaScript."
+    (keymap-for-mode 'js2-mode
+                     "w" 'js2-mode-toggle-warnings-and-errors
 
-     (use-package nodejs-repl
-       :ensure-system-package node
-       :defer t)
+                     "h" '(:ignore t :which-key "help")
+                     "g" '(:ignore t :which-key "goto")
+                     "r" '(:ignore t :which-key "refactor")
 
-     ;;; React
-     (use-package rjsx-mode
-       :requires js2-mode
-       :config
-       (bind-key "=" #'pad-equals rjsx-mode-map
-                 (not (memq (js2-node-type (js2-node-at-point))
-                            (list rjsx-JSX rjsx-JSX-ATTR rjsx-JSX-IDENT rjsx-JSX-MEMBER)))))
-   #+END_SRC
+                     "z" '(:ignore t :which-key "folding")
+                     "zc" 'js2-mode-hide-element
+                     "zo" 'js2-mode-show-element
+                     "zr" 'js2-mode-show-all
+                     "ze" 'js2-mode-toggle-element
+                     "zF" 'js2-mode-toggle-hide-functions
+                     "zC" 'js2-mode-toggle-hide-comments))
+#+END_SRC
 
-**** TypeScript
-   #+BEGIN_SRC emacs-lisp
-     (use-package typescript-mode
-       :defer t)
+***** TypeScript
+#+BEGIN_SRC emacs-lisp
+  ;; (defun spacemacs/typescript-jump-to-type-def ()
+  ;;   (interactive)
+  ;;   (tide-jump-to-definition t))
 
-     (use-package tide
-       :after (typescript-mode company flycheck)
-       :hook ((typescript-mode . tide-setup)
-              (typescript-mode . tide-hl-identifier-mode)
-              (before-save . tide-format-before-save)))
-   #+END_SRC
+  ;; (defun js/typescript-keybindings ()
+  ;;   "Define keybindings when working with TypeScript."
+  ;;   (keymap-for-mode 'typescript-mode
+  ;;                    "=" 'tide-format
+
+  ;;                    "E" '(:ignore t :which-key "errors")
+  ;;                    "Ee" 'tide-fix
+  ;;                    "Ed" 'tide-add-tslint-disable-next-line
+
+  ;;                    "g" '(:ignore t :which-key "goto")
+  ;;                    "gb" 'tide-jump-back
+  ;;                    "gg" 'tide-jump-to-definition
+  ;;                    "gt" 'spacemacs/typescript-jump-to-type-def
+  ;;                    "gu" 'tide-references
+
+  ;;                    "h" '(:ignore t :which-key "help")
+  ;;                    "hh" 'tide-documentation-at-point
+
+  ;;                    "r" '(:ignore t :which-key "refactor")
+  ;;                    "ri" 'tide-organize-imports
+  ;;                    "rr" 'tide-rename-symbol
+  ;;                    "rf" 'tide-rename-file
+
+  ;;                    "s" '(:ignore t :which-key "send")
+  ;;                    "sr" 'tide-restart-server))
+
+  (use-package typescript-mode
+    :mode "\\.tsx?\\'"
+    :config
+    ;; (js/typescript-keybindings)
+    (setq typescript-indent-level 2
+          typescript-expr-indent-offset 2))
+#+END_SRC
  
 **** Web
 
@@ -2061,16 +1980,15 @@ Use Ripgrep where we can
 
 ** Editing
 *** Syntax Checking
- #+BEGIN_SRC emacs-lisp
-   (use-package flycheck
-     :hook (prog-mode . flycheck-mode)
-     :custom
-     (flycheck-rubocop-lint-only t)
-     (flycheck-check-syntax-automatically '(mode-enabled save))
-     (flycheck-disabled-checkers '(ruby-rubylint)))
-   (use-package flycheck-pos-tip
-     :hook (flycheck-mode . flycheck-pos-tip-mode))
- #+END_SRC
+#+BEGIN_SRC emacs-lisp
+  (use-package flycheck
+    :hook (prog-mode . flycheck-mode)
+    :pin melpa
+    :custom
+    (flycheck-rubocop-lint-only t)
+    (flycheck-check-syntax-automatically '(mode-enabled save))
+    (flycheck-disabled-checkers '(ruby-rubylint)))
+#+END_SRC
 
 *** Spell Checking
 
@@ -2426,7 +2344,6 @@ eshell because I do not know any better 😂
 #+END_SRC
 
 
-
 *** Org Mode
 #+BEGIN_SRC emacs-lisp
 (defun js/org-keybindings ()
@@ -2652,7 +2569,6 @@ Add special keybindings to org mode that work well with evil mode.
                           todo)))
 #+END_SRC
 
-
 ** Tools
 *** PDF
 
@@ -2695,13 +2611,13 @@ Add special keybindings to org mode that work well with evil mode.
 *** Riot / Matrix client
 
 This package is currently disabled. I am not able to log in successfully.
-
 #+BEGIN_SRC emacs-lisp
   (use-package matrix-client
     :disabled ;; not ready for prime time yet
     :quelpa (matrix-client :fetcher github
                            :repo "jgkamat/matrix-client-el"))
 #+END_SRC
+
 ** OS-Specific changes
 #+BEGIN_SRC emacs-lisp
   (use-package linux

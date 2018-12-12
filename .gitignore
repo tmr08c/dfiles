@@ -13,4 +13,5 @@ zeus.json
 .idea/**/*
 *.private
 .tool-versions
-
+.projectile
+.dir-locals
