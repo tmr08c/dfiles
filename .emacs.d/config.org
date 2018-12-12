@@ -26,6 +26,9 @@
     - [[#direnv][Direnv]]
     - [[#amx][amx]]
     - [[#ivy][Ivy]]
+    - [[#project-todos][Project TODOs]]
+    - [[#counsel][Counsel]]
+    - [[#company][Company]]
     - [[#neotree][Neotree]]
     - [[#smartparens][SmartParens]]
     - [[#rainbow-delimiters][Rainbow Delimiters]]
@@ -175,7 +178,7 @@ Save data files consistently:
  - `save-place-file`
  - `undo-tree-history-directory-alist`
  - `backup-directory-alist`
-      
+
 #+BEGIN_SRC emacs-lisp
 (use-package no-littering
   :demand t
@@ -187,7 +190,7 @@ Save data files consistently:
   (setq custom-file
         (no-littering-expand-var-file-name "custom.el")))
   #+END_SRC
-  
+
 ** Keybindings
 *** Which Key
 
@@ -356,7 +359,7 @@ Save data files consistently:
          :keymaps ',(intern (format "%s-map" (eval mode)))
          ,@mode-bindings)))
 #+END_SRC
- 
+
 *** Evil
  #+BEGIN_SRC emacs-lisp
    (defmacro evil-keymap-for-mode (mode &rest bindings)
@@ -611,8 +614,111 @@ This may not work on macOS yet...
         (push (cons fn '(:cleanup ivy-posframe-cleanup)) ivy-display-functions-props)))
     ;; default to posframe display function
     (setf (alist-get t ivy-display-functions-alist) #'+ivy-display-at-frame-center-near-bottom)
+(dolist (fn '(swiper counsel-ag counsel-grep counsel-git-grep))
+      (setf (alist-get fn ivy-display-functions-alist) #'ivy-display-function-fallback)))
+#+END_SRC
 
-    ;; posframe doesn't work well with async-files
+*** Project TODOs
+#+BEGIN_SRC emacs-lisp
+  (use-package doom-todo-ivy
+    :ensure nil
+    :commands doom/ivy-tasks
+    :load-path "vendor/"
+    :config
+    (global-keymap
+     "p T" '(doom/ivy-tasks :which-key "List project tasks")))
+#+END_SRC
+
+*** Counsel
+
+#+BEGIN_SRC emacs-lisp
+  (use-package counsel
+    :commands (counsel-M-x counsel-find-file)
+    :custom
+    (counsel-mode-override-describe-bindings t)
+    :general
+    (general-define-key
+     "M-x" 'counsel-M-x
+     "C-x C-f" 'counsel-find-file))
+
+  (use-package counsel-projectile
+    :commands (counsel-projectile-switch-to-buffer
+               counsel-projectile-find-dir
+               counsel-projectile-find-file
+               counsel-projectile-switch-project
+               counsel-projectile-rg))
+
+  (global-keymap
+   "pb" '(counsel-projectile-switch-to-buffer
+          :which-key "switch to buffer")
+   "pd" '(counsel-projectile-find-dir
+          :which-key "find directory")
+   "pf" '(counsel-projectile-find-file
+          :which-key "open file")
+   "pp" '(counsel-projectile-switch-project
+          :which-key "open project")
+   "ps" '(counsel-projectile-rg
+          :which-key "search in project"))
+
+  (use-package counsel-dash
+    :commands counsel-dash
+    :hook
+    ((lisp-mode . (lambda ()
+                    (setq-local counsel-dash-docsets '("Common_Lisp"))))
+     (emacs-lisp-mode . (lambda ()
+                          (setq-local counsel-dash-docsets '("Emacs_Lisp"))))
+     (ruby-mode . (lambda ()
+                    (setq-local counsel-dash-docsets '("Ruby"))))
+     (projectile-rails-mode . (lambda ()
+                                (setq-local counsel-dash-docsets '("Ruby_on_Rails_5"))))
+     (sql-mode . (lambda ()
+                   (setq-local counsel-dash-docsets '("PostgreSQL"))))
+     (web-mode . (lambda ()
+                   (setq-local counsel-dash-docsets '("Javascript" "HTML")))))
+    :custom
+    (counsel-dash-browser-func 'eww)
+    (counsel-dash-common-docsets '()))
+
+  (use-package counsel-etags
+    :requires counsel
+    :commands (counsel-etags-find-tag-at-point
+               counsel-etags-scan-code
+               counsel-etags-grep
+               counsel-etags-grep-symbol-at-point
+               counsel-etags-recent-tag
+               counsel-etags-find-tag
+               counsel-etags-list-tag))
+#+END_SRC
+
+*** Company
+Auto-completion framework for most modes
+#+BEGIN_SRC emacs-lisp
+  (use-package company
+    :defer t
+    :delight
+    :defines company-backends
+    :hook (after-init . global-company-mode)
+    :custom
+    ;; (company-begin-commands '(self-insert-command)) ; start autocompletion only after typing
+    (company-dabbrev-downcase nil)
+    (company-dabbrev-ignore-case nil)
+    (company-dabbrev-code-other-buffers t)
+    (company-echo-delay 0) ; remove annoying blinking
+    (company-idle-delay 0.6)
+    (company-minimum-prefix-length 2)
+    (company-require-match 'never)
+    (company-selection-wrap-around t)
+    (company-tooltip-align-annotations t)
+    (company-tooltip-flip-when-above t)
+    (company-tooltip-limit 14)
+    (company-global-modes
+     '(not eshell-mode comint-mode erc-mode message-mode help-mode gud-mode))
+    (company-frontends '(company-pseudo-tooltip-frontend
+                         company-echo-metadata-frontend))
+    (company-transformers '(company-sort-by-occurrence))
+    (company-backends '()))
+
+  (use-package company-async-files
     :defer t
     :no-require t
     :ensure nil
@@ -671,7 +777,7 @@ This may not work on macOS yet...
             ((eq command 'post-command)
              (company-box--post-command))))
     (advice-add #'company-box-frontend :override #'+company*box-frontend-even-if-single))
-  ;; :load-path "vendor/company-box/")
+
 
   (use-package company-prescient
     :hook (company-mode . company-prescient-mode)
@@ -805,7 +911,7 @@ Directory tree
    "ft" 'neotree-toggle
    "pt" 'neotree-projectile-action)
 #+END_SRC
-  
+
 *** SmartParens
 #+BEGIN_SRC emacs-lisp
   (defun js|smartparens-pair-newline (id action context)
@@ -985,7 +1091,7 @@ Help wrap long lines
     ;; Exit snippets on ESC from normal mode
     (add-hook '+evil-esc-hook #'yas-exit-all-snippets))
 #+END_SRC
- 
+
 *** Highlight TODO & FIXME comments
 #+BEGIN_SRC emacs-lisp
   (use-package hl-todo
@@ -1878,10 +1984,6 @@ Use Ripgrep where we can
 
 ***** TypeScript
 #+BEGIN_SRC emacs-lisp
-  ;; (defun spacemacs/typescript-jump-to-type-def ()
-  ;;   (interactive)
-  ;;   (tide-jump-to-definition t))
-
   ;; (defun js/typescript-keybindings ()
   ;;   "Define keybindings when working with TypeScript."
   ;;   (keymap-for-mode 'typescript-mode
@@ -1911,11 +2013,10 @@ Use Ripgrep where we can
   (use-package typescript-mode
     :mode "\\.tsx?\\'"
     :config
-    ;; (js/typescript-keybindings)
     (setq typescript-indent-level 2
           typescript-expr-indent-offset 2))
 #+END_SRC
- 
+
 **** Web
 
 #+BEGIN_SRC emacs-lisp
@@ -2160,7 +2261,7 @@ Spaces (2) over Tabs
 (setq-default tab-width 2
               indent-tabs-mode nil)
 #+END_SRC
-   
+
 ** Built-in modes (Break down)
 *** Window Management
 Keep windows in Emacs from popping up everywhere. This section needs to be expanded, but it worked for now.
@@ -2189,7 +2290,7 @@ Keep windows in Emacs from popping up everywhere. This section needs to be expan
 #+END_SRC
 
 *** File Management
-Warn about large files (over 20MB) 
+Warn about large files (over 20MB)
 #+BEGIN_SRC emacs-lisp
    (use-package files
      :no-require t
@@ -2630,4 +2731,3 @@ This package is currently disabled. I am not able to log in successfully.
     :load-path "vendor/"
     :if (eq system-type 'darwin))
 #+END_SRC
-  
