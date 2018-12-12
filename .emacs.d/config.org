@@ -46,8 +46,22 @@
     - [[#swiper][Swiper]]
     - [[#search-backends][Search Backends]]
   - [[#languages][Languages]]
-    - [[#complete][Complete]]
-    - [[#in-development--incomplete][In Development / Incomplete]]
+    - [[#golang][Golang]]
+    - [[#ruby][Ruby]]
+    - [[#sql][SQL]]
+    - [[#csv][CSV]]
+    - [[#json][JSON]]
+    - [[#dockerfile][Dockerfile]]
+    - [[#yaml][YAML]]
+    - [[#markdown][Markdown]]
+    - [[#lisp][Lisp]]
+    - [[#python][Python]]
+    - [[#cc][C/C++]]
+    - [[#erlang][Erlang]]
+    - [[#elixir][Elixir]]
+    - [[#scala][Scala]]
+    - [[#javascript][JavaScript]]
+    - [[#web][Web]]
   - [[#editing][Editing]]
     - [[#syntax-checking][Syntax Checking]]
     - [[#spell-checking][Spell Checking]]
@@ -1132,8 +1146,7 @@ Use Ripgrep where we can
 #+END_SRC
 
 ** Languages
-*** Complete
-**** Golang
+*** Golang
 #+BEGIN_SRC emacs-lisp
   (use-package go-mode
     :mode "\\.go\\'"
@@ -1283,7 +1296,7 @@ Use Ripgrep where we can
                                       (buffer-file-name (buffer-base-buffer)))))))
 #+END_SRC
 
-**** Ruby
+*** Ruby
 
 #+BEGIN_SRC emacs-lisp
   (use-package ruby-mode
@@ -1412,7 +1425,7 @@ Use Ripgrep where we can
     :hook (projectile-mode . projectile-rails-on))
    #+END_SRC
 
-**** SQL
+*** SQL
 
    #+BEGIN_SRC emacs-lisp
      (use-package sql
@@ -1445,7 +1458,7 @@ Use Ripgrep where we can
        :hook (sql-mode . sql-interactive-mode-hook))
    #+END_SRC
 
-**** CSV
+*** CSV
 
    #+BEGIN_SRC emacs-lisp
      (use-package csv-mode
@@ -1463,7 +1476,7 @@ Use Ripgrep where we can
        :hook csv-mode)
    #+END_SRC
 
-**** JSON
+*** JSON
 
    #+BEGIN_SRC emacs-lisp
    (use-package json-mode
@@ -1473,12 +1486,12 @@ Use Ripgrep where we can
             "\\.jshintrc$"))
    #+END_SRC
 
-**** Dockerfile
+*** Dockerfile
    #+BEGIN_SRC emacs-lisp
    (use-package dockerfile-mode
      :mode "Dockerfile.*\\'")
    #+END_SRC
-**** YAML
+*** YAML
 
    #+BEGIN_SRC emacs-lisp
    (use-package yaml-mode
@@ -1486,7 +1499,7 @@ Use Ripgrep where we can
 
    #+END_SRC
 
-**** Markdown
+*** Markdown
 
    #+BEGIN_SRC emacs-lisp
    (use-package markdown-mode
@@ -1494,7 +1507,7 @@ Use Ripgrep where we can
      :hook (markdown-mode . flyspell-mode))
    #+END_SRC
 
-**** Lisp
+*** Lisp
 
 #+BEGIN_SRC emacs-lisp
   (use-package lispy
@@ -1757,7 +1770,7 @@ Use Ripgrep where we can
   ;; 	:commands overseer-test)
    #+END_SRC
 
-**** Python
+*** Python
    #+BEGIN_SRC emacs-lisp
      (use-package python-mode
        :mode "\\.py")
@@ -1769,8 +1782,7 @@ Use Ripgrep where we can
        :hook python-mode)
    #+END_SRC
 
-*** In Development / Incomplete
-**** C/C++
+*** C/C++
    #+BEGIN_SRC emacs-lisp
      ;; C (via irony-mode)
      (use-package irony
@@ -1824,13 +1836,13 @@ Use Ripgrep where we can
        (add-to-list 'irony-lang-compile-option-alist '(arduino-mode . "c++")))
    #+END_SRC
 
-**** Erlang
+*** Erlang
    #+BEGIN_SRC emacs-lisp
      (use-package erlang
        :mode "\\.erl$")
    #+END_SRC
 
-**** Elixir
+*** Elixir
 
    #+BEGIN_SRC emacs-lisp
      (use-package elixir-mode
@@ -1932,7 +1944,7 @@ Use Ripgrep where we can
        :hook (elixir-mode . flycheck-mix-setup))
    #+END_SRC
 
-**** Scala
+*** Scala
 
    #+BEGIN_SRC emacs-lisp
      (use-package scala-mode
@@ -1945,7 +1957,7 @@ Use Ripgrep where we can
        :hook (scala-mode . sbt-mode))
    #+END_SRC
 
-**** JavaScript
+*** JavaScript
 #+BEGIN_SRC emacs-lisp
   (use-package add-node-modules-path
     :hook ((js-mode js2-mode typescript-mode) . add-node-modules-path))
@@ -1982,42 +1994,41 @@ Use Ripgrep where we can
                      "zC" 'js2-mode-toggle-hide-comments))
 #+END_SRC
 
-***** TypeScript
+**** TypeScript
 #+BEGIN_SRC emacs-lisp
-  ;; (defun js/typescript-keybindings ()
-  ;;   "Define keybindings when working with TypeScript."
-  ;;   (keymap-for-mode 'typescript-mode
-  ;;                    "=" 'tide-format
+  (defun js/typescript-keybindings ()
+    "Define keybindings when working with TypeScript."
+    (keymap-for-mode 'typescript-mode
+                     ;; "=" 'tide-format
 
-  ;;                    "E" '(:ignore t :which-key "errors")
-  ;;                    "Ee" 'tide-fix
-  ;;                    "Ed" 'tide-add-tslint-disable-next-line
+                     ;;                    "E" '(:ignore t :which-key "errors")
+                     ;;                    "Ee" 'tide-fix
+                     ;;                    "Ed" 'tide-add-tslint-disable-next-line
 
-  ;;                    "g" '(:ignore t :which-key "goto")
-  ;;                    "gb" 'tide-jump-back
-  ;;                    "gg" 'tide-jump-to-definition
-  ;;                    "gt" 'spacemacs/typescript-jump-to-type-def
-  ;;                    "gu" 'tide-references
+                     ;;                    "g" '(:ignore t :which-key "goto")
+                     ;;                    "gb" 'tide-jump-back
+                     ;;                    "gg" 'tide-jump-to-definition
+                     ;;                    "gt" 'spacemacs/typescript-jump-to-type-def
+                     ;;                    "gu" 'tide-references
 
-  ;;                    "h" '(:ignore t :which-key "help")
-  ;;                    "hh" 'tide-documentation-at-point
+                     ;;                    "h" '(:ignore t :which-key "help")
+                     ;;                    "hh" 'tide-documentation-at-point
 
-  ;;                    "r" '(:ignore t :which-key "refactor")
-  ;;                    "ri" 'tide-organize-imports
-  ;;                    "rr" 'tide-rename-symbol
-  ;;                    "rf" 'tide-rename-file
-
-  ;;                    "s" '(:ignore t :which-key "send")
-  ;;                    "sr" 'tide-restart-server))
+                     ;;                    "r" '(:ignore t :which-key "refactor")
+                     ;;                    "ri" 'tide-organize-imports
+                     ;;                    "rr" 'tide-rename-symbol
+                     ;;                    "rf" 'tide-rename-file
+                     ))
 
   (use-package typescript-mode
     :mode "\\.tsx?\\'"
     :config
+    (js/typescript-keybindings)
     (setq typescript-indent-level 2
           typescript-expr-indent-offset 2))
 #+END_SRC
 
-**** Web
+*** Web
 
 #+BEGIN_SRC emacs-lisp
   (use-package web-mode
