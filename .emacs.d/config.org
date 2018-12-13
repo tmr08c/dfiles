@@ -240,7 +240,7 @@ Save data files consistently:
     (general-evil-setup)
     (space-leader-def
       ;; :states '(normal visual insert emacs)
-      :states '(normal emacs)
+      :states '(normal visual emacs)
 
       "SPC" '(counsel-M-x :which-key "M-x")
       ;; "TAB" '(switch-to-other-buffer :which-key "prev buffer")
@@ -355,7 +355,7 @@ Save data files consistently:
   All of the arguments are treated exactly like they are in
   'general' package."
     `(space-leader-def
-       :states '(normal emacs)
+       :states '(normal visual emacs)
        ,@bindings))
 #+END_SRC
 
@@ -371,7 +371,7 @@ Save data files consistently:
         (push (concat "m" key) mode-bindings)
         (setq key (pop bindings) def (pop bindings)))
       `(space-leader-def
-         :states 'normal
+         :states '(normal visual emacs)
          :keymaps ',(intern (format "%s-map" (eval mode)))
          ,@mode-bindings)))
 #+END_SRC
@@ -384,7 +384,7 @@ Save data files consistently:
    the rest of the arguments are treated exactly like they are in
    'general' package."
      `(general-define-key
-       :states 'normal
+       :states '(normal visual)
        :keymaps ',(intern (format "%s-map" (eval mode)))
        ,@bindings))
  #+END_SRC
