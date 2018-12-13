@@ -40,12 +40,12 @@
     - [[#unfill][Unfill]]
     - [[#code-folding][Code Folding]]
     - [[#code-snippets][Code Snippets]]
-    - [[#highlight-todo--fixme-comments][Highlight TODO & FIXME comments]]
-    - [[#highlight-numbers][Highlight Numbers]]
+    - [[#highlighting][Highlighting]]
     - [[#visual-fill-column][Visual Fill Column]]
     - [[#swiper][Swiper]]
     - [[#ripgrep][Ripgrep]]
     - [[#midnight][Midnight]]
+    - [[#google-translate][Google Translate]]
   - [[#languages][Languages]]
     - [[#golang][Golang]]
     - [[#ruby][Ruby]]
@@ -319,9 +319,12 @@ Save data files consistently:
                 (swiper input))
               :which-key "search buffer")
 
+      ;; Toggle
+      "t" '(:ignore t :which-key "Toggles")
+
       ;;; Themes
-      "t" '(:ignore t :which-key "Theme")
-      "ts" '(counsel-load-theme :which-key "switch theme")
+      "T" '(:ignore t :which-key "Theme")
+      "Ts" '(counsel-load-theme :which-key "switch theme")
 
       ;;; Windows
       "w"   '(:ignore t :which-key "Windows")
@@ -344,7 +347,11 @@ Save data files consistently:
       "w<up>" '(evil-window-up :which-key nil)
       "wl" '(evil-window-right :which-key "window right")
       "w<right>" '(evil-window-right :which-key nil)
-      "w=" '(balance-windows :which-key "balance window split")))
+      "w=" '(balance-windows :which-key "balance window split")
+
+      "x" '(:ignore t :which-key "text")
+      "xt" '(:ignore t :which-key "transpose")
+      ))
 #+END_SRC
 
 *** Keybinding Macro Functions
@@ -357,9 +364,7 @@ Save data files consistently:
     `(space-leader-def
        :states '(normal visual emacs)
        ,@bindings))
-#+END_SRC
 
-#+BEGIN_SRC emacs-lisp
   (defmacro keymap-for-mode (mode key def &rest bindings)
     "Add KEY and DEF as key bindings under `space-leader-def` for MODE.
   mode should be a quoted symbol corresponding to a valid major mode.
@@ -993,6 +998,18 @@ Adapt to foreign indentation offsets
     :init (dtrt-indent-global-mode))
 #+END_SRC
 
+Show indentation guides
+#+BEGIN_SRC emacs-lisp
+  (use-package indent-guide
+    :defer t
+    :init
+    (progn
+      (setq indent-guide-delay 0.3)
+      (global-keymap
+       "ti" 'indent-guide-mode
+       "t TAB" 'indent-guide-global-mode)))
+#+END_SRC
+
 In CSS and Emacs Lisp, be aggressive in reformatting
 #+BEGIN_SRC emacs-lisp
   (use-package aggressive-indent
@@ -1022,19 +1039,43 @@ Help wrap long lines
 
 *** White space Management
 #+BEGIN_SRC emacs-lisp
-  ;; (use-package whitespace
-  ;;   :disabled
-  ;;   :defer 5
-  ;;   :config
-  ;;   (setq whitespace-line-column nil
-  ;;         whitespace-stylje
-  ;;         '(face indentation tabs tab-mark spaces space-mark newline newline-mark
-  ;;                trailing lines-tail)
-  ;;         whitespace-display-mappings
-  ;;         '((tab-mark ?\t [?› ?\t])
-  ;;           (newline-mark ?\n [?¬ ?\n])
-  ;;           (space-mark ?\  [?·] [?.])))
-  ;;   (add-hook 'before-save 'delete-trailing-whitespace))
+  (use-package whitespace
+    :defer 5
+    :config
+    (setq whitespace-line-column nil
+          whitespace-style
+          '(face indentation tabs tab-mark spaces space-mark newline newline-mark
+                 trailing lines-tail)
+          whitespace-display-mappings
+          '((tab-mark ?\t [?› ?\t])
+            (newline-mark ?\n [?¬ ?\n])
+            (space-mark ?\  [?·] [?.])))
+    (defun doom|disable-whitespace-mode-in-childframes (frame)
+      "`whitespace-mode' inundates child frames with whitspace markers, so disable
+  it to fix all that visual noise."
+      (when (frame-parameter frame 'parent-frame)
+        (with-selected-frame frame
+          (setq-local whitespace-style nil)
+          frame)))
+    (add-hook 'after-make-frame-functions #'doom|disable-whitespace-mode-in-childframes)
+    (defun doom|highlight-non-default-indentation ()
+      "Highlight whitespace that doesn't match your `indent-tabs-mode' setting."
+      (unless (or (bound-and-true-p global-whitespace-mode)
+                  (bound-and-true-p whitespace-mode)
+                  (eq indent-tabs-mode (default-value 'indent-tabs-mode))
+                  (eq major-mode 'fundamental-mode)
+                  (derived-mode-p 'special-mode))
+        (require 'whitespace)
+        (set (make-local-variable 'whitespace-style)
+             (if (or (bound-and-true-p whitespace-mode)
+                     (bound-and-true-p whitespace-newline-mode))
+                 (cl-union (if indent-tabs-mode '(tabs tab-mark) '(spaces space-mark))
+                           whitespace-style)
+               `(face ,@(if indent-tabs-mode '(tabs tab-mark) '(spaces space-mark))
+                      trailing-lines tail)))
+        (whitespace-mode +1)))
+
+    (add-hook 'after-change-major-mode-hook #'doom|highlight-non-default-indentation))
 
   (use-package ws-butler
     :delight
@@ -1087,6 +1128,13 @@ Help wrap long lines
           (end-of-line)
           (hs-toggle-hiding))))
     :hook (prog-mode . hs-minor-mode))
+
+  (use-package hide-comnt
+    :load-path "vendor/"
+    :commands hide/show-comments-toggle)
+
+  (global-keymap
+   "tc" 'hide/show-comments-toggle)
 #+END_SRC
 
 *** Code Snippets
@@ -1108,17 +1156,23 @@ Help wrap long lines
     (add-hook '+evil-esc-hook #'yas-exit-all-snippets))
 #+END_SRC
 
-*** Highlight TODO & FIXME comments
+*** Highlighting
 #+BEGIN_SRC emacs-lisp
   (use-package hl-todo
-    :hook (after-init . global-hl-todo-mode))
-#+END_SRC
+    :defer 10
+    :init (global-hl-todo-mode))
 
-*** Highlight Numbers
-#+BEGIN_SRC emacs-lisp
   (use-package highlight-numbers
     :hook ((prog-mode conf-mode) . highlight-numbers-mode)
     :config (setq highlight-numbers-generic-regexp "\\_<[[:digit:]]+\\(?:\\.[0-9]*\\)?\\_>"))
+
+  (use-package highlight-indentation
+    :defer 10
+    :config
+    (global-keymap
+     "th" '(:ignore t :which-key "highlight")
+     "thi" 'highlight-indentation-mode
+     "thc" 'highlight-indentation-current-column-mode))
 #+END_SRC
 
 *** Visual Fill Column
@@ -1153,6 +1207,45 @@ Clean up old buffers that are older than 3 days old.
 #+BEGIN_SRC emacs-lisp
   (use-package midnight
     :defer 10)
+#+END_SRC
+
+*** Google Translate
+#+BEGIN_SRC emacs-lisp
+
+  (use-package google-translate
+    :commands (spacemacs/set-google-translate-languages
+               google-translate-query-translate
+               google-translate-at-point
+               google-translate-query-translate-reverse
+               google-translate-at-point-reverse)
+    :init
+    (progn
+      (defun spacemacs/set-google-translate-languages (source target)
+        "Set source language for google translate.
+  For instance pass En as source for English."
+        (interactive
+         "sEnter source language (ie. en): \nsEnter target language (ie. en): "
+         source target)
+        (message
+         (format "Set google translate source language to %s and target to %s"
+                 source target))
+        (setq google-translate-default-source-language (downcase source))
+        (setq google-translate-default-target-language (downcase target)))
+
+      (global-keymap
+       "xg" '(:ignore t :which-key "google translate")
+       "xgl" 'spacemacs/set-google-translate-languages
+       "xgQ" 'google-translate-query-translate-reverse
+       "xgq" 'google-translate-query-translate
+       "xgT" 'google-translate-at-point-reverse
+       "xgt" 'google-translate-at-point))
+    :config
+    (progn
+      (require 'google-translate-default-ui)
+      (setq google-translate-enable-ido-completion t
+            google-translate-show-phonetic t
+            google-translate-default-source-language "en"
+            google-translate-default-target-language "de")))
 #+END_SRC
 
 ** Languages
@@ -2010,25 +2103,19 @@ Clean up old buffers that are older than 3 days old.
   (defun js/typescript-keybindings ()
     "Define keybindings when working with TypeScript."
     (keymap-for-mode 'typescript-mode
-                     ;; "=" 'tide-format
+                     "=" 'lsp-format-buffer
 
-                     ;;                    "E" '(:ignore t :which-key "errors")
-                     ;;                    "Ee" 'tide-fix
-                     ;;                    "Ed" 'tide-add-tslint-disable-next-line
+                     "g" '(:ignore t :which-key "goto")
+                     "gg" 'lsp-goto-implementation
+                     "gt" 'lsp-goto-type-definition
+                     "gu" 'xref-find-references
 
-                     ;;                    "g" '(:ignore t :which-key "goto")
-                     ;;                    "gb" 'tide-jump-back
-                     ;;                    "gg" 'tide-jump-to-definition
-                     ;;                    "gt" 'spacemacs/typescript-jump-to-type-def
-                     ;;                    "gu" 'tide-references
+                     "h" '(:ignore t :which-key "help")
+                     "hh" 'lsp-describe-thing-at-point
+                     "hs" 'lsp-describe-session
 
-                     ;;                    "h" '(:ignore t :which-key "help")
-                     ;;                    "hh" 'tide-documentation-at-point
-
-                     ;;                    "r" '(:ignore t :which-key "refactor")
-                     ;;                    "ri" 'tide-organize-imports
-                     ;;                    "rr" 'tide-rename-symbol
-                     ;;                    "rf" 'tide-rename-file
+                     "r" '(:ignore t :which-key "refactor")
+                     "rr" 'lsp-rename
                      ))
 
   (use-package typescript-mode
@@ -2236,7 +2323,6 @@ Setup up the UI the way I like it
     :commands restart-emacs)
 
   (use-package winum
-    :defer t
     :config
     (progn
       (setq winum-auto-assign-0-to-minibuffer nil
@@ -2274,9 +2360,31 @@ Set a bunch of settings
         initial-scratch-message nil
         load-prefer-newer t
         sentence-end-double-space nil
+        ansi-color-for-comint-mode t
+        cusor-in-non-selected-windows nil ; hide cursors in other windows
+        display-line-numbers-width 3
+        enable-recursive-minibuffers nil
+        ;; `pos-tip' defaults
+        pos-tip-internal-border-width 6
+        pos-tip-border-width 1
+
+        inhibit-compacting-font-caches t
+        find-file-visit-truename t
+
         history-delete-duplicates t ; Get rid of duplicates in minibuffer history
         ;; keep the point out of the minibuffer
         minibuffer-prompt-properties '(read-only t point-entered minibuffer-avoid-prompt face minibuffer-prompt))
+
+  ;; relegate tooltips to echo area only
+  (if (boundp 'tooltip-mode) (tooltip-mode -1))
+
+  (defun doom|apply-ansi-color-to-compilation-buffer ()
+    "Applies ansi codes to the compilation buffers. Meant for
+  `compilation-filter-hook'."
+    (with-silent-modifications
+      (ansi-color-apply-on-region compilation-filter-start (point))))
+  ;; Handle ansi codes in compilation buffer
+  (add-hook 'compilation-filter-hook #'doom|apply-ansi-color-to-compilation-buffer)
 #+END_SRC
 
 Spaces (2) over Tabs
