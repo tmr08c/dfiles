@@ -1,7 +1,7 @@
 #+TITLE: Emacs Literate Configuration
 #+AUTHOR: Justin Smestad
 #+PROPERTY: header-args :tangle yes
-#+STARTUP: indent
+#+STARTUP: indent content
 
 
 * Table of Contents                                                :TOC_3_gh:
@@ -34,7 +34,7 @@
     - [[#rainbow-delimiters][Rainbow Delimiters]]
     - [[#indentation][Indentation]]
     - [[#jump-to-definition][Jump to Definition]]
-    - [[#whitespace-management][Whitespace Management]]
+    - [[#white-space-management][White space Management]]
     - [[#auto-revert][Auto Revert]]
     - [[#undo-tree][Undo Tree]]
     - [[#unfill][Unfill]]
@@ -44,7 +44,8 @@
     - [[#highlight-numbers][Highlight Numbers]]
     - [[#visual-fill-column][Visual Fill Column]]
     - [[#swiper][Swiper]]
-    - [[#search-backends][Search Backends]]
+    - [[#ripgrep][Ripgrep]]
+    - [[#midnight][Midnight]]
   - [[#languages][Languages]]
     - [[#golang][Golang]]
     - [[#ruby][Ruby]]
@@ -124,15 +125,16 @@
 
 **** QUELPA keyword
 
- #+BEGIN_SRC emacs-lisp
-   (use-package quelpa
-     :defer t
-     :custom
-     (quelpa-update-melpa-p nil))
+#+BEGIN_SRC emacs-lisp
+  (use-package quelpa
+    :defer t
+    :custom
+    (quelpa-update-melpa-p nil))
 
-   (use-package quelpa-use-package)
-   (quelpa-use-package-activate-advice)
- #+END_SRC
+  (use-package quelpa-use-package)
+  (quelpa-use-package-activate-advice)
+#+END_SRC
+ 
 *** Package Updater
 Auto-update packages.
 #+BEGIN_SRC emacs-lisp
@@ -1017,7 +1019,8 @@ Help wrap long lines
     :custom
     (dumb-jump-selector 'ivy))
 #+END_SRC
-*** Whitespace Management
+
+*** White space Management
 #+BEGIN_SRC emacs-lisp
   (use-package whitespace
     :defer 5
@@ -1130,6 +1133,7 @@ Help wrap long lines
      (+ (if (boundp 'display-line-numbers) 6 0)
         fill-column)))
 #+END_SRC
+
 *** Swiper
 #+BEGIN_SRC emacs-lisp
   (use-package swiper
@@ -1138,11 +1142,18 @@ Help wrap long lines
      "C-s" 'swiper))
 #+END_SRC
 
-*** Search Backends
+*** Ripgrep
 Use Ripgrep where we can
 #+BEGIN_SRC emacs-lisp
   (use-package rg
     :commands (rg rg-project rg-dwim rg-literal))
+#+END_SRC
+
+*** Midnight
+Clean up old buffers that are older than 3 days old.
+#+BEGIN_SRC emacs-lisp
+  (use-package midnight
+    :defer 10)
 #+END_SRC
 
 ** Languages
@@ -1491,6 +1502,7 @@ Use Ripgrep where we can
    (use-package dockerfile-mode
      :mode "Dockerfile.*\\'")
    #+END_SRC
+   
 *** YAML
 
    #+BEGIN_SRC emacs-lisp
@@ -2263,6 +2275,7 @@ Set a bunch of settings
         initial-scratch-message nil
         load-prefer-newer t
         sentence-end-double-space nil
+        history-delete-duplicates t ; Get rid of duplicates in minibuffer history
         ;; keep the point out of the minibuffer
         minibuffer-prompt-properties '(read-only t point-entered minibuffer-avoid-prompt face minibuffer-prompt))
 #+END_SRC
@@ -2303,20 +2316,22 @@ Keep windows in Emacs from popping up everywhere. This section needs to be expan
 *** File Management
 Warn about large files (over 20MB)
 #+BEGIN_SRC emacs-lisp
-   (use-package files
-     :no-require t
-     :ensure nil
-     :demand t
-     :custom
-     (backup-by-copying t)
-     (require-final-newline t)
-     (delete-old-versions t)
-     (version-control t)
-     (backup-directory-alist
-      `((".*" . ,(no-littering-expand-var-file-name "backup/"))))
-     (auto-save-file-name-transforms
-      `((".*" ,(no-littering-expand-var-file-name "auto-save/") t)))
-     (large-file-warning-threshold (* 20 1000 1000) "20 megabytes."))
+  (use-package files
+    :no-require t
+    :ensure nil
+    :demand t
+    :custom
+    (kept-old-versions 2)
+    (kept-new-versions 6)
+    (backup-by-copying t)
+    (require-final-newline t)
+    (delete-old-versions t)
+    (version-control t)
+    (backup-directory-alist
+     `((".*" . ,(no-littering-expand-var-file-name "backup/"))))
+    (auto-save-file-name-transforms
+     `((".*" ,(no-littering-expand-var-file-name "auto-save/") t)))
+    (large-file-warning-threshold (* 20 1000 1000) "20 megabytes."))
 #+END_SRC
 
 *** Version Control
@@ -2455,178 +2470,175 @@ eshell because I do not know any better 😂
       "hhv" 'helpful-variable))
 #+END_SRC
 
-
 *** Org Mode
 #+BEGIN_SRC emacs-lisp
-(defun js/org-keybindings ()
-  "Define all keybindings we use in org mode."
-  (keymap-for-mode 'org-mode
-                   "'" 'org-edit-special
-                   "c" 'org-capture
+  (defun js/org-keybindings ()
+    "Define all keybindings we use in org mode."
+    (keymap-for-mode 'org-mode
+                     "'" 'org-edit-special
+                     "c" 'org-capture
 
-                   ;; Clock
-                   ;; These keybindings should match those under the "aoC" prefix (below)
-                   "C" '(:ignore t :which-key "clocks")
-                   "Cc" 'org-clock-cancel
-                   "Cd" 'org-clock-display
-                   "Ce" 'org-evaluate-time-range
-                   "Cg" 'org-clock-goto
-                   "Ci" 'org-clock-in
-                   "CI" 'org-clock-in-last
-                   "Cj" 'org-clock-jump-to-current-clock
-                   "Co" 'org-clock-out
-                   "CR" 'org-clock-report
-                   "Cr" 'org-resolve-clocks
+                     ;; Clock
+                     ;; These keybindings should match those under the "aoC" prefix (below)
+                     "C" '(:ignore t :which-key "clocks")
+                     "Cc" 'org-clock-cancel
+                     "Cd" 'org-clock-display
+                     "Ce" 'org-evaluate-time-range
+                     "Cg" 'org-clock-goto
+                     "Ci" 'org-clock-in
+                     "CI" 'org-clock-in-last
+                     "Cj" 'org-clock-jump-to-current-clock
+                     "Co" 'org-clock-out
+                     "CR" 'org-clock-report
+                     "Cr" 'org-resolve-clocks
 
-                   "d" '(:ignore t :which-key "dates")
-                   "dd" 'org-deadline
-                   "ds" 'org-schedule
-                   "dt" 'org-time-stamp
-                   "dT" 'org-time-stamp-inactive
-                   "ee" 'org-export-dispatch
-                   "fi" 'org-feed-goto-inbox
-                   "fu" 'org-feed-update-all
+                     "d" '(:ignore t :which-key "dates")
+                     "dd" 'org-deadline
+                     "ds" 'org-schedule
+                     "dt" 'org-time-stamp
+                     "dT" 'org-time-stamp-inactive
+                     "ee" 'org-export-dispatch
+                     "fi" 'org-feed-goto-inbox
+                     "fu" 'org-feed-update-all
 
-                   "a" 'org-agenda
+                     "a" 'org-agenda
 
-                   "p" 'org-priority
+                     "p" 'org-priority
 
-                   "T" '(:ignore t :which-key "toggles")
-                   "Tc" 'org-toggle-checkbox
-                   "Te" 'org-toggle-pretty-entities
-                   "Ti" 'org-toggle-inline-images
-                   "Tl" 'org-toggle-link-display
-                   "Tt" 'org-show-todo-tree
-                   "TT" 'org-todo
-                   "TV" 'space-doc-mode
-                   "Tx" 'org-toggle-latex-fragment
+                     "T" '(:ignore t :which-key "toggles")
+                     "Tc" 'org-toggle-checkbox
+                     "Te" 'org-toggle-pretty-entities
+                     "Ti" 'org-toggle-inline-images
+                     "Tl" 'org-toggle-link-display
+                     "Tt" 'org-show-todo-tree
+                     "TT" 'org-todo
+                     "TV" 'space-doc-mode
+                     "Tx" 'org-toggle-latex-fragment
 
-                   ;; More cycling options (timestamps, headlines, items, properties)
-                   "L" 'org-shiftright
-                   "H" 'org-shiftleft
-                   "J" 'org-shiftdown
-                   "K" 'org-shiftup
+                     ;; More cycling options (timestamps, headlines, items, properties)
+                     "L" 'org-shiftright
+                     "H" 'org-shiftleft
+                     "J" 'org-shiftdown
+                     "K" 'org-shiftup
 
-                   ;; Change between TODO sets
-                   "C-S-l" 'org-shiftcontrolright
-                   "C-S-h" 'org-shiftcontrolleft
-                   "C-S-j" 'org-shiftcontroldown
-                   "C-S-k" 'org-shiftcontrolup
+                     ;; Change between TODO sets
+                     "C-S-l" 'org-shiftcontrolright
+                     "C-S-h" 'org-shiftcontrolleft
+                     "C-S-j" 'org-shiftcontroldown
+                     "C-S-k" 'org-shiftcontrolup
 
-                   ;; Subtree editing
-                   "s" '(:ignore t :which-key "trees/subtrees")
-                   "sa" 'org-toggle-archive-tag
-                   "sA" 'org-archive-subtree
-                   "sb" 'org-tree-to-indirect-buffer
-                   "sh" 'org-promote-subtree
-                   "sj" 'org-move-subtree-down
-                   "sk" 'org-move-subtree-up
-                   "sl" 'org-demote-subtree
-                   "sn" 'org-narrow-to-subtree
-                   "sN" 'widen
-                   "sr" 'org-refile
-                   "ss" 'org-sparse-tree
-                   "sS" 'org-sort
+                     ;; Subtree editing
+                     "s" '(:ignore t :which-key "trees/subtrees")
+                     "sa" 'org-toggle-archive-tag
+                     "sA" 'org-archive-subtree
+                     "sb" 'org-tree-to-indirect-buffer
+                     "sh" 'org-promote-subtree
+                     "sj" 'org-move-subtree-down
+                     "sk" 'org-move-subtree-up
+                     "sl" 'org-demote-subtree
+                     "sn" 'org-narrow-to-subtree
+                     "sN" 'widen
+                     "sr" 'org-refile
+                     "ss" 'org-sparse-tree
+                     "sS" 'org-sort
 
-                   ;; tables
-                   "t" '(:ignore t :which-key "tables")
-                   "ta" 'org-table-align
-                   "tb" 'org-table-blank-field
-                   "tc" 'org-table-convert
-                   "tdc" 'org-table-delete-column
-                   "tdr" 'org-table-kill-row
-                   "te" 'org-table-eval-formula
-                   "tE" 'org-table-export
-                   "th" 'org-table-previous-field
-                   "tH" 'org-table-move-column-left
+                     ;; tables
+                     "t" '(:ignore t :which-key "tables")
+                     "ta" 'org-table-align
+                     "tb" 'org-table-blank-field
+                     "tc" 'org-table-convert
+                     "tdc" 'org-table-delete-column
+                     "tdr" 'org-table-kill-row
+                     "te" 'org-table-eval-formula
+                     "tE" 'org-table-export
+                     "th" 'org-table-previous-field
+                     "tH" 'org-table-move-column-left
 
-                   "ti" '(:ignore t :which-key "insert")
-                   "tic" 'org-table-insert-column
-                   "tih" 'org-table-insert-hline
-                   "tiH" 'org-table-hline-and-move
-                   "tir" 'org-table-insert-row
+                     "ti" '(:ignore t :which-key "insert")
+                     "tic" 'org-table-insert-column
+                     "tih" 'org-table-insert-hline
+                     "tiH" 'org-table-hline-and-move
+                     "tir" 'org-table-insert-row
 
-                   "tI" 'org-table-import
-                   "tj" 'org-table-next-row
-                   "tJ" 'org-table-move-row-down
-                   "tK" 'org-table-move-row-up
-                   "tl" 'org-table-next-field
-                   "tL" 'org-table-move-column-right
-                   "tn" 'org-table-create
-                   "tN" 'org-table-create-with-table.el
-                   "tr" 'org-table-recalculate
-                   "ts" 'org-table-sort-lines
+                     "tI" 'org-table-import
+                     "tj" 'org-table-next-row
+                     "tJ" 'org-table-move-row-down
+                     "tK" 'org-table-move-row-up
+                     "tl" 'org-table-next-field
+                     "tL" 'org-table-move-column-right
+                     "tn" 'org-table-create
+                     "tN" 'org-table-create-with-table.el
+                     "tr" 'org-table-recalculate
+                     "ts" 'org-table-sort-lines
 
-                   "tt" '(:ignore t :which-key "toggle")
-                   "ttf" 'org-table-toggle-formula-debugger
-                   "tto" 'org-table-toggle-coordinate-overlays
+                     "tt" '(:ignore t :which-key "toggle")
+                     "ttf" 'org-table-toggle-formula-debugger
+                     "tto" 'org-table-toggle-coordinate-overlays
 
-                   "tw" 'org-table-wrap-region
+                     "tw" 'org-table-wrap-region
 
-                   ;; Source blocks / org-babel
-                   "b" '(:ignore t :which-key "babel")
-                   "bp" 'org-babel-previous-src-block
-                   "bn" 'org-babel-next-src-block
-                   "be" 'org-babel-execute-maybe
-                   "bo" 'org-babel-open-src-block-result
-                   "bv" 'org-babel-expand-src-block
-                   "bu" 'org-babel-goto-src-block-head
-                   "bg" 'org-babel-goto-named-src-block
-                   "br" 'org-babel-goto-named-result
-                   "bb" 'org-babel-execute-buffer
-                   "bs" 'org-babel-execute-subtree
-                   "bd" 'org-babel-demarcate-block
-                   "bt" 'org-babel-tangle
-                   "bf" 'org-babel-tangle-file
-                   "bc" 'org-babel-check-src-block
-                   "bj" 'org-babel-insert-header-arg
-                   "bl" 'org-babel-load-in-session
-                   "bi" 'org-babel-lob-ingest
-                   "bI" 'org-babel-view-src-block-info
-                   "bz" 'org-babel-switch-to-session
-                   "bZ" 'org-babel-switch-to-session-with-code
-                   "ba" 'org-babel-sha1-hash
-                   "bx" 'org-babel-do-key-sequence-in-edit-buffer
-                   ;; "b." 'spacemacs/org-babel-transient-state/body
+                     ;; Source blocks / org-babel
+                     "b" '(:ignore t :which-key "babel")
+                     "bp" 'org-babel-previous-src-block
+                     "bn" 'org-babel-next-src-block
+                     "be" 'org-babel-execute-maybe
+                     "bo" 'org-babel-open-src-block-result
+                     "bv" 'org-babel-expand-src-block
+                     "bu" 'org-babel-goto-src-block-head
+                     "bg" 'org-babel-goto-named-src-block
+                     "br" 'org-babel-goto-named-result
+                     "bb" 'org-babel-execute-buffer
+                     "bs" 'org-babel-execute-subtree
+                     "bd" 'org-babel-demarcate-block
+                     "bt" 'org-babel-tangle
+                     "bf" 'org-babel-tangle-file
+                     "bc" 'org-babel-check-src-block
+                     "bj" 'org-babel-insert-header-arg
+                     "bl" 'org-babel-load-in-session
+                     "bi" 'org-babel-lob-ingest
+                     "bI" 'org-babel-view-src-block-info
+                     "bz" 'org-babel-switch-to-session
+                     "bZ" 'org-babel-switch-to-session-with-code
+                     "ba" 'org-babel-sha1-hash
+                     "bx" 'org-babel-do-key-sequence-in-edit-buffer
+                     ;; "b." 'spacemacs/org-babel-transient-state/body
 
-                   ;; Multi-purpose keys
-                   "," 'org-ctrl-c-ctrl-c
-                   "*" 'org-ctrl-c-star
-                   "-" 'org-ctrl-c-minus
-                   "#" 'org-update-statistics-cookies
-                   "RET"   'org-ctrl-c-ret
-                   "M-RET" 'org-meta-return
-                   ;; attachments
-                   "A" 'org-attach
-                   ;; insertion
-                   "i" '(:ignore t :which-key "insert")
-                   "id" 'org-insert-drawer
-                   "ie" 'org-set-effort
-                   "if" 'org-footnote-new
-                   "ih" 'org-insert-heading
-                   "iH" 'org-insert-heading-after-current
-                   "iK" 'spacemacs/insert-keybinding-org
-                   "il" 'org-insert-link
-                   "in" 'org-add-note
-                   "ip" 'org-set-property
-                   "is" 'org-insert-subheading
-                   "it" 'org-set-tags
+                     ;; Multi-purpose keys
+                     "," 'org-ctrl-c-ctrl-c
+                     "*" 'org-ctrl-c-star
+                     "-" 'org-ctrl-c-minus
+                     "#" 'org-update-statistics-cookies
+                     "RET"   'org-ctrl-c-ret
+                     "M-RET" 'org-meta-return
+                     ;; attachments
+                     "A" 'org-attach
+                     ;; insertion
+                     "i" '(:ignore t :which-key "insert")
+                     "id" 'org-insert-drawer
+                     "ie" 'org-set-effort
+                     "if" 'org-footnote-new
+                     "ih" 'org-insert-heading
+                     "iH" 'org-insert-heading-after-current
+                     "iK" 'spacemacs/insert-keybinding-org
+                     "il" 'org-insert-link
+                     "in" 'org-add-note
+                     "ip" 'org-set-property
+                     "is" 'org-insert-subheading
+                     "it" 'org-set-tags
 
-                   "x" '(:ignore t :which-key "text")
-                   ;; region manipulation
+                     "x" '(:ignore t :which-key "text")
+                     ;; region manipulation
 
-                   ;; "xb" (spacemacs|org-emphasize spacemacs/org-bold ?*)
-                   ;; "xc" (spacemacs|org-emphasize spacemacs/org-code ?~)
-                   ;; "xi" (spacemacs|org-emphasize spacemacs/org-italic ?/)
-                   "xo" 'org-open-at-point
-                   ;; "xr" (spacemacs|org-emphasize spacemacs/org-clear ? )
-                   ;; "xs" (spacemacs|org-emphasize spacemacs/org-strike-through ?+)
-                   ;; "xu" (spacemacs|org-emphasize spacemacs/org-underline ?_)
-                   ;; "xv" (spacemacs|org-emphasize spacemacs/org-verbatim ?=) )
-                   ))
-#+END_SRC
+                     ;; "xb" (spacemacs|org-emphasize spacemacs/org-bold ?*)
+                     ;; "xc" (spacemacs|org-emphasize spacemacs/org-code ?~)
+                     ;; "xi" (spacemacs|org-emphasize spacemacs/org-italic ?/)
+                     "xo" 'org-open-at-point
+                     ;; "xr" (spacemacs|org-emphasize spacemacs/org-clear ? )
+                     ;; "xs" (spacemacs|org-emphasize spacemacs/org-strike-through ?+)
+                     ;; "xu" (spacemacs|org-emphasize spacemacs/org-underline ?_)
+                     ;; "xv" (spacemacs|org-emphasize spacemacs/org-verbatim ?=) )
+                     ))
 
-#+BEGIN_SRC emacs-lisp
   (use-package org
     :defer 3
     :pin org
@@ -2636,6 +2648,7 @@ eshell because I do not know any better 😂
     (progn
       (js/org-keybindings)
       (setq org-src-tab-acts-natively t
+            org-insert-heading-respect-content t
             org-src-fontify-natively t
             org-directory "~/org"
             org-default-notes-file (expand-file-name "notes.org" org-directory))
@@ -2731,6 +2744,7 @@ This package is currently disabled. I am not able to log in successfully.
 #+END_SRC
 
 ** OS-Specific changes
+
 #+BEGIN_SRC emacs-lisp
   (use-package linux
     :ensure nil
