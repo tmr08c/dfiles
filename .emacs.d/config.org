@@ -1963,7 +1963,7 @@ Use Ripgrep where we can
     :hook ((js-mode js2-mode typescript-mode) . add-node-modules-path))
 
   (use-package prettier-js
-    :hook (js2-mode))
+    :hook (js2-mode typescript-mode))
 
   (use-package js2-mode
     :mode "\\.m?js\\'"

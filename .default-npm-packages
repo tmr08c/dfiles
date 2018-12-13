@@ -4,3 +4,5 @@ javascript-typescript-langserver
 bash-language-server
 express
 nodemon
+prettier
+tslint
