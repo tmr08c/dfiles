@@ -1022,21 +1022,20 @@ Help wrap long lines
 
 *** White space Management
 #+BEGIN_SRC emacs-lisp
-  (use-package whitespace
-    :defer 5
-    :config
-    (setq whitespace-line-column nil
-          whitespace-stylje
-          '(face indentation tabs tab-mark spaces space-mark newline newline-mark
-                 trailing lines-tail)
-          whitespace-display-mappings
-          '((tab-mark ?\t [?› ?\t])
-            (newline-mark ?\n [?¬ ?\n])
-            (space-mark ?\  [?·] [?.])))
-    (add-hook 'before-save 'delete-trailing-whitespace))
-#+END_SRC
+  ;; (use-package whitespace
+  ;;   :disabled
+  ;;   :defer 5
+  ;;   :config
+  ;;   (setq whitespace-line-column nil
+  ;;         whitespace-stylje
+  ;;         '(face indentation tabs tab-mark spaces space-mark newline newline-mark
+  ;;                trailing lines-tail)
+  ;;         whitespace-display-mappings
+  ;;         '((tab-mark ?\t [?› ?\t])
+  ;;           (newline-mark ?\n [?¬ ?\n])
+  ;;           (space-mark ?\  [?·] [?.])))
+  ;;   (add-hook 'before-save 'delete-trailing-whitespace))
 
-#+BEGIN_SRC emacs-lisp
   (use-package ws-butler
     :delight
     :defer t
@@ -1502,7 +1501,7 @@ Clean up old buffers that are older than 3 days old.
    (use-package dockerfile-mode
      :mode "Dockerfile.*\\'")
    #+END_SRC
-   
+
 *** YAML
 
    #+BEGIN_SRC emacs-lisp
