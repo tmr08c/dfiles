@@ -14,10 +14,10 @@
     "vim.enableNeovim": true,
     "vim.neovimPath": "/usr/bin/nvim",
     "vim.useSystemClipboard": true,
-    "searchRipgrep.enable": true,
     "workbench.editor.tabSizing": "shrink",
     "window.title": "${dirty}${activeEditorShort}${separator}${rootName}",
     "editor.minimap.enabled": false,
     "editor.wordWrap": "wordWrapColumn",
-    "workbench.iconTheme": "vscode-great-icons"
+    "workbench.iconTheme": "vscode-great-icons",
+    "search.runInExtensionHost": true
 }
