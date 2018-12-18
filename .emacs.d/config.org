@@ -592,9 +592,7 @@ Buffer completion. Like Helm, but lighter and easier to understand.
      ;; allow input not in order
      '((t . ivy--regex-ignore-order)))
     (ivy-use-selectable-prompt t))
-#+END_SRC
 
-#+BEGIN_SRC emacs-lisp
   (use-package ivy-rich
     :after ivy
     :custom
@@ -603,10 +601,8 @@ Buffer completion. Like Helm, but lighter and easier to understand.
     (ivy-rich-path-style 'abbrev)
     :config
     (ivy-rich-mode 1))
-#+END_SRC
 
-This may not work on macOS yet...
-#+BEGIN_SRC emacs-lisp
+  ;;This may not work on macOS yet...
   (use-package ivy-posframe
     :disabled ;; Does not work on macOS
     :hook (ivy-mode . ivy-posframe-enable)
@@ -636,7 +632,7 @@ This may not work on macOS yet...
         (push (cons fn '(:cleanup ivy-posframe-cleanup)) ivy-display-functions-props)))
     ;; default to posframe display function
     (setf (alist-get t ivy-display-functions-alist) #'+ivy-display-at-frame-center-near-bottom)
-(dolist (fn '(swiper counsel-ag counsel-grep counsel-git-grep))
+    (dolist (fn '(swiper counsel-ag counsel-grep counsel-git-grep))
       (setf (alist-get fn ivy-display-functions-alist) #'ivy-display-function-fallback)))
 #+END_SRC
 
@@ -1974,182 +1970,182 @@ Clean up old buffers that are older than 3 days old.
 
 *** Elixir
 
-   #+BEGIN_SRC emacs-lisp
-     (use-package elixir-mode
-       :defer t
-       :mode "\\.exs?"
-       :config
-       (progn
-         (defun spacemacs//elixir-enable-compilation-checking ()
-           "Enable compile checking if `elixir-enable-compilation-checking' is non nil."
-           (when (or elixir-enable-compilation-checking)
-             (flycheck-mix-setup)
-             ;; enable credo only if there are no compilation errors
-             (flycheck-add-next-checker 'elixir-mix '(warning . elixir-credo))))
+#+BEGIN_SRC emacs-lisp
+  (use-package elixir-mode
+    :defer t
+    :mode "\\.exs?"
+    :config
+    (progn
+      (defun spacemacs//elixir-enable-compilation-checking ()
+        "Enable compile checking if `elixir-enable-compilation-checking' is non nil."
+        (when (or elixir-enable-compilation-checking)
+          (flycheck-mix-setup)
+          ;; enable credo only if there are no compilation errors
+          (flycheck-add-next-checker 'elixir-mix '(warning . elixir-credo))))
 
-         (defun spacemacs//elixir-point-after-fn-p (id action context)
-           (save-excursion
-             (when (looking-back id) (backward-char))
-             (looking-back "fn")))
+      (defun spacemacs//elixir-point-after-fn-p (id action context)
+        (save-excursion
+          (when (looking-back id) (backward-char))
+          (looking-back "fn")))
 
-         (defun spacemacs//elixir-looking-back-special-p (expr)
-           (save-excursion
-             (when (or (looking-back " ")
-                       (looking-back "-")) (backward-char))
-             (looking-back expr)))
+      (defun spacemacs//elixir-looking-back-special-p (expr)
+        (save-excursion
+          (when (or (looking-back " ")
+                    (looking-back "-")) (backward-char))
+          (looking-back expr)))
 
-         (defun spacemacs//elixir-do-end-close-action (id action context)
-           (when (eq action 'insert)
-             (cond ((spacemacs//elixir-looking-back-special-p id)
-                    (insert " ") (backward-char))
-                   ((looking-back "(")
-                    (insert ") ") (backward-char) (backward-char))
-                   (t
-                    (newline-and-indent)
-                    (forward-line -1)
-                    (indent-according-to-mode)))))
-         (with-eval-after-load 'smartparens
-           ;; (sp-with-modes 'elixir-mode
-           ;;   (sp-local-pair "do" "end"
-           ;;                  :when '(("RET" "<evil-ret>"))
-           ;;                  :unless '(sp-in-comment-p sp-in-string-p)
-           ;;                  :post-handlers '("||\n[i]"))
-           ;;   (sp-local-pair "do " " end" :unless '(sp-in-comment-p sp-in-string-p))
-           ;;   (sp-local-pair "fn " " end" :unless '(sp-in-comment-p sp-in-string-p)))
-           (sp-with-modes '(elixir-mode)
-             (sp-local-pair
-              "(" ")"
-              :unless '(:add spacemacs//elixir-point-after-fn-p))
-             (sp-local-pair
-              "fn" "end"
-              :when '(("SPC" "RET" "-" "("))
-              :post-handlers '(:add spacemacs//elixir-do-end-close-action)
-              :actions '(insert))
-             (sp-local-pair
-              "do" "end"
-              :when '(("SPC" "RET"))
-              :post-handlers '(:add spacemacs//elixir-do-end-close-action)
-              :actions '(insert))))))
+      (defun spacemacs//elixir-do-end-close-action (id action context)
+        (when (eq action 'insert)
+          (cond ((spacemacs//elixir-looking-back-special-p id)
+                 (insert " ") (backward-char))
+                ((looking-back "(")
+                 (insert ") ") (backward-char) (backward-char))
+                (t
+                 (newline-and-indent)
+                 (forward-line -1)
+                 (indent-according-to-mode)))))
+      (with-eval-after-load 'smartparens
+        ;; (sp-with-modes 'elixir-mode
+        ;;   (sp-local-pair "do" "end"
+        ;;                  :when '(("RET" "<evil-ret>"))
+        ;;                  :unless '(sp-in-comment-p sp-in-string-p)
+        ;;                  :post-handlers '("||\n[i]"))
+        ;;   (sp-local-pair "do " " end" :unless '(sp-in-comment-p sp-in-string-p))
+        ;;   (sp-local-pair "fn " " end" :unless '(sp-in-comment-p sp-in-string-p)))
+        (sp-with-modes '(elixir-mode)
+          (sp-local-pair
+           "(" ")"
+           :unless '(:add spacemacs//elixir-point-after-fn-p))
+          (sp-local-pair
+           "fn" "end"
+           :when '(("SPC" "RET" "-" "("))
+           :post-handlers '(:add spacemacs//elixir-do-end-close-action)
+           :actions '(insert))
+          (sp-local-pair
+           "do" "end"
+           :when '(("SPC" "RET"))
+           :post-handlers '(:add spacemacs//elixir-do-end-close-action)
+           :actions '(insert))))))
 
-     (use-package alchemist
-       :hook (elixir-mode . alchemist-mode)
-       :config
-       ;; (js/elixir-keybindings)
-       (setq alchemist-project-compile-when-needed t
-             alchemist-test-status-modeline nil)
-       (keymap-for-mode 'elixir-mode
-                        "=" 'elixir-format
+  (use-package alchemist
+    :hook (elixir-mode . alchemist-mode)
+    :config
+    ;; (js/elixir-keybindings)
+    (setq alchemist-project-compile-when-needed t
+          alchemist-test-status-modeline nil)
+    (keymap-for-mode 'elixir-mode
+                     "=" 'elixir-format
 
-                        "e" '(:ignore t :which-key "eval")
-                        "el" 'alchemist-eval-current-line
-                        "eL" 'alchemist-eval-print-current-line
-                        "er" 'alchemist-eval-region
-                        "eR" 'alchemist-eval-print-region
-                        "eb" 'alchemist-eval-buffer
-                        "eB" 'alchemist-eval-print-buffer
-                        "ej" 'alchemist-eval-quoted-current-line
-                        "eJ" 'alchemist-eval-print-quoted-current-line
-                        "eu" 'alchemist-eval-quoted-region
-                        "eU" 'alchemist-eval-print-quoted-region
-                        "ev" 'alchemist-eval-quoted-buffer
-                        "eV" 'alchemist-eval-print-quoted-buffer
+                     "e" '(:ignore t :which-key "eval")
+                     "el" 'alchemist-eval-current-line
+                     "eL" 'alchemist-eval-print-current-line
+                     "er" 'alchemist-eval-region
+                     "eR" 'alchemist-eval-print-region
+                     "eb" 'alchemist-eval-buffer
+                     "eB" 'alchemist-eval-print-buffer
+                     "ej" 'alchemist-eval-quoted-current-line
+                     "eJ" 'alchemist-eval-print-quoted-current-line
+                     "eu" 'alchemist-eval-quoted-region
+                     "eU" 'alchemist-eval-print-quoted-region
+                     "ev" 'alchemist-eval-quoted-buffer
+                     "eV" 'alchemist-eval-print-quoted-buffer
 
-                        "g" '(:ignore t :which-key "goto")
-                        "gt" 'alchemist-project-toggle-file-and-tests
-                        "gT" 'alchemist-project-toggle-file-and-tests-other-window
-                        "gg" 'alchemist-goto-definition-at-point
-                        ;; "." 'alchemist-goto-definition-at-point
-                        "gb" 'alchemist-goto-jump-back
-                        ;; ","  'alchemist-goto-jump-back
-                        "gN" 'alchemist-goto-jump-to-previous-def-symbol
-                        "gn" 'alchemist-goto-jump-to-next-def-symbol
-                        "gj" 'alchemist-goto-list-symbol-definitions
+                     "g" '(:ignore t :which-key "goto")
+                     "gt" 'alchemist-project-toggle-file-and-tests
+                     "gT" 'alchemist-project-toggle-file-and-tests-other-window
+                     "gg" 'alchemist-goto-definition-at-point
+                     ;; "." 'alchemist-goto-definition-at-point
+                     "gb" 'alchemist-goto-jump-back
+                     ;; ","  'alchemist-goto-jump-back
+                     "gN" 'alchemist-goto-jump-to-previous-def-symbol
+                     "gn" 'alchemist-goto-jump-to-next-def-symbol
+                     "gj" 'alchemist-goto-list-symbol-definitions
 
 
-                        "h" '(:ignore t :which-key "help")
-                        "h:" 'alchemist-help
-                        "hH" 'alchemist-help-history
-                        "hh" 'alchemist-help-search-at-point
-                        "hr" 'alchemist-help--search-marked-region
+                     "h" '(:ignore t :which-key "help")
+                     "h:" 'alchemist-help
+                     "hH" 'alchemist-help-history
+                     "hh" 'alchemist-help-search-at-point
+                     "hr" 'alchemist-help--search-marked-region
 
-                        "m" '(:ignore t :which-key "mix")
-                        "m:" 'alchemist-mix
-                        "mc" 'alchemist-mix-compile
-                        "mx" 'alchemist-mix-run
+                     "m" '(:ignore t :which-key "mix")
+                     "m:" 'alchemist-mix
+                     "mc" 'alchemist-mix-compile
+                     "mx" 'alchemist-mix-run
 
-                        "s" '(:ignore t :which-key "iex")
-                        ;; "'"  'alchemist-iex-run
-                        "sc" 'alchemist-iex-compile-this-buffer
-                        "si" 'alchemist-iex-run
-                        "sI" 'alchemist-iex-project-run
-                        "sl" 'alchemist-iex-send-current-line
-                        "sL" 'alchemist-iex-send-current-line-and-go
-                        "sm" 'alchemist-iex-reload-module
-                        "sr" 'alchemist-iex-send-region
-                        "sR" 'alchemist-iex-send-region-and-go
+                     "s" '(:ignore t :which-key "iex")
+                     ;; "'"  'alchemist-iex-run
+                     "sc" 'alchemist-iex-compile-this-buffer
+                     "si" 'alchemist-iex-run
+                     "sI" 'alchemist-iex-project-run
+                     "sl" 'alchemist-iex-send-current-line
+                     "sL" 'alchemist-iex-send-current-line-and-go
+                     "sm" 'alchemist-iex-reload-module
+                     "sr" 'alchemist-iex-send-region
+                     "sR" 'alchemist-iex-send-region-and-go
 
-                        "t" '(:ignore t :which-key "test")
-                        "ta" 'alchemist-mix-test
-                        "tb" 'alchemist-mix-test-this-buffer
-                        "tB" 'alchemist-project-run-tests-for-current-file
-                        "tt" 'alchemist-mix-test-at-point
-                        "tF" 'alchemist-project-find-test
-                        "tf" 'alchemist-mix-test-file
-                        "tn" 'alchemist-test-mode-jump-to-next-test
-                        "tN" 'alchemist-test-mode-jump-to-previous-test
-                        "tr" 'alchemist-mix-rerun-last-test
-                        "ts" 'alchemist-mix-test-stale
-                        "tR" 'alchemist-test-toggle-test-report-display
+                     "t" '(:ignore t :which-key "test")
+                     "ta" 'alchemist-mix-test
+                     "tb" 'alchemist-mix-test-this-buffer
+                     "tB" 'alchemist-project-run-tests-for-current-file
+                     "tt" 'alchemist-mix-test-at-point
+                     "tF" 'alchemist-project-find-test
+                     "tf" 'alchemist-mix-test-file
+                     "tn" 'alchemist-test-mode-jump-to-next-test
+                     "tN" 'alchemist-test-mode-jump-to-previous-test
+                     "tr" 'alchemist-mix-rerun-last-test
+                     "ts" 'alchemist-mix-test-stale
+                     "tR" 'alchemist-test-toggle-test-report-display
 
-                        "x" '(:ignore t :which-key "execute")
-                        "xb" 'alchemist-execute-this-buffer
-                        "xf" 'alchemist-execute-file
-                        "x:" 'alchemist-execute
+                     "x" '(:ignore t :which-key "execute")
+                     "xb" 'alchemist-execute-this-buffer
+                     "xf" 'alchemist-execute-file
+                     "x:" 'alchemist-execute
 
-                        "c" '(:ignore t :which-key "compile")
-                        "cb" 'alchemist-compile-this-buffer
-                        "cf" 'alchemist-compile-file
-                        "c:" 'alchemist-compile
+                     "c" '(:ignore t :which-key "compile")
+                     "cb" 'alchemist-compile-this-buffer
+                     "cf" 'alchemist-compile-file
+                     "c:" 'alchemist-compile
 
-                        "X" '(:ignore t :which-key "hex")
-                        "Xi" 'alchemist-hex-info-at-point
-                        "Xr" 'alchemist-hex-releases-at-point
-                        "XR" 'alchemist-hex-releases
-                        "XI" 'alchemist-hex-info
-                        "Xs" 'alchemist-hex-search
+                     "X" '(:ignore t :which-key "hex")
+                     "Xi" 'alchemist-hex-info-at-point
+                     "Xr" 'alchemist-hex-releases-at-point
+                     "XR" 'alchemist-hex-releases
+                     "XI" 'alchemist-hex-info
+                     "Xs" 'alchemist-hex-search
 
-                        "o" '(:ignore t :which-key "macroexpand")
-                        "ol" 'alchemist-macroexpand-once-current-line
-                        "oL" 'alchemist-macroexpand-once-print-current-line
-                        "ok" 'alchemist-macroexpand-current-line
-                        "oK" 'alchemist-macroexpand-print-current-line
-                        "oi" 'alchemist-macroexpand-once-region
-                        "oI" 'alchemist-macroexpand-once-print-region
-                        "or" 'alchemist-macroexpand-region
-                        "oR" 'alchemist-macroexpand-print-region)
-       (dolist (mode (list alchemist-compile-mode-map
-                           alchemist-eval-mode-map
-                           alchemist-execute-mode-map
-                           alchemist-message-mode-map
-                           alchemist-help-minor-mode-map
-                           alchemist-mix-mode-map
-                           alchemist-macroexpand-mode-map
-                           alchemist-refcard-mode-map
-                           alchemist-test-report-mode-map))
-         (evil-define-key 'normal mode
-           (kbd "q") 'quit-window)))
+                     "o" '(:ignore t :which-key "macroexpand")
+                     "ol" 'alchemist-macroexpand-once-current-line
+                     "oL" 'alchemist-macroexpand-once-print-current-line
+                     "ok" 'alchemist-macroexpand-current-line
+                     "oK" 'alchemist-macroexpand-print-current-line
+                     "oi" 'alchemist-macroexpand-once-region
+                     "oI" 'alchemist-macroexpand-once-print-region
+                     "or" 'alchemist-macroexpand-region
+                     "oR" 'alchemist-macroexpand-print-region)
+    (dolist (mode (list alchemist-compile-mode-map
+                        alchemist-eval-mode-map
+                        alchemist-execute-mode-map
+                        alchemist-message-mode-map
+                        alchemist-help-minor-mode-map
+                        alchemist-mix-mode-map
+                        alchemist-macroexpand-mode-map
+                        alchemist-refcard-mode-map
+                        alchemist-test-report-mode-map))
+      (evil-define-key 'normal mode
+        (kbd "q") 'quit-window)))
 
-     (use-package flycheck-mix
-       :commands (flycheck-mix-setup)
-       :init
-       (progn
-         (add-to-list 'safe-local-variable-values
-                      (cons 'elixir-enable-compilation-checking nil))
-         (add-to-list 'safe-local-variable-values
-                      (cons 'elixir-enable-compilation-checking t))
-         (add-hook 'elixir-mode-local-vars-hook
-                   'spacemacs//elixir-enable-compilation-checking)))
-   #+END_SRC
+  (use-package flycheck-mix
+    :commands (flycheck-mix-setup)
+    :init
+    (progn
+      (add-to-list 'safe-local-variable-values
+                   (cons 'elixir-enable-compilation-checking nil))
+      (add-to-list 'safe-local-variable-values
+                   (cons 'elixir-enable-compilation-checking t))
+      (add-hook 'elixir-mode-local-vars-hook
+                'spacemacs//elixir-enable-compilation-checking)))
+#+END_SRC
 
 *** Scala
 
@@ -2175,8 +2171,7 @@ Clean up old buffers that are older than 3 days old.
     (js2-mode . js2-imenu-extras-mode)
     :config
     (js/javascript-keybindings)
-    (defvaralias 'js-switch-indent-offset 'js2-basic-offset)
-    (setq-default js2-basic-offset 2
+    (setq-default js-switch-indent-offset 2
                   js-indent-level 2)
     (setenv "NODE_NO_READLINE" "1"))
 
@@ -2342,6 +2337,7 @@ Clean up old buffers that are older than 3 days old.
 
 #+BEGIN_SRC emacs-lisp
   (use-package flyspell
+    :disabled 
     ;; Disable on Windows because `aspell' 0.6+ isn't available.
     :if (not (eq system-type 'windows-nt))
     :commands flyspell-mode
@@ -2363,6 +2359,7 @@ Clean up old buffers that are older than 3 days old.
      "Sn" 'flyspell-goto-next-error
      "tS" 'js|flyspell-mode-toggle)
     :custom
+    (flyspell-issue-message-flag nil)
     ;; (ispell-silently-savep t)
     (ispell-program-name (executable-find "aspell"))
     (ispell-list-command "--list")
@@ -2370,10 +2367,12 @@ Clean up old buffers that are older than 3 days old.
                          "--lang=en_US"
                          "--dont-tex-check-comments")))
   (use-package flyspell-correct
+    :disabled
     :commands (flyspell-correct-word-generic
                flyspell-correct-previous-word-generic))
 
   (use-package flyspell-correct-ivy
+    :disabled  
     :commands (flyspell-correct-ivy)
     :requires ivy
     :init
