@@ -48,10 +48,12 @@ This function should only modify configuration layer settings."
             c-c++-enable-clang-format-on-save t
             c-c++-default-mode-for-headers 'c++-mode)
      common-lisp
+     copy-as-format
      csv
-     emoji
+     docker
      helm
      emacs-lisp
+     emoji
      elixir
      erlang
      (go :variables
@@ -67,17 +69,19 @@ This function should only modify configuration layer settings."
                  node-add-modules-path t)
      (json :variables json-fmt-tool 'web-beautify)
      phoenix
+     parinfer
      (ruby :variables
            ruby-test-runner 'rspec)
      ruby-on-rails
      rust
      git
      markdown
+     ;; osx
      ;; multiple-cursors
-     (neotree :variables
-              neo-auto-indent-point t
-              neo-show-hidden-files nil
-              neo-theme 'icons)
+     ;; (neotree :variables
+     ;;          neo-auto-indent-point t
+     ;;          neo-show-hidden-files nil
+     ;;          neo-theme 'icons)
      org
      (shell :variables
             shell-default-shell 'eshell
@@ -86,9 +90,10 @@ This function should only modify configuration layer settings."
      shell-scripts
      ;; spell-checking
      syntax-checking
+     (unicode-fonts :variables unicode-fonts-force-multi-color-on-mac t)
      (typescript :variables
                  typescript-fmt-on-save t)
-     ;; version-control
+     version-control
      yaml
      )
 
@@ -237,7 +242,7 @@ It should only modify the values of Spacemacs settings."
    ;; refer to the DOCUMENTATION.org for more info on how to create your own
    ;; spaceline theme. Value can be a symbol or list with additional properties.
    ;; (default '(spacemacs :separator wave :separator-scale 1.5))
-   dotspacemacs-mode-line-theme '(spacemacs :separator wave :separator-scale 1.5)
+   dotspacemacs-mode-line-theme '(spacemacs)
 
    ;; If non-nil the cursor color matches the state color in GUI Emacs.
    ;; (default t)
@@ -416,7 +421,7 @@ It should only modify the values of Spacemacs settings."
 
    ;; If non-nil, start an Emacs server if one is not already running.
    ;; (default nil)
-   dotspacemacs-enable-server nil
+   dotspacemacs-enable-server t
 
    ;; Set the emacs server socket location.
    ;; If nil, uses whatever the Emacs default is, otherwise a directory path
@@ -427,7 +432,7 @@ It should only modify the values of Spacemacs settings."
 
    ;; If non-nil, advise quit functions to keep server open when quitting.
    ;; (default nil)
-   dotspacemacs-persistent-server nil
+   dotspacemacs-persistent-server t
 
    ;; List of search tool executable names. Spacemacs uses the first installed
    ;; tool of the list. Supported tools are `rg', `ag', `pt', `ack' and `grep'.
@@ -487,14 +492,53 @@ This function is called immediately after `dotspacemacs/init', before layer
 configuration.
 It is mostly for variables that should be set before packages are loaded.
 If you are unsure, try setting them in `dotspacemacs/user-config' first."
+  (setq
+   ;; Files
+   create-lockfiles nil
+   indent-tabs-mode nil
+
+   ;; Indentation
+   tab-width 2
+   trucate-lines t
+
+   ;; Evil
+   evil-escape-delay 0.3
+   evil-shift-round nil
+
+   ;; Whitespace
+   ;; whitespace-style '(face tabs tab-mark)
+   show-trailing-whitespace t
+
+   ;; Flycheck
+   flycheck-check-syntax-automatically '(save mode-enabled)
+
+   ;; Web
+   web-mode-attr-indent-offset 2
+   web-mode-auto-close-style 2 ; Close on </ and >
+   web-mode-code-indent-offset 2
+   web-mode-css-indent-offset 2
+   web-mode-markup-indent-offset 2
+
+   ;; Emoji
+   emojify-display-style 'unicode
+   company-emoji-insert-unicode t
+
+   ;; CSS
+   css-indent-offset 2
+
+   ;; Ruby
+   flycheck-rubocop-lint-only t
+   ruby-align-to-stmt-keywords '(if while unless until begin case for def))
+
   )
 
 (defun dotspacemacs/user-load ()
   "Library to load while dumping.
 This function is called only while dumping Spacemacs configuration. You can
 `require' or `load' the libraries of your choice that will be included in the
-dump."
-  )
+dump.")
+
+
 
 (defun dotspacemacs/user-config ()
   "Configuration for user code:
@@ -503,16 +547,9 @@ configuration.
 Put your configuration code here, except for variables that should be set
 before packages are loaded."
 
-  ;; Builtin
-  (setq create-lockfiles nil)
+  (add-hook 'after-init-hook #'global-emojify-mode)
 
-  ;; Editing
-  (setq evil-escape-delay 0.3
-        indent-tabs-mode nil
-        show-trailing-whitespace t
-        tab-width 2
-        trucate-lines t)
-  (fset 'evil-visual-update-x-selection 'ignore) ; Prevent the visual selection from overriding the system clipboard
+  (fset 'evil-visual-update-x-selection 'ignore) ; :angel: Prevent the visual selection from overriding the system clipboard
 
   ;; UI
   (with-eval-after-load 'neotree
@@ -520,19 +557,18 @@ before packages are loaded."
     (evil-define-key 'evilified neotree-mode-map (kbd "o") 'neotree-enter)
     (evil-define-key 'evilified neotree-mode-map (kbd "I") 'neotree-hidden-file-toggle))
 
-  ;; Ruby
-  (setq flycheck-rubocop-lint-only t
-        ruby-align-to-stmt-keywords '(if while unless until begin case for def))
+  ;; For persistent server, do not kill the server just the frame.
+  ;; (evil-leader/set-key
+  ;;   "q q" 'spacemacs/frame-killer)
 
-  ;; Web
-  (setq css-indent-offset 2
-        web-mode-attr-indent-offset 2
-        web-mode-auto-close-style 2 ; Close on </ and >
-        web-mode-code-indent-offset 2
-        web-mode-css-indent-offset 2
-        web-mode-markup-indent-offset 2)
+  ;; Use magit for git commits
+  (global-git-commit-mode t)
 
-  ;; Direnv
+  ;; Miscellaneous
+  (add-hook 'text-mode-hook 'auto-fill-mode)
+  (add-hook 'makefile-mode-hook 'whitespace-mode)
+
+  ;; Direnv for projects
   (add-hook 'projectile-mode-hook 'direnv-mode))
 
 ;; Do not write anything past this comment. This is where Emacs will
@@ -548,7 +584,7 @@ This function is called at the very end of Spacemacs initialization."
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  '(package-selected-packages
-   '(evil-surround editorconfig ace-window projectile org-plus-contrib yasnippet-snippets yaml-mode xterm-color ws-butler writeroom-mode winum which-key web-mode web-beautify volatile-highlights vi-tilde-fringe uuidgen use-package unfill toml-mode toc-org tide tagedit symon string-inflection spaceline-all-the-icons smeargle slime-company slim-mode shell-pop seeing-is-believing scss-mode sass-mode rvm ruby-tools ruby-test-mode ruby-refactor ruby-hash-syntax rubocop rspec-mode robe restart-emacs rbenv rainbow-delimiters racer pug-mode projectile-rails prettier-js popwin persp-mode password-generator paradox overseer orgit org-projectile org-present org-pomodoro org-mime org-download org-bullets org-brain open-junk-file ob-elixir neotree nameless mwim multi-term move-text mmm-mode minitest markdown-toc magit-svn magit-gitflow lsp-ui lsp-rust lsp-javascript-typescript lsp-go lorem-ipsum livid-mode link-hint json-navigator json-mode js2-refactor js-doc insert-shebang indent-guide impatient-mode hungry-delete hl-todo highlight-parentheses highlight-numbers highlight-indentation helm-xref helm-themes helm-swoop helm-rtags helm-purpose helm-projectile helm-org-rifle helm-mode-manager helm-make helm-gitignore helm-git-grep helm-flx helm-descbinds helm-css-scss helm-company helm-c-yasnippet helm-ag google-translate google-c-style golden-ratio godoctor go-tag go-rename go-impl go-guru go-gen-test go-fill-struct go-eldoc gnuplot gitignore-templates gitconfig-mode gitattributes-mode git-timemachine git-messenger git-link gh-md fuzzy font-lock+ flycheck-rust flycheck-rtags flycheck-pos-tip flycheck-mix flycheck-credo flycheck-bashate flx-ido fish-mode fill-column-indicator feature-mode fancy-battery eyebrowse expand-region evil-visualstar evil-visual-mark-mode evil-unimpaired evil-tutor evil-org evil-numbers evil-nerd-commenter evil-matchit evil-magit evil-lisp-state evil-lion evil-indent-plus evil-iedit-state evil-goggles evil-exchange evil-escape evil-ediff evil-cleverparens evil-args evil-anzu eval-sexp-fu eshell-z eshell-prompt-extras esh-help erlang emojify emoji-cheat-sheet-plus emmet-mode elisp-slime-nav dumb-jump dotenv-mode doom-themes doom-modeline disaster direnv diminish define-word csv-mode cquery counsel-projectile company-web company-tern company-statistics company-shell company-rtags company-lsp company-go company-emoji company-c-headers common-lisp-snippets column-enforce-mode clean-aindent-mode clang-format chruby centered-cursor-mode ccls cargo bundler base16-theme auto-yasnippet auto-highlight-symbol auto-compile alchemist aggressive-indent add-node-modules-path ace-link ace-jump-helm-line ac-ispell)))
+   '(parinfer copy-as-format yasnippet-snippets yaml-mode xterm-color ws-butler writeroom-mode winum which-key web-mode web-beautify volatile-highlights vi-tilde-fringe uuidgen use-package unicode-fonts unfill toml-mode toc-org tide tagedit symon string-inflection spaceline-all-the-icons smeargle slime-company slim-mode shell-pop seeing-is-believing scss-mode sass-mode rvm ruby-tools ruby-test-mode ruby-refactor ruby-hash-syntax rubocop rspec-mode robe restart-emacs rbenv rainbow-delimiters racer pug-mode projectile-rails prettier-js popwin persp-mode password-generator paradox overseer orgit org-projectile org-present org-pomodoro org-mime org-download org-bullets org-brain open-junk-file ob-elixir neotree nameless mwim multi-term move-text mmm-mode minitest markdown-toc magit-svn magit-gitflow lsp-ui lsp-rust lsp-javascript-typescript lsp-go lorem-ipsum livid-mode link-hint json-navigator js2-refactor js-doc insert-shebang indent-guide impatient-mode hungry-delete hl-todo highlight-parentheses highlight-numbers highlight-indentation helm-xref helm-themes helm-swoop helm-rtags helm-purpose helm-projectile helm-org-rifle helm-mode-manager helm-make helm-gitignore helm-git-grep helm-flx helm-descbinds helm-css-scss helm-company helm-c-yasnippet helm-ag google-translate google-c-style golden-ratio godoctor go-tag go-rename go-impl go-guru go-gen-test go-fill-struct go-eldoc gnuplot gitignore-templates gitconfig-mode gitattributes-mode git-timemachine git-messenger git-link git-gutter-fringe git-gutter-fringe+ gh-md fuzzy font-lock+ flycheck-rust flycheck-rtags flycheck-pos-tip flycheck-mix flycheck-credo flycheck-bashate flx-ido fish-mode fill-column-indicator feature-mode fancy-battery eyebrowse expand-region evil-visualstar evil-visual-mark-mode evil-unimpaired evil-tutor evil-surround evil-org evil-numbers evil-nerd-commenter evil-matchit evil-magit evil-lisp-state evil-lion evil-indent-plus evil-iedit-state evil-goggles evil-exchange evil-escape evil-ediff evil-cleverparens evil-args evil-anzu eval-sexp-fu eshell-z eshell-prompt-extras esh-help erlang emojify emoji-cheat-sheet-plus emmet-mode elisp-slime-nav editorconfig dumb-jump dotenv-mode doom-themes doom-modeline dockerfile-mode docker disaster direnv diminish diff-hl define-word csv-mode cquery counsel-projectile company-web company-tern company-statistics company-shell company-rtags company-lsp company-go company-emoji company-c-headers common-lisp-snippets column-enforce-mode clean-aindent-mode clang-format chruby centered-cursor-mode ccls cargo bundler browse-at-remote base16-theme auto-yasnippet auto-highlight-symbol auto-compile alchemist aggressive-indent add-node-modules-path ace-window ace-link ace-jump-helm-line ac-ispell)))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.

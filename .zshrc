@@ -30,6 +30,28 @@ path=(
 
 if (( $+commands[emacs] )); then
   export EDITOR='emacs'
+
+  function magit() {
+    emacsclient -n -e "(magit-status)"
+  }
+
+  function em()
+  {
+    # -c creates a new frame
+    # -a= fires a new emacs server if none is running
+    # emacsclient -c -a= "" $* &> /dev/null
+
+    # get list of emacs frames.
+    frameslist=`emacsclient --alternate-editor '' --eval '(frame-list)' 2>/dev/null | egrep -o '(frame)+'`
+
+    if [ "$(echo "$frameslist" | sed -n '$=')" -ge 2 ] ;then
+        # prevent creating another X frame if there is at least one present.
+        emacsclient --no-wait --alternate-editor "" "$@"
+    else
+        # Create one if there is no X window yet.
+        emacsclient --no-wait --alternate-editor "" --create-frame "$@"
+    fi
+  }
 elif (( $+commands[vim] )); then
   export EDITOR='vim'
 fi
