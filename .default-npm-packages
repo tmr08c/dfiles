@@ -1,8 +1,10 @@
-typescript
-vscode-css-languageserver-bin
-javascript-typescript-langserver
 bash-language-server
 express
+javascript-typescript-langserver
+js-beautify
 nodemon
 prettier
 tslint
+typescript
+typescript-formatter
+vscode-css-languageserver-bin

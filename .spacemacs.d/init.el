@@ -33,58 +33,62 @@ This function should only modify configuration layer settings."
 
    ;; List of configuration layers to load.
    dotspacemacs-configuration-layers
-   '(nginx
-     ansible
+   '(
      ;; ----------------------------------------------------------------
      ;; Example of useful layers you may want to use right away.
      ;; Uncomment some layer names and press `SPC f e R' (Vim style) or
      ;; `M-m f e R' (Emacs style) to install them.
      ;; ----------------------------------------------------------------
-     ;; helm
-     (ivy :variables
-          ivy-enable-advanced-buffer-information t
-          ivy-re-builders-alist ;; allow input not in order
-          '((t . ivy--regex-ignore-order)))
      (auto-completion :variables
-                      auto-completion-enable-sort-by-usage t)
+                      auto-completion-enable-sort-by-usage t
+                      spacemacs-default-company-backends '(company-files company-capf))
      better-defaults
+     (c-c++ :variables
+            c-c++-backend 'lsp-cquery
+            c-c++-enable-clang-format-on-save t
+            c-c++-default-mode-for-headers 'c++-mode)
      common-lisp
      csv
-     c-c++
-     erlang
-     elixir
+     emoji
+     helm
      emacs-lisp
-     dash
-     docker
-     go
-     ;; gtags
-     git
-     html
-     javascript
-     json
-     markdown
-     (neotree :variables
-              neo-auto-indent-point t
-              neo-show-hidden-files nil
-              neo-theme 'icons)
-     (org :variables
-          org-enable-hugo-support t
-          org-enable-trello-support t)
-     osx
+     elixir
+     erlang
+     (go :variables
+         go-format-before-save t
+         godoc-at-point-function 'godoc-gogetdoc
+         go-use-test-args "-race -timeout 10s")
+     (html :variables
+           web-fmt-tool 'web-beautify)
+     (javascript :variables
+                 javascript-fmt-tool 'web-beautify
+                 js2-basic-offset 2
+                 js-indent-level 2
+                 node-add-modules-path t)
+     (json :variables json-fmt-tool 'web-beautify)
+     phoenix
      (ruby :variables
            ruby-test-runner 'rspec)
      ruby-on-rails
      rust
+     git
+     markdown
+     ;; multiple-cursors
+     (neotree :variables
+              neo-auto-indent-point t
+              neo-show-hidden-files nil
+              neo-theme 'icons)
+     org
      (shell :variables
+            shell-default-shell 'eshell
             shell-default-height 30
             shell-default-position 'bottom)
      shell-scripts
      ;; spell-checking
-     sql
      syntax-checking
-     terraform
-     typescript
-     version-control
+     (typescript :variables
+                 typescript-fmt-on-save t)
+     ;; version-control
      yaml
      )
 
@@ -95,8 +99,7 @@ This function should only modify configuration layer settings."
    ;; To use a local version of a package, use the `:location' property:
    ;; '(your-package :location "~/path/to/your-package/")
    ;; Also include the dependencies as they will not be resolved automatically.
-   dotspacemacs-additional-packages '(doom-themes
-                                      direnv)
+   dotspacemacs-additional-packages '(direnv)
 
    ;; A list of packages that cannot be updated.
    dotspacemacs-frozen-packages '()
@@ -203,8 +206,7 @@ It should only modify the values of Spacemacs settings."
    ;; `recents' `bookmarks' `projects' `agenda' `todos'.
    ;; List sizes may be nil, in which case
    ;; `spacemacs-buffer-startup-lists-length' takes effect.
-   dotspacemacs-startup-lists '((recents . 5)
-                                (projects . 7))
+   dotspacemacs-startup-lists '()
 
    ;; True if the home buffer should respond to resize events. (default t)
    dotspacemacs-startup-buffer-responsive t
@@ -219,10 +221,14 @@ It should only modify the values of Spacemacs settings."
    ;; List of themes, the first of the list is loaded when spacemacs starts.
    ;; Press `SPC T n' to cycle to the next theme in the list (works great
    ;; with 2 themes variants, one dark and one light)
-   dotspacemacs-themes '(doom-molokai
-                         monokai
+   dotspacemacs-themes '(base16-oceanicnext
+                         base16-monokai
+                         base16-phd
+                         base16-onedark
+                         doom-molokai
                          spacemacs-dark
-                         spacemacs-light)
+                         spacemacs-light
+                         base16-harmonic-light)
 
    ;; Set the theme for the Spaceline. Supported themes are `spacemacs',
    ;; `all-the-icons', `custom', `doom', `vim-powerline' and `vanilla'. The
@@ -231,8 +237,7 @@ It should only modify the values of Spacemacs settings."
    ;; refer to the DOCUMENTATION.org for more info on how to create your own
    ;; spaceline theme. Value can be a symbol or list with additional properties.
    ;; (default '(spacemacs :separator wave :separator-scale 1.5))
-   ;; dotspacemacs-mode-line-theme '(spacemacs :separator wave :separator-scale 1.5)
-   dotspacemacs-mode-line-theme 'spacemacs
+   dotspacemacs-mode-line-theme '(spacemacs :separator wave :separator-scale 1.5)
 
    ;; If non-nil the cursor color matches the state color in GUI Emacs.
    ;; (default t)
@@ -345,12 +350,12 @@ It should only modify the values of Spacemacs settings."
    ;; A value from the range (0..100), in increasing opacity, which describes
    ;; the transparency level of a frame when it's active or selected.
    ;; Transparency can be toggled through `toggle-transparency'. (default 90)
-   dotspacemacs-active-transparency 100
+   dotspacemacs-active-transparency 90
 
    ;; A value from the range (0..100), in increasing opacity, which describes
    ;; the transparency level of a frame when it's inactive or deselected.
    ;; Transparency can be toggled through `toggle-transparency'. (default 90)
-   dotspacemacs-inactive-transparency 80
+   dotspacemacs-inactive-transparency 90
 
    ;; If non-nil show the titles of transient states. (default t)
    dotspacemacs-show-transient-state-title t
@@ -381,7 +386,15 @@ It should only modify the values of Spacemacs settings."
    ;;                       text-mode
    ;;   :size-limit-kb 1000)
    ;; (default nil)
-   dotspacemacs-line-numbers t
+   dotspacemacs-line-numbers '(:relative nil
+                               :disabled-for-modes dired-mode
+                                                   doc-view-mode
+                                                   markdown-mode
+                                                   org-mode
+                                                   pdf-view-mode
+                                                   text-mode
+                                                   csv-mode
+                               :size-limit-kb 1000)
 
    ;; Code folding method. Possible values are `evil' and `origami'.
    ;; (default 'evil)
@@ -399,7 +412,7 @@ It should only modify the values of Spacemacs settings."
    ;; Select a scope to highlight delimiters. Possible values are `any',
    ;; `current', `all' or `nil'. Default is `all' (highlight any scope and
    ;; emphasis the current one). (default 'all)
-   dotspacemacs-highlight-delimiters 'all
+   dotspacemacs-highlight-delimiters 'current
 
    ;; If non-nil, start an Emacs server if one is not already running.
    ;; (default nil)
@@ -449,7 +462,7 @@ It should only modify the values of Spacemacs settings."
    ;; `trailing' to delete only the whitespace at end of lines, `changed' to
    ;; delete only whitespace for changed lines or `nil' to disable cleanup.
    ;; (default nil)
-   dotspacemacs-whitespace-cleanup 'trailing
+   dotspacemacs-whitespace-cleanup 'changed
 
    ;; Either nil or a number of seconds. If non-nil zone out after the specified
    ;; number of seconds. (default nil)
@@ -489,8 +502,6 @@ This function is called at the very end of Spacemacs startup, after layer
 configuration.
 Put your configuration code here, except for variables that should be set
 before packages are loaded."
-  (setq doom-modeline-height 32) ; adjust modeline size to a little larger than default (23)
-  (setq ivy-use-selectable-prompt t) ; adjust modeline size to a little larger than default (23)
 
   ;; Builtin
   (setq create-lockfiles nil)
@@ -513,10 +524,6 @@ before packages are loaded."
   (setq flycheck-rubocop-lint-only t
         ruby-align-to-stmt-keywords '(if while unless until begin case for def))
 
-  ;; JavaScript
-  (setq js2-basic-offset 2
-        js-indent-level 2)
-
   ;; Web
   (setq css-indent-offset 2
         web-mode-attr-indent-offset 2
@@ -525,7 +532,8 @@ before packages are loaded."
         web-mode-css-indent-offset 2
         web-mode-markup-indent-offset 2)
 
-  )
+  ;; Direnv
+  (add-hook 'projectile-mode-hook 'direnv-mode))
 
 ;; Do not write anything past this comment. This is where Emacs will
 ;; auto-generate custom variable definitions.
@@ -539,9 +547,8 @@ This function is called at the very end of Spacemacs initialization."
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- '(org-trello-current-prefix-keybinding "C-c o" nil (org-trello))
  '(package-selected-packages
-   '(yasnippet-snippets web-mode tide sql-indent racer orgit ivy-rich ivy-hydra evil-nerd-commenter doom-modeline cargo ace-link counsel swiper smartparens flycheck helm ivy magit ghub company slime yaml-mode xterm-color ws-butler writeroom-mode winum which-key wgrep web-beautify volatile-highlights vi-tilde-fringe uuidgen use-package unfill typescript-mode treepy toml-mode toc-org tagedit symon string-inflection spaceline-all-the-icons smex smeargle slime-company slim-mode shrink-path shell-pop seeing-is-believing scss-mode sass-mode rvm rust-mode ruby-tools ruby-test-mode ruby-refactor ruby-hash-syntax rubocop rspec-mode robe reveal-in-osx-finder restart-emacs rbenv rainbow-delimiters pug-mode projectile-rails prettier-js popwin persp-mode password-generator paradox ox-hugo overseer osx-trash osx-dictionary org-trello org-projectile org-present org-pomodoro org-mime org-download org-bullets org-brain open-junk-file ob-elixir nginx-mode neotree nameless mwim multi-term move-text monokai-theme mmm-mode minitest markdown-toc magit-svn magit-gitflow macrostep lorem-ipsum livid-mode link-hint launchctl json-navigator js2-refactor js-doc jinja2-mode ivy-yasnippet ivy-xref ivy-rtags ivy-purpose insert-shebang indent-guide impatient-mode hungry-delete hl-todo highlight-parentheses highlight-numbers highlight-indentation helm-make helm-core graphql google-translate google-c-style golden-ratio godoctor go-tag go-rename go-impl go-guru go-gen-test go-fill-struct go-eldoc gnuplot gitignore-templates gitignore-mode gitconfig-mode gitattributes-mode git-timemachine git-messenger git-link git-gutter-fringe git-gutter-fringe+ gh-md fuzzy font-lock+ flycheck-rust flycheck-rtags flycheck-pos-tip flycheck-mix flycheck-credo flycheck-bashate flx-ido fish-mode fill-column-indicator feature-mode fancy-battery eyebrowse expand-region evil-visualstar evil-visual-mark-mode evil-unimpaired evil-tutor evil-surround evil-org evil-numbers evil-matchit evil-magit evil-lisp-state evil-lion evil-indent-plus evil-iedit-state evil-goggles evil-exchange evil-escape evil-ediff evil-cleverparens evil-args evil-anzu eval-sexp-fu eshell-z eshell-prompt-extras esh-help erlang emmet-mode elisp-slime-nav eldoc-eval editorconfig dumb-jump dotenv-mode doom-themes dockerfile-mode docker disaster direnv diminish diff-hl dash-at-point csv-mode counsel-projectile counsel-dash counsel-css company-web company-terraform company-tern company-statistics company-shell company-rtags company-go company-c-headers company-ansible common-lisp-snippets column-enforce-mode clean-aindent-mode clang-format chruby centered-cursor-mode bundler browse-at-remote auto-yasnippet auto-highlight-symbol auto-compile ansible-doc ansible alchemist aggressive-indent ace-window ac-ispell)))
+   '(evil-surround editorconfig ace-window projectile org-plus-contrib yasnippet-snippets yaml-mode xterm-color ws-butler writeroom-mode winum which-key web-mode web-beautify volatile-highlights vi-tilde-fringe uuidgen use-package unfill toml-mode toc-org tide tagedit symon string-inflection spaceline-all-the-icons smeargle slime-company slim-mode shell-pop seeing-is-believing scss-mode sass-mode rvm ruby-tools ruby-test-mode ruby-refactor ruby-hash-syntax rubocop rspec-mode robe restart-emacs rbenv rainbow-delimiters racer pug-mode projectile-rails prettier-js popwin persp-mode password-generator paradox overseer orgit org-projectile org-present org-pomodoro org-mime org-download org-bullets org-brain open-junk-file ob-elixir neotree nameless mwim multi-term move-text mmm-mode minitest markdown-toc magit-svn magit-gitflow lsp-ui lsp-rust lsp-javascript-typescript lsp-go lorem-ipsum livid-mode link-hint json-navigator json-mode js2-refactor js-doc insert-shebang indent-guide impatient-mode hungry-delete hl-todo highlight-parentheses highlight-numbers highlight-indentation helm-xref helm-themes helm-swoop helm-rtags helm-purpose helm-projectile helm-org-rifle helm-mode-manager helm-make helm-gitignore helm-git-grep helm-flx helm-descbinds helm-css-scss helm-company helm-c-yasnippet helm-ag google-translate google-c-style golden-ratio godoctor go-tag go-rename go-impl go-guru go-gen-test go-fill-struct go-eldoc gnuplot gitignore-templates gitconfig-mode gitattributes-mode git-timemachine git-messenger git-link gh-md fuzzy font-lock+ flycheck-rust flycheck-rtags flycheck-pos-tip flycheck-mix flycheck-credo flycheck-bashate flx-ido fish-mode fill-column-indicator feature-mode fancy-battery eyebrowse expand-region evil-visualstar evil-visual-mark-mode evil-unimpaired evil-tutor evil-org evil-numbers evil-nerd-commenter evil-matchit evil-magit evil-lisp-state evil-lion evil-indent-plus evil-iedit-state evil-goggles evil-exchange evil-escape evil-ediff evil-cleverparens evil-args evil-anzu eval-sexp-fu eshell-z eshell-prompt-extras esh-help erlang emojify emoji-cheat-sheet-plus emmet-mode elisp-slime-nav dumb-jump dotenv-mode doom-themes doom-modeline disaster direnv diminish define-word csv-mode cquery counsel-projectile company-web company-tern company-statistics company-shell company-rtags company-lsp company-go company-emoji company-c-headers common-lisp-snippets column-enforce-mode clean-aindent-mode clang-format chruby centered-cursor-mode ccls cargo bundler base16-theme auto-yasnippet auto-highlight-symbol auto-compile alchemist aggressive-indent add-node-modules-path ace-link ace-jump-helm-line ac-ispell)))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
