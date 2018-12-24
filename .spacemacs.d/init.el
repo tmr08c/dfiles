@@ -250,8 +250,9 @@ It should only modify the values of Spacemacs settings."
 
    ;; Default font, or prioritized list of fonts. `powerline-scale' allows to
    ;; quickly tweak the mode-line size to make separators look not too crappy.
-   dotspacemacs-default-font '("Fira Code"
-                               :size 13.0)
+   dotspacemacs-default-font `("Fira Code"
+                               :size ,(when (spacemacs/system-is-mac) 13 16)
+                               :weight regular)
 
    ;; The leader key (default "SPC")
    dotspacemacs-leader-key "SPC"
