@@ -78,10 +78,10 @@ This function should only modify configuration layer settings."
      markdown
      ;; osx
      ;; multiple-cursors
-     ;; (neotree :variables
-     ;;          neo-auto-indent-point t
-     ;;          neo-show-hidden-files nil
-     ;;          neo-theme 'icons)
+     (neotree :variables
+              neo-auto-indent-point t
+              neo-show-hidden-files nil
+              neo-theme 'icons)
      org
      (shell :variables
             shell-default-shell 'eshell
@@ -251,8 +251,8 @@ It should only modify the values of Spacemacs settings."
    ;; Default font, or prioritized list of fonts. `powerline-scale' allows to
    ;; quickly tweak the mode-line size to make separators look not too crappy.
    dotspacemacs-default-font `("Fira Code"
-                               :size ,(when (spacemacs/system-is-mac) 13 16)
-                               :weight regular)
+                               :size ,(when (spacemacs/system-is-mac) 13 14)
+                               :weight ,(when (spacemacs/system-is-mac) regular medium))
 
    ;; The leader key (default "SPC")
    dotspacemacs-leader-key "SPC"
@@ -285,11 +285,11 @@ It should only modify the values of Spacemacs settings."
    dotspacemacs-distinguish-gui-tab nil
 
    ;; Name of the default layout (default "Default")
-   dotspacemacs-default-layout-name "Default"
+   dotspacemacs-default-layout-name "default"
 
    ;; If non-nil the default layout name is displayed in the mode-line.
    ;; (default nil)
-   dotspacemacs-display-default-layout nil
+   dotspacemacs-display-default-layout t
 
    ;; If non-nil then the last auto saved layouts are resumed automatically upon
    ;; start. (default nil)
@@ -585,8 +585,7 @@ This function is called at the very end of Spacemacs initialization."
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  '(package-selected-packages
-   (quote
-    (yasnippet-snippets yaml-mode xterm-color ws-butler writeroom-mode visual-fill-column winum web-mode web-beautify volatile-highlights vi-tilde-fringe uuidgen unicode-fonts ucs-utils font-utils unfill toml-mode toc-org tide tagedit symon string-inflection spaceline-all-the-icons spaceline powerline smeargle slime-company slime slim-mode shell-pop seeing-is-believing scss-mode sass-mode rvm ruby-tools ruby-test-mode ruby-refactor ruby-hash-syntax rubocop rspec-mode robe restart-emacs rbenv rainbow-delimiters racer pug-mode projectile-rails rake inflections prettier-js popwin persp-mode persistent-soft list-utils pcache password-generator parinfer paradox overseer orgit org-projectile org-category-capture org-present org-pomodoro alert log4e gntp org-mime org-download org-bullets org-brain open-junk-file ob-elixir neotree nameless mwim multi-term move-text mmm-mode minitest markdown-toc magit-svn magit-gitflow macrostep lsp-ui lsp-rust lsp-javascript-typescript typescript-mode lsp-go lorem-ipsum livid-mode skewer-mode link-hint json-navigator hierarchy js2-refactor multiple-cursors js2-mode js-doc insert-shebang indent-guide impatient-mode simple-httpd hungry-delete htmlize hl-todo highlight-parentheses highlight-numbers parent-mode highlight-indentation helm-xref helm-themes helm-swoop helm-rtags helm-purpose window-purpose imenu-list helm-projectile helm-org-rifle helm-mode-manager helm-make helm-gitignore request helm-git-grep helm-flx helm-descbinds helm-css-scss helm-company helm-c-yasnippet helm-ag haml-mode google-translate google-c-style golden-ratio godoctor go-tag go-rename go-impl go-guru go-gen-test go-fill-struct go-eldoc gnuplot gitignore-templates gitignore-mode gitconfig-mode gitattributes-mode git-timemachine git-messenger git-link git-gutter-fringe+ git-gutter-fringe fringe-helper git-gutter+ git-gutter gh-md fuzzy flycheck-rust flycheck-rtags flycheck-pos-tip pos-tip flycheck-mix flycheck-credo flycheck-bashate flycheck flx-ido flx fish-mode fill-column-indicator feature-mode fancy-battery eyebrowse expand-region evil-visualstar evil-visual-mark-mode evil-unimpaired evil-tutor evil-surround evil-org evil-numbers evil-nerd-commenter evil-matchit evil-magit magit git-commit ghub treepy graphql evil-lisp-state evil-lion evil-indent-plus evil-iedit-state iedit evil-goggles evil-exchange evil-escape evil-ediff evil-cleverparens smartparens paredit evil-args evil-anzu anzu eval-sexp-fu highlight eshell-z eshell-prompt-extras esh-help erlang emojify emoji-cheat-sheet-plus emmet-mode elisp-slime-nav editorconfig dumb-jump doom-themes doom-modeline eldoc-eval shrink-path all-the-icons memoize dockerfile-mode docker json-mode tablist magit-popup docker-tramp json-snatcher json-reformat disaster direnv with-editor diff-hl define-word csv-mode cquery counsel-projectile counsel swiper ivy copy-as-format company-web web-completion-data company-tern tern company-statistics company-shell company-rtags rtags company-lsp company-go go-mode company-emoji company-c-headers common-lisp-snippets column-enforce-mode clean-aindent-mode clang-format chruby centered-cursor-mode ccls projectile lsp-mode spinner ht dash-functional cargo markdown-mode rust-mode bundler inf-ruby browse-at-remote f base16-theme auto-yasnippet yasnippet auto-highlight-symbol auto-compile packed alchemist s company dash elixir-mode pkg-info epl aggressive-indent add-node-modules-path ace-window ace-link ace-jump-helm-line helm avy helm-core ac-ispell auto-complete popup which-key use-package pcre2el org-plus-contrib hydra font-lock+ evil goto-chg undo-tree dotenv-mode diminish bind-map bind-key async))))
+   '(doom-modeline lsp-mode projectile yasnippet-snippets yaml-mode xterm-color ws-butler writeroom-mode winum which-key web-mode web-beautify volatile-highlights vi-tilde-fringe uuidgen use-package unicode-fonts unfill toml-mode toc-org tide tagedit symon string-inflection spaceline-all-the-icons smeargle slime-company slim-mode shrink-path shell-pop seeing-is-believing scss-mode sass-mode rvm ruby-tools ruby-test-mode ruby-refactor ruby-hash-syntax rubocop rspec-mode robe restart-emacs rbenv rainbow-delimiters racer pug-mode projectile-rails prettier-js popwin persp-mode password-generator parinfer paradox overseer orgit org-projectile org-present org-pomodoro org-mime org-download org-bullets org-brain open-junk-file ob-elixir neotree nameless mwim multi-term move-text mmm-mode minitest markdown-toc magit-svn magit-gitflow lsp-ui lsp-go lorem-ipsum livid-mode link-hint json-navigator js2-refactor js-doc insert-shebang indent-guide impatient-mode hungry-delete hl-todo highlight-parentheses highlight-numbers highlight-indentation helm-xref helm-themes helm-swoop helm-rtags helm-purpose helm-projectile helm-org-rifle helm-mode-manager helm-make helm-gitignore helm-git-grep helm-flx helm-descbinds helm-css-scss helm-company helm-c-yasnippet helm-ag google-translate google-c-style golden-ratio godoctor go-tag go-rename go-impl go-guru go-gen-test go-fill-struct go-eldoc gnuplot gitignore-templates gitconfig-mode gitattributes-mode git-timemachine git-messenger git-link git-gutter-fringe git-gutter-fringe+ gh-md fuzzy font-lock+ flycheck-rust flycheck-rtags flycheck-pos-tip flycheck-mix flycheck-credo flycheck-bashate flx-ido fish-mode fill-column-indicator feature-mode fancy-battery eyebrowse expand-region evil-visualstar evil-visual-mark-mode evil-unimpaired evil-tutor evil-surround evil-org evil-numbers evil-nerd-commenter evil-matchit evil-magit evil-lisp-state evil-lion evil-indent-plus evil-iedit-state evil-goggles evil-exchange evil-escape evil-ediff evil-cleverparens evil-args evil-anzu eval-sexp-fu eshell-z eshell-prompt-extras esh-help erlang emojify emoji-cheat-sheet-plus emmet-mode elisp-slime-nav eldoc-eval editorconfig dumb-jump dotenv-mode doom-themes dockerfile-mode docker disaster direnv diminish diff-hl define-word csv-mode cquery counsel-projectile copy-as-format company-web company-tern company-statistics company-shell company-rtags company-lsp company-go company-emoji company-c-headers common-lisp-snippets column-enforce-mode clean-aindent-mode clang-format chruby centered-cursor-mode ccls cargo bundler browse-at-remote base16-theme auto-yasnippet auto-highlight-symbol auto-compile alchemist aggressive-indent add-node-modules-path ace-window ace-link ace-jump-helm-line ac-ispell)))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
