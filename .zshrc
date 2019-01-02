@@ -6,6 +6,9 @@ export LANGUAGE=en_US.UTF-8
 export LC_CTYPE=en_US.UTF-8
 export LC_ALL=en_US.UTF-8
 
+
+fpath=( $HOME/.zsh "${fpath[@]}" )
+
 # Add local packages to PATH
 path=(
   $HOME/.local/bin
@@ -29,7 +32,6 @@ path=(
 # fi
 
 if (( $+commands[emacs] )); then
-  export EDITOR='emacs'
 
   function magit() {
     emacsclient -n -e "(magit-status)"
@@ -52,6 +54,10 @@ if (( $+commands[emacs] )); then
         emacsclient --no-wait --alternate-editor "" --create-frame "$@"
     fi
   }
+  # export EDITOR='em'
+  export ALTERNATE_EDITOR=""
+  export EDITOR="emacsclient -t"
+  export VISUAL="emacsclient -c -a emacs"
 elif (( $+commands[vim] )); then
   export EDITOR='vim'
 fi

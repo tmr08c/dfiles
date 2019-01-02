@@ -78,10 +78,10 @@ This function should only modify configuration layer settings."
      markdown
      ;; osx
      ;; multiple-cursors
-     ;; (neotree :variables
-     ;;          neo-auto-indent-point t
-     ;;          neo-show-hidden-files nil
-     ;;          neo-theme 'icons)
+     (neotree :variables
+              neo-auto-indent-point t
+              neo-show-hidden-files nil
+              neo-theme 'icons)
      org
      (shell :variables
             shell-default-shell 'eshell
@@ -110,7 +110,7 @@ This function should only modify configuration layer settings."
    dotspacemacs-frozen-packages '()
 
    ;; A list of packages that will not be installed and loaded.
-   dotspacemacs-excluded-packages '()
+   dotspacemacs-excluded-packages '(anzu-mode evil-anzu)
 
    ;; Defines the behaviour of Spacemacs when installing packages.
    ;; Possible values are `used-only', `used-but-keep-unused' and `all'.
@@ -566,7 +566,6 @@ before packages are loaded."
 
   ;; Miscellaneous
   (add-hook 'text-mode-hook 'auto-fill-mode)
-  (add-hook 'makefile-mode-hook 'whitespace-mode)
 
   ;; Direnv for projects
   (add-hook 'projectile-mode-hook 'direnv-mode))
