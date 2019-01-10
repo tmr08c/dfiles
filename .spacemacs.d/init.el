@@ -494,6 +494,9 @@ configuration.
 It is mostly for variables that should be set before packages are loaded.
 If you are unsure, try setting them in `dotspacemacs/user-config' first."
   (setq
+   ;; Custom Configuration file
+   custom-file "~/.spacemacs.d/custom.el"
+
    ;; Files
    create-lockfiles nil
    indent-tabs-mode nil
@@ -529,9 +532,9 @@ If you are unsure, try setting them in `dotspacemacs/user-config' first."
 
    ;; Ruby
    flycheck-rubocop-lint-only t
-   ruby-align-to-stmt-keywords '(if while unless until begin case for def))
+   ruby-align-to-stmt-keywords '(if while unless until begin case for def)))
 
-  )
+
 
 (defun dotspacemacs/user-load ()
   "Library to load while dumping.
@@ -569,26 +572,9 @@ before packages are loaded."
   (add-hook 'text-mode-hook 'auto-fill-mode)
 
   ;; Direnv for projects
-  (add-hook 'projectile-mode-hook 'direnv-mode))
-
-;; Do not write anything past this comment. This is where Emacs will
-;; auto-generate custom variable definitions.
-(defun dotspacemacs/emacs-custom-settings ()
-  "Emacs custom settings.
-This is an auto-generated function, do not modify its content directly, use
-Emacs customize menu instead.
-This function is called at the very end of Spacemacs initialization."
-(custom-set-variables
- ;; custom-set-variables was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- '(package-selected-packages
-   '(doom-modeline lsp-mode projectile yasnippet-snippets yaml-mode xterm-color ws-butler writeroom-mode winum which-key web-mode web-beautify volatile-highlights vi-tilde-fringe uuidgen use-package unicode-fonts unfill toml-mode toc-org tide tagedit symon string-inflection spaceline-all-the-icons smeargle slime-company slim-mode shrink-path shell-pop seeing-is-believing scss-mode sass-mode rvm ruby-tools ruby-test-mode ruby-refactor ruby-hash-syntax rubocop rspec-mode robe restart-emacs rbenv rainbow-delimiters racer pug-mode projectile-rails prettier-js popwin persp-mode password-generator parinfer paradox overseer orgit org-projectile org-present org-pomodoro org-mime org-download org-bullets org-brain open-junk-file ob-elixir neotree nameless mwim multi-term move-text mmm-mode minitest markdown-toc magit-svn magit-gitflow lsp-ui lsp-go lorem-ipsum livid-mode link-hint json-navigator js2-refactor js-doc insert-shebang indent-guide impatient-mode hungry-delete hl-todo highlight-parentheses highlight-numbers highlight-indentation helm-xref helm-themes helm-swoop helm-rtags helm-purpose helm-projectile helm-org-rifle helm-mode-manager helm-make helm-gitignore helm-git-grep helm-flx helm-descbinds helm-css-scss helm-company helm-c-yasnippet helm-ag google-translate google-c-style golden-ratio godoctor go-tag go-rename go-impl go-guru go-gen-test go-fill-struct go-eldoc gnuplot gitignore-templates gitconfig-mode gitattributes-mode git-timemachine git-messenger git-link git-gutter-fringe git-gutter-fringe+ gh-md fuzzy font-lock+ flycheck-rust flycheck-rtags flycheck-pos-tip flycheck-mix flycheck-credo flycheck-bashate flx-ido fish-mode fill-column-indicator feature-mode fancy-battery eyebrowse expand-region evil-visualstar evil-visual-mark-mode evil-unimpaired evil-tutor evil-surround evil-org evil-numbers evil-nerd-commenter evil-matchit evil-magit evil-lisp-state evil-lion evil-indent-plus evil-iedit-state evil-goggles evil-exchange evil-escape evil-ediff evil-cleverparens evil-args evil-anzu eval-sexp-fu eshell-z eshell-prompt-extras esh-help erlang emojify emoji-cheat-sheet-plus emmet-mode elisp-slime-nav eldoc-eval editorconfig dumb-jump dotenv-mode doom-themes dockerfile-mode docker disaster direnv diminish diff-hl define-word csv-mode cquery counsel-projectile copy-as-format company-web company-tern company-statistics company-shell company-rtags company-lsp company-go company-emoji company-c-headers common-lisp-snippets column-enforce-mode clean-aindent-mode clang-format chruby centered-cursor-mode ccls cargo bundler browse-at-remote base16-theme auto-yasnippet auto-highlight-symbol auto-compile alchemist aggressive-indent add-node-modules-path ace-window ace-link ace-jump-helm-line ac-ispell)))
-(custom-set-faces
- ;; custom-set-faces was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- )
-)
+  (add-hook 'projectile-mode-hook 'direnv-mode)
+  ;; Additional
+  ;;
+  ;; Lastly, load custom-file (but only if the file exists).
+  (when (file-exists-p custom-file)
+    (load-file custom-file)))
