@@ -94,8 +94,8 @@ This function should only modify configuration layer settings."
      (typescript :variables
                  typescript-fmt-on-save t)
      version-control
-     yaml
-     )
+     yaml)
+
 
    ;; List of additional packages that will be installed without being
    ;; wrapped in a layer. If you need some configuration for these
@@ -104,7 +104,8 @@ This function should only modify configuration layer settings."
    ;; To use a local version of a package, use the `:location' property:
    ;; '(your-package :location "~/path/to/your-package/")
    ;; Also include the dependencies as they will not be resolved automatically.
-   dotspacemacs-additional-packages '(direnv)
+   dotspacemacs-additional-packages '(direnv
+                                      git-auto-commit-mode)
 
    ;; A list of packages that cannot be updated.
    dotspacemacs-frozen-packages '()
@@ -242,7 +243,7 @@ It should only modify the values of Spacemacs settings."
    ;; refer to the DOCUMENTATION.org for more info on how to create your own
    ;; spaceline theme. Value can be a symbol or list with additional properties.
    ;; (default '(spacemacs :separator wave :separator-scale 1.5))
-   dotspacemacs-mode-line-theme '(spacemacs)
+   dotspacemacs-mode-line-theme '(vim-powerline)
 
    ;; If non-nil the cursor color matches the state color in GUI Emacs.
    ;; (default t)
@@ -505,12 +506,17 @@ If you are unsure, try setting them in `dotspacemacs/user-config' first."
    tab-width 2
    trucate-lines t
 
+   ;; Line Length
+   ;; use github as standard http://hilton.org.uk/blog/source-code-line-length
+   fill-column 125
+
    ;; Evil
    evil-escape-delay 0.3
+   evil-kill-on-visual-paste nil
    evil-shift-round nil
 
    ;; Whitespace
-   ;; whitespace-style '(face tabs tab-mark)
+   whitespace-style '(face tabs tab-mark)
    show-trailing-whitespace t
 
    ;; Flycheck
@@ -551,8 +557,11 @@ configuration.
 Put your configuration code here, except for variables that should be set
 before packages are loaded."
 
-  (add-hook 'after-init-hook #'global-emojify-mode)
+  ;; Enable Emojis everywhere, but don't advertise it.
+  (spacemacs|diminish emojify-mode)
+  (spacemacs/add-to-hooks 'global-emojify-mode '(after-init-hook))
 
+  ;; Fix annoyance
   (fset 'evil-visual-update-x-selection 'ignore) ; :angel: Prevent the visual selection from overriding the system clipboard
 
   ;; UI
@@ -569,10 +578,14 @@ before packages are loaded."
   (global-git-commit-mode t)
 
   ;; Miscellaneous
-  (add-hook 'text-mode-hook 'auto-fill-mode)
+  (spacemacs/add-to-hooks 'turn-on-fci-mode '(text-mode-hook))
+
+  ;; Periodicly commit the ~/org directory every N minutes
+  (spacemacs/add-to-hooks 'git-auto-commit-mode '(org-mode-hook))
 
   ;; Direnv for projects
-  (add-hook 'projectile-mode-hook 'direnv-mode)
+  (spacemacs/add-to-hooks 'direnv-mode '(projectile-mode-hook))
+
   ;; Additional
   ;;
   ;; Lastly, load custom-file (but only if the file exists).

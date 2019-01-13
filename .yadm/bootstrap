@@ -38,7 +38,7 @@ else
 
     echo "Install Erlang dependencies"
     sudo dnf install -y -q autoconf ncurses-devel wxGTK-devel wxBase openssl-devel java-1.8.0-openjdk-devel libiodbc unixODBC.x86_64 erlang-odbc.x86_64 libxslt fop
-    
+
     echo "Install Printer dependencies"
     sudo dnf install -y -q libnsl
   elif [ -f /etc/SUSE-brand ]; then
@@ -47,7 +47,7 @@ else
 
     echo "Python dependencies"
     sudo zypper install gcc automake openssl-devel ncurses-devel readline-devel zlib-devel tk-devel libffi-devel
-       
+
     echo "Install Ruby dependencies"
     sudo zypper install gcc automake gdbm-devel libffi-devel libyaml-devel libopenssl-devel ncurses-devel readline-devel zlib-devel postgresql postgresql-devel
   else
@@ -136,6 +136,10 @@ if [ ! -d ~/.emacs-spacemacs.d ]; then
   git clone -b develop https://github.com/syl20bnr/spacemacs ~/.emacs-spacemacs.d
 fi
 
+if [ ! -d ~/org ]; then
+  echo "Fetch org files"
+  git clone https://gitlab.com/jsmestad/org.git ~/org
+fi
 
 echo "Updating the yadm repo origin URL"
 yadm remote set-url origin "git@github.com:jsmestad/dfiles.git"
