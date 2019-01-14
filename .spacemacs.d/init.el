@@ -243,7 +243,7 @@ It should only modify the values of Spacemacs settings."
    ;; refer to the DOCUMENTATION.org for more info on how to create your own
    ;; spaceline theme. Value can be a symbol or list with additional properties.
    ;; (default '(spacemacs :separator wave :separator-scale 1.5))
-   dotspacemacs-mode-line-theme '(spacemacs :separator arrow :separator-scale 0.6)
+   dotspacemacs-mode-line-theme '(spacemacs :separator arrow :separator-scale 1.6)
 
    ;; If non-nil the cursor color matches the state color in GUI Emacs.
    ;; (default t)
@@ -253,7 +253,7 @@ It should only modify the values of Spacemacs settings."
    ;; quickly tweak the mode-line size to make separators look not too crappy.
    dotspacemacs-default-font `("Fira Code"
                                :size ,(when (spacemacs/system-is-mac) 13 14)
-                               :weight ,(when (spacemacs/system-is-mac) regular medium))
+                               :weight ,(when (spacemacs/system-is-mac) 'normal 'medium))
 
    ;; The leader key (default "SPC")
    dotspacemacs-leader-key "SPC"
