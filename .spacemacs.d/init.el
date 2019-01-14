@@ -393,14 +393,16 @@ It should only modify the values of Spacemacs settings."
    ;;                       text-mode
    ;;   :size-limit-kb 1000)
    ;; (default nil)
-   dotspacemacs-line-numbers '(:relative nil
-                               :disabled-for-modes dired-mode
-                                                   doc-view-mode
-                                                   markdown-mode
-                                                   org-mode
-                                                   pdf-view-mode
-                                                   text-mode
-                                                   csv-mode
+   dotspacemacs-line-numbers '(:relative
+                               nil
+                               :disabled-for-modes
+                               dired-mode
+                               doc-view-mode
+                               markdown-mode
+                               org-mode
+                               pdf-view-mode
+                               text-mode
+                               csv-mode
                                :size-limit-kb 1000)
 
    ;; Code folding method. Possible values are `evil' and `origami'.
@@ -588,14 +590,17 @@ before packages are loaded."
 
   ;; Patch for change in Emacs 27
   ;; http://git.savannah.gnu.org/cgit/emacs.git/commit/?id=f646675cd1637948b2df2351a9666792ea8251ea
-  (defun patch/purpose-change-buffer (buffer window type &optional alist dedicated)
-    "Display BUFFER in WINDOW, but don't select it.
+  (if (version<=
+       "20180926.1047"
+       (configuration-layer//get-package-version-string 'window-purpose))
+      (spacemacs|use-package-add-hook window-purpose
+                                      :post-config
+                                      (defun purpose-change-buffer (buffer window type &optional alist _dedicated)
+                                        "Display BUFFER in WINDOW, but don't select it.
 BUFFER, WINDOW, TYPE and ALIST have the same meaning as
 `window--display-buffer'.'"
-    (when (<= emacs-major-version 27)
-      (window--display-buffer buffer window type alist)
-      (window--display-buffer buffer window type alist dedicated)))
-  (advice-add 'purpose-change-buffer :override #'patch/purpose-change-buffer)
+                                        (window--display-buffer buffer window type alist)))
+    (message "window-purpose updated; check whether patch still needed"))
 
 
   ;; Additional
