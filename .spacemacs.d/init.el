@@ -588,21 +588,6 @@ before packages are loaded."
   ;; Direnv for projects
   (spacemacs/add-to-hooks 'direnv-mode '(projectile-mode-hook))
 
-  ;; Patch for change in Emacs 27
-  ;; http://git.savannah.gnu.org/cgit/emacs.git/commit/?id=f646675cd1637948b2df2351a9666792ea8251ea
-  (if (version<=
-       "20180926.1047"
-       (configuration-layer//get-package-version-string 'window-purpose))
-      (spacemacs|use-package-add-hook window-purpose
-                                      :post-config
-                                      (defun purpose-change-buffer (buffer window type &optional alist _dedicated)
-                                        "Display BUFFER in WINDOW, but don't select it.
-BUFFER, WINDOW, TYPE and ALIST have the same meaning as
-`window--display-buffer'.'"
-                                        (window--display-buffer buffer window type alist)))
-    (message "window-purpose updated; check whether patch still needed"))
-
-
   ;; Additional
   ;;
   ;; Lastly, load custom-file (but only if the file exists).
