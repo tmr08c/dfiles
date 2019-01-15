@@ -54,9 +54,8 @@ if (( $+commands[emacs] )); then
         emacsclient --no-wait --create-frame "$@"
     fi
   }
-  # export EDITOR='em'
   export ALTERNATE_EDITOR="emacs"
-  export GIT_EDITOR="emacsclient -t"
+  export GIT_EDITOR="emacsclient -c"
   export EDITOR="emacsclient -c"
   export VISUAL="emacsclient -c"
 elif (( $+commands[vim] )); then
