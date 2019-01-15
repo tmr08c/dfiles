@@ -540,7 +540,19 @@ If you are unsure, try setting them in `dotspacemacs/user-config' first."
 
    ;; Ruby
    flycheck-rubocop-lint-only t
-   ruby-align-to-stmt-keywords '(if while unless until begin case for def)))
+   ruby-align-to-stmt-keywords '(if while unless until begin case for def)
+
+   ;; Emacs Server
+   powerline-height 27
+   ;; server-socket-dir (format "/tmp/emacs%d" (user-uid))
+
+   ;; Org Mode
+   org-capture-templates '(("t" "Todo [inbox]" entry
+                            (file+headline "~/org/inbox.org" "Tasks")
+                            "* TODO %i%?")
+                           ("T" "Tickler" entry
+                            (file+headline "~/org/tickler.org" "Tickler")
+                            "* %i%? \n %U"))))
 
 
 

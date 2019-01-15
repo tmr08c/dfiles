@@ -55,9 +55,9 @@ if (( $+commands[emacs] )); then
     fi
   }
   # export EDITOR='em'
-  export ALTERNATE_EDITOR=""
-  export EDITOR="emacsclient -t"
-  export VISUAL="emacsclient -c -a emacs"
+  export ALTERNATE_EDITOR="emacs"
+  export EDITOR="emacsclient -c"
+  export VISUAL="emacsclient -c"
 elif (( $+commands[vim] )); then
   export EDITOR='vim'
 fi
