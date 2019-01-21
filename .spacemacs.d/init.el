@@ -33,7 +33,7 @@ This function should only modify configuration layer settings."
 
    ;; List of configuration layers to load.
    dotspacemacs-configuration-layers
-   '(
+   '(python
      ;; ----------------------------------------------------------------
      ;; Example of useful layers you may want to use right away.
      ;; Uncomment some layer names and press `SPC f e R' (Vim style) or
@@ -599,6 +599,15 @@ before packages are loaded."
 
   ;; Direnv for projects
   (spacemacs/add-to-hooks 'direnv-mode '(projectile-mode-hook))
+
+  ;; Tabs for Makefile
+  (spacemacs/add-to-hooks '(lambda ()
+                             (setq indent-tabs-mode t))
+                          '(makefile-mode-hook))
+
+  ;; Emacs Lisp enable evil-cleverparens
+  (spacemacs/toggle-evil-safe-lisp-structural-editing-on-register-hook-emacs-lisp-mode)
+
 
   ;; Additional
   ;;
