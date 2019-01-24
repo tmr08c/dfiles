@@ -1,85 +1,24 @@
-;;; Add load path for vendor directory
-(add-to-list 'load-path "~/.emacs.d/vendor/")
+;;; config.el --- -*- lexical-binding: t; -*-
+;;; Commentary:
 
-;;; Get package repos configured
-(require 'package)
-(add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/"))
-(add-to-list 'package-archives '("org" . "https://orgmode.org/elpa/") t)
-(setq package-archive-priorities '(("org" . 3)
-                                   ("melpa" . 2)
-                                   ("gnu" . 1)))
+;;; Code:
 
-(unless package--initialized
-  (package-initialize))
-
-(unless (package-installed-p 'use-package)
-  (package-refresh-contents)
-  (package-install 'use-package))
-
-(setq use-package-compute-statistics t
-      use-package-always-ensure t
-      use-package-always-defer t
-      use-package-verbose t
-      use-package-minimum-reported-time 0.01)
-
-(eval-when-compile
-  (require 'use-package))
-
-(use-package quelpa
-  :custom
-  (quelpa-update-melpa-p nil))
-
-(use-package quelpa-use-package
-  :demand
-  :config
-  (quelpa-use-package-activate-advice))
-
-(use-package use-package-ensure-system-package
-  :demand
-  :functions use-package-ensure-system-package-exists?
-  :requires (exec-path-from-shell))
-
-(use-package auto-package-update
-  :requires no-littering
-  :custom
-  (auto-package-update-interval 7)
-  (auto-package-update-delete-old-versions t)
-  (auto-package-update-hide-results t)
-  (auto-package-update-prompt-before-update t)
-  (apu--last-update-day-filename
-   (no-littering-expand-var-file-name "auto-update-package-last-update-day")))
+(defvar +completion-engine 'ivy
+  "Setting to control whether to use helm or ivy.")
 
 (when (fboundp 'set-charset-priority)
   (set-charset-priority 'unicode))     ; pretty
-
 (prefer-coding-system        'utf-8)   ; pretty
 (set-terminal-coding-system  'utf-8)   ; pretty
 (set-keyboard-coding-system  'utf-8)   ; pretty
 (set-selection-coding-system 'utf-8)   ; perdy
-
 (setq locale-coding-system 'utf-8)     ; please
-
-(use-package benchmark-init
-  :disabled
-  :config
-  (add-hook 'after-init-hook 'benchmark-init/deactivate))
 
 (use-package exec-path-from-shell
   :if (memq window-system '(mac ns x))
   :config
   (setq exec-path-from-shell-arguments '("-l"))
   (exec-path-from-shell-initialize))
-
-
-(use-package no-littering
-  :demand t
-  :config
-  (setq no-littering-var-directory
-        (expand-file-name "var/" user-emacs-directory))
-  (setq no-littering-etc-directory
-        (expand-file-name "etc/" user-emacs-directory))
-  (setq custom-file
-        (no-littering-expand-var-file-name "custom.el")))
 
 (use-package which-key
   :defer 1
@@ -388,12 +327,12 @@ the rest of the arguments are treated exactly like they are in
 ;; (use-package helm-flx)
 
 (use-package ivy
-  :if (eq js|completion-engine 'ivy)
+  :if (eq +completion-engine 'ivy)
   :demand
   :delight
   :general
   (general-define-key :keymaps 'global
-                      [remap switch-to-buffer]       #'ivy-switch-buffer
+                      ;; [remap switch-to-buffer]       #'ivy-switch-buffer
                       ;; [remap persp-switch-to-buffer] #'+ivy/switch-workspace-buffer
                       [remap imenu-anywhere]         #'ivy-imenu-anywhere)
   :config
@@ -409,7 +348,7 @@ the rest of the arguments are treated exactly like they are in
         ivy-use-selectable-prompt t))
 
 (use-package ivy-rich
-  :if (eq js|completion-engine 'ivy)
+  :if (eq +completion-engine 'ivy)
   :after ivy
   :custom
   (ivy-virtual-abbreviate 'full)
@@ -419,7 +358,7 @@ the rest of the arguments are treated exactly like they are in
   (ivy-rich-mode 1))
 
 (use-package doom-todo-ivy
-  :if (eq js|completion-engine 'ivy)
+  :if (eq +completion-engine 'ivy)
   :ensure nil
   :commands doom/ivy-tasks
   :load-path "vendor/"
@@ -428,7 +367,7 @@ the rest of the arguments are treated exactly like they are in
    "p T" '(doom/ivy-tasks :which-key "List project tasks")))
 
 (use-package counsel
-  :if (eq js|completion-engine 'ivy)
+  :if (eq +completion-engine 'ivy)
   :commands (counsel-M-x counsel-find-file counsel-descbinds)
   :init
   (js|global-keymap
@@ -453,7 +392,7 @@ the rest of the arguments are treated exactly like they are in
                       [remap swiper]                   #'counsel-grep-or-swiper))
 
 (use-package counsel-projectile
-  :if (eq js|completion-engine 'ivy)
+  :if (eq +completion-engine 'ivy)
   :commands (counsel-projectile-switch-to-buffer
              counsel-projectile-find-dir
              counsel-projectile-find-file
@@ -471,7 +410,7 @@ the rest of the arguments are treated exactly like they are in
 
 
 (use-package counsel-dash
-  :if (eq js|completion-engine 'ivy)
+  :if (eq +completion-engine 'ivy)
   :commands counsel-dash
   :hook
   ((lisp-mode . (lambda ()
@@ -502,7 +441,7 @@ the rest of the arguments are treated exactly like they are in
    ))
 
 (use-package counsel-etags
-  :if (eq js|completion-engine 'ivy)
+  :if (eq +completion-engine 'ivy)
   :requires counsel
   :commands (counsel-etags-find-tag-at-point
              counsel-etags-scan-code
@@ -552,46 +491,6 @@ the rest of the arguments are treated exactly like they are in
 
 (use-package company-flx
   :hook (company-mode . company-flx-mode))
-
-;; General
-;; (use-package company-emoji
-;;   :no-require t
-;;   :defer 5
-;;   :hook ((markdown-mode git-commit-mode magit-status-mode magit-log-mode) . (lambda ()
-;;                                                                               (setq-local company-backends '(company-emoji)))))
-
-;; C/C++
-;; (use-package company-irony
-;;   :after irony-mode
-;;   :hook irony-mode
-;;   :custom
-;;   (company-irony-ignore-case 'smart))
-
-;; (use-package company-irony-c-headers
-;;   :after company-irony
-;;   :hook (irony-mode . (lambda ()
-;;                         (setq-local company-backends '((company-irony-c-headers company-irony company-etags))))))
-
-;; Python
-;; (use-package company-anaconda
-;;   :after python-mode
-;;   :hook (python-mode . (lambda ()
-;;                          (set (make-local-variable 'company-backends) '(company-anaconda)))))
-
-;; Golang
-;; (use-package company-go
-;;   :after go-mode
-;;   :hook (go-mode . (lambda ()
-;;                      (set (make-local-variable 'company-backends) '(company-go))))
-;;   :custom
-;;   (company-go-show-annotation t))
-
-;; Shell
-;; (use-package company-shell
-;;   :custom
-;;   (company-shell-delete-duplicates t)
-;;   :hook (sh-mode . (lambda ()
-;;                      (set (make-local-variable 'company-backends) '(company-shell company-async-files)))))
 
 (use-package lsp-mode
   :hook ((ruby-mode

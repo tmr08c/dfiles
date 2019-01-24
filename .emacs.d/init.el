@@ -11,49 +11,76 @@
 ;; Ensure Emacs is running out of this file's directory
 (setq user-emacs-directory (file-name-directory load-file-name))
 
-(defcustom js|completion-engine 'ivy
-  "Setting to control whether to use helm or ivy")
-
 (defvar js|config-file
   (expand-file-name "config.el" user-emacs-directory)
   "The file path of your literate config file.")
-;; (defvar +literate-config-file
-;;   (expand-file-name "config.org" user-emacs-directory)
-;;   "The file path of your literate config file.")
 
-;; (defvar +literate-config-dest-file
-;;   (expand-file-name "config.el" user-emacs-directory)
-;;   "The file path that `+literate-config-file' will be tangled to, then
-;; byte-compiled from.")
+;;; Add load path for vendor directory
+(add-to-list 'load-path "~/.emacs.d/vendor/")
 
-;; (defun +literate-compile (&optional load)
-;;   "Tangles & compiles `+literate-config-file' if it has changed. If LOAD is
-;; non-nil, load it too!"
-;;   (let ((org +literate-config-file)
-;;         (el  +literate-config-dest-file))
-;;     (when (file-newer-than-file-p org el)
-;;       (message "Compiling your literate config...")
+;;; Get package repos configured
+(require 'package)
+(add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/"))
+(add-to-list 'package-archives '("org" . "https://orgmode.org/elpa/") t)
+(setq package-archive-priorities '(("org" . 3)
+                                   ("melpa" . 2)
+                                   ("gnu" . 1)))
 
-;;       ;; We tangle in a separate, blank process because loading it here would
-;;       ;; load all of :lang org (very expensive!). We only need ob-tangle.
-;;       (or (zerop (call-process
-;;                   "emacs" nil nil nil
-;;                   "-q" "--batch" "-l" "ob-tangle" "--eval"
-;;                   (format "(org-babel-tangle-file \"%s\" \"%s\")"
-;;                           org el)))
-;;           (warn "There was a problem tangling your literate config!"))
+(unless package--initialized
+  (package-initialize))
 
-;;       (message "Done!"))))
+(unless (package-installed-p 'use-package)
+  (package-refresh-contents)
+  (package-install 'use-package))
 
-;; (+literate-compile)
+(setq use-package-compute-statistics t
+      use-package-always-ensure t
+      use-package-always-defer t
+      use-package-verbose t
+      use-package-minimum-reported-time 0.01)
+
+(eval-when-compile
+  (require 'use-package))
+
+(use-package quelpa
+  :custom
+  (quelpa-update-melpa-p nil))
+
+(use-package quelpa-use-package
+  :demand
+  :config
+  (quelpa-use-package-activate-advice))
+
+(use-package use-package-ensure-system-package
+  :demand
+  :functions use-package-ensure-system-package-exists?
+  :requires (exec-path-from-shell))
+
+(use-package benchmark-init
+  :disabled
+  :config
+  (add-hook 'after-init-hook 'benchmark-init/deactivate))
+
+(use-package no-littering
+  :demand
+  :config
+  (setq no-littering-var-directory (expand-file-name "var/" user-emacs-directory)
+        no-littering-etc-directory (expand-file-name "etc/" user-emacs-directory)
+        custom-file (no-littering-expand-var-file-name "custom.el")))
+
+(use-package auto-package-update
+  :requires no-littering
+  :custom
+  (auto-package-update-interval 7)
+  (auto-package-update-delete-old-versions t)
+  (auto-package-update-hide-results t)
+  (auto-package-update-prompt-before-update t)
+  (apu--last-update-day-filename
+   (no-littering-expand-var-file-name "auto-update-package-last-update-day")))
+
 
 (when (file-readable-p (concat user-emacs-directory "config.el"))
   (load-file (concat user-emacs-directory "config.el")))
 
-;;; This is the actual configuration file.
-;;; It is omitted if it doesn't exist so emacs won't refuse to launch.
-;; (when (file-readable-p (concat user-emacs-directory "config.org"))
-;;   (org-babel-load-file (concat user-emacs-directory "config.org")))
-
-;;(provide 'init)
+(provide 'init)
 ;;; init.el ends here
