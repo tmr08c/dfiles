@@ -35,7 +35,7 @@
 
 (setq use-package-compute-statistics t
       use-package-always-ensure t
-      use-package-always-defer t
+      ;; use-package-always-defer t
       use-package-verbose t
       use-package-minimum-reported-time 0.01)
 

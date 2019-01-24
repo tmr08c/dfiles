@@ -3,7 +3,9 @@
 
 ;;; Code:
 
-(defvar +completion-engine 'ivy
+(require '+funcs)
+
+(defvar +completion-engine 'helm
   "Setting to control whether to use helm or ivy.")
 
 (when (fboundp 'set-charset-priority)
@@ -34,158 +36,155 @@
   (which-key-setup-side-window-right-bottom))
 
 (use-package general
-  :demand t
+  :demand
   :functions space-leader-def
-  ;; :custom
-  ;; (general-default-prefix "SPC")
-  ;; (general-default-non-normal-prefix "C-SPC")
   :config
   (general-create-definer space-leader-def
     :prefix "SPC"
     :non-normal-prefix "C-SPC")
   (general-evil-setup)
-  (space-leader-def
-    ;; :states '(normal visual insert emacs)
-    :states '(normal visual emacs)
+  ;; (space-leader-def
+  ;;   ;; :states '(normal visual insert emacs)
+  ;;   :states '(normal visual emacs)
 
-    "SPC" '(execute-extended-command :which-key "M-x")
-    ;; "TAB" '(switch-to-other-buffer :which-key "prev buffer")
+  ;;   "SPC" '(execute-extended-command :which-key "M-x")
+  ;;   ;; "TAB" '(switch-to-other-buffer :which-key "prev buffer")
 
-    ;;; Help bindings
-    "h" '(:ignore t :which-key "Help")
-    "hdf" '(describe-function :which-key "describe function")
-    "hdm" '(describe-mode :which-key "describe modes") ;; TODO: https://framagit.org/steckerhalter/discover-my-major
-    "hdv" '(describe-variable :which-key "describe variable")
+  ;;   ;;; Help bindings
+  ;;   "h" '(:ignore t :which-key "Help")
+  ;;   "hdf" '(describe-function :which-key "describe function")
+  ;;   "hdm" '(describe-mode :which-key "describe modes") ;; TODO: https://framagit.org/steckerhalter/discover-my-major
+  ;;   "hdv" '(describe-variable :which-key "describe variable")
 
-    ;;; Buffers
-    "b"   '(:ignore t :which-key "Buffers")
-    "bb" '(switch-buffer :which-key "list buffers")
-    "bn" '(next-buffer :which-key "next buffer")
-    "bp" '(previous-buffer :which-key "prev buffer")
-    "bd" '((lambda ()
-             (interactive)
-             (kill-buffer (current-buffer)))
-           :which-key "close current buffer")
-    "bs" '((lambda ()
-             (interactive)
-             (switch-to-buffer (get-buffer-create "*scratch*")))
-           :which-key "scratch buffer")
+  ;;   ;;; Buffers
+  ;;   "b"   '(:ignore t :which-key "Buffers")
+  ;;   "bb" '(switch-buffer :which-key "list buffers")
+  ;;   "bn" '(next-buffer :which-key "next buffer")
+  ;;   "bp" '(previous-buffer :which-key "prev buffer")
+  ;;   "bd" '((lambda ()
+  ;;            (interactive)
+  ;;            (kill-buffer (current-buffer)))
+  ;;          :which-key "close current buffer")
+  ;;   "bs" '((lambda ()
+  ;;            (interactive)
+  ;;            (switch-to-buffer (get-buffer-create "*scratch*")))
+  ;;          :which-key "scratch buffer")
 
-    ;;; Files
-    "f"  '(:ignore t :which-key "Files")
-    "fD" '((lambda ()
-             (interactive)
-             (let ((filename (buffer-file-name))
-                   (buffer (current-buffer))
-                   (name (buffer-name)))
-               (if (not (and filename (file-exists-p filename)))
-                   (ido-kill-buffer)
-                 (when (yes-or-no-p "Are you sure you want to delete this file? ")
-                   (delete-file filename t)
-                   (kill-buffer buffer)
-                   (message "File '%s' successfully removed" filename)))))
-           :which-key "delete file and kill buffer")
-    "ff" '(find-file :which-key "find file")
-    "fed" '((lambda ()
-              (interactive)
-              (find-file-existing js|config-file))
-            :which-key "open emacs configuration")
+  ;;   ;;; Files
+  ;;   "f"  '(:ignore t :which-key "Files")
+  ;;   "fD" '((lambda ()
+  ;;            (interactive)
+  ;;            (let ((filename (buffer-file-name))
+  ;;                  (buffer (current-buffer))
+  ;;                  (name (buffer-name)))
+  ;;              (if (not (and filename (file-exists-p filename)))
+  ;;                  (ido-kill-buffer)
+  ;;                (when (yes-or-no-p "Are you sure you want to delete this file? ")
+  ;;                  (delete-file filename t)
+  ;;                  (kill-buffer buffer)
+  ;;                  (message "File '%s' successfully removed" filename)))))
+  ;;          :which-key "delete file and kill buffer")
+  ;;   "ff" '(find-file :which-key "find file")
+  ;;   "fed" '((lambda ()
+  ;;             (interactive)
+  ;;             (find-file-existing js|config-file))
+  ;;           :which-key "open emacs configuration")
 
-    "d" '(:ignore t :which-key "Docs")
+  ;;   "d" '(:ignore t :which-key "Docs")
 
-    "g" '(:ignore t :which-key "Go to")
-    "gd" '(dumb-jump-go :which-key "definition")
-    "gD" '(dumb-jump-go-other-window :which-key "definition (other window)")
+  ;;   "g" '(:ignore t :which-key "Go to")
+  ;;   "gd" '(dumb-jump-go :which-key "definition")
+  ;;   "gD" '(dumb-jump-go-other-window :which-key "definition (other window)")
 
-    ;;; Quit
-    "q"  '(:ignore t :which-key "Quit")
-    "qq" '(kill-emacs :which-key "quit")
-    "qr" '(restart-emacs :which-key "restart")
+  ;;   ;;; Quit
+  ;;   "q"  '(:ignore t :which-key "Quit")
+  ;;   "qq" '(kill-emacs :which-key "quit")
+  ;;   "qr" '(restart-emacs :which-key "restart")
 
-    ;;; Search
-    "s" '(:ignore t :which-key "Search")
-    "ss" '(swiper :which-key "search buffer")
-    "sS" '(lambda ()
-            (interactive)
-            (let ((input (if (region-active-p)
-                             (buffer-substring-no-properties
-                              (region-beginning) (region-end))
-                           (thing-at-point 'symbol t))))
-              (swiper input))
-            :which-key "search buffer")
+  ;;   ;;; Search
+  ;;   "s" '(:ignore t :which-key "Search")
+  ;;   "ss" '(swiper :which-key "search buffer")
+  ;;   "sS" '(lambda ()
+  ;;           (interactive)
+  ;;           (let ((input (if (region-active-p)
+  ;;                            (buffer-substring-no-properties
+  ;;                             (region-beginning) (region-end))
+  ;;                          (thing-at-point 'symbol t))))
+  ;;             (swiper input))
+  ;;           :which-key "search buffer")
 
-    ;; Toggle
-    "t" '(:ignore t :which-key "Toggles")
+  ;;   ;; Toggle
+  ;;   "t" '(:ignore t :which-key "Toggles")
 
-    ;;; Windows
-    "w"   '(:ignore t :which-key "Windows")
-    "wd" '(delete-window :which-key "close window")
-    "w/" '((lambda ()
-             (interactive)
-             (split-window-horizontally)
-             (other-window 1))
-           :which-key "split vertical")
-    "w-" '((lambda ()
-             (interactive)
-             (split-window-vertically)
-             (other-window 1))
-           :which-key "split horizontal")
-    "wh" '(evil-window-left :which-key "window left")
-    "w<left>" '(evil-window-left :which-key nil)
-    "wj" '(evil-window-down :which-key "window down")
-    "w<down>" '(evil-window-down :which-key nil)
-    "wk" '(evil-window-up :which-key "window up")
-    "w<up>" '(evil-window-up :which-key nil)
-    "wl" '(evil-window-right :which-key "window right")
-    "w<right>" '(evil-window-right :which-key nil)
-    "w=" '(balance-windows :which-key "balance window split")
+  ;;   ;;; Windows
+  ;;   "w"   '(:ignore t :which-key "Windows")
+  ;;   "wd" '(delete-window :which-key "close window")
+  ;;   "w/" '((lambda ()
+  ;;            (interactive)
+  ;;            (split-window-horizontally)
+  ;;            (other-window 1))
+  ;;          :which-key "split vertical")
+  ;;   "w-" '((lambda ()
+  ;;            (interactive)
+  ;;            (split-window-vertically)
+  ;;            (other-window 1))
+  ;;          :which-key "split horizontal")
+  ;;   "wh" '(evil-window-left :which-key "window left")
+  ;;   "w<left>" '(evil-window-left :which-key nil)
+  ;;   "wj" '(evil-window-down :which-key "window down")
+  ;;   "w<down>" '(evil-window-down :which-key nil)
+  ;;   "wk" '(evil-window-up :which-key "window up")
+  ;;   "w<up>" '(evil-window-up :which-key nil)
+  ;;   "wl" '(evil-window-right :which-key "window right")
+  ;;   "w<right>" '(evil-window-right :which-key nil)
+  ;;   "w=" '(balance-windows :which-key "balance window split")
 
-    "x" '(:ignore t :which-key "text")
-    "xt" '(:ignore t :which-key "transpose")
-    ))
+  ;;   "x" '(:ignore t :which-key "text")
+  ;;   "xt" '(:ignore t :which-key "transpose")
+  ;;   )
+  )
 
-(defmacro js|global-keymap (&rest bindings)
-  "Add global BINDINGS as key bindings under `space-leader-def`.
-All of the arguments are treated exactly like they are in
-'general' package."
-  `(space-leader-def
-     :states '(normal visual emacs)
-     ,@bindings))
+;; (defmacro js|global-keymap (&rest bindings)
+;;   "Add global BINDINGS as key bindings under `space-leader-def`.
+;; All of the arguments are treated exactly like they are in
+;; 'general' package."
+;;   `(space-leader-def
+;;      :states '(normal visual emacs)
+;;      ,@bindings))
 
-(defmacro js|keymap-for-mode (mode key def &rest bindings)
-  "Add KEY and DEF as key bindings under `space-leader-def` for MODE.
-mode should be a quoted symbol corresponding to a valid major mode.
-the rest of the arguments are treated exactly like they are in
-'general' package."
-  (let (mode-bindings)
-    (while key
-      (push def mode-bindings)
-      (push (concat "m" key) mode-bindings)
-      (setq key (pop bindings) def (pop bindings)))
-    `(space-leader-def
-       :states '(normal visual emacs)
-       :keymaps ',(intern (format "%s-map" (eval mode)))
-       ,@mode-bindings)))
+;; (defmacro js|keymap-for-mode (mode key def &rest bindings)
+;;   "Add KEY and DEF as key bindings under `space-leader-def` for MODE.
+;; mode should be a quoted symbol corresponding to a valid major mode.
+;; the rest of the arguments are treated exactly like they are in
+;; 'general' package."
+;;   (let (mode-bindings)
+;;     (while key
+;;       (push def mode-bindings)
+;;       (push (concat "m" key) mode-bindings)
+;;       (setq key (pop bindings) def (pop bindings)))
+;;     `(space-leader-def
+;;        :states '(normal visual emacs)
+;;        :keymaps ',(intern (format "%s-map" (eval mode)))
+;;        ,@mode-bindings)))
 
-(defmacro evil-js|keymap-for-mode (mode &rest bindings)
-  "Add BINDINGS to evil for the provided MODE.
-mode should be a quoted symbol corresponding to a valid major mode.
-the rest of the arguments are treated exactly like they are in
-'general' package."
-  `(general-define-key
-    :states '(normal visual)
-    :keymaps ',(intern (format "%s-map" (eval mode)))
-    ,@bindings))
+;; (defmacro evil-js|keymap-for-mode (mode &rest bindings)
+;;   "Add BINDINGS to evil for the provided MODE.
+;; mode should be a quoted symbol corresponding to a valid major mode.
+;; the rest of the arguments are treated exactly like they are in
+;; 'general' package."
+;;   `(general-define-key
+;;     :states '(normal visual)
+;;     :keymaps ',(intern (format "%s-map" (eval mode)))
+;;     ,@bindings))
 
 (use-package evil
   :init (evil-mode 1)
-  :custom
-  (evil-want-C-u-scroll t)
-  (evil-want-Y-yank-to-eol t)
-  (evil-shift-width 2)
-  (evil-want-integration nil)
   :config
   (setq evil-want-visual-char-semi-exclusive t
+        evil-want-C-u-scroll t
+        evil-want-Y-yank-to-eol t
+        evil-shift-width 2
+        evil-want-integration nil
         evil-magic t
         evil-echo-state t
         evil-indent-convert-tabs t
@@ -221,13 +220,12 @@ the rest of the arguments are treated exactly like they are in
     (setq evil-shift-width tab-width))
   (add-hook 'after-change-major-mode-hook #'+evil|update-shift-width t)
   :general
-  (general-define-key
-   :states 'insert
-   "C-v" 'cua-paste
-   "C-c" 'cua-copy-region
-   "C-x" 'cua-cut-region
-   "C-z" 'undo-tree-undo
-   "C-Z" 'undo-tree-redo))
+  (general-define-key :states 'insert
+                      "C-v" 'cua-paste
+                      "C-c" 'cua-copy-region
+                      "C-x" 'cua-cut-region
+                      "C-z" 'undo-tree-undo
+                      "C-Z" 'undo-tree-redo))
 
 (use-package evil-escape
   :requires evil
@@ -257,21 +255,10 @@ the rest of the arguments are treated exactly like they are in
   :defer 5
   :delight)
 
-(use-package evil-quickscope
-  :disabled
-  :defer t
-  :delight
-  :init (global-evil-quickscope-mode 1))
-
 (use-package evil-commentary
   :defer t
   :delight
   :init (evil-commentary-mode))
-
-(use-package evil-string-inflection
-  :disabled
-  :requires evil
-  :defer t)
 
 (use-package editorconfig
   :defer t
@@ -284,23 +271,25 @@ the rest of the arguments are treated exactly like they are in
              projectile-invalidate-cache
              projectile-replace
              projectile-kill-buffers
-             projectile-recentf)
-  :delight ;;'(:eval (concat " " (projectile-project-name)))
+             projectile-recentf
+             projectile-ag
+             projectile-find-file
+             projectile-find-dir
+             projectile-switch-project)
   :init
-  (js|global-keymap
-   "p"  '(:ignore t :which-key "Projects")
-   "p!" '(projectile-run-shell-command-in-root :which-key "run command")
-   "p%" '(projectile-replace-regexp :which-key "replace regexp")
-   ;; "p a" '(projectile-toggle-between-implementation-and-test :which-key "toggle test")
-   "pI" '(projectile-invalidate-cache :which-key "clear cache")
-   "pR" '(projectile-replace :which-key "replace")
-   "pk" '(projectile-kill-buffers :which-key "kill buffers")
-   "pr" '(projectile-recentf :which-key "recent files")
-   "pb" '(projectile-switch-to-buffer :which-key "switch to buffer")
-   "pd" '(projectile-find-dir :which-key "find directory")
-   "pf" '(projectile-find-file :which-key "open file")
-   "pp" '(projectile-switch-project :which-key "open project")
-   "ps" '(projectile-ag :which-key "search in project"))
+  (js|global-keymap "p"  '(:ignore t :which-key "Projects")
+                    "p!" '(projectile-run-shell-command-in-root :which-key "run command")
+                    "p%" '(projectile-replace-regexp :which-key "replace regexp")
+                    ;; "p a" '(projectile-toggle-between-implementation-and-test :which-key "toggle test")
+                    "pI" '(projectile-invalidate-cache :which-key "clear cache")
+                    "pR" '(projectile-replace :which-key "replace")
+                    "pk" '(projectile-kill-buffers :which-key "kill buffers")
+                    "pr" '(projectile-recentf :which-key "recent files")
+                    "pb" '(projectile-switch-to-buffer :which-key "switch to buffer")
+                    "pd" '(projectile-find-dir :which-key "find directory")
+                    "pf" '(projectile-find-file :which-key "open file")
+                    "pp" '(projectile-switch-project :which-key "open project")
+                    "ps" '(projectile-ag :which-key "search in project"))
   :config
   (progn
     (setq projectile-indexing-method 'alien
@@ -319,22 +308,58 @@ the rest of the arguments are treated exactly like they are in
 (use-package amx
   :hook (after-init . amx-initialize))
 
-;; (use-package helm)
-;; (use-package helm-ag)
-;; (use-package helm-company)
-;; (use-package helm-projectile)
-;; (use-package swiper-helm)
-;; (use-package helm-flx)
+;; Helm
+(use-package helm
+  :if (eq +completion-engine 'helm)
+  :demand
+  :config
+  (setq helm-candidate-number-limit 50
+        helm-display-buffer-height 0.25))
+(use-package helm-ag
+  :after helm
+  :if (eq +completion-engine 'helm))
+(use-package helm-company
+  :defer t
+  :if (eq +completion-engine 'helm))
+(use-package helm-projectile
+  :if (eq +completion-engine 'helm)
+  :commands (helm-projectile-find-file
+             helm-projectile-find-dir
+             helm-projectile-find-file-in-known-projects
+             helm-projectile-recentf
+             helm-projectile-grep
+             helm-projectile-rg
+             helm-projectile-ag
+             helm-projectile-switch-project
+             helm-projectile-switch-to-buffer)
+  :config
+  (setq projectile-completion-system 'helm))
+(use-package swiper-helm
+  :if (eq +completion-engine 'helm)
+  :commands (swiper-helm)
+  :general
+  (general-define-key :keymaps 'global
+                      ))
+(use-package helm-flx
+  :if (eq +completion-engine 'helm)
+  :hook (helm-mode . helm-flx-mode))
+(use-package helm-themes
+  :defer t
+  :if (eq +completion-engine 'helm)
+  :init
+  (js|global-keymap
+   "Ts" 'helm-themes))
 
+;; Ivy
 (use-package ivy
   :if (eq +completion-engine 'ivy)
   :demand
   :delight
   :general
   (general-define-key :keymaps 'global
-                      ;; [remap switch-to-buffer]       #'ivy-switch-buffer
+                      [remap switch-to-buffer]       'ivy-switch-buffer
                       ;; [remap persp-switch-to-buffer] #'+ivy/switch-workspace-buffer
-                      [remap imenu-anywhere]         #'ivy-imenu-anywhere)
+                      [remap imenu-anywhere]         'ivy-imenu-anywhere)
   :config
   (setq ivy-use-virtual-buffers t
         ivy-virtual-abbreviate 'full
@@ -346,7 +371,6 @@ the rest of the arguments are treated exactly like they are in
         ivy-format-function 'ivy-format-function-line
         ivy-initial-inputs-alist nil
         ivy-use-selectable-prompt t))
-
 (use-package ivy-rich
   :if (eq +completion-engine 'ivy)
   :after ivy
@@ -356,7 +380,6 @@ the rest of the arguments are treated exactly like they are in
   (ivy-rich-path-style 'abbrev)
   :config
   (ivy-rich-mode 1))
-
 (use-package doom-todo-ivy
   :if (eq +completion-engine 'ivy)
   :ensure nil
@@ -366,6 +389,7 @@ the rest of the arguments are treated exactly like they are in
   (js|global-keymap
    "p T" '(doom/ivy-tasks :which-key "List project tasks")))
 
+;; Counsel
 (use-package counsel
   :if (eq +completion-engine 'ivy)
   :commands (counsel-M-x counsel-find-file counsel-descbinds)
@@ -377,19 +401,19 @@ the rest of the arguments are treated exactly like they are in
   (counsel-mode-override-describe-bindings t)
   :general
   (general-define-key :keymaps 'global
-                      [remap apropos]                  #'counsel-apropos
-                      [remap bookmark-jump]            #'counsel-bookmark
-                      [remap describe-face]            #'counsel-faces
-                      [remap describe-function]        #'counsel-describe-function
-                      [remap describe-variable]        #'counsel-describe-variable
-                      [remap execute-extended-command] #'counsel-M-x
-                      [remap find-file]                #'counsel-find-file
-                      [remap find-library]             #'counsel-find-library
-                      [remap info-lookup-symbol]       #'counsel-info-lookup-symbol
-                      [remap imenu]                    #'counsel-imenu
-                      [remap recentf-open-files]       #'counsel-recentf
-                      [remap org-capture]              #'counsel-org-capture
-                      [remap swiper]                   #'counsel-grep-or-swiper))
+                      [remap apropos]                  'counsel-apropos
+                      [remap bookmark-jump]            'counsel-bookmark
+                      [remap describe-face]            'counsel-faces
+                      [remap describe-function]        'counsel-describe-function
+                      [remap describe-variable]        'counsel-describe-variable
+                      [remap execute-extended-command] 'counsel-M-x
+                      [remap find-file]                'counsel-find-file
+                      [remap find-library]             'counsel-find-library
+                      [remap info-lookup-symbol]       'counsel-info-lookup-symbol
+                      [remap imenu]                    'counsel-imenu
+                      [remap recentf-open-files]       'counsel-recentf
+                      [remap org-capture]              'counsel-org-capture
+                      [remap swiper]                   'counsel-grep-or-swiper))
 
 (use-package counsel-projectile
   :if (eq +completion-engine 'ivy)
@@ -400,12 +424,12 @@ the rest of the arguments are treated exactly like they are in
              counsel-projectile-rg)
   :general
   (general-define-key :keymaps 'global
-                      [remap projectile-find-file]        #'+ivy/projectile-find-file
-                      [remap projectile-find-dir]         #'counsel-projectile-find-dir
-                      [remap projectile-switch-to-buffer] #'counsel-projectile-switch-to-buffer
-                      [remap projectile-grep]             #'counsel-projectile-grep
-                      [remap projectile-ag]               #'counsel-projectile-rg
-                      [remap projectile-switch-project]   #'counsel-projectile-switch-project)
+                      ;; [remap projectile-find-file]        '+ivy/projectile-find-file
+                      [remap projectile-find-dir]         'counsel-projectile-find-dir
+                      [remap projectile-switch-to-buffer] 'counsel-projectile-switch-to-buffer
+                      [remap projectile-grep]             'counsel-projectile-grep
+                      [remap projectile-ag]               'counsel-projectile-rg
+                      [remap projectile-switch-project]   'counsel-projectile-switch-project)
   )
 
 
@@ -413,18 +437,12 @@ the rest of the arguments are treated exactly like they are in
   :if (eq +completion-engine 'ivy)
   :commands counsel-dash
   :hook
-  ((lisp-mode . (lambda ()
-                  (setq-local counsel-dash-docsets '("Common_Lisp"))))
-   (emacs-lisp-mode . (lambda ()
-                        (setq-local counsel-dash-docsets '("Emacs_Lisp"))))
-   (ruby-mode . (lambda ()
-                  (setq-local counsel-dash-docsets '("Ruby"))))
-   (projectile-rails-mode . (lambda ()
-                              (setq-local counsel-dash-docsets '("Ruby_on_Rails_5"))))
-   (sql-mode . (lambda ()
-                 (setq-local counsel-dash-docsets '("PostgreSQL"))))
-   (web-mode . (lambda ()
-                 (setq-local counsel-dash-docsets '("Javascript" "HTML")))))
+  ((lisp-mode . (lambda () (setq-local counsel-dash-docsets '("Common_Lisp"))))
+   (emacs-lisp-mode . (lambda () (setq-local counsel-dash-docsets '("Emacs_Lisp"))))
+   (ruby-mode . (lambda () (setq-local counsel-dash-docsets '("Ruby"))))
+   (projectile-rails-mode . (lambda () (setq-local counsel-dash-docsets '("Ruby_on_Rails_5"))))
+   (sql-mode . (lambda () (setq-local counsel-dash-docsets '("PostgreSQL"))))
+   (web-mode . (lambda () (setq-local counsel-dash-docsets '("Javascript" "HTML")))))
   :custom
   (counsel-dash-browser-func 'eww)
   (counsel-dash-common-docsets '())
@@ -451,6 +469,7 @@ the rest of the arguments are treated exactly like they are in
              counsel-etags-find-tag
              counsel-etags-list-tag))
 
+;; Company
 (use-package company
   :defer t
   :delight
@@ -484,7 +503,7 @@ the rest of the arguments are treated exactly like they are in
 ;; (use-package company-quickhelp
 ;;   :hook (company-mode . company-quickhelp-mode)
 ;;   :custom
-;;   (company-quickhelp-delay 0.1)
+;;   (company-quickhelp-delay 0.)
 ;;   :general
 ;;   (general-def 'insert company-quickhelp-mode-map
 ;;     "C-k" 'company-select-previous))
@@ -1675,42 +1694,40 @@ bin/doom while packages at compile-time (not a runtime though)."
                 js-indent-level 2)
   (setenv "NODE_NO_READLINE" "1"))
 
-;;;###autoload
-(defun js|javascript-keybindings ()
-  "Define keybindings when working with JavaScript."
-  (js|keymap-for-mode 'js2-mode
-                      "w" 'js2-mode-toggle-warnings-and-errors
+;; (defun js|javascript-keybindings ()
+;;   "Define keybindings when working with JavaScript."
+;;   (js|keymap-for-mode 'js2-mode
+;;                       "w" 'js2-mode-toggle-warnings-and-errors
 
-                      "h" '(:ignore t :which-key "help")
-                      "g" '(:ignore t :which-key "goto")
-                      "r" '(:ignore t :which-key "refactor")
+;;                       "h" '(:ignore t :which-key "help")
+;;                       "g" '(:ignore t :which-key "goto")
+;;                       "r" '(:ignore t :which-key "refactor")
 
-                      "z" '(:ignore t :which-key "folding")
-                      "zc" 'js2-mode-hide-element
-                      "zo" 'js2-mode-show-element
-                      "zr" 'js2-mode-show-all
-                      "ze" 'js2-mode-toggle-element
-                      "zF" 'js2-mode-toggle-hide-functions
-                      "zC" 'js2-mode-toggle-hide-comments))
+;;                       "z" '(:ignore t :which-key "folding")
+;;                       "zc" 'js2-mode-hide-element
+;;                       "zo" 'js2-mode-show-element
+;;                       "zr" 'js2-mode-show-all
+;;                       "ze" 'js2-mode-toggle-element
+;;                       "zF" 'js2-mode-toggle-hide-functions
+;;                       "zC" 'js2-mode-toggle-hide-comments))
 
-;;;###autoload
-(defun js|typescript-keybindings ()
-  "Define keybindings when working with TypeScript."
-  (js|keymap-for-mode 'typescript-mode
-                      "=" 'spacemacs/typescript-tsfmt-format-buffer
+;; (defun js|typescript-keybindings ()
+;;   "Define keybindings when working with TypeScript."
+;;   (js|keymap-for-mode 'typescript-mode
+;;                       "=" 'spacemacs/typescript-tsfmt-format-buffer
 
-                      "g" '(:ignore t :which-key "goto")
-                      "gg" 'lsp-goto-implementation
-                      "gt" 'lsp-goto-type-definition
-                      "gu" 'xref-find-references
+;;                       "g" '(:ignore t :which-key "goto")
+;;                       "gg" 'lsp-goto-implementation
+;;                       "gt" 'lsp-goto-type-definition
+;;                       "gu" 'xref-find-references
 
-                      "h" '(:ignore t :which-key "help")
-                      "hh" 'lsp-describe-thing-at-point
-                      "hs" 'lsp-describe-session
+;;                       "h" '(:ignore t :which-key "help")
+;;                       "hh" 'lsp-describe-thing-at-point
+;;                       "hs" 'lsp-describe-session
 
-                      "r" '(:ignore t :which-key "refactor")
-                      "rr" 'lsp-rename
-                      ))
+;;                       "r" '(:ignore t :which-key "refactor")
+;;                       "rr" 'lsp-rename
+;;                       ))
 
 (use-package typescript-mode
   :mode "\\.tsx?\\'"
@@ -1824,6 +1841,8 @@ bin/doom while packages at compile-time (not a runtime though)."
 
 (use-package flyspell
   :disabled
+  :commands (flyspell-buffer
+             flyspell-goto-next-error)
   ;; Disable on Windows because `aspell' 0.6+ isn't available.
   :if (not (eq system-type 'windows-nt))
   :commands flyspell-mode
@@ -1831,19 +1850,19 @@ bin/doom while packages at compile-time (not a runtime though)."
   (text-mode . turn-on-flyspell)
   (prog-mode . flyspell-prog-mode)
   :delight
-  :config
-  (defun js|flyspell-mode-toggle ()
-    "Toggle flyspell mode."
-    (interactive)
-    (if flyspell-mode
-        (flyspell-mode -1)
-      (flyspell-mode 1)))
+  ;; :config
+  ;; (defun js|flyspell-mode-toggle ()
+  ;;   "Toggle flyspell mode."
+  ;;   (interactive)
+  ;;   (if flyspell-mode
+  ;;       (flyspell-mode -1)
+  ;;     (flyspell-mode 1)))
 
-  (js|global-keymap
-   "S" '(:ignore t :which-key "Spelling")
-   "Sb" 'flyspell-buffer
-   "Sn" 'flyspell-goto-next-error
-   "tS" 'js|flyspell-mode-toggle)
+  ;; (js|global-keymap
+  ;;  "S" '(:ignore t :which-key "Spelling")
+  ;;  "Sb" 'flyspell-buffer
+  ;;  "Sn" 'flyspell-goto-next-error
+  ;;  "tS" 'js|flyspell-mode-toggle)
   :custom
   (flyspell-issue-message-flag nil)
   ;; (ispell-silently-savep t)
@@ -1936,6 +1955,17 @@ bin/doom while packages at compile-time (not a runtime though)."
   :commands restart-emacs)
 
 (use-package winum
+  :commands (winum-select-window-by-number
+             winum-select-window-0-or-10
+             winum-select-window-1
+             winum-select-window-2
+             winum-select-window-3
+             winum-select-window-4
+             winum-select-window-5
+             winum-select-window-6
+             winum-select-window-7
+             winum-select-window-8
+             winum-select-window-9)
   :config
   (progn
     (setq winum-auto-assign-0-to-minibuffer nil
@@ -1945,18 +1975,18 @@ bin/doom while packages at compile-time (not a runtime though)."
     (defun winum-assign-0-to-neotree ()
       (when (string-match-p (buffer-name) ".*\\*NeoTree\\*.*") 10))
     (add-to-list 'winum-assign-functions #'winum-assign-0-to-neotree)
-    (js|global-keymap "`" 'winum-select-window-by-number
-                      ;; "²" 'winum-select-window-by-number
-                      "0" 'winum-select-window-0-or-10
-                      "1" 'winum-select-window-1
-                      "2" 'winum-select-window-2
-                      "3" 'winum-select-window-3
-                      "4" 'winum-select-window-4
-                      "5" 'winum-select-window-5
-                      "6" 'winum-select-window-6
-                      "7" 'winum-select-window-7
-                      "8" 'winum-select-window-8
-                      "9" 'winum-select-window-9)
+    ;; (js|global-keymap "`" 'winum-select-window-by-number
+    ;;                   ;; "²" 'winum-select-window-by-number
+    ;;                   "0" 'winum-select-window-0-or-10
+    ;;                   "1" 'winum-select-window-1
+    ;;                   "2" 'winum-select-window-2
+    ;;                   "3" 'winum-select-window-3
+    ;;                   "4" 'winum-select-window-4
+    ;;                   "5" 'winum-select-window-5
+    ;;                   "6" 'winum-select-window-6
+    ;;                   "7" 'winum-select-window-7
+    ;;                   "8" 'winum-select-window-8
+    ;;                   "9" 'winum-select-window-9)
     (winum-mode)))
 
 (defalias 'yes-or-no-p 'y-or-n-p)
@@ -2117,201 +2147,39 @@ bin/doom while packages at compile-time (not a runtime though)."
   (eshell-kill-processes-on-exit t))
 
 (use-package helpful
-  :after ivy
+  ;; :after ivy
+  :commands (helpful-callable
+             helpful-command
+             helpful-variable
+             helpful-key
+             helpful-macro
+             helpful-function)
   :defer t
   :defines ivy-initial-inputs-alist
   :bind (("C-c C-d" . helpful-at-point))
-  :config
-  (general-define-key
-   :keymaps 'global
-   [remap describe-function] #'helpful-callable
-   [remap describe-command]  #'helpful-command
-   [remap describe-variable] #'helpful-variable
-   [remap describe-key] #'helpful-key)
-  (dolist (cmd '(helpful-callable
-                 helpful-variable
-                 helpful-function
-                 helpful-macro
-                 helpful-command))
-    (cl-pushnew `(,cmd . "^") ivy-initial-inputs-alist))
-  :general
-  (js|global-keymap
-   "hh" '(:ignore t :which-key "helpful")
-   "hhh" 'helpful-at-point
-   "hhc" 'helpful-command
-   "hhf" 'helpful-callable
-   "hhk" 'helpful-key
-   "hhm" 'helpful-macro
-   "hhv" 'helpful-variable))
+  ;; :config
+  ;; (general-define-key :keymaps 'global
+  ;;                     [remap describe-function] #'helpful-callable
+  ;;                     [remap describe-command]  #'helpful-command
+  ;;                     [remap describe-variable] #'helpful-variable
+  ;;                     [remap describe-key] #'helpful-key)
+  ;; (dolist (cmd '(helpful-callable
+  ;;                helpful-variable
+  ;;                helpful-function
+  ;;                helpful-macro
+  ;;                helpful-command))
+  ;;   (cl-pushnew `(,cmd . "^") ivy-initial-inputs-alist))
+  ;; :general
+  ;; (js|global-keymap
+  ;;  "hh" '(:ignore t :which-key "helpful")
+  ;;  "hhh" 'helpful-at-point
+  ;;  "hhc" 'helpful-command
+  ;;  "hhf" 'helpful-callable
+  ;;  "hhk" 'helpful-key
+  ;;  "hhm" 'helpful-macro
+  ;;  "hhv" 'helpful-variable)
+  )
 
-;;;###autoload
-(defun js|org-keybindings ()
-  "Define all keybindings we use in org mode."
-  (js|keymap-for-mode
-   'org-mode
-   "'" 'org-edit-special
-   "c" 'org-capture
-
-   ;; Clock
-   ;; These keybindings should match those under the "aoC" prefix (below)
-   "C" '(:ignore t :which-key "clocks")
-   "Cc" 'org-clock-cancel
-   "Cd" 'org-clock-display
-   "Ce" 'org-evaluate-time-range
-   "Cg" 'org-clock-goto
-   "Ci" 'org-clock-in
-   "CI" 'org-clock-in-last
-   "Cj" 'org-clock-jump-to-current-clock
-   "Co" 'org-clock-out
-   "CR" 'org-clock-report
-   "Cr" 'org-resolve-clocks
-
-   "d" '(:ignore t :which-key "dates")
-   "dd" 'org-deadline
-   "ds" 'org-schedule
-   "dt" 'org-time-stamp
-   "dT" 'org-time-stamp-inactive
-   "ee" 'org-export-dispatch
-   "fi" 'org-feed-goto-inbox
-   "fu" 'org-feed-update-all
-
-   "a" 'org-agenda
-
-   "p" 'org-priority
-
-   "T" '(:ignore t :which-key "toggles")
-   "Tc" 'org-toggle-checkbox
-   "Te" 'org-toggle-pretty-entities
-   "Ti" 'org-toggle-inline-images
-   "Tl" 'org-toggle-link-display
-   "Tt" 'org-show-todo-tree
-   "TT" 'org-todo
-   "TV" 'space-doc-mode
-   "Tx" 'org-toggle-latex-fragment
-
-   ;; More cycling options (timestamps, headlines, items, properties)
-   "L" 'org-shiftright
-   "H" 'org-shiftleft
-   "J" 'org-shiftdown
-   "K" 'org-shiftup
-
-   ;; Change between TODO sets
-   "C-S-l" 'org-shiftcontrolright
-   "C-S-h" 'org-shiftcontrolleft
-   "C-S-j" 'org-shiftcontroldown
-   "C-S-k" 'org-shiftcontrolup
-
-   ;; Subtree editing
-   "s" '(:ignore t :which-key "trees/subtrees")
-   "sa" 'org-toggle-archive-tag
-   "sA" 'org-archive-subtree
-   "sb" 'org-tree-to-indirect-buffer
-   "sh" 'org-promote-subtree
-   "sj" 'org-move-subtree-down
-   "sk" 'org-move-subtree-up
-   "sl" 'org-demote-subtree
-   "sn" 'org-narrow-to-subtree
-   "sN" 'widen
-   "sr" 'org-refile
-   "ss" 'org-sparse-tree
-   "sS" 'org-sort
-
-   ;; tables
-   "t" '(:ignore t :which-key "tables")
-   "ta" 'org-table-align
-   "tb" 'org-table-blank-field
-   "tc" 'org-table-convert
-   "tdc" 'org-table-delete-column
-   "tdr" 'org-table-kill-row
-   "te" 'org-table-eval-formula
-   "tE" 'org-table-export
-   "th" 'org-table-previous-field
-   "tH" 'org-table-move-column-left
-
-   "ti" '(:ignore t :which-key "insert")
-   "tic" 'org-table-insert-column
-   "tih" 'org-table-insert-hline
-   "tiH" 'org-table-hline-and-move
-   "tir" 'org-table-insert-row
-
-   "tI" 'org-table-import
-   "tj" 'org-table-next-row
-   "tJ" 'org-table-move-row-down
-   "tK" 'org-table-move-row-up
-   "tl" 'org-table-next-field
-   "tL" 'org-table-move-column-right
-   "tn" 'org-table-create
-   "tN" 'org-table-create-with-table.el
-   "tr" 'org-table-recalculate
-   "ts" 'org-table-sort-lines
-
-   "tt" '(:ignore t :which-key "toggle")
-   "ttf" 'org-table-toggle-formula-debugger
-   "tto" 'org-table-toggle-coordinate-overlays
-
-   "tw" 'org-table-wrap-region
-
-   ;; Source blocks / org-babel
-   "b" '(:ignore t :which-key "babel")
-   "bp" 'org-babel-previous-src-block
-   "bn" 'org-babel-next-src-block
-   "be" 'org-babel-execute-maybe
-   "bo" 'org-babel-open-src-block-result
-   "bv" 'org-babel-expand-src-block
-   "bu" 'org-babel-goto-src-block-head
-   "bg" 'org-babel-goto-named-src-block
-   "br" 'org-babel-goto-named-result
-   "bb" 'org-babel-execute-buffer
-   "bs" 'org-babel-execute-subtree
-   "bd" 'org-babel-demarcate-block
-   "bt" 'org-babel-tangle
-   "bf" 'org-babel-tangle-file
-   "bc" 'org-babel-check-src-block
-   "bj" 'org-babel-insert-header-arg
-   "bl" 'org-babel-load-in-session
-   "bi" 'org-babel-lob-ingest
-   "bI" 'org-babel-view-src-block-info
-   "bz" 'org-babel-switch-to-session
-   "bZ" 'org-babel-switch-to-session-with-code
-   "ba" 'org-babel-sha1-hash
-   "bx" 'org-babel-do-key-sequence-in-edit-buffer
-   ;; "b." 'spacemacs/org-babel-transient-state/body
-
-   ;; Multi-purpose keys
-   "," 'org-ctrl-c-ctrl-c
-   "*" 'org-ctrl-c-star
-   "-" 'org-ctrl-c-minus
-   "#" 'org-update-statistics-cookies
-   "RET"   'org-ctrl-c-ret
-   "M-RET" 'org-meta-return
-   ;; attachments
-   "A" 'org-attach
-   ;; insertion
-   "i" '(:ignore t :which-key "insert")
-   "id" 'org-insert-drawer
-   "ie" 'org-set-effort
-   "if" 'org-footnote-new
-   "ih" 'org-insert-heading
-   "iH" 'org-insert-heading-after-current
-   "iK" 'spacemacs/insert-keybinding-org
-   "il" 'org-insert-link
-   "in" 'org-add-note
-   "ip" 'org-set-property
-   "is" 'org-insert-subheading
-   "it" 'org-set-tags
-
-   "x" '(:ignore t :which-key "text")
-   ;; region manipulation
-
-   ;; "xb" (spacemacs|org-emphasize spacemacs/org-bold ?*)
-   ;; "xc" (spacemacs|org-emphasize spacemacs/org-code ?~)
-   ;; "xi" (spacemacs|org-emphasize spacemacs/org-italic ?/)
-   "xo" 'org-open-at-point
-   ;; "xr" (spacemacs|org-emphasize spacemacs/org-clear ? )
-   ;; "xs" (spacemacs|org-emphasize spacemacs/org-strike-through ?+)
-   ;; "xu" (spacemacs|org-emphasize spacemacs/org-underline ?_)
-   ;; "xv" (spacemacs|org-emphasize spacemacs/org-verbatim ?=) )
-   ))
 
 (use-package org
   :defer 3
@@ -2359,33 +2227,7 @@ bin/doom while packages at compile-time (not a runtime though)."
   :config
   (pdf-tools-install)
   (setq-default pdf-view-display-size 'fit-page)
-  (js|keymap-for-mode 'pdf-view
-                      ;; Slicing image
-                      "sm" 'pdf-view-set-slice-using-mouse
-                      "sb" 'pdf-view-set-slice-from-bounding-box
-                      "sr" 'pdf-view-reset-slice
-                      ;; Annotations
-                      "a" '(:ignore t :which-key "annotations")
-                      "aD" 'pdf-annot-delete
-                      "at"	'pdf-annot-attachment-dired
-                      "ah"	'pdf-annot-add-highlight-markup-annotation
-                      "al"	'pdf-annot-list-annotations
-                      "am"	'pdf-annot-add-markup-annotation
-                      "ao"	'pdf-annot-add-strikeout-markup-annotation
-                      "as"	'pdf-annot-add-squiggly-markup-annotation
-                      "at"	'pdf-annot-add-text-annotation
-                      "au"	'pdf-annot-add-underline-markup-annotation
-                      ;; Fit image to window
-                      "f" '(:ignore t :which-key "fit")
-                      "fw" 'pdf-view-fit-width-to-window
-                      "fh" 'pdf-view-fit-height-to-window
-                      "fp" 'pdf-view-fit-page-to-window
-                      ;; Other
-                      "s" '(:ignore t :which-key "slice/search")
-                      "ss" 'pdf-occur
-                      "p" 'pdf-misc-print-document
-                      "O" 'pdf-outline
-                      "n" 'pdf-view-midnight-minor-mode))
+  )
 
 (use-package matrix-client
   :disabled ;; not ready for prime time yet
@@ -2401,3 +2243,6 @@ bin/doom while packages at compile-time (not a runtime though)."
   :ensure nil
   :load-path "vendor/"
   :if (eq system-type 'darwin))
+
+
+(require '+keybindings)
