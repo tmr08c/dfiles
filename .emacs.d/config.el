@@ -18,7 +18,8 @@
 
 (setq use-package-compute-statistics t
       use-package-always-ensure t
-      ;; use-package-verbose t
+      use-package-always-defer t
+      use-package-verbose t
       use-package-minimum-reported-time 0.01)
 
 (eval-when-compile
@@ -29,8 +30,11 @@
   :custom
   (quelpa-update-melpa-p nil))
 
-(use-package quelpa-use-package)
-(quelpa-use-package-activate-advice)
+(use-package quelpa-use-package
+  :demand
+  :config
+  (quelpa-use-package-activate-advice))
+
 
 (use-package auto-package-update
   :requires no-littering
@@ -399,6 +403,7 @@ the rest of the arguments are treated exactly like they are in
 ;; (use-package helm-flx)
 
 (use-package ivy
+  :if (eq js|completion-engine 'ivy)
   :demand
   :delight
   :general
@@ -419,6 +424,7 @@ the rest of the arguments are treated exactly like they are in
         ivy-use-selectable-prompt t))
 
 (use-package ivy-rich
+  :if (eq js|completion-engine 'ivy)
   :after ivy
   :custom
   (ivy-virtual-abbreviate 'full)
@@ -428,6 +434,7 @@ the rest of the arguments are treated exactly like they are in
   (ivy-rich-mode 1))
 
 (use-package doom-todo-ivy
+  :if (eq js|completion-engine 'ivy)
   :ensure nil
   :commands doom/ivy-tasks
   :load-path "vendor/"
@@ -436,6 +443,7 @@ the rest of the arguments are treated exactly like they are in
    "p T" '(doom/ivy-tasks :which-key "List project tasks")))
 
 (use-package counsel
+  :if (eq js|completion-engine 'ivy)
   :commands (counsel-M-x counsel-find-file counsel-descbinds)
   :custom
   (counsel-mode-override-describe-bindings t)
@@ -456,6 +464,7 @@ the rest of the arguments are treated exactly like they are in
                       [remap swiper]                   #'counsel-grep-or-swiper))
 
 (use-package counsel-projectile
+  :if (eq js|completion-engine 'ivy)
   :commands (counsel-projectile-switch-to-buffer
              counsel-projectile-find-dir
              counsel-projectile-find-file
@@ -473,6 +482,7 @@ the rest of the arguments are treated exactly like they are in
 
 
 (use-package counsel-dash
+  :if (eq js|completion-engine 'ivy)
   :commands counsel-dash
   :hook
   ((lisp-mode . (lambda ()
@@ -492,6 +502,7 @@ the rest of the arguments are treated exactly like they are in
   (counsel-dash-common-docsets '()))
 
 (use-package counsel-etags
+  :if (eq js|completion-engine 'ivy)
   :requires counsel
   :commands (counsel-etags-find-tag-at-point
              counsel-etags-scan-code
@@ -1010,27 +1021,29 @@ For instance pass En as source for English."
              godoctor-toggle))
 
 (use-package go-rename
-  :commands (go-rename)
+  :commands (go-rename))
   ;; :ensure-system-package
   ;; (gorename . "go get -u golang.org/x/tools/cmd/gorename")
-  )
+
 
 (use-package go-impl
-  :commands go-impl
+  :commands go-impl)
   ;; :ensure-system-package
   ;; (impl . "go get -u github.com/josharian/impl")
-  )
 
-;; Taken from js
+
+;;;###autoload
 (defun js|go-run-tests (args)
   (interactive)
   (compilation-start (concat "go test " args " " go-use-test-args)
                      nil (lambda (n) go-test-buffer-name) nil))
 
+;;;###autoload
 (defun js|go-run-test-current-function ()
   (interactive)
   (if (string-match "_test\\.go" buffer-file-name)
-      (let ((test-method (if go-use-gocheck-for-testing
+
+    (let ((test-method (if go-use-gocheck-for-testing
                              "-check.f"
                            "-run")))
         (save-excursion
@@ -1038,6 +1051,7 @@ For instance pass En as source for English."
           (js|go-run-tests (concat test-method "='" (match-string-no-properties 2) "$'"))))
     (message "Must be in a _test.go file to run go-run-test-current-function")))
 
+;;;###autoload
 (defun js|go-run-test-current-suite ()
   (interactive)
   (if (string-match "_test\.go" buffer-file-name)
@@ -1049,6 +1063,7 @@ For instance pass En as source for English."
     (message "Must be in a _test.go file to run go-test-current-suite")))
 
 
+;;;###autoload
 (defun js|go-run-main ()
   (interactive)
   (shell-command
@@ -1784,6 +1799,7 @@ bin/doom while packages at compile-time (not a runtime though)."
                 js-indent-level 2)
   (setenv "NODE_NO_READLINE" "1"))
 
+;;;###autoload
 (defun js|javascript-keybindings ()
   "Define keybindings when working with JavaScript."
   (js|keymap-for-mode 'js2-mode
@@ -1801,6 +1817,7 @@ bin/doom while packages at compile-time (not a runtime though)."
                       "zF" 'js2-mode-toggle-hide-functions
                       "zC" 'js2-mode-toggle-hide-comments))
 
+;;;###autoload
 (defun js|typescript-keybindings ()
   "Define keybindings when working with TypeScript."
   (js|keymap-for-mode 'typescript-mode
@@ -1998,6 +2015,8 @@ bin/doom while packages at compile-time (not a runtime though)."
 
 (use-package all-the-icons)
 
+(use-package base16-theme
+  :defer t)
 (use-package doom-themes
   :demand
   ;; :custom
@@ -2249,6 +2268,7 @@ bin/doom while packages at compile-time (not a runtime though)."
    "hhm" 'helpful-macro
    "hhv" 'helpful-variable))
 
+;;;###autoload
 (defun js|org-keybindings ()
   "Define all keybindings we use in org mode."
   (js|keymap-for-mode

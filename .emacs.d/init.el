@@ -11,6 +11,9 @@
 ;; Ensure Emacs is running out of this file's directory
 (setq user-emacs-directory (file-name-directory load-file-name))
 
+(defcustom js|completion-engine 'ivy
+  "Setting to control whether to use helm or ivy")
+
 (defvar js|config-file
   (expand-file-name "config.el" user-emacs-directory)
   "The file path of your literate config file.")

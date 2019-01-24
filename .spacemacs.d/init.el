@@ -33,12 +33,7 @@ This function should only modify configuration layer settings."
 
    ;; List of configuration layers to load.
    dotspacemacs-configuration-layers
-   '(python
-     ;; ----------------------------------------------------------------
-     ;; Example of useful layers you may want to use right away.
-     ;; Uncomment some layer names and press `SPC f e R' (Vim style) or
-     ;; `M-m f e R' (Emacs style) to install them.
-     ;; ----------------------------------------------------------------
+   '(
      (auto-completion :variables
                       auto-completion-enable-sort-by-usage t
                       spacemacs-default-company-backends '(company-files company-capf))
@@ -67,9 +62,12 @@ This function should only modify configuration layer settings."
                  js2-basic-offset 2
                  js-indent-level 2
                  node-add-modules-path t)
-     (json :variables json-fmt-tool 'web-beautify)
+     (json :variables
+           json-fmt-tool 'web-beautify)
      phoenix
      parinfer
+     (python :variables
+             python-test-runner 'pytest)
      (ruby :variables
            ruby-test-runner 'rspec)
      ruby-on-rails
@@ -83,6 +81,7 @@ This function should only modify configuration layer settings."
               neo-show-hidden-files nil
               neo-theme 'icons)
      org
+     pandoc
      (shell :variables
             shell-default-shell 'eshell
             shell-default-height 30
@@ -571,8 +570,11 @@ configuration.
 Put your configuration code here, except for variables that should be set
 before packages are loaded."
 
-  ;; Enable Emojis everywhere, but don't advertise it.
-  (spacemacs|diminish emojify-mode)
+  ;; enable emojis everywhere, but don't advertise it.
+
+  (spacemacs|use-package-add-hook emojify
+    :post-config
+    (spacemacs|diminish global-emojify-mode))
   (spacemacs/add-to-hooks 'global-emojify-mode '(after-init-hook))
 
   ;; Fix annoyance
@@ -608,6 +610,11 @@ before packages are loaded."
   ;; Emacs Lisp enable evil-cleverparens
   (spacemacs/toggle-evil-safe-lisp-structural-editing-on-register-hook-emacs-lisp-mode)
 
+  ;; Flycheck mode for Org mode
+  (spacemacs|use-package-add-hook flycheck
+    :post-config
+    (flycheck-add-mode 'proselint 'org-mode))
+  (spacemacs/add-to-hooks 'flycheck-mode '(markdown-mode-hook org-mode-hook gfm-mode-hook))
 
   ;; Additional
   ;;
