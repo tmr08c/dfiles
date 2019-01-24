@@ -26,7 +26,6 @@
   (require 'use-package))
 
 (use-package quelpa
-  :defer t
   :custom
   (quelpa-update-melpa-p nil))
 
@@ -35,6 +34,10 @@
   :config
   (quelpa-use-package-activate-advice))
 
+(use-package use-package-ensure-system-package
+  :demand
+  :functions use-package-ensure-system-package-exists?
+  :requires (exec-path-from-shell))
 
 (use-package auto-package-update
   :requires no-littering
@@ -67,9 +70,6 @@
   (setq exec-path-from-shell-arguments '("-l"))
   (exec-path-from-shell-initialize))
 
-(use-package use-package-ensure-system-package
-  :functions use-package-ensure-system-package-exists?
-  :requires (exec-path-from-shell))
 
 (use-package no-littering
   :demand t
@@ -113,7 +113,6 @@
     ;; "TAB" '(switch-to-other-buffer :which-key "prev buffer")
 
     ;;; Help bindings
-    "?" '(counsel-descbinds :which-key "Help")
     "h" '(:ignore t :which-key "Help")
     "hdf" '(describe-function :which-key "describe function")
     "hdm" '(describe-mode :which-key "describe modes") ;; TODO: https://framagit.org/steckerhalter/discover-my-major
@@ -153,24 +152,14 @@
               (find-file-existing js|config-file))
             :which-key "open emacs configuration")
 
-
     "d" '(:ignore t :which-key "Docs")
-    "dd" '((lambda ()
-             (interactive)
-             (counsel-dash
-              (if (use-region-p)
-                  (buffer-substring-no-properties (region-beginning) (region-end))
-                (substring-no-properties (or (thing-at-point 'symbol) "")))))
-           :which-key "Lookup thing at point")
-    "dD" '(counsel-dash :which-key "Lookup thing at point with docset")
-
 
     "g" '(:ignore t :which-key "Go to")
     "gd" '(dumb-jump-go :which-key "definition")
     "gD" '(dumb-jump-go-other-window :which-key "definition (other window)")
 
     ;;; Quit
-    "q"   '(:ignore t :which-key "Quit")
+    "q"  '(:ignore t :which-key "Quit")
     "qq" '(kill-emacs :which-key "quit")
     "qr" '(restart-emacs :which-key "restart")
 
@@ -188,10 +177,6 @@
 
     ;; Toggle
     "t" '(:ignore t :which-key "Toggles")
-
-    ;;; Themes
-    "T" '(:ignore t :which-key "Theme")
-    "Ts" '(counsel-load-theme :which-key "switch theme")
 
     ;;; Windows
     "w"   '(:ignore t :which-key "Windows")
@@ -438,13 +423,17 @@ the rest of the arguments are treated exactly like they are in
   :ensure nil
   :commands doom/ivy-tasks
   :load-path "vendor/"
-  :config
+  :init
   (js|global-keymap
    "p T" '(doom/ivy-tasks :which-key "List project tasks")))
 
 (use-package counsel
   :if (eq js|completion-engine 'ivy)
   :commands (counsel-M-x counsel-find-file counsel-descbinds)
+  :init
+  (js|global-keymap
+   "?" '(counsel-descbinds :which-key "Help")
+   "Ts" '(counsel-load-theme :which-key "switch theme"))
   :custom
   (counsel-mode-override-describe-bindings t)
   :general
@@ -499,7 +488,18 @@ the rest of the arguments are treated exactly like they are in
                  (setq-local counsel-dash-docsets '("Javascript" "HTML")))))
   :custom
   (counsel-dash-browser-func 'eww)
-  (counsel-dash-common-docsets '()))
+  (counsel-dash-common-docsets '())
+  :init
+  (js|global-keymap
+   "dd" '((lambda ()
+            (interactive)
+            (counsel-dash
+             (if (use-region-p)
+                 (buffer-substring-no-properties (region-beginning) (region-end))
+               (substring-no-properties (or (thing-at-point 'symbol) "")))))
+          :which-key "Lookup thing at point")
+   "dD" '(counsel-dash :which-key "Lookup thing at point with docset")
+   ))
 
 (use-package counsel-etags
   :if (eq js|completion-engine 'ivy)
