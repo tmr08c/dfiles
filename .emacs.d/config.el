@@ -834,50 +834,43 @@ For instance pass En as source for English."
     (flycheck-mode 1))
   (add-hook 'go-mode-hook #'my-go-mode-hook-fn)
   (js|keymap-for-mode 'go-mode
-                   "t" '(:ignore t :which-key "test")
-                   "ta" '(js|go-run-test-current-suite :which-key "run suite")
-                   "tt" '(js|go-run-test-current-function :which-key "run current function")
-                   "tg" '(:ignore t :which-key "generate")
-                   "tgf" '(go-gen-test-exported :which-key "all exported functions")
-                   "tga" '(go-gen-test-all :which-key "all functions")
-                   "tgs" '(go-gen-test-dwim :which-key "selected region")
+                      "t" '(:ignore t :which-key "test")
+                      "ta" '(js|go-run-test-current-suite :which-key "run suite")
+                      "tt" '(js|go-run-test-current-function :which-key "run current function")
+                      "tg" '(:ignore t :which-key "generate")
+                      "tgf" '(go-gen-test-exported :which-key "all exported functions")
+                      "tga" '(go-gen-test-all :which-key "all functions")
+                      "tgs" '(go-gen-test-dwim :which-key "selected region")
 
-                   ;; Go To
-                   "g" '(:ignore t :which-key "goto")
-                   "gc" '(go-coverage :which-key "coverage")
+                      ;; Go To
+                      "g" '(:ignore t :which-key "goto")
+                      "gc" '(go-coverage :which-key "coverage")
 
-                   ;; Imports
-                   "i" '(:ignore t :which-key "imports")
-                   "ia" '(go-import-add :which-key "add")
-                   "ig" '(go-import-add :which-key "goto")
-                   "ir" '(go-remove-unused-imports :which-key "remove unused")
+                      ;; Imports
+                      "i" '(:ignore t :which-key "imports")
+                      "ia" '(go-import-add :which-key "add")
+                      "ig" '(go-import-add :which-key "goto")
+                      "ir" '(go-remove-unused-imports :which-key "remove unused")
 
-                   ;; Execute
-                   "x" '(:ignore t :which-key "execute")
-                   "xx" '(js|go-run-main :which-key "run main")
+                      ;; Execute
+                      "x" '(:ignore t :which-key "execute")
+                      "xx" '(js|go-run-main :which-key "run main")
 
-                   ;; Refactoring
-                   "r" '(:ignore t :which-key "refactoring")
-                   "ri" '(go-impl :which-key "implement interface")
-                   "rs" '(go-fill-struct :which-key "fill struct")
-                   "rd" '(godoctor-godoc :which-key "godoc")
-                   "re" '(godoctor-extract :which-key "extract")
-                   "rn" '(godoctor-rename :which-key "rename")
-                   ;; "rN" '(go-rename :which-key "rename")
-                   "rt" '(godoctor-toggle :which-key "toggle")
+                      ;; Refactoring
+                      "r" '(:ignore t :which-key "refactoring")
+                      "ri" '(go-impl :which-key "implement interface")
+                      "rs" '(go-fill-struct :which-key "fill struct")
+                      "rd" '(godoctor-godoc :which-key "godoc")
+                      "re" '(godoctor-extract :which-key "extract")
+                      "rn" '(godoctor-rename :which-key "rename")
+                      ;; "rN" '(go-rename :which-key "rename")
+                      "rt" '(godoctor-toggle :which-key "toggle")
 
-                   ;; Help
-                   "h" '(:ignore t :which-key "help")
-                   "hh" '(godoc-at-point :which-key "godoc at point"))
+                      ;; Help
+                      "h" '(:ignore t :which-key "help")
+                      "hh" '(godoc-at-point :which-key "godoc at point"))
   :custom
-  (gofmt-command "goimports")
-  ;; :ensure-system-package
-  ;; ((gocode . "go get -u github.com/mdempsky/gocode")
-  ;;  (gometalinter . "go get -u github.com/alecthomas/gometalinter")
-  ;;  (godoc . "go get -u golang.org/x/tools/cmd/godoc")
-  ;;  (goimports . "go get -u golang.org/x/tools/cmd/goimports")
-  ;;  (guru . "go get -u golang.org/x/tools/cmd/guru"))
-  )
+  (gofmt-command "goimports"))
 
 (use-package go-eldoc
   :commands go-eldoc-setup)
@@ -902,16 +895,10 @@ For instance pass En as source for English."
 (use-package go-gen-test
   :commands (go-gen-test-exported
              go-gen-test-all
-             go-gen-test-dwim)
-  ;; :ensure-system-package
-  ;; (gotests . "go get -u github.com/cweill/gotests/...")
-  )
+             go-gen-test-dwim))
 
 (use-package go-fill-struct
-  :commands (go-fill-struct)
-  ;; :ensure-system-package
-  ;; (fillstruct . "go get -u github.com/davidrjenni/reftools/cmd/fillstruct")
-  )
+  :commands (go-fill-struct))
 
 (use-package godoctor
   :commands (godoctor-godoc
@@ -982,9 +969,9 @@ For instance pass En as source for English."
             '(lambda ()
                (setq evil-shift-width ruby-indent-level)))
   (js|keymap-for-mode 'ruby-mode
-                   "T" '(:ignore t :which-key "toggle")
-                   "T'" 'ruby-toggle-string-quotes
-                   "T{" 'ruby-toggle-block)
+                      "T" '(:ignore t :which-key "toggle")
+                      "T'" 'ruby-toggle-string-quotes
+                      "T{" 'ruby-toggle-block)
   :custom
   (ruby-insert-encoding-magic-comment nil)
   (ruby-align-to-stmt-keywords
@@ -1024,16 +1011,6 @@ For instance pass En as source for English."
   :after inf-ruby
   :config
   (add-to-list 'company-backends 'company-inf-ruby))
-
-;; Not available yet on MELPA
-;; (use-package lsp-ruby
-;;   :requires lsp-mode
-;;   :hook (ruby-mode . lsp-ruby-enable))
-
-;; (use-package robe
-;;   :disabled
-;;   :hook (ruby-mode . robe-mode)
-;;   :config (add-to-list 'company-backends 'company-robe))
 
 (use-package rspec-mode
   :hook (ruby-mode . rspec-mode)
