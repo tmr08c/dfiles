@@ -25,15 +25,15 @@
 (use-package which-key
   :defer 1
   :delight
-  :init (which-key-mode)
-  :custom
-  (which-key-sort-order 'which-key-prefix-then-key-order)
-  (which-key-sort-uppercase-first nil)
-  (which-key-add-column-padding 1)
-  (which-key-max-display-columns nil)
-  (which-key-min-display-lines 6)
-  (which-key-side-window-max-width 0.33)
-  (which-key-setup-side-window-right-bottom))
+  :config
+  (setq which-key-sort-order 'which-key-prefix-then-key-order
+        which-key-sort-uppercase-first nil
+        which-key-add-column-padding 1
+        which-key-max-display-columns nil
+        which-key-min-display-lines 6
+        which-key-side-window-max-width 0.33)
+  (which-key-setup-side-window-right-bottom)
+  (which-key-mode))
 
 (use-package general
   :demand
@@ -42,140 +42,7 @@
   (general-create-definer space-leader-def
     :prefix "SPC"
     :non-normal-prefix "C-SPC")
-  (general-evil-setup)
-  ;; (space-leader-def
-  ;;   ;; :states '(normal visual insert emacs)
-  ;;   :states '(normal visual emacs)
-
-  ;;   "SPC" '(execute-extended-command :which-key "M-x")
-  ;;   ;; "TAB" '(switch-to-other-buffer :which-key "prev buffer")
-
-  ;;   ;;; Help bindings
-  ;;   "h" '(:ignore t :which-key "Help")
-  ;;   "hdf" '(describe-function :which-key "describe function")
-  ;;   "hdm" '(describe-mode :which-key "describe modes") ;; TODO: https://framagit.org/steckerhalter/discover-my-major
-  ;;   "hdv" '(describe-variable :which-key "describe variable")
-
-  ;;   ;;; Buffers
-  ;;   "b"   '(:ignore t :which-key "Buffers")
-  ;;   "bb" '(switch-buffer :which-key "list buffers")
-  ;;   "bn" '(next-buffer :which-key "next buffer")
-  ;;   "bp" '(previous-buffer :which-key "prev buffer")
-  ;;   "bd" '((lambda ()
-  ;;            (interactive)
-  ;;            (kill-buffer (current-buffer)))
-  ;;          :which-key "close current buffer")
-  ;;   "bs" '((lambda ()
-  ;;            (interactive)
-  ;;            (switch-to-buffer (get-buffer-create "*scratch*")))
-  ;;          :which-key "scratch buffer")
-
-  ;;   ;;; Files
-  ;;   "f"  '(:ignore t :which-key "Files")
-  ;;   "fD" '((lambda ()
-  ;;            (interactive)
-  ;;            (let ((filename (buffer-file-name))
-  ;;                  (buffer (current-buffer))
-  ;;                  (name (buffer-name)))
-  ;;              (if (not (and filename (file-exists-p filename)))
-  ;;                  (ido-kill-buffer)
-  ;;                (when (yes-or-no-p "Are you sure you want to delete this file? ")
-  ;;                  (delete-file filename t)
-  ;;                  (kill-buffer buffer)
-  ;;                  (message "File '%s' successfully removed" filename)))))
-  ;;          :which-key "delete file and kill buffer")
-  ;;   "ff" '(find-file :which-key "find file")
-  ;;   "fed" '((lambda ()
-  ;;             (interactive)
-  ;;             (find-file-existing js|config-file))
-  ;;           :which-key "open emacs configuration")
-
-  ;;   "d" '(:ignore t :which-key "Docs")
-
-  ;;   "g" '(:ignore t :which-key "Go to")
-  ;;   "gd" '(dumb-jump-go :which-key "definition")
-  ;;   "gD" '(dumb-jump-go-other-window :which-key "definition (other window)")
-
-  ;;   ;;; Quit
-  ;;   "q"  '(:ignore t :which-key "Quit")
-  ;;   "qq" '(kill-emacs :which-key "quit")
-  ;;   "qr" '(restart-emacs :which-key "restart")
-
-  ;;   ;;; Search
-  ;;   "s" '(:ignore t :which-key "Search")
-  ;;   "ss" '(swiper :which-key "search buffer")
-  ;;   "sS" '(lambda ()
-  ;;           (interactive)
-  ;;           (let ((input (if (region-active-p)
-  ;;                            (buffer-substring-no-properties
-  ;;                             (region-beginning) (region-end))
-  ;;                          (thing-at-point 'symbol t))))
-  ;;             (swiper input))
-  ;;           :which-key "search buffer")
-
-  ;;   ;; Toggle
-  ;;   "t" '(:ignore t :which-key "Toggles")
-
-  ;;   ;;; Windows
-  ;;   "w"   '(:ignore t :which-key "Windows")
-  ;;   "wd" '(delete-window :which-key "close window")
-  ;;   "w/" '((lambda ()
-  ;;            (interactive)
-  ;;            (split-window-horizontally)
-  ;;            (other-window 1))
-  ;;          :which-key "split vertical")
-  ;;   "w-" '((lambda ()
-  ;;            (interactive)
-  ;;            (split-window-vertically)
-  ;;            (other-window 1))
-  ;;          :which-key "split horizontal")
-  ;;   "wh" '(evil-window-left :which-key "window left")
-  ;;   "w<left>" '(evil-window-left :which-key nil)
-  ;;   "wj" '(evil-window-down :which-key "window down")
-  ;;   "w<down>" '(evil-window-down :which-key nil)
-  ;;   "wk" '(evil-window-up :which-key "window up")
-  ;;   "w<up>" '(evil-window-up :which-key nil)
-  ;;   "wl" '(evil-window-right :which-key "window right")
-  ;;   "w<right>" '(evil-window-right :which-key nil)
-  ;;   "w=" '(balance-windows :which-key "balance window split")
-
-  ;;   "x" '(:ignore t :which-key "text")
-  ;;   "xt" '(:ignore t :which-key "transpose")
-  ;;   )
-  )
-
-;; (defmacro js|global-keymap (&rest bindings)
-;;   "Add global BINDINGS as key bindings under `space-leader-def`.
-;; All of the arguments are treated exactly like they are in
-;; 'general' package."
-;;   `(space-leader-def
-;;      :states '(normal visual emacs)
-;;      ,@bindings))
-
-;; (defmacro js|keymap-for-mode (mode key def &rest bindings)
-;;   "Add KEY and DEF as key bindings under `space-leader-def` for MODE.
-;; mode should be a quoted symbol corresponding to a valid major mode.
-;; the rest of the arguments are treated exactly like they are in
-;; 'general' package."
-;;   (let (mode-bindings)
-;;     (while key
-;;       (push def mode-bindings)
-;;       (push (concat "m" key) mode-bindings)
-;;       (setq key (pop bindings) def (pop bindings)))
-;;     `(space-leader-def
-;;        :states '(normal visual emacs)
-;;        :keymaps ',(intern (format "%s-map" (eval mode)))
-;;        ,@mode-bindings)))
-
-;; (defmacro evil-js|keymap-for-mode (mode &rest bindings)
-;;   "Add BINDINGS to evil for the provided MODE.
-;; mode should be a quoted symbol corresponding to a valid major mode.
-;; the rest of the arguments are treated exactly like they are in
-;; 'general' package."
-;;   `(general-define-key
-;;     :states '(normal visual)
-;;     :keymaps ',(intern (format "%s-map" (eval mode)))
-;;     ,@bindings))
+  (general-evil-setup))
 
 (use-package evil
   :init (evil-mode 1)
@@ -218,14 +85,7 @@
   (add-hook 'doom-load-theme-hook #'+evil|update-cursor-color)
   (defun +evil|update-shift-width ()
     (setq evil-shift-width tab-width))
-  (add-hook 'after-change-major-mode-hook #'+evil|update-shift-width t)
-  :general
-  (general-define-key :states 'insert
-                      "C-v" 'cua-paste
-                      "C-c" 'cua-copy-region
-                      "C-x" 'cua-cut-region
-                      "C-z" 'undo-tree-undo
-                      "C-Z" 'undo-tree-redo))
+  (add-hook 'after-change-major-mode-hook #'+evil|update-shift-width t))
 
 (use-package evil-escape
   :requires evil
@@ -276,20 +136,6 @@
              projectile-find-file
              projectile-find-dir
              projectile-switch-project)
-  :init
-  (js|global-keymap "p"  '(:ignore t :which-key "Projects")
-                    "p!" '(projectile-run-shell-command-in-root :which-key "run command")
-                    "p%" '(projectile-replace-regexp :which-key "replace regexp")
-                    ;; "p a" '(projectile-toggle-between-implementation-and-test :which-key "toggle test")
-                    "pI" '(projectile-invalidate-cache :which-key "clear cache")
-                    "pR" '(projectile-replace :which-key "replace")
-                    "pk" '(projectile-kill-buffers :which-key "kill buffers")
-                    "pr" '(projectile-recentf :which-key "recent files")
-                    "pb" '(projectile-switch-to-buffer :which-key "switch to buffer")
-                    "pd" '(projectile-find-dir :which-key "find directory")
-                    "pf" '(projectile-find-file :which-key "open file")
-                    "pp" '(projectile-switch-project :which-key "open project")
-                    "ps" '(projectile-ag :which-key "search in project"))
   :config
   (progn
     (setq projectile-indexing-method 'alien
@@ -344,22 +190,14 @@
   :if (eq +completion-engine 'helm)
   :hook (helm-mode . helm-flx-mode))
 (use-package helm-themes
-  :defer t
   :if (eq +completion-engine 'helm)
-  :init
-  (js|global-keymap
-   "Ts" 'helm-themes))
+  :commands (helm-themes))
 
 ;; Ivy
 (use-package ivy
   :if (eq +completion-engine 'ivy)
   :demand
   :delight
-  :general
-  (general-define-key :keymaps 'global
-                      [remap switch-to-buffer]       'ivy-switch-buffer
-                      ;; [remap persp-switch-to-buffer] #'+ivy/switch-workspace-buffer
-                      [remap imenu-anywhere]         'ivy-imenu-anywhere)
   :config
   (setq ivy-use-virtual-buffers t
         ivy-virtual-abbreviate 'full
@@ -384,36 +222,28 @@
   :if (eq +completion-engine 'ivy)
   :ensure nil
   :commands doom/ivy-tasks
-  :load-path "vendor/"
-  :init
-  (js|global-keymap
-   "p T" '(doom/ivy-tasks :which-key "List project tasks")))
+  :load-path "vendor/")
 
 ;; Counsel
 (use-package counsel
   :if (eq +completion-engine 'ivy)
-  :commands (counsel-M-x counsel-find-file counsel-descbinds)
-  :init
-  (js|global-keymap
-   "?" '(counsel-descbinds :which-key "Help")
-   "Ts" '(counsel-load-theme :which-key "switch theme"))
+  :commands (counsel-M-x
+             counsel-find-file
+             counsel-descbinds
+             counsel-load-theme
+             counsel-apropos
+             counsel-bookmark
+             counsel-faces
+             counsel-describe-function
+             counsel-describe-variable
+             counsel-find-library
+             counsel-info-lookup-symbol
+             counsel-imenu
+             counsel-recentf
+             counsel-org-capture
+             counsel-grep-or-swiper)
   :custom
-  (counsel-mode-override-describe-bindings t)
-  :general
-  (general-define-key :keymaps 'global
-                      [remap apropos]                  'counsel-apropos
-                      [remap bookmark-jump]            'counsel-bookmark
-                      [remap describe-face]            'counsel-faces
-                      [remap describe-function]        'counsel-describe-function
-                      [remap describe-variable]        'counsel-describe-variable
-                      [remap execute-extended-command] 'counsel-M-x
-                      [remap find-file]                'counsel-find-file
-                      [remap find-library]             'counsel-find-library
-                      [remap info-lookup-symbol]       'counsel-info-lookup-symbol
-                      [remap imenu]                    'counsel-imenu
-                      [remap recentf-open-files]       'counsel-recentf
-                      [remap org-capture]              'counsel-org-capture
-                      [remap swiper]                   'counsel-grep-or-swiper))
+  (counsel-mode-override-describe-bindings t))
 
 (use-package counsel-projectile
   :if (eq +completion-engine 'ivy)
@@ -421,16 +251,7 @@
              counsel-projectile-find-dir
              counsel-projectile-find-file
              counsel-projectile-switch-project
-             counsel-projectile-rg)
-  :general
-  (general-define-key :keymaps 'global
-                      ;; [remap projectile-find-file]        '+ivy/projectile-find-file
-                      [remap projectile-find-dir]         'counsel-projectile-find-dir
-                      [remap projectile-switch-to-buffer] 'counsel-projectile-switch-to-buffer
-                      [remap projectile-grep]             'counsel-projectile-grep
-                      [remap projectile-ag]               'counsel-projectile-rg
-                      [remap projectile-switch-project]   'counsel-projectile-switch-project)
-  )
+             counsel-projectile-rg))
 
 
 (use-package counsel-dash
@@ -445,18 +266,7 @@
    (web-mode . (lambda () (setq-local counsel-dash-docsets '("Javascript" "HTML")))))
   :custom
   (counsel-dash-browser-func 'eww)
-  (counsel-dash-common-docsets '())
-  :init
-  (js|global-keymap
-   "dd" '((lambda ()
-            (interactive)
-            (counsel-dash
-             (if (use-region-p)
-                 (buffer-substring-no-properties (region-beginning) (region-end))
-               (substring-no-properties (or (thing-at-point 'symbol) "")))))
-          :which-key "Lookup thing at point")
-   "dD" '(counsel-dash :which-key "Lookup thing at point with docset")
-   ))
+  (counsel-dash-common-docsets '()))
 
 (use-package counsel-etags
   :if (eq +completion-engine 'ivy)
@@ -547,6 +357,7 @@
 (use-package neotree
   :commands (neotree-toggle neotree-projectile-action)
   :config
+  (js|neotree-keybindings)
   (setq neo-create-file-auto-open t
         neo-modern-sidebar t
         neo-point-auto-indent nil
@@ -554,34 +365,7 @@
         neo-window-fixed-size nil
         neo-window-width 28
         neo-show-hidden-files t
-        neo-keymap-style 'concise)
-  :init
-  (js|global-keymap
-   "ft" 'neotree-toggle
-   "pt" 'neotree-projectile-action)
-  :general
-  (general-nmap neotree-mode-map
-    "RET" 'neotree-enter
-    "TAB" 'neotree-stretch-toggle
-    "q" 'neotree-hide
-    "|" 'neotree-enter-vertical-split
-    "-" 'neotree-enter-horizontal-split
-    "'" 'neotree-quick-look
-    "c" 'neotree-create-node
-    "C" 'neotree-copy-node
-    "d" 'neotree-delete-node
-    "gr" 'neotree-refresh
-    "H" 'neotree-select-previous-sibling-node
-    "j" 'neotree-next-line
-    "J" 'neotree-select-down-node
-    "k" 'neotree-previous-line
-    "K" 'neotree-select-up-node
-    "L" 'neotree-select-next-sibling-node
-    "q" 'neotree-hide
-    "o" 'neotree-enter
-    "r" 'neotree-rename-node
-    "R" 'neotree-change-root
-    "I" 'neotree-hidden-file-toggle))
+        neo-keymap-style 'concise))
 
 
 (use-package smartparens
@@ -641,13 +425,8 @@
   :init (dtrt-indent-global-mode))
 
 (use-package indent-guide
-  :defer t
-  :init
-  (progn
-    (setq indent-guide-delay 0.3)
-    (js|global-keymap
-     "ti" 'indent-guide-mode
-     "t TAB" 'indent-guide-global-mode)))
+  :commands (indent-guide-mode indent-guide-global-mode)
+  :custom (indent-guide-delay 0.3))
 
 (use-package aggressive-indent
   :hook ((emacs-lisp-mode . aggressive-indent-mode)
@@ -663,8 +442,8 @@
              dump-jump-go-prompt
              dump-jump-go-prefer-external
              dumb-jump-go-prefer-external-other-window)
-  :custom
-  (dumb-jump-selector 'ivy))
+  ;; TODO FIXME this needs to swap to helm based on +configuration
+  :custom (dumb-jump-selector 'ivy))
 
 (use-package whitespace
   :defer 5
@@ -725,7 +504,7 @@ it to fix all that visual noise."
   :delight
   :custom
   (undo-tree-auto-save-history nil)
-  :hook (after-init . global-undo-tree-mode))
+  :hook (evil-mode . global-undo-tree-mode))
 
 (use-package unfill
   :disabled
@@ -747,9 +526,6 @@ it to fix all that visual noise."
 (use-package hide-comnt
   :load-path "vendor/"
   :commands hide/show-comments-toggle)
-
-(js|global-keymap
- "tc" 'hide/show-comments-toggle)
 
 (use-package yasnippet
   :defer 5
@@ -773,15 +549,11 @@ it to fix all that visual noise."
 
 (use-package highlight-numbers
   :hook ((prog-mode conf-mode) . highlight-numbers-mode)
-  :config (setq highlight-numbers-generic-regexp "\\_<[[:digit:]]+\\(?:\\.[0-9]*\\)?\\_>"))
+  :custom (highlight-numbers-generic-regexp "\\_<[[:digit:]]+\\(?:\\.[0-9]*\\)?\\_>"))
 
 (use-package highlight-indentation
-  :defer 10
-  :config
-  (js|global-keymap
-   "th" '(:ignore t :which-key "highlight")
-   "thi" 'highlight-indentation-mode
-   "thc" 'highlight-indentation-current-column-mode))
+  :commands (highlight-indentation-mode
+             highlight-indentation-current-column-mode))
 
 (use-package visual-fill-column
   :config
@@ -821,15 +593,7 @@ For instance pass En as source for English."
        (format "Set google translate source language to %s and target to %s"
                source target))
       (setq google-translate-default-source-language (downcase source))
-      (setq google-translate-default-target-language (downcase target)))
-
-    (js|global-keymap
-     "xg" '(:ignore t :which-key "google translate")
-     "xgl" 'spacemacs/set-google-translate-languages
-     "xgQ" 'google-translate-query-translate-reverse
-     "xgq" 'google-translate-query-translate
-     "xgT" 'google-translate-at-point-reverse
-     "xgt" 'google-translate-at-point))
+      (setq google-translate-default-target-language (downcase target))))
   :config
   (progn
     (require 'google-translate-default-ui)
@@ -852,42 +616,6 @@ For instance pass En as source for English."
     (flycheck-gometalinter-setup)
     (flycheck-mode 1))
   (add-hook 'go-mode-hook #'my-go-mode-hook-fn)
-  (js|keymap-for-mode 'go-mode
-                      "t" '(:ignore t :which-key "test")
-                      "ta" '(js|go-run-test-current-suite :which-key "run suite")
-                      "tt" '(js|go-run-test-current-function :which-key "run current function")
-                      "tg" '(:ignore t :which-key "generate")
-                      "tgf" '(go-gen-test-exported :which-key "all exported functions")
-                      "tga" '(go-gen-test-all :which-key "all functions")
-                      "tgs" '(go-gen-test-dwim :which-key "selected region")
-
-                      ;; Go To
-                      "g" '(:ignore t :which-key "goto")
-                      "gc" '(go-coverage :which-key "coverage")
-
-                      ;; Imports
-                      "i" '(:ignore t :which-key "imports")
-                      "ia" '(go-import-add :which-key "add")
-                      "ig" '(go-import-add :which-key "goto")
-                      "ir" '(go-remove-unused-imports :which-key "remove unused")
-
-                      ;; Execute
-                      "x" '(:ignore t :which-key "execute")
-                      "xx" '(js|go-run-main :which-key "run main")
-
-                      ;; Refactoring
-                      "r" '(:ignore t :which-key "refactoring")
-                      "ri" '(go-impl :which-key "implement interface")
-                      "rs" '(go-fill-struct :which-key "fill struct")
-                      "rd" '(godoctor-godoc :which-key "godoc")
-                      "re" '(godoctor-extract :which-key "extract")
-                      "rn" '(godoctor-rename :which-key "rename")
-                      ;; "rN" '(go-rename :which-key "rename")
-                      "rt" '(godoctor-toggle :which-key "toggle")
-
-                      ;; Help
-                      "h" '(:ignore t :which-key "help")
-                      "hh" '(godoc-at-point :which-key "godoc at point"))
   :custom
   (gofmt-command "goimports"))
 
@@ -926,55 +654,11 @@ For instance pass En as source for English."
              godoctor-toggle))
 
 (use-package go-rename
-  :commands (go-rename))
-  ;; :ensure-system-package
-  ;; (gorename . "go get -u golang.org/x/tools/cmd/gorename")
-
+  :commands  go-rename)
 
 (use-package go-impl
   :commands go-impl)
-  ;; :ensure-system-package
-  ;; (impl . "go get -u github.com/josharian/impl")
 
-
-;;;###autoload
-(defun js|go-run-tests (args)
-  (interactive)
-  (compilation-start (concat "go test " args " " go-use-test-args)
-                     nil (lambda (n) go-test-buffer-name) nil))
-
-;;;###autoload
-(defun js|go-run-test-current-function ()
-  (interactive)
-  (if (string-match "_test\\.go" buffer-file-name)
-
-    (let ((test-method (if go-use-gocheck-for-testing
-                             "-check.f"
-                           "-run")))
-        (save-excursion
-          (re-search-backward "^func[ ]+\\(([[:alnum:]]*?[ ]?[*]?[[:alnum:]]+)[ ]+\\)?\\(Test[[:alnum:]_]+\\)(.*)")
-          (js|go-run-tests (concat test-method "='" (match-string-no-properties 2) "$'"))))
-    (message "Must be in a _test.go file to run go-run-test-current-function")))
-
-;;;###autoload
-(defun js|go-run-test-current-suite ()
-  (interactive)
-  (if (string-match "_test\.go" buffer-file-name)
-      (if go-use-gocheck-for-testing
-          (save-excursion
-            (re-search-backward "^func[ ]+\\(([[:alnum:]]*?[ ]?[*]?\\([[:alnum:]]+\\))[ ]+\\)?Test[[:alnum:]_]+(.*)")
-            (js|go-run-tests (concat "-check.f='" (match-string-no-properties 2) "'")))
-        (message "Gocheck is needed to test the current suite"))
-    (message "Must be in a _test.go file to run go-test-current-suite")))
-
-
-;;;###autoload
-(defun js|go-run-main ()
-  (interactive)
-  (shell-command
-   (format "go run %s"
-           (shell-quote-argument (or (file-remote-p (buffer-file-name (buffer-base-buffer)) 'localname)
-                                     (buffer-file-name (buffer-base-buffer)))))))
 
 (use-package ruby-mode
   :ensure nil
@@ -987,44 +671,19 @@ For instance pass En as source for English."
   (add-hook 'ruby-mode-hook
             '(lambda ()
                (setq evil-shift-width ruby-indent-level)))
-  (js|keymap-for-mode 'ruby-mode
-                      "T" '(:ignore t :which-key "toggle")
-                      "T'" 'ruby-toggle-string-quotes
-                      "T{" 'ruby-toggle-block)
   :custom
   (ruby-insert-encoding-magic-comment nil)
   (ruby-align-to-stmt-keywords
    '(if while unless until begin case for def)))
 
 (use-package bundler
-  :hook (ruby-mode . bundler-mode)
-  :config
-  (js|keymap-for-mode 'ruby-mode
-                   "b" '(:ignore t :which-key "bundle")
-                   "bc" 'bundle-check
-                   "bi" 'bundle-install
-                   "bs" 'bundle-console
-                   "bu" 'bundle-update
-                   "bx" 'bundle-exec
-                   "bo" 'bundle-open))
+  :hook (ruby-mode . bundler-mode))
 
 (use-package inf-ruby
   :hook ((ruby-mode . inf-ruby-minor-mode)
          (compilation-filter-hook . inf-ruby-auto-enter))
   :custom
-  (inf-ruby-console-environment "development")
-  :config
-  (js|keymap-for-mode 'ruby-mode
-                   "s" '(:ignore t :which-key "repl")
-                   "sb" 'ruby-send-buffer
-                   "sB" 'ruby-send-buffer-and-go
-                   "sf" 'ruby-send-definition
-                   "sF" 'ruby-send-definition-and-go
-                   "sl" 'ruby-send-line
-                   "sL" 'ruby-send-line-and-go
-                   "sr" 'ruby-send-region
-                   "sR" 'ruby-send-region-and-go
-                   "ss" 'ruby-switch-to-inf))
+  (inf-ruby-console-environment "development"))
 
 (use-package company-inf-ruby
   :after inf-ruby
@@ -1045,35 +704,12 @@ For instance pass En as source for English."
        :pre-handlers '(sp-ruby-pre-handler)
        :post-handlers '(sp-ruby-post-handler
                         (js|smartparens-pair-newline-and-indent "RET"))
-       :suffix "")))
-  (js|keymap-for-mode 'ruby-mode
-                      "t" '(:ignore t :which-key "test")
-                      "ta"    'rspec-verify-all
-                      "tb"    'rspec-verify
-                      "tc"    'rspec-verify-continue
-                      "td"    'ruby/rspec-verify-directory
-                      "te"    'rspec-toggle-example-pendingness
-                      "tf"    'rspec-verify-method
-                      "tl"    'rspec-run-last-failed
-                      "tm"    'rspec-verify-matching
-                      "tr"    'rspec-rerun
-                      "tt"    'rspec-verify-single
-                      "t~"    'rspec-toggle-spec-and-target-find-example
-                      "t TAB" 'rspec-toggle-spec-and-target))
+       :suffix ""))))
 
 (use-package rubocop
   :ensure-system-package
   (rubocop . "gem install rubocop")
-  :hook (ruby-mode . rubocop-mode)
-  :config
-  (js|keymap-for-mode 'ruby-mode
-                      "rr" '(:ignore t :which-key "Rubocop")
-                      "rrd" 'rubocop-check-directory
-                      "rrD" 'rubocop-autocorrect-directory
-                      "rrf" 'rubocop-check-current-file
-                      "rrF" 'rubocop-autocorrect-current-file
-                      "rrp" 'rubocop-check-project
-                      "rrP" 'rubocop-autocorrect-project))
+  :hook (ruby-mode . rubocop-mode))
 
 (use-package rbenv
   :hook (ruby-mode . global-rbenv-mode))
@@ -1082,10 +718,7 @@ For instance pass En as source for English."
   :hook (ruby-mode . yard-mode))
 
 (use-package ruby-hash-syntax
-  :requires ruby-mode
-  :config
-  (js|keymap-for-mode 'ruby-mode
-                      "fh" 'ruby-hash-syntax-toggle))
+  :requires ruby-mode)
 
 (use-package projectile-rails
   :requires projectile
@@ -1147,23 +780,21 @@ For instance pass En as source for English."
 
 (use-package json-reformat
   :hook json-mode
+  :commands (spacemacs/json-reformat-code)
   :config
-  (progn
-    (defun spacemacs/json-reformat-dwim (arg &optional start end)
-      "Reformat the whole buffer of the active region.
+  (defun spacemacs/json-reformat-dwim (arg &optional start end)
+    "Reformat the whole buffer of the active region.
 If ARG is non-nil (universal prefix argument) then try to decode the strings.
 If ARG is a numerical prefix argument then specify the indentation level."
-      (interactive "P\nr")
-      (let ((json-reformat:indent-width js-indent-level)
-            (json-reformat:pretty-string? nil))
-        (cond
-         ((numberp arg) (setq json-reformat:indent-width arg))
-         (arg (setq json-reformat:pretty-string? t)))
-        (if (equal start end)
-            (save-excursion (json-reformat-region (point-min) (point-max)))
-          (json-reformat-region start end))))
-    (js|keymap-for-mode 'json-mode
-                        "=" 'spacemacs/json-reformat-dwim)))
+    (interactive "P\nr")
+    (let ((json-reformat:indent-width js-indent-level)
+          (json-reformat:pretty-string? nil))
+      (cond
+       ((numberp arg) (setq json-reformat:indent-width arg))
+       (arg (setq json-reformat:pretty-string? t)))
+      (if (equal start end)
+          (save-excursion (json-reformat-region (point-min) (point-max)))
+        (json-reformat-region start end)))))
 
 (use-package dockerfile-mode
   :mode "Dockerfile.*\\'")
@@ -1246,64 +877,7 @@ bin/doom while packages at compile-time (not a runtime though)."
       (unless sly-protocol-version
         (setq sly-protocol-version (sly-version nil (locate-library "sly.el"))))
       (advice-remove #'sly-check-version #'+common-lisp*refresh-sly-version))
-    (advice-add #'sly-check-version :before #'+common-lisp*refresh-sly-version)
-    (js|keymap-for-mode 'lisp-mode
-                        "'" 'sly
-
-                        "h" '(:ignore t :which-key "help")
-                        "ha" 'sly-apropos
-                        "hb" 'sly-who-binds
-                        "hd" 'sly-disassemble-symbol
-                        "hh" 'sly-describe-symbol
-                        "hH" 'sly-hyperspec-lookup
-                        "hm" 'sly-who-macroexpands
-                        "hp" 'sly-apropos-package
-                        "hr" 'sly-who-references
-                        "hs" 'sly-who-specializes
-                        "hS" 'sly-who-sets
-                        "h<" 'sly-who-calls
-                        "h>" 'sly-calls-who
-
-                        "c" '(:ignore t :which-key "compile")
-                        "cc" 'sly-compile-file
-                        "cC" 'sly-compile-and-load-file
-                        "cf" 'sly-compile-defun
-                        "cl" 'sly-load-file
-                        "cn" 'sly-remove-notes
-                        "cr" 'sly-compile-region
-
-                        "e" '(:ignore t :which-key "eval")
-                        "eb" 'sly-eval-buffer
-                        "ee" 'sly-eval-last-expression
-                        "eE" 'sly-eval-print-last-expression
-                        "ef" 'sly-eval-defun
-                        "eF" 'slime-undefine-function
-                        "er" 'sly-eval-region
-
-                        ;; "m g" 'spacemacs/common-lisp-navigation-transient-state/body
-                        "m" '(:ignore t :which-key "macro")
-                        "me" 'sly-macroexpand-1
-                        "mE" 'sly-macroexpand-all
-
-                        "s" '(:ignore t :which-key "repl")
-                        "sc" 'sly-mrepl-clear-repl
-                        "si" 'sly
-                        "sq" 'sly-quit-lisp
-                        "sr" 'sly-restart-inferior-lisp
-                        "ss" 'sly-mrepl-sync
-
-                        "S" '(:ignore t :which-key "stickers")
-                        "Sb" 'sly-stickers-toggle-break-on-stickers
-                        "Sc" 'sly-stickers-clear-defun-stickers
-                        "SC" 'sly-stickers-clear-buffer-stickers
-                        "Sf" 'sly-stickers-fetch
-                        "Sr" 'sly-stickers-replay
-                        "Ss" 'sly-stickers-dwim
-
-                        "t" '(:ignore t :which-key "trace")
-                        "tt" 'sly-toggle-trace-fdefinition
-                        "tT" 'sly-toggle-fancy-trace
-                        "tu" 'sly-untrace-all)))
+    (advice-add #'sly-check-version :before #'+common-lisp*refresh-sly-version)))
 
 (use-package sly-mrepl
   :ensure nil ;; built-in to sly
@@ -1556,99 +1130,8 @@ bin/doom while packages at compile-time (not a runtime though)."
 (use-package alchemist
   :hook (elixir-mode . alchemist-mode)
   :config
-  ;; (js|elixir-keybindings)
   (setq alchemist-project-compile-when-needed t
         alchemist-test-status-modeline nil)
-  (js|keymap-for-mode 'elixir-mode
-                      "=" 'elixir-format
-
-                      "e" '(:ignore t :which-key "eval")
-                      "el" 'alchemist-eval-current-line
-                      "eL" 'alchemist-eval-print-current-line
-                      "er" 'alchemist-eval-region
-                      "eR" 'alchemist-eval-print-region
-                      "eb" 'alchemist-eval-buffer
-                      "eB" 'alchemist-eval-print-buffer
-                      "ej" 'alchemist-eval-quoted-current-line
-                      "eJ" 'alchemist-eval-print-quoted-current-line
-                      "eu" 'alchemist-eval-quoted-region
-                      "eU" 'alchemist-eval-print-quoted-region
-                      "ev" 'alchemist-eval-quoted-buffer
-                      "eV" 'alchemist-eval-print-quoted-buffer
-
-                      "g" '(:ignore t :which-key "goto")
-                      "gt" 'alchemist-project-toggle-file-and-tests
-                      "gT" 'alchemist-project-toggle-file-and-tests-other-window
-                      "gg" 'alchemist-goto-definition-at-point
-                      ;; "." 'alchemist-goto-definition-at-point
-                      "gb" 'alchemist-goto-jump-back
-                      ;; ","  'alchemist-goto-jump-back
-                      "gN" 'alchemist-goto-jump-to-previous-def-symbol
-                      "gn" 'alchemist-goto-jump-to-next-def-symbol
-                      "gj" 'alchemist-goto-list-symbol-definitions
-
-
-                      "h" '(:ignore t :which-key "help")
-                      "h:" 'alchemist-help
-                      "hH" 'alchemist-help-history
-                      "hh" 'alchemist-help-search-at-point
-                      "hr" 'alchemist-help--search-marked-region
-
-                      "m" '(:ignore t :which-key "mix")
-                      "m:" 'alchemist-mix
-                      "mc" 'alchemist-mix-compile
-                      "mx" 'alchemist-mix-run
-
-                      "s" '(:ignore t :which-key "iex")
-                      ;; "'"  'alchemist-iex-run
-                      "sc" 'alchemist-iex-compile-this-buffer
-                      "si" 'alchemist-iex-run
-                      "sI" 'alchemist-iex-project-run
-                      "sl" 'alchemist-iex-send-current-line
-                      "sL" 'alchemist-iex-send-current-line-and-go
-                      "sm" 'alchemist-iex-reload-module
-                      "sr" 'alchemist-iex-send-region
-                      "sR" 'alchemist-iex-send-region-and-go
-
-                      "t" '(:ignore t :which-key "test")
-                      "ta" 'alchemist-mix-test
-                      "tb" 'alchemist-mix-test-this-buffer
-                      "tB" 'alchemist-project-run-tests-for-current-file
-                      "tt" 'alchemist-mix-test-at-point
-                      "tF" 'alchemist-project-find-test
-                      "tf" 'alchemist-mix-test-file
-                      "tn" 'alchemist-test-mode-jump-to-next-test
-                      "tN" 'alchemist-test-mode-jump-to-previous-test
-                      "tr" 'alchemist-mix-rerun-last-test
-                      "ts" 'alchemist-mix-test-stale
-                      "tR" 'alchemist-test-toggle-test-report-display
-
-                      "x" '(:ignore t :which-key "execute")
-                      "xb" 'alchemist-execute-this-buffer
-                      "xf" 'alchemist-execute-file
-                      "x:" 'alchemist-execute
-
-                      "c" '(:ignore t :which-key "compile")
-                      "cb" 'alchemist-compile-this-buffer
-                      "cf" 'alchemist-compile-file
-                      "c:" 'alchemist-compile
-
-                      "X" '(:ignore t :which-key "hex")
-                      "Xi" 'alchemist-hex-info-at-point
-                      "Xr" 'alchemist-hex-releases-at-point
-                      "XR" 'alchemist-hex-releases
-                      "XI" 'alchemist-hex-info
-                      "Xs" 'alchemist-hex-search
-
-                      "o" '(:ignore t :which-key "macroexpand")
-                      "ol" 'alchemist-macroexpand-once-current-line
-                      "oL" 'alchemist-macroexpand-once-print-current-line
-                      "ok" 'alchemist-macroexpand-current-line
-                      "oK" 'alchemist-macroexpand-print-current-line
-                      "oi" 'alchemist-macroexpand-once-region
-                      "oI" 'alchemist-macroexpand-once-print-region
-                      "or" 'alchemist-macroexpand-region
-                      "oR" 'alchemist-macroexpand-print-region)
   (dolist (mode (list alchemist-compile-mode-map
                       alchemist-eval-mode-map
                       alchemist-execute-mode-map
@@ -1693,41 +1176,6 @@ bin/doom while packages at compile-time (not a runtime though)."
   (setq-default js-switch-indent-offset 2
                 js-indent-level 2)
   (setenv "NODE_NO_READLINE" "1"))
-
-;; (defun js|javascript-keybindings ()
-;;   "Define keybindings when working with JavaScript."
-;;   (js|keymap-for-mode 'js2-mode
-;;                       "w" 'js2-mode-toggle-warnings-and-errors
-
-;;                       "h" '(:ignore t :which-key "help")
-;;                       "g" '(:ignore t :which-key "goto")
-;;                       "r" '(:ignore t :which-key "refactor")
-
-;;                       "z" '(:ignore t :which-key "folding")
-;;                       "zc" 'js2-mode-hide-element
-;;                       "zo" 'js2-mode-show-element
-;;                       "zr" 'js2-mode-show-all
-;;                       "ze" 'js2-mode-toggle-element
-;;                       "zF" 'js2-mode-toggle-hide-functions
-;;                       "zC" 'js2-mode-toggle-hide-comments))
-
-;; (defun js|typescript-keybindings ()
-;;   "Define keybindings when working with TypeScript."
-;;   (js|keymap-for-mode 'typescript-mode
-;;                       "=" 'spacemacs/typescript-tsfmt-format-buffer
-
-;;                       "g" '(:ignore t :which-key "goto")
-;;                       "gg" 'lsp-goto-implementation
-;;                       "gt" 'lsp-goto-type-definition
-;;                       "gu" 'xref-find-references
-
-;;                       "h" '(:ignore t :which-key "help")
-;;                       "hh" 'lsp-describe-thing-at-point
-;;                       "hs" 'lsp-describe-session
-
-;;                       "r" '(:ignore t :which-key "refactor")
-;;                       "rr" 'lsp-rename
-;;                       ))
 
 (use-package typescript-mode
   :mode "\\.tsx?\\'"
@@ -1975,18 +1423,6 @@ bin/doom while packages at compile-time (not a runtime though)."
     (defun winum-assign-0-to-neotree ()
       (when (string-match-p (buffer-name) ".*\\*NeoTree\\*.*") 10))
     (add-to-list 'winum-assign-functions #'winum-assign-0-to-neotree)
-    ;; (js|global-keymap "`" 'winum-select-window-by-number
-    ;;                   ;; "²" 'winum-select-window-by-number
-    ;;                   "0" 'winum-select-window-0-or-10
-    ;;                   "1" 'winum-select-window-1
-    ;;                   "2" 'winum-select-window-2
-    ;;                   "3" 'winum-select-window-3
-    ;;                   "4" 'winum-select-window-4
-    ;;                   "5" 'winum-select-window-5
-    ;;                   "6" 'winum-select-window-6
-    ;;                   "7" 'winum-select-window-7
-    ;;                   "8" 'winum-select-window-8
-    ;;                   "9" 'winum-select-window-9)
     (winum-mode)))
 
 (defalias 'yes-or-no-p 'y-or-n-p)
@@ -2055,18 +1491,18 @@ bin/doom while packages at compile-time (not a runtime though)."
   :no-require t
   :ensure nil
   :demand t
-  :custom
-  (kept-old-versions 2)
-  (kept-new-versions 6)
-  (backup-by-copying t)
-  (require-final-newline t)
-  (delete-old-versions t)
-  (version-control t)
-  (backup-directory-alist
-   `((".*" . ,(no-littering-expand-var-file-name "backup/"))))
-  (auto-save-file-name-transforms
-   `((".*" ,(no-littering-expand-var-file-name "auto-save/") t)))
-  (large-file-warning-threshold (* 20 1000 1000) "20 megabytes."))
+  :config
+  (setq backup-directory-alist
+        `((".*" . ,(no-littering-expand-var-file-name "backup/"))))
+  (setq auto-save-file-name-transforms
+        `((".*" ,(no-littering-expand-var-file-name "auto-save/") t)))
+  (setq kept-old-versions 2
+        kept-new-versions 6
+        backup-by-copying t
+        require-final-newline t
+        delete-old-versions t
+        version-control t
+        large-file-warning-threshold (* 20 1000 1000)))
 
 (use-package vc-hooks
   :no-require t
@@ -2079,12 +1515,12 @@ bin/doom while packages at compile-time (not a runtime though)."
   :ensure nil
   :demand t
   :commands (dired)
-  :custom
-  (dired-dwim-target t "Enable side-by-side `dired` buffer targets.")
-  (dired-recursive-copies 'always "Better recursion in `dired`.")
-  (dired-recursive-deletes 'top)
-  (delete-by-moving-to-trash t)
-  (dired-use-ls-dired nil))
+  :config
+  (setq dired-dwim-target t ; "Enable side-by-side `dired` buffer targets."
+        dired-recursive-copies 'always ; "Better recursion in `dired`."
+        dired-recursive-deletes 'top
+        delete-by-moving-to-trash t
+        dired-use-ls-dired nil))
 
 (use-package display-line-numbers
   :ensure nil
@@ -2111,23 +1547,19 @@ bin/doom while packages at compile-time (not a runtime though)."
   :requires no-littering
   :defer t
   :ensure nil
-  :custom
-  (recentf-auto-cleanup 200)
-  (recentf-max-saved-items 300)
-  (recentf-auto-cleanup 'never)
-  (recentf-filename-handlers '(file-truename abbreviate-file-name))
-  (recentf-exclude
-   (list #'file-remote-p "\\.\\(?:gz\\|gif\\|svg\\|png\\|jpe?g\\)$"
-         "^/tmp/" "^/ssh:" "\\.?ido\\.last$" "\\.revive$" "/TAGS$"
-         "^/var/folders/.+$" "\\.git/config" "\\.git/COMMIT_EDITMSG"))
   :config
-  (progn
-    (add-hook 'kill-emacs-hook #'recentf-cleanup)
-    (add-to-list 'recentf-exclude "COMMIT_EDITMSG\\'")
-    (add-to-list 'recentf-exclude no-littering-var-directory)
-    (add-to-list 'recentf-exclude no-littering-etc-directory)
-    (setq recentf-auto-save-timer
-          (run-with-idle-timer 600 t 'recentf-save-list))))
+  (setq recentf-auto-cleanup 200
+        recentf-max-saved-items 300
+        recentf-auto-cleanup 'never
+        recentf-filename-handlers '(file-truename abbreviate-file-name)
+        recentf-auto-save-timer (run-with-idle-timer 600 t 'recentf-save-list)
+        recentf-exclude (list #'file-remote-p "\\.\\(?:gz\\|gif\\|svg\\|png\\|jpe?g\\)$"
+                              "^/tmp/" "^/ssh:" "\\.?ido\\.last$" "\\.revive$" "/TAGS$"
+                              "^/var/folders/.+$" "\\.git/config" "\\.git/COMMIT_EDITMSG"))
+  (add-hook 'kill-emacs-hook #'recentf-cleanup)
+  (add-to-list 'recentf-exclude "COMMIT_EDITMSG\\'")
+  (add-to-list 'recentf-exclude no-littering-var-directory)
+  (add-to-list 'recentf-exclude no-littering-etc-directory))
 
 (use-package eldoc
   :ensure nil
@@ -2136,15 +1568,15 @@ bin/doom while packages at compile-time (not a runtime though)."
 
 (use-package eshell
   :commands (eshell eshell-mode)
-  :custom
-  (eshell-visual-commands '("tmux" "htop" "bash" "zsh" "fish" "vim" "nvim"))
-  (eshell-visual-subcommands '(("git" "log" "l" "diff" "show")))
-  (eshell-history-size 10000)
-  (eshell-hist-ignoredups t)
-  (eshell-scroll-to-bottom-on-output 'this)
-  (eshell-scroll-to-bottom-on-input 'all)
-  (eshell-buffer-shorthand t)
-  (eshell-kill-processes-on-exit t))
+  :config
+  (setq eshell-visual-commands '("tmux" "htop" "bash" "zsh" "fish" "vim" "nvim")
+        eshell-visual-subcommands '(("git" "log" "l" "diff" "show"))
+        eshell-history-size 10000
+        eshell-hist-ignoredups t
+        eshell-scroll-to-bottom-on-output 'this
+        eshell-scroll-to-bottom-on-input 'all
+        eshell-buffer-shorthand t
+        eshell-kill-processes-on-exit t))
 
 (use-package helpful
   ;; :after ivy
@@ -2156,29 +1588,7 @@ bin/doom while packages at compile-time (not a runtime though)."
              helpful-function)
   :defer t
   :defines ivy-initial-inputs-alist
-  :bind (("C-c C-d" . helpful-at-point))
-  ;; :config
-  ;; (general-define-key :keymaps 'global
-  ;;                     [remap describe-function] #'helpful-callable
-  ;;                     [remap describe-command]  #'helpful-command
-  ;;                     [remap describe-variable] #'helpful-variable
-  ;;                     [remap describe-key] #'helpful-key)
-  ;; (dolist (cmd '(helpful-callable
-  ;;                helpful-variable
-  ;;                helpful-function
-  ;;                helpful-macro
-  ;;                helpful-command))
-  ;;   (cl-pushnew `(,cmd . "^") ivy-initial-inputs-alist))
-  ;; :general
-  ;; (js|global-keymap
-  ;;  "hh" '(:ignore t :which-key "helpful")
-  ;;  "hhh" 'helpful-at-point
-  ;;  "hhc" 'helpful-command
-  ;;  "hhf" 'helpful-callable
-  ;;  "hhk" 'helpful-key
-  ;;  "hhm" 'helpful-macro
-  ;;  "hhv" 'helpful-variable)
-  )
+  :bind (("C-c C-d" . helpful-at-point)))
 
 
 (use-package org
@@ -2199,18 +1609,15 @@ bin/doom while packages at compile-time (not a runtime though)."
                               (sequence "|" "✘ CANCELED(c)")))))
 
 (use-package toc-org
-  :custom
-  (toc-org-max-depth 10)
+  :custom (toc-org-max-depth 10)
   :hook (org-mode . toc-org-enable))
 
 (use-package org-projectile
+  :commands org-projectile-projectile-project-todo-completing-read
   :hook (projectile-before-switch-project-hook . org-projectile-per-project)
   :config
-  (progn
-    (setq org-projectile-per-project-filepath "TODO.org"
-          setq org-agenda-files (append org-agenda-files (org-projectile-todo-files)))
-    (js|global-keymap
-     "pc" 'org-projectile-projectile-project-todo-completing-read)))
+  (setq org-projectile-per-project-filepath "TODO.org"
+        setq org-agenda-files (append org-agenda-files (org-projectile-todo-files))))
 
 (use-package evil-org
   :hook (org-mode . evil-org-mode)
@@ -2226,8 +1633,7 @@ bin/doom while packages at compile-time (not a runtime though)."
   :mode ("\\.pdf\\'" . pdf-view-mode)
   :config
   (pdf-tools-install)
-  (setq-default pdf-view-display-size 'fit-page)
-  )
+  (setq-default pdf-view-display-size 'fit-page))
 
 (use-package matrix-client
   :disabled ;; not ready for prime time yet
@@ -2244,5 +1650,7 @@ bin/doom while packages at compile-time (not a runtime though)."
   :load-path "vendor/"
   :if (eq system-type 'darwin))
 
-
 (require '+keybindings)
+
+(provide 'config)
+;;; config.el ends here
