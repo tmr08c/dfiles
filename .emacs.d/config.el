@@ -309,25 +309,8 @@
 ;; :hook prog-mode
 ;; :custom
 ;; (lsp-message-project-root-warning t))
-
 (use-package company-lsp
   :hook (lsp-mode))
-
-
-
-(use-package neotree
-  :commands (neotree-toggle neotree-projectile-action)
-  :config
-  (js|neotree-keybindings)
-  (setq neo-create-file-auto-open t
-        neo-modern-sidebar t
-        neo-point-auto-indent nil
-        neo-theme (if (display-graphic-p) 'icons 'arrow)
-        neo-window-fixed-size nil
-        neo-window-width 28
-        neo-show-hidden-files t
-        neo-keymap-style 'concise))
-
 
 (use-package smartparens
   :defer 2
@@ -1277,9 +1260,6 @@ bin/doom while packages at compile-time (not a runtime though)."
         ispell-extra-args '("--sug-mode=ultra"
                             "--lang=en_US"
                             "--dont-tex-check-comments")))
-(use-package flyspell-correct
-  :disabled
-  :commands (flyspell-correct-word-generic flyspell-correct-previous-word-generic))
 
 (use-package writegood-mode
   :defer t
@@ -1291,18 +1271,6 @@ bin/doom while packages at compile-time (not a runtime though)."
   :defer t
   :init
   (load-theme 'base16-oceanicnext t))
-(use-package doom-themes
-  :defer t
-  ;; :demand
-  ;; :custom
-  ;; (doom-molokai-brighter-comments t)
-  :init
-  ;; (load-theme 'doom-molokai t)
-  (+evil|update-cursor-color))
-
-(use-package doom-modeline
-  :defer t
-  :hook (after-init . doom-modeline-init))
 
 (use-package hide-mode-line
   :hook ((neotree-mode
@@ -1532,7 +1500,7 @@ bin/doom while packages at compile-time (not a runtime though)."
   :load-path "vendor/"
   :if (eq system-type 'darwin))
 
-
+(require 'deprecate)
 (require '+keybindings)
 
 (customize-set-variable 'user-full-name "Justin Smestad")
