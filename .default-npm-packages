@@ -11,6 +11,9 @@ vscode-css-languageserver-bin
 textlint
 write-good
 textlint-plugin-latex
+textlint-plugin-html
+textlint-plugin-asciidoctor
+textlint-plugin-rst
 textlint-rule-write-good
 textlint-rule-no-start-duplicated-conjunction
 textlint-rule-max-comma
