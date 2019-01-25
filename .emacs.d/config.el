@@ -107,9 +107,11 @@
   :delight
   :init (evil-commentary-mode))
 
+
 (use-package editorconfig
   :defer t
   :config (editorconfig-mode 1))
+
 
 (use-package projectile
   :commands (projectile-run-shell-command-in-root
@@ -615,6 +617,24 @@ If ARG is a numerical prefix argument then specify the indentation level."
   :mode "\\.md$"
   :hook (markdown-mode . flyspell-mode))
 
+(use-package langtool
+  :commands (langtool-check
+             langtool-check-done
+             langtool-show-message-at-point
+             langtool-correct-buffer)
+  :init (setq langtool-default-language "en-US")
+  :hook (org-mode)
+  :config
+  (unless langtool-language-tool-jar
+    (setq langtool-language-tool-jar
+          (cond ((eq system-type 'darwin)
+                 (locate-file "libexec/languagetool-commandline.jar"
+                              (js|files-in "/usr/local/cellar/languagetool"
+                                           :type 'dirs
+                                           :depth 1)))
+                ((eq system-type 'linux)
+                 "/usr/share/java/languagetool/languagetool-commandline.jar"))
+          langtool-mother-tongue "en-US")))
 
 ;; Common Lisp
 (use-package sly
