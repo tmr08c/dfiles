@@ -107,7 +107,6 @@
   :delight
   :init (evil-commentary-mode))
 
-
 (use-package editorconfig
   :defer t
   :config (editorconfig-mode 1))
@@ -141,125 +140,6 @@
 
 (use-package amx
   :hook (after-init . amx-initialize))
-
-;; Helm
-(use-package helm
-  :if (eq +completion-engine 'helm)
-  :demand
-  :config
-  (setq helm-candidate-number-limit 50
-        helm-display-buffer-height 0.25))
-(use-package helm-ag
-  :after helm
-  :if (eq +completion-engine 'helm))
-(use-package helm-company
-  :after (helm company)
-  :if (eq +completion-engine 'helm))
-(use-package helm-projectile
-  :after helm
-  :if (eq +completion-engine 'helm)
-  :commands (helm-projectile-find-file
-             helm-projectile-find-dir
-             helm-projectile-find-file-in-known-projects
-             helm-projectile-recentf
-             helm-projectile-grep
-             helm-projectile-rg
-             helm-projectile-ag
-             helm-projectile-switch-project
-             helm-projectile-switch-to-buffer)
-  :config
-  (setq projectile-completion-system 'helm))
-(use-package swiper-helm
-  :after helm
-  :if (eq +completion-engine 'helm)
-  :commands (swiper-helm))
-(use-package helm-flx
-  :after helm
-  :if (eq +completion-engine 'helm)
-  :hook (helm-mode . helm-flx-mode))
-(use-package helm-themes
-  :after helm
-  :if (eq +completion-engine 'helm)
-  :commands (helm-themes))
-
-;; Ivy
-(use-package ivy
-  :if (eq +completion-engine 'ivy)
-  :demand
-  :delight
-  :config
-  (setq ivy-use-virtual-buffers t
-        ivy-virtual-abbreviate 'full
-        ivy-on-del-error-function nil
-        ivy-height 15
-        ivy-fixed-height-minibuffer t
-        projectile-completion-system 'ivy
-        ivy-wrap t
-        ivy-format-function 'ivy-format-function-line
-        ivy-initial-inputs-alist nil
-        ivy-use-selectable-prompt t))
-(use-package ivy-rich
-  :if (eq +completion-engine 'ivy)
-  :after ivy
-  :config
-  (setq ivy-virtual-abbreviate 'full
-        ivy-rich-switch-buffer-align-virtual-buffer t
-        ivy-rich-path-style 'abbrev)
-  (ivy-rich-mode 1))
-(use-package doom-todo-ivy
-  :if (eq +completion-engine 'ivy)
-  :commands doom/ivy-tasks
-  :load-path "vendor/")
-
-;; Counsel
-(use-package counsel
-  :if (eq +completion-engine 'ivy)
-  :commands (counsel-M-x
-             counsel-find-file
-             counsel-descbinds
-             counsel-load-theme
-             counsel-apropos
-             counsel-bookmark
-             counsel-faces
-             counsel-describe-function
-             counsel-describe-variable
-             counsel-find-library
-             counsel-info-lookup-symbol
-             counsel-imenu
-             counsel-recentf
-             counsel-org-capture
-             counsel-grep-or-swiper)
-  :custom (counsel-mode-override-describe-bindings t))
-(use-package counsel-projectile
-  :if (eq +completion-engine 'ivy)
-  :commands (counsel-projectile-switch-to-buffer
-             counsel-projectile-find-dir
-             counsel-projectile-find-file
-             counsel-projectile-switch-project
-             counsel-projectile-rg))
-(use-package counsel-dash
-  :if (eq +completion-engine 'ivy)
-  :commands counsel-dash
-  :hook
-  ((lisp-mode . (lambda () (setq-local counsel-dash-docsets '("Common_Lisp"))))
-   (emacs-lisp-mode . (lambda () (setq-local counsel-dash-docsets '("Emacs_Lisp"))))
-   (ruby-mode . (lambda () (setq-local counsel-dash-docsets '("Ruby"))))
-   (projectile-rails-mode . (lambda () (setq-local counsel-dash-docsets '("Ruby_on_Rails_5"))))
-   (sql-mode . (lambda () (setq-local counsel-dash-docsets '("PostgreSQL"))))
-   (web-mode . (lambda () (setq-local counsel-dash-docsets '("Javascript" "HTML")))))
-  :config
-  (setq counsel-dash-browser-func 'eww
-        counsel-dash-common-docsets '()))
-(use-package counsel-etags
-  :if (eq +completion-engine 'ivy)
-  :after counsel
-  :commands (counsel-etags-find-tag-at-point
-             counsel-etags-scan-code
-             counsel-etags-grep
-             counsel-etags-grep-symbol-at-point
-             counsel-etags-recent-tag
-             counsel-etags-find-tag
-             counsel-etags-list-tag))
 
 ;; Company
 (use-package company
@@ -546,6 +426,7 @@ For instance pass En as source for English."
           google-translate-default-source-language "en"
           google-translate-default-target-language "de")))
 
+;; Golang
 (use-package go-mode
   :mode "\\.go\\'"
   :requires (company)
@@ -562,10 +443,8 @@ For instance pass En as source for English."
   (add-hook 'go-mode-hook #'my-go-mode-hook-fn)
   :custom
   (gofmt-command "goimports"))
-
 (use-package go-eldoc
   :commands go-eldoc-setup)
-
 (use-package flycheck-gometalinter
   :commands flycheck-gometalinter-setup
   ;; :hook (go-mode . flycheck-gometalinter-setup)
@@ -579,27 +458,21 @@ For instance pass En as source for English."
   ;; explicitly disable 'gotype' & 'govet' linters (also currently broken Nix overlays)
   (flycheck-gometalinter-disable-linters
    '("gosec" "gotype" "vet" "vetshadow" "megacheck" "interfacer" "ineffassign")))
-
 (use-package go-projectile
   :hook (go-mode . go-projectile-mode))
-
 (use-package go-gen-test
   :commands (go-gen-test-exported
              go-gen-test-all
              go-gen-test-dwim))
-
 (use-package go-fill-struct
   :commands (go-fill-struct))
-
 (use-package godoctor
   :commands (godoctor-godoc
              godoctor-extract
              godoctor-rename
              godoctor-toggle))
-
 (use-package go-rename
   :commands  go-rename)
-
 (use-package go-impl
   :commands go-impl)
 
@@ -619,21 +492,17 @@ For instance pass En as source for English."
   (ruby-insert-encoding-magic-comment nil)
   (ruby-align-to-stmt-keywords
    '(if while unless until begin case for def)))
-
 (use-package bundler
   :hook (ruby-mode . bundler-mode))
-
 (use-package inf-ruby
   :hook ((ruby-mode . inf-ruby-minor-mode)
          (compilation-filter-hook . inf-ruby-auto-enter))
   :custom
   (inf-ruby-console-environment "development"))
-
 (use-package company-inf-ruby
   :after inf-ruby
   :config
   (add-to-list 'company-backends 'company-inf-ruby))
-
 (use-package rspec-mode
   :hook (ruby-mode . rspec-mode)
   :custom
@@ -649,25 +518,21 @@ For instance pass En as source for English."
        :post-handlers '(sp-ruby-post-handler
                         (js|smartparens-pair-newline-and-indent "RET"))
        :suffix ""))))
-
 (use-package rubocop
   :ensure-system-package
   (rubocop . "gem install rubocop")
   :hook (ruby-mode . rubocop-mode))
-
 (use-package rbenv
   :hook (ruby-mode . global-rbenv-mode))
-
 (use-package yard-mode
   :hook (ruby-mode . yard-mode))
-
 (use-package ruby-hash-syntax
   :requires ruby-mode)
-
 (use-package projectile-rails
   :requires projectile
   :hook (projectile-mode . projectile-rails-on))
 
+;; SQL
 (use-package sql
   :ensure nil
   :mode "\\.sql$"
@@ -690,13 +555,12 @@ For instance pass En as source for English."
     (add-hook 'sql-interactive-mode-hook
               (lambda ()
                 (toggle-truncate-lines t)))))
-
 (use-package sql-indent
   :hook (sql-mode . sqlind-minor-mode))
-
 (use-package sqlup-mode
   :hook (sql-mode . sql-interactive-mode-hook))
 
+;; CSV
 (use-package csv-mode
   :mode "\\.csv$"
   :config
@@ -707,21 +571,19 @@ For instance pass En as source for English."
   ;; C-c C-a is already bound to align all fields, but can be too slow.
   :bind (:map csv-mode-map
               ("C-c C-w" . 'csv-align-visible)))
-
 (use-package vlf
   :hook csv-mode)
 
+;; JSON
 (use-package json-mode
   :defer t
   :config
   (setq js-indent-level 2))
-
 (use-package json-snatcher
   :hook json-mode
   :config
   (js|keymap-for-mode 'json-mode
                       "hp" 'jsons-print-path))
-
 (use-package json-reformat
   :hook json-mode
   :commands (spacemacs/json-reformat-code)
@@ -740,33 +602,21 @@ If ARG is a numerical prefix argument then specify the indentation level."
           (save-excursion (json-reformat-region (point-min) (point-max)))
         (json-reformat-region start end)))))
 
+
 (use-package dockerfile-mode
   :mode "Dockerfile.*\\'")
 
+
 (use-package yaml-mode
   :mode "\\.ya?ml\'")
+
 
 (use-package markdown-mode
   :mode "\\.md$"
   :hook (markdown-mode . flyspell-mode))
 
-(use-package lispy
-  :disabled ; quite frustrating library in evil mode
-  :custom
-  (lispy-close-quotes-at-end-p t)
-  :hook ((emacs-lisp-mode
-          lisp-interaction-mode
-          lisp-mode
-          scheme-mode
-          clojure-mode) . lispy-mode)
-  :config
-  (progn
-    (defun conditionally-enable-lispy ()
-      (when (eq this-command 'eval-expression)
-        (lispy-mode 1)))
-    (add-hook 'minibuffer-setup-hook 'conditionally-enable-lispy)))
 
-
+;; Common Lisp
 (use-package sly
   :requires evil
   :hook ((lisp-mode emacs-lisp-mode) . (lambda ()  (sly-setup '(sly-fancy))))
@@ -779,7 +629,6 @@ If ARG is a numerical prefix argument then specify the indentation level."
   (sly-repl-history-remove-duplicates t)
   (sly-repl-history-trim-whitespaces t)
   (sly-net-coding-system 'utf-8-unix)
-
   :config
   (progn
     (add-to-list 'company-backends 'company-capf)
@@ -822,7 +671,6 @@ bin/doom while packages at compile-time (not a runtime though)."
         (setq sly-protocol-version (sly-version nil (locate-library "sly.el"))))
       (advice-remove #'sly-check-version #'+common-lisp*refresh-sly-version))
     (advice-add #'sly-check-version :before #'+common-lisp*refresh-sly-version)))
-
 (use-package sly-mrepl
   :ensure nil ;; built-in to sly
   :defines sly-mrepl-mode-map
@@ -835,24 +683,19 @@ bin/doom while packages at compile-time (not a runtime though)."
   :config
   (with-eval-after-load 'smartparens
     (sp-with-modes '(sly-mrepl-mode)
-                   (sp-local-pair "'" "'" :actions nil)
-                   (sp-local-pair "`" "`" :actions nil))))
-
+      (sp-local-pair "'" "'" :actions nil)
+      (sp-local-pair "`" "`" :actions nil))))
 (use-package sly-repl-ansi-color
   :requires sly
   :demand t
   :config (push 'sly-repl-ansi-color sly-contribs))
-
-
 ;; (use-package sly-company
 ;; 	:requires (company sly))
-
 ;; (use-package slime
 ;; 	:hook lisp-mode
 ;; 	:defer t
 ;; 	:custom
 ;; 	(inferior-lisp-program "sbcl")
-
 ;; 	:config
 ;; 	(require 'slime-fuzzy)
 ;; 	(slime-setup)
@@ -910,21 +753,16 @@ bin/doom while packages at compile-time (not a runtime though)."
 ;; 		"m tf"  'slime-toggle-fancy-trace
 ;; 		)
 ;; 	)
-
 ;; (use-package slime-company
 ;; 	:requires (slime company))
-
 ;; (use-package auto-compile
 ;; 	:commands auto-compile-on-save-mode
 ;;   :custom
 ;;   (auto-compile-display-buffer nil)
 ;; 	(auto-compile-use-mode-line nil))
-
 (use-package highlight-quoted
   :hook (emacs-lisp-mode . highlight-quoted-mode)
   :commands highlight-quoted-mode)
-
-
 ;; (use-package macrostep
 ;; 	:commands macrostep-expand
 ;;   ;; :config
@@ -948,10 +786,10 @@ bin/doom while packages at compile-time (not a runtime though)."
 ;;   ;; ;; apply for the very first invocation
 ;; 	;; (add-hook 'macrostep-mode-hook #'evil-normalize-keymaps)
 ;; 	)
-
 ;; (use-package overseer
 ;; 	:commands overseer-test)
 
+;; Python
 (use-package python-mode
   :mode "\\.py")
 (use-package anaconda-mode
@@ -979,10 +817,8 @@ bin/doom while packages at compile-time (not a runtime though)."
                      :post-handlers '(("| " "SPC"))))
     (sp-with-modes '(c-mode c++-mode objc-mode java-mode)
       (sp-local-pair "/*!" "*/" :post-handlers '(("||\n[i]" "RET") ("[d-1]< | " "SPC"))))))
-
 (use-package irony-eldoc
   :hook (irony-mode . irony-eldoc))
-
 (use-package flycheck-irony
   :hook (irony-mode . flycheck-irony-setup))
 ;; (use-package lsp-clangd
@@ -994,7 +830,6 @@ bin/doom while packages at compile-time (not a runtime though)."
   :after irony-mode
   :hook ((c-mode . platformio-conditionally-enable)
          (c++-mode . platformio-conditionally-enable)))
-
 (use-package clang-format
   :disabled
   :after irony
@@ -1005,18 +840,16 @@ bin/doom while packages at compile-time (not a runtime though)."
         (call-interactively 'clang-format)))
 
     (add-hook 'before-save-hook #'c-mode-before-save-hook)))
-
 (use-package arduino-mode
   :after irony
   :config
   (add-to-list 'irony-supported-major-modes 'arduino-mode)
   (add-to-list 'irony-lang-compile-option-alist '(arduino-mode . "c++")))
 
+;; Erlang / Elixir
 (use-package erlang
   :mode "\\.erl$")
-
 (use-package elixir-mode
-  :defer t
   :mode "\\.exs?"
   :config
   (progn
@@ -1070,7 +903,6 @@ bin/doom while packages at compile-time (not a runtime though)."
          :when '(("SPC" "RET"))
          :post-handlers '(:add spacemacs//elixir-do-end-close-action)
          :actions '(insert))))))
-
 (use-package alchemist
   :hook (elixir-mode . alchemist-mode)
   :config
@@ -1087,7 +919,6 @@ bin/doom while packages at compile-time (not a runtime though)."
                       alchemist-test-report-mode-map))
     (evil-define-key 'normal mode
       (kbd "q") 'quit-window)))
-
 (use-package flycheck-mix
   :commands (flycheck-mix-setup)
   :init
@@ -1500,6 +1331,7 @@ bin/doom while packages at compile-time (not a runtime though)."
   :load-path "vendor/"
   :if (eq system-type 'darwin))
 
+(require '+completion)
 (require 'deprecate)
 (require '+keybindings)
 
