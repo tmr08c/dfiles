@@ -8,14 +8,6 @@
 (defvar +completion-engine 'helm
   "Setting to control whether to use helm or ivy.")
 
-(when (fboundp 'set-charset-priority)
-  (set-charset-priority 'unicode))     ; pretty
-(prefer-coding-system        'utf-8)   ; pretty
-(set-terminal-coding-system  'utf-8)   ; pretty
-(set-keyboard-coding-system  'utf-8)   ; pretty
-(set-selection-coding-system 'utf-8)   ; perdy
-(setq locale-coding-system 'utf-8)     ; please
-
 (use-package exec-path-from-shell
   :if (memq window-system '(mac ns x))
   :config
@@ -45,10 +37,10 @@
   (general-evil-setup))
 
 (use-package evil
-  :init (evil-mode 1)
+  :demand
+  :init (setq evil-want-C-u-scroll t) ; This MUST be in init.
   :config
   (setq evil-want-visual-char-semi-exclusive t
-        evil-want-C-u-scroll t
         evil-want-Y-yank-to-eol t
         evil-shift-width 2
         evil-want-integration nil
@@ -72,53 +64,49 @@
         evil-insert-state-cursor 'bar
         evil-visual-state-cursor 'hollow)
   (fset 'evil-visual-update-x-selection 'ignore)
+
   ;; Change the cursor color in emacs mode
   (defvar +evil--default-cursor-color
     (or (ignore-errors (frame-parameter nil 'cursor-color))
         "#ffffff"))
-
   (defun +evil-default-cursor () (set-cursor-color +evil--default-cursor-color))
   (defun +evil-emacs-cursor () (set-cursor-color (face-foreground 'warning)))
-
   (defun +evil|update-cursor-color ()
     (setq +evil--default-cursor-color (face-background 'cursor)))
   (add-hook 'doom-load-theme-hook #'+evil|update-cursor-color)
   (defun +evil|update-shift-width ()
     (setq evil-shift-width tab-width))
-  (add-hook 'after-change-major-mode-hook #'+evil|update-shift-width t))
+  (add-hook 'after-change-major-mode-hook #'+evil|update-shift-width t)
+
+  (evil-mode 1))
 
 (use-package evil-escape
   :requires evil
   :init (evil-escape-mode 1)
   :delight
-  :custom
-  (evil-escape-delay 0.2))
-
+  :custom (evil-escape-delay 0.2))
 (use-package evil-surround
   :defer 5
   :init (global-evil-surround-mode 1))
-
 (use-package evil-matchit
   :defer 5
   :init (global-evil-matchit-mode))
-
 (use-package evil-goggles
   :defer 5
   :delight
-  :custom
-  (evil-goggles-duration 0.1)
-  (evil-goggles-enable-delete nil)
+  :config
+  (setq evil-goggles-duration 0.1
+        evil-goggles-enable-delete nil)
   :init
   (evil-goggles-mode))
-
 (use-package evil-easymotion
   :defer 5
   :delight)
-
 (use-package evil-commentary
   :defer t
   :delight
   :init (evil-commentary-mode))
+
 
 (use-package editorconfig
   :defer t
@@ -165,9 +153,10 @@
   :after helm
   :if (eq +completion-engine 'helm))
 (use-package helm-company
-  :defer t
+  :after (helm company)
   :if (eq +completion-engine 'helm))
 (use-package helm-projectile
+  :after helm
   :if (eq +completion-engine 'helm)
   :commands (helm-projectile-find-file
              helm-projectile-find-dir
@@ -181,15 +170,15 @@
   :config
   (setq projectile-completion-system 'helm))
 (use-package swiper-helm
+  :after helm
   :if (eq +completion-engine 'helm)
-  :commands (swiper-helm)
-  :general
-  (general-define-key :keymaps 'global
-                      ))
+  :commands (swiper-helm))
 (use-package helm-flx
+  :after helm
   :if (eq +completion-engine 'helm)
   :hook (helm-mode . helm-flx-mode))
 (use-package helm-themes
+  :after helm
   :if (eq +completion-engine 'helm)
   :commands (helm-themes))
 
@@ -212,15 +201,13 @@
 (use-package ivy-rich
   :if (eq +completion-engine 'ivy)
   :after ivy
-  :custom
-  (ivy-virtual-abbreviate 'full)
-  (ivy-rich-switch-buffer-align-virtual-buffer t)
-  (ivy-rich-path-style 'abbrev)
   :config
+  (setq ivy-virtual-abbreviate 'full
+        ivy-rich-switch-buffer-align-virtual-buffer t
+        ivy-rich-path-style 'abbrev)
   (ivy-rich-mode 1))
 (use-package doom-todo-ivy
   :if (eq +completion-engine 'ivy)
-  :ensure nil
   :commands doom/ivy-tasks
   :load-path "vendor/")
 
@@ -242,9 +229,7 @@
              counsel-recentf
              counsel-org-capture
              counsel-grep-or-swiper)
-  :custom
-  (counsel-mode-override-describe-bindings t))
-
+  :custom (counsel-mode-override-describe-bindings t))
 (use-package counsel-projectile
   :if (eq +completion-engine 'ivy)
   :commands (counsel-projectile-switch-to-buffer
@@ -252,8 +237,6 @@
              counsel-projectile-find-file
              counsel-projectile-switch-project
              counsel-projectile-rg))
-
-
 (use-package counsel-dash
   :if (eq +completion-engine 'ivy)
   :commands counsel-dash
@@ -264,13 +247,12 @@
    (projectile-rails-mode . (lambda () (setq-local counsel-dash-docsets '("Ruby_on_Rails_5"))))
    (sql-mode . (lambda () (setq-local counsel-dash-docsets '("PostgreSQL"))))
    (web-mode . (lambda () (setq-local counsel-dash-docsets '("Javascript" "HTML")))))
-  :custom
-  (counsel-dash-browser-func 'eww)
-  (counsel-dash-common-docsets '()))
-
+  :config
+  (setq counsel-dash-browser-func 'eww
+        counsel-dash-common-docsets '()))
 (use-package counsel-etags
   :if (eq +completion-engine 'ivy)
-  :requires counsel
+  :after counsel
   :commands (counsel-etags-find-tag-at-point
              counsel-etags-scan-code
              counsel-etags-grep
@@ -285,42 +267,33 @@
   :delight
   :defines company-backends
   :hook (after-init . global-company-mode)
-  :custom
+  :config
   ;; (company-begin-commands '(self-insert-command)) ; start autocompletion only after typing
-  (company-dabbrev-downcase nil)
-  (company-dabbrev-ignore-case nil)
-  (company-dabbrev-code-other-buffers t)
-  (company-echo-delay 0) ; remove annoying blinking
-  (company-idle-delay 0.6)
-  (company-minimum-prefix-length 2)
-  (company-require-match 'never)
-  (company-selection-wrap-around t)
-  (company-tooltip-align-annotations t)
-  (company-tooltip-flip-when-above t)
-  (company-tooltip-limit 14)
-  (company-global-modes
-   '(not eshell-mode comint-mode erc-mode message-mode help-mode gud-mode))
-  (company-frontends '(company-pseudo-tooltip-frontend
-                       company-echo-metadata-frontend))
-  (company-transformers '(company-sort-by-occurrence))
-  (company-backends '()))
-
+  (setq company-dabbrev-downcase nil
+        company-dabbrev-ignore-case nil
+        company-dabbrev-code-other-buffers t
+        company-echo-delay 0 ; remove annoying blinking
+        company-idle-delay 0.6
+        company-minimum-prefix-length 2
+        company-require-match 'never
+        company-selection-wrap-around t
+        company-tooltip-align-annotations t
+        company-tooltip-flip-when-above t
+        company-tooltip-limit 14
+        company-global-modes
+        '(not eshell-mode comint-mode erc-mode message-mode help-mode gud-mode)
+        company-frontends '(company-pseudo-tooltip-frontend
+                            company-echo-metadata-frontend)
+        company-transformers '(company-sort-by-occurrence)
+        company-backends '()))
 (use-package company-prescient
   :hook (company-mode . company-prescient-mode)
   :config
   (prescient-persist-mode +1))
-
-;; (use-package company-quickhelp
-;;   :hook (company-mode . company-quickhelp-mode)
-;;   :custom
-;;   (company-quickhelp-delay 0.)
-;;   :general
-;;   (general-def 'insert company-quickhelp-mode-map
-;;     "C-k" 'company-select-previous))
-
 (use-package company-flx
   :hook (company-mode . company-flx-mode))
 
+;; Language Server Protocol (LSP)
 (use-package lsp-mode
   :hook ((ruby-mode
           js-mode js2-mode
@@ -337,22 +310,10 @@
 ;; :custom
 ;; (lsp-message-project-root-warning t))
 
-;; (use-package lsp-ui
-;;   :hook (lsp-mode . lsp-ui-mode)
-;;   :config
-;;   (setq lsp-ui-doc-max-height 8
-;;         lsp-ui-doc-max-width 35
-;;         lsp-ui-sideline-ignore-duplicate t))
-
 (use-package company-lsp
   :hook (lsp-mode))
 
 
-(custom-set-faces
- '(company-tooltip-common
-   ((t (:inherit company-tooltip :weight bold :underline nil))))
- '(company-tooltip-common-selection
-   ((t (:inherit company-tooltip-selection :weight bold :underline nil)))))
 
 (use-package neotree
   :commands (neotree-toggle neotree-projectile-action)
@@ -1212,7 +1173,7 @@ bin/doom while packages at compile-time (not a runtime though)."
                       (display-buffer outputbuf)))
                   (progn
                     (delete-file tmpfile)))))
-        (error "tsfmt not found. Run \"npm install -g typescript-formatter\"")))
+        (error "Error: tsfmt not found. Run \"npm install -g typescript-formatter\"")))
     (add-hook 'before-save-hook 'spacemacs/typescript-tsfmt-format-buffer)
 
     (js|typescript-keybindings)
@@ -1279,13 +1240,23 @@ bin/doom while packages at compile-time (not a runtime though)."
     (sp-local-pair "/*" "*/"
                    :post-handlers '(("[d-3]||\n[i]" "RET") ("| " "SPC")))))
 
+;; Syntax Checking - Flycheck
 (use-package flycheck
-  :hook (prog-mode . flycheck-mode)
+  :commands (flycheck-=list-errors flycheck-buffer)
   :pin melpa
-  :custom
-  (flycheck-rubocop-lint-only t)
-  (flycheck-check-syntax-automatically '(mode-enabled save))
-  (flycheck-disabled-checkers '(ruby-rubylint)))
+  :config
+  (setq flycheck-rubocop-lint-only t
+        flycheck-idle-change-delay 1.75
+        flycheck-check-syntax-automatically '(save idle-change mode-enabled)
+        flycheck-disabled-checkers '(ruby-rubylint))
+  (global-flycheck-mode +1))
+(use-package flycheck-posframe
+  :commands flycheck-posframe-show-posframe
+  :hook (flycheck-mode . flycheck-posframe-mode)
+  :config
+  (setq flycheck-posframe-warning-prefix "⚠ "
+        flycheck-posframe-info-prefix "··· "
+        flycheck-posframe-error-prefix "✕ "))
 
 (use-package flyspell
   :disabled
@@ -1298,74 +1269,35 @@ bin/doom while packages at compile-time (not a runtime though)."
   (text-mode . turn-on-flyspell)
   (prog-mode . flyspell-prog-mode)
   :delight
-  ;; :config
-  ;; (defun js|flyspell-mode-toggle ()
-  ;;   "Toggle flyspell mode."
-  ;;   (interactive)
-  ;;   (if flyspell-mode
-  ;;       (flyspell-mode -1)
-  ;;     (flyspell-mode 1)))
-
-  ;; (js|global-keymap
-  ;;  "S" '(:ignore t :which-key "Spelling")
-  ;;  "Sb" 'flyspell-buffer
-  ;;  "Sn" 'flyspell-goto-next-error
-  ;;  "tS" 'js|flyspell-mode-toggle)
-  :custom
-  (flyspell-issue-message-flag nil)
-  ;; (ispell-silently-savep t)
-  (ispell-program-name (executable-find "aspell"))
-  (ispell-list-command "--list")
-  (ispell-extra-args '("--sug-mode=ultra"
-                       "--lang=en_US"
-                       "--dont-tex-check-comments")))
+  :config
+  (setq flyspell-issue-message-flag nil
+        ;; ispell-silently-savep t
+        ispell-program-name (executable-find "aspell")
+        ispell-list-command "--list"
+        ispell-extra-args '("--sug-mode=ultra"
+                            "--lang=en_US"
+                            "--dont-tex-check-comments")))
 (use-package flyspell-correct
   :disabled
-  :commands (flyspell-correct-word-generic
-             flyspell-correct-previous-word-generic))
-
-(use-package flyspell-correct-ivy
-  :disabled
-  :commands (flyspell-correct-ivy)
-  :requires ivy
-  :init
-  (setq flyspell-correct-interface #'flyspell-correct-ivy))
+  :commands (flyspell-correct-word-generic flyspell-correct-previous-word-generic))
 
 (use-package writegood-mode
   :defer t
   :hook (text-mode . writegood-mode))
 
-(customize-set-variable 'user-full-name "Justin Smestad")
-(customize-set-variable 'user-mail-address "justin.smestad@gmail.com")
-
-;; Use Github as the standard
-;; ref http://hilton.org.uk/blog/source-code-line-length
-(setq fill-column 125
-      inhibit-startup-screen t
-      blink-matching-paren nil
-      visible-bell nil
-      ring-bell-function 'ignore
-      window-resize-pixelwise t
-      frame-resize-pixelwise t)
-
-;; This is MUCH faster than using set-face-attribute
-(add-to-list 'default-frame-alist '(font . "Fira Code:13"))
-
-;; Appearance
-;; Theme Emacs for dark color scheme
-(add-to-list 'default-frame-alist '(ns-transparent-titlebar . t))
-(add-to-list 'default-frame-alist '(ns-appearance . dark))
-
 (use-package all-the-icons)
 
 (use-package base16-theme
-  :defer t)
+  :defer t
+  :init
+  (load-theme 'base16-oceanicnext t))
 (use-package doom-themes
-  :demand
+  :defer t
+  ;; :demand
   ;; :custom
   ;; (doom-molokai-brighter-comments t)
   :init
-  (load-theme 'doom-molokai t)
+  ;; (load-theme 'doom-molokai t)
   (+evil|update-cursor-color))
 
 (use-package doom-modeline
@@ -1387,16 +1319,6 @@ bin/doom while packages at compile-time (not a runtime though)."
     git-commit-mode
     magit-status-mode
     magit-log-mode) . emojify-mode))
-
-;; TODO try out shackle instead
-;; (use-package popwin
-;;   :defer 3
-;;   :hook (after-init . popwin-mode))
-
-;;; Resize all buffers at once with C-M-= / C-M--
-(use-package default-text-scale
-  :defer 3
-  :init (default-text-scale-mode))
 
 ;;; Restart Emacs
 (use-package restart-emacs
@@ -1425,45 +1347,6 @@ bin/doom while packages at compile-time (not a runtime though)."
     (add-to-list 'winum-assign-functions #'winum-assign-0-to-neotree)
     (winum-mode)))
 
-(defalias 'yes-or-no-p 'y-or-n-p)
-
-(setq byte-compile-warnings '(not free-vars unresolved noruntime lexical make-local)
-      idle-update-delay 2 ; update ui less often (0.5 default)
-      create-lockfiles nil
-      cua-mode t
-      desktop-save-mode nil
-      indent-tabs-mode nil
-      initial-scratch-message nil
-      load-prefer-newer t
-      sentence-end-double-space nil
-      ansi-color-for-comint-mode t
-      cusor-in-non-selected-windows nil ; hide cursors in other windows
-      display-line-numbers-width 3
-      enable-recursive-minibuffers nil
-      ;; `pos-tip' defaults
-      pos-tip-internal-border-width 6
-      pos-tip-border-width 1
-
-      inhibit-compacting-font-caches t
-      find-file-visit-truename t
-
-      history-delete-duplicates t ; Get rid of duplicates in minibuffer history
-      ;; keep the point out of the minibuffer
-      minibuffer-prompt-properties '(read-only t point-entered minibuffer-avoid-prompt face minibuffer-prompt))
-
-;; relegate tooltips to echo area only
-(if (boundp 'tooltip-mode) (tooltip-mode -1))
-
-(defun doom|apply-ansi-color-to-compilation-buffer ()
-  "Applies ansi codes to the compilation buffers. Meant for
-`compilation-filter-hook'."
-  (with-silent-modifications
-    (ansi-color-apply-on-region compilation-filter-start (point))))
-;; Handle ansi codes in compilation buffer
-(add-hook 'compilation-filter-hook #'doom|apply-ansi-color-to-compilation-buffer)
-
-(setq-default tab-width 2
-              indent-tabs-mode nil)
 
 (use-package window
   :ensure nil
@@ -1524,7 +1407,6 @@ bin/doom while packages at compile-time (not a runtime though)."
 
 (use-package display-line-numbers
   :ensure nil
-  :if (> emacs-major-version 25)
   :hook (prog-mode . display-line-numbers-mode))
 
 (use-package uniquify
@@ -1650,7 +1532,79 @@ bin/doom while packages at compile-time (not a runtime though)."
   :load-path "vendor/"
   :if (eq system-type 'darwin))
 
+
 (require '+keybindings)
+
+(customize-set-variable 'user-full-name "Justin Smestad")
+(customize-set-variable 'user-mail-address "justin.smestad@gmail.com")
+
+
+(defalias 'yes-or-no-p 'y-or-n-p)
+
+(setq-default tab-width 2
+              indent-tabs-mode nil)
+
+(setq fill-column 125 ; Use Github as the standard, ref http://hilton.org.uk/blog/source-code-line-length
+      inhibit-startup-screen t
+      blink-matching-paren nil
+      visible-bell nil
+      ring-bell-function 'ignore
+
+      ;; Window Tweaks
+      window-resize-pixelwise t
+      frame-resize-pixelwise t
+
+      byte-compile-warnings '(not free-vars unresolved noruntime lexical make-local)
+      idle-update-delay 2 ; update ui less often (0.5 default)
+      create-lockfiles nil
+      cua-mode t
+      desktop-save-mode nil
+      indent-tabs-mode nil
+      initial-scratch-message nil
+
+      load-prefer-newer t ; Prevent loading old code
+
+      sentence-end-double-space nil
+      ansi-color-for-comint-mode t
+      cusor-in-non-selected-windows nil ; hide cursors in other windows
+      display-line-numbers-width 3
+      enable-recursive-minibuffers nil
+
+      ;; `pos-tip' defaults
+      pos-tip-internal-border-width 6
+      pos-tip-border-width 1
+
+      inhibit-compacting-font-caches t
+      find-file-visit-truename t
+
+      history-delete-duplicates t ; Get rid of duplicates in minibuffer history
+      ;; keep the point out of the minibuffer
+      minibuffer-prompt-properties '(read-only t point-entered minibuffer-avoid-prompt face minibuffer-prompt))
+
+;; Adjust Font Faces for Company
+(custom-set-faces
+ '(company-tooltip-common
+   ((t (:inherit company-tooltip :weight bold :underline nil))))
+ '(company-tooltip-common-selection
+   ((t (:inherit company-tooltip-selection :weight bold :underline nil)))))
+
+;; relegate tooltips to echo area only
+(if (boundp 'tooltip-mode) (tooltip-mode -1))
+
+;; Handle ansi codes in compilation buffer
+(defun doom|apply-ansi-color-to-compilation-buffer ()
+  "Apply ansi codes to the compilation buffers. Meant for 'compilation-filter-hook'."
+  (with-silent-modifications
+    (ansi-color-apply-on-region compilation-filter-start (point))))
+(add-hook 'compilation-filter-hook #'doom|apply-ansi-color-to-compilation-buffer)
+
+;; This is MUCH faster than using set-face-attribute
+(add-to-list 'default-frame-alist '(font . "Fira Code:13"))
+
+;; Appearance
+;; Theme Emacs for dark color scheme
+(add-to-list 'default-frame-alist '(ns-transparent-titlebar . t))
+(add-to-list 'default-frame-alist '(ns-appearance . dark))
 
 (provide 'config)
 ;;; config.el ends here

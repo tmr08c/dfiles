@@ -199,6 +199,8 @@
                   "ti" 'indent-guide-mode
                   "t TAB" 'indent-guide-global-mode
 
+                  "u" 'universal-argument-more
+
                   ;; Windows
                   "w"   '(:ignore t :which-key "Windows")
                   "wd" '(delete-window :which-key "close window")
