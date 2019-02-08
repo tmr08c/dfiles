@@ -623,7 +623,6 @@ If ARG is a numerical prefix argument then specify the indentation level."
              langtool-show-message-at-point
              langtool-correct-buffer)
   :init (setq langtool-default-language "en-US")
-  :hook (org-mode)
   :config
   (unless langtool-language-tool-jar
     (setq langtool-language-tool-jar
@@ -638,7 +637,7 @@ If ARG is a numerical prefix argument then specify the indentation level."
 
 ;; Common Lisp
 (use-package sly
-  :requires evil
+  :requires (evil company)
   :hook ((lisp-mode emacs-lisp-mode) . (lambda ()  (sly-setup '(sly-fancy))))
   :defer t
   :custom
@@ -1077,7 +1076,8 @@ bin/doom while packages at compile-time (not a runtime though)."
 ;; Syntax Checking - Flycheck
 (use-package flycheck
   :commands (flycheck-=list-errors flycheck-buffer)
-  :pin melpa
+  :quelpa (flycheck :fetcher github :repo "flycheck/flycheck")
+  :init (global-flycheck-mode)
   :config
   (setq flycheck-rubocop-lint-only t
         flycheck-idle-change-delay 1.75
@@ -1093,15 +1093,14 @@ bin/doom while packages at compile-time (not a runtime though)."
         flycheck-posframe-error-prefix "✕ "))
 
 (use-package flyspell
-  :disabled
   :commands (flyspell-buffer
              flyspell-goto-next-error)
   ;; Disable on Windows because `aspell' 0.6+ isn't available.
   :if (not (eq system-type 'windows-nt))
   :commands flyspell-mode
   :hook
-  (text-mode . turn-on-flyspell)
-  (prog-mode . flyspell-prog-mode)
+  ((text-mode writeroom-mode org-mode markdown-mode gfm-mode) . turn-on-flyspell)
+  ;; (prog-mode . flyspell-prog-mode)
   :delight
   :config
   (setq flyspell-issue-message-flag nil
@@ -1112,9 +1111,8 @@ bin/doom while packages at compile-time (not a runtime though)."
                             "--lang=en_US"
                             "--dont-tex-check-comments")))
 
-(use-package writegood-mode
-  :defer t
-  :hook (text-mode . writegood-mode))
+(use-package writeroom-mode
+  :commands writeroom-mode)
 
 (use-package all-the-icons)
 
@@ -1293,12 +1291,14 @@ bin/doom while packages at compile-time (not a runtime though)."
 
 
 (use-package org
+  :requires langtool
   :defer 3
   :pin org
   :mode "\\.org\'"
   :hook (org-mode . org-indent-mode)
   :config
   (progn
+    (add-hook 'before-save-hook 'langtool-check)
     (js|org-keybindings)
     (setq org-src-tab-acts-natively t
           org-insert-heading-respect-content t
@@ -1369,6 +1369,9 @@ bin/doom while packages at compile-time (not a runtime though)."
       blink-matching-paren nil
       visible-bell nil
       ring-bell-function 'ignore
+
+      ;; silence ad-handle-definition about advised functions getting redefined
+      ad-redefinition-action 'accept
 
       ;; Window Tweaks
       window-resize-pixelwise t

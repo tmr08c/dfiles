@@ -24,6 +24,7 @@
                       [remap noop-show-kill-ring]       'helm-show-kill-ring
                       ;; [remap persp-switch-to-buffer]    '+helm/workspace-mini
                       [remap switch-to-buffer]          'helm-buffers-list
+                      [remap switch-buffer]          'helm-buffers-list
                       [remap projectile-recentf]        'helm-projectile-recentf
                       [remap projectile-switch-project] 'helm-projectile-switch-project
                       [remap projectile-switch-to-buffer] 'helm-projectile-switch-to-buffer
@@ -55,6 +56,7 @@
                       [remap projectile-ag]               'counsel-projectile-rg
                       [remap projectile-switch-project]   'counsel-projectile-switch-project
                       [remap switch-to-buffer]       'ivy-switch-buffer
+                      [remap switch-buffer]       'ivy-switch-buffer
                       ;; [remap persp-switch-to-buffer] '+ivy/switch-workspace-buffer
                       [remap imenu-anywhere]         'ivy-imenu-anywhere)
   (js|global-keymap
