@@ -597,7 +597,7 @@ before packages are loaded."
   (spacemacs/add-to-hooks 'turn-on-fci-mode '(text-mode-hook))
 
   ;; Periodicly commit the ~/org directory every N minutes
-  (spacemacs/add-to-hooks 'git-auto-commit-mode '(org-mode-hook))
+  ;; (spacemacs/add-to-hooks 'git-auto-commit-mode '(org-mode-hook))
 
   ;; Direnv for projects
   (spacemacs/add-to-hooks 'direnv-mode '(projectile-mode-hook))
