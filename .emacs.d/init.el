@@ -5,7 +5,7 @@
 
 ;; Prevent the glimpse of un-styled Emacs by setting these early.
 (add-to-list 'default-frame-alist '(tool-bar-lines . 0))
-(add-to-list 'default-frame-alist '(menu-bar-lines . 0))
+;; (add-to-list 'default-frame-alist '(menu-bar-lines . 0)) ;; I want the top level menu, it's good for discovery
 (add-to-list 'default-frame-alist '(vertical-scroll-bars))
 
 (when (fboundp 'set-charset-priority)
