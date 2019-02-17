@@ -11,9 +11,21 @@
 
   (use-package helm
     :demand
+    :bind (:map helm-map
+                ("<tab>" . helm-execute-persistent-action)
+                ("TAB" . helm-execute-persistent-action)
+                ("C-z" . helm-select-action))
     :config
     (setq helm-candidate-number-limit 50
           helm-display-buffer-height 0.25))
+  (use-package helm-files
+    :ensure nil
+    :after helm
+    :bind (:map helm-find-files-map
+                ("<tab>" . helm-execute-persistent-action)
+                ("S-<tab>" . helm-find-files-up-one-level)
+                ("<backtab>" . helm-find-files-up-one-level)
+                ("S-TAB" . helm-find-files-up-one-level)))
   (use-package helm-ag
     :after helm)
   (use-package helm-company
