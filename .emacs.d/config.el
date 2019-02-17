@@ -112,6 +112,11 @@
   :defer t
   :config (editorconfig-mode 1))
 
+(use-package eyebrowse ; Easy workspaces creation and switching
+  :delight
+  :config
+  (setq eyebrowse-new-workspace t)
+  (eyebrowse-mode t))
 
 (use-package projectile
   :commands (projectile-run-shell-command-in-root

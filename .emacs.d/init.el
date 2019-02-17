@@ -55,10 +55,15 @@
   (quelpa-update-melpa-p nil))
 
 (use-package quelpa-use-package
+  :after quelpa
   :demand
   :config
   (quelpa-use-package-activate-advice))
 
+(use-package hydra)
+(use-package use-package-hydra
+  :after hydra
+  :demand)
 (use-package use-package-ensure-system-package
   :demand
   :functions use-package-ensure-system-package-exists?

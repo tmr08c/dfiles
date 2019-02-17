@@ -6,8 +6,11 @@
 ;;; Code:
 
 (use-package doom-modeline ; TODO install spaceline all-the-icons
-  :defer t
-  :hook (after-init . doom-modeline-init))
+  :hook (after-init . doom-modeline-mode)
+  :config
+  (setq doom-modeline-icon t
+        doom-modeline-major-mode-icon t
+        doom-modeline-lsp t))
 
 (use-package doom-themes ; base16 just look better
   :defer t
