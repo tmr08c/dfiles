@@ -133,7 +133,7 @@
   :config
   (progn
     (setq projectile-indexing-method 'alien
-          projectile-enable-caching nil
+          projectile-enable-caching t
           projectile-switch-project-action 'projectile-find-file
           projectile-sort-order 'recentf)
     (define-key projectile-mode-map (kbd "s-p") 'projectile-command-map)

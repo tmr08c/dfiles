@@ -49,7 +49,7 @@
                       [remap recentf-open-files]       'counsel-recentf
                       [remap org-capture]              'counsel-org-capture
                       [remap swiper]                   'counsel-grep-or-swiper
-                      ;; [remap projectile-find-file]        '+ivy/projectile-find-file
+                      [remap projectile-find-file]        'counsel-projectile-find-file
                       [remap projectile-find-dir]         'counsel-projectile-find-dir
                       [remap projectile-switch-to-buffer] 'counsel-projectile-switch-to-buffer
                       [remap projectile-grep]             'counsel-projectile-grep

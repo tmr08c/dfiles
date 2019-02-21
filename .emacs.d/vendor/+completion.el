@@ -27,7 +27,9 @@
                 ("<backtab>" . helm-find-files-up-one-level)
                 ("S-TAB" . helm-find-files-up-one-level)))
   (use-package helm-ag
-    :after helm)
+    :after helm
+    :config
+    (setq helm-ag-base-command "rg --smart-case --no-heading --vimgrep"))
   (use-package helm-company
     :after (helm company))
   (use-package helm-projectile
@@ -105,7 +107,14 @@
     :commands (counsel-projectile-switch-to-buffer
                counsel-projectile-find-dir
                counsel-projectile-find-file
+               counsel-projectile-find-file-dwim
                counsel-projectile-switch-project
+               counsel-projectile-grep
+               counsel-projectile-git-grep
+               counsel-projectile-switch-to-buffer
+               counsel-projectile-org-capture
+               counsel-projectile-org-agenda
+               counsel-projectile-ag
                counsel-projectile-rg))
   (use-package counsel-dash
     :commands counsel-dash
