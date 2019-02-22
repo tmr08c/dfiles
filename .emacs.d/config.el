@@ -5,7 +5,7 @@
 
 (require '+funcs)
 
-(defvar +completion-engine 'helm
+(defvar +completion-engine 'ivy
   "Setting to control whether to use helm or ivy.")
 
 (use-package exec-path-from-shell
@@ -133,7 +133,7 @@
   :config
   (progn
     (setq projectile-indexing-method 'alien
-          projectile-enable-caching t
+          projectile-enable-caching nil
           projectile-switch-project-action 'projectile-find-file
           projectile-sort-order 'recentf)
     (define-key projectile-mode-map (kbd "s-p") 'projectile-command-map)
@@ -182,22 +182,26 @@
 
 ;; Language Server Protocol (LSP)
 (use-package lsp-mode
+  :commands lsp
   :hook ((ruby-mode
           js-mode js2-mode
           typescript-mode
           python-mode
           web-mode
           css-mode
+          elixir-mode
           go-mode) . lsp)
   :config
-  (require 'lsp-clients)
-  (setq lsp-enable-snippet t))
+  (add-to-list 'exec-path "~/code/github/elixir-ls/release"))
+  ;; (require 'lsp-clients)
+  ;; (setq lsp-enable-snippet t))
 ;; :commands (lsp-mode lsp-define-stdio-client)
 ;; :hook prog-mode
 ;; :custom
 ;; (lsp-message-project-root-warning t))
 (use-package company-lsp
-  :hook (lsp-mode))
+  :commands company-lsp)
+;; (use-package dap-mode)
 
 (use-package smartparens
   :defer 2
@@ -928,6 +932,7 @@ bin/doom while packages at compile-time (not a runtime though)."
          :post-handlers '(:add spacemacs//elixir-do-end-close-action)
          :actions '(insert))))))
 (use-package alchemist
+  :disabled
   :hook (elixir-mode . alchemist-mode)
   :config
   (setq alchemist-project-compile-when-needed t
@@ -1051,10 +1056,6 @@ bin/doom while packages at compile-time (not a runtime though)."
 
 (use-package css-mode
   :mode "\\.css\\.erb\\'"
-  ;; :bind
-  ;; (:map css-mode-map
-  ;;       ("," . self-with-space)
-  ;;       ("{" . open-brackets-newline-and-indent))
   :custom
   (css-indent-offset 2)
   :config
@@ -1065,10 +1066,6 @@ bin/doom while packages at compile-time (not a runtime though)."
 
 (use-package ssass-mode
   :mode "\\.sass$")
-
-(use-package counsel-css
-  :disabled
-  :hook (css-mode . counsel-css-imenu-setup))
 
 (use-package web-beautify
   :hook web-mode)
@@ -1313,18 +1310,23 @@ bin/doom while packages at compile-time (not a runtime though)."
     (setq org-todo-keywords '((sequence "☛ TODO(t)" "|" "✔ DONE(d)")
                               (sequence "⚑ WAITING(w)" "|")
                               (sequence "|" "✘ CANCELED(c)")))))
-
+(use-package ox-pandoc
+  :after org)
+(use-package ox-minutes
+  :after org)
+(use-package ox-gfm
+  :after org)
+(use-package ox-asciidoc
+  :after org)
 (use-package toc-org
   :custom (toc-org-max-depth 10)
   :hook (org-mode . toc-org-enable))
-
 (use-package org-projectile
   :commands org-projectile-projectile-project-todo-completing-read
   :hook (projectile-before-switch-project-hook . org-projectile-per-project)
   :config
   (setq org-projectile-per-project-filepath "TODO.org"
         setq org-agenda-files (append org-agenda-files (org-projectile-todo-files))))
-
 (use-package evil-org
   :hook (org-mode . evil-org-mode)
   :custom

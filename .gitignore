@@ -15,3 +15,4 @@ zeus.json
 .tool-versions
 .projectile
 .dir-locals
+.elixir_ls

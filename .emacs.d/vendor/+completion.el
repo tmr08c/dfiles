@@ -102,7 +102,14 @@
                counsel-recentf
                counsel-org-capture
                counsel-grep-or-swiper)
-    :custom (counsel-mode-override-describe-bindings t))
+    :config
+    (setq counsel-mode-override-describe-bindings t
+          counsel-find-file-ignore-regexp "\\(?:^[#.]\\)\\|\\(?:[#~]$\\)\\|\\(?:^Icon?\\)"
+          counsel-describe-function-function #'helpful-callable
+          counsel-describe-variable-function #'helpful-variable
+          counsel-rg-base-command "rg -S --no-heading --line-number --color never %s ."
+          counsel-ag-base-command "ag -S --nocolor --nogroup %s"
+          counsel-pt-base-command "pt -S --nocolor --nogroup -e %s"))
   (use-package counsel-projectile
     :commands (counsel-projectile-switch-to-buffer
                counsel-projectile-find-dir
@@ -128,15 +135,16 @@
     :config
     (setq counsel-dash-browser-func 'eww
           counsel-dash-common-docsets '()))
-  (use-package counsel-etags
-    :after counsel
-    :commands (counsel-etags-find-tag-at-point
-               counsel-etags-scan-code
-               counsel-etags-grep
-               counsel-etags-grep-symbol-at-point
-               counsel-etags-recent-tag
-               counsel-etags-find-tag
-               counsel-etags-list-tag)))
+  ;; (use-package counsel-etags
+  ;;   :after counsel
+  ;;   :commands (counsel-etags-find-tag-at-point
+  ;;              counsel-etags-scan-code
+  ;;              counsel-etags-grep
+  ;;              counsel-etags-grep-symbol-at-point
+  ;;              counsel-etags-recent-tag
+  ;;              counsel-etags-find-tag
+  ;;              counsel-etags-list-tag))
+  )
 
 (provide '+completion)
 ;;; +completion.el ends here
