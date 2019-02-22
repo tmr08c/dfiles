@@ -31,6 +31,15 @@
                       [remap recentf-open-files]        'helm-recentf
                       [remap yank-pop]                  'helm-show-kill-ring
                       [remap swiper]                    'swiper-helm)
+  (with-eval-after-load 'helm-files
+    (general-nmap 'helm-map
+      "<tab>" 'helm-execute-persistent-action
+      "TAB" 'helm-execute-persistent-action
+      "C-z" 'helm-select-action)
+    (general-nmap 'helm-find-files-map
+      "S-TAB" 'helm-find-files-up-one-level
+      "<backtab>" 'helm-find-files-up-one-level
+      "S-<tab>" 'helm-find-files-up-one-level))
   (js|global-keymap
    "Ts" 'helm-themes))
 
