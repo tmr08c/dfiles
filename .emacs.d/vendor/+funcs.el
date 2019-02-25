@@ -5,7 +5,7 @@
 All of the arguments are treated exactly like they are in
 'general' package."
   `(space-leader-def
-     :states '(normal visual emacs)
+     :states '(normal visual motion emacs)
      ,@bindings))
 
 (defmacro js|keymap-for-mode (mode key def &rest bindings)
@@ -19,7 +19,7 @@ the rest of the arguments are treated exactly like they are in
       (push (concat "m" key) mode-bindings)
       (setq key (pop bindings) def (pop bindings)))
     `(space-leader-def
-       :states '(normal visual emacs)
+       :states '(normal visual motion emacs)
        :keymaps ',(intern (format "%s-map" (eval mode)))
        ,@mode-bindings)))
 

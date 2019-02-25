@@ -30,7 +30,17 @@
 (use-package general
   :demand
   :functions space-leader-def
+  :init
+  (setq general-override-states '(insert
+                                  emacs
+                                  hybrid
+                                  normal
+                                  visual
+                                  motion
+                                  operator
+                                  replace))
   :config
+  (general-auto-unbind-keys)
   (general-create-definer space-leader-def
     :prefix "SPC"
     :non-normal-prefix "C-SPC")
@@ -38,12 +48,13 @@
 
 (use-package evil
   :demand
-  :init (setq evil-want-C-u-scroll t) ; This MUST be in init.
+  :init (setq evil-want-C-u-scroll t
+              evil-want-integration t
+              evil-want-keybinding nil) ; This MUST be in init.
   :config
   (setq evil-want-visual-char-semi-exclusive t
         evil-want-Y-yank-to-eol t
         evil-shift-width 2
-        evil-want-integration nil
         evil-magic t
         evil-echo-state t
         evil-indent-convert-tabs t
@@ -106,6 +117,11 @@
   :defer t
   :delight
   :init (evil-commentary-mode))
+(use-package evil-collection
+  :after evil
+  :init
+  (setq evil-collection-company-use-tng nil)
+  (evil-collection-init))
 
 
 (use-package editorconfig
@@ -1297,14 +1313,15 @@ bin/doom while packages at compile-time (not a runtime though)."
   :defer 3
   :pin org
   :mode "\\.org\'"
-  :hook (org-mode . org-indent-mode)
   :config
   (progn
     (add-hook 'before-save-hook 'langtool-check)
     (js|org-keybindings)
     (setq org-src-tab-acts-natively t
-          org-insert-heading-respect-content t
           org-src-fontify-natively t
+          org-startup-indented t
+          org-insert-heading-respect-content t
+          org-hide-leading-stars t
           org-directory "~/org"
           org-default-notes-file (expand-file-name "notes.org" org-directory))
     (setq org-todo-keywords '((sequence "☛ TODO(t)" "|" "✔ DONE(d)")
@@ -1327,6 +1344,9 @@ bin/doom while packages at compile-time (not a runtime though)."
   :config
   (setq org-projectile-per-project-filepath "TODO.org"
         setq org-agenda-files (append org-agenda-files (org-projectile-todo-files))))
+(use-package org-bullets
+  :commands org-bullets-mode
+  :hook (org-mode . org-bullets-mode))
 (use-package evil-org
   :hook (org-mode . evil-org-mode)
   :custom
