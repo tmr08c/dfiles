@@ -24,5 +24,6 @@
 
 ;; Package initialize occurs automatically, before `user-init-file' is
 ;; loaded, but after `early-init-file'.
-(setq package-enable-at-startup nil)
+(setq package-enable-at-startup nil
+      load-prefer-newer t)
 

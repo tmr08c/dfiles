@@ -23,8 +23,6 @@
   (expand-file-name "config.el" user-emacs-directory)
   "The file path of your literate config file.")
 
-;;; Add load path for vendor directory
-(add-to-list 'load-path "~/.emacs.d/vendor/")
 
 ;;; Get package repos configured
 (require 'package)
@@ -48,11 +46,13 @@
       use-package-minimum-reported-time 0.01)
 
 (eval-when-compile
+  ;;; Add load path for vendor directory
+  (add-to-list 'load-path "~/.emacs.d/vendor/")
   (require 'use-package))
 
 (use-package quelpa
-  :custom
-  (quelpa-update-melpa-p nil))
+  :config
+  (setq quelpa-update-melpa-p nil))
 
 (use-package quelpa-use-package
   :after quelpa
@@ -81,16 +81,10 @@
         no-littering-etc-directory (expand-file-name "etc/" user-emacs-directory)
         custom-file (no-littering-expand-var-file-name "custom.el")))
 
-(use-package auto-package-update
-  :requires no-littering
-  :custom
-  (auto-package-update-interval 7)
-  (auto-package-update-delete-old-versions t)
-  (auto-package-update-hide-results t)
-  (auto-package-update-prompt-before-update t)
-  (apu--last-update-day-filename
-   (no-littering-expand-var-file-name "auto-update-package-last-update-day")))
-
+(use-package paradox
+  :config
+  (setq paradox-execute-asynchronously t
+        paradox-automatically-star t))
 
 (when (file-readable-p (concat user-emacs-directory "config.el"))
   (load-file (concat user-emacs-directory "config.el")))
