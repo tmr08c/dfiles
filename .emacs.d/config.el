@@ -1319,10 +1319,12 @@ bin/doom while packages at compile-time (not a runtime though)."
     (js|org-keybindings)
     (setq org-src-tab-acts-natively t
           org-src-fontify-natively t
+          org-return-follows-link t
           org-startup-indented t
           org-insert-heading-respect-content t
           org-hide-leading-stars t
           org-directory "~/org"
+          org-M-RET-may-split-line '((item . nil))
           org-default-notes-file (expand-file-name "notes.org" org-directory))
     (setq org-todo-keywords '((sequence "☛ TODO(t)" "|" "✔ DONE(d)")
                               (sequence "⚑ WAITING(w)" "|")
@@ -1347,6 +1349,8 @@ bin/doom while packages at compile-time (not a runtime though)."
 (use-package org-bullets
   :commands org-bullets-mode
   :hook (org-mode . org-bullets-mode))
+(use-package org-autolist
+  :hook (org-mode . org-autolist-mode))
 (use-package evil-org
   :hook (org-mode . evil-org-mode)
   :custom
