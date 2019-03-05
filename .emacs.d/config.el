@@ -69,7 +69,7 @@
         ;; don't activate mark on shift-click
         shift-select-mode nil
         ;; cursor appearance
-        evil-default-cursor '+evil-default-cursor
+        ;; evil-default-cursor '+evil-default-cursor
         evil-normal-state-cursor 'box
         ;; evil-emacs-state-cursor  '(box +evil-emacs-cursor)
         evil-insert-state-cursor 'bar
@@ -79,15 +79,6 @@
   ;; Disable Evil for the states below
   (evil-set-initial-state 'paradox-menu-mode 'emacs)
 
-  ;; Change the cursor color in emacs mode
-  (defvar +evil--default-cursor-color
-    (or (ignore-errors (frame-parameter nil 'cursor-color))
-        "#ffffff"))
-  (defun +evil-default-cursor () (set-cursor-color +evil--default-cursor-color))
-  (defun +evil-emacs-cursor () (set-cursor-color (face-foreground 'warning)))
-  (defun +evil|update-cursor-color ()
-    (setq +evil--default-cursor-color (face-background 'cursor)))
-  (add-hook 'doom-load-theme-hook #'+evil|update-cursor-color)
   (defun +evil|update-shift-width ()
     (setq evil-shift-width tab-width))
   (add-hook 'after-change-major-mode-hook #'+evil|update-shift-width t)

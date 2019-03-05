@@ -12,13 +12,6 @@
         doom-modeline-major-mode-icon t
         doom-modeline-lsp t))
 
-(use-package doom-themes ; base16 just look better
-  :defer t
-  :init
-  ;; (load-theme 'doom-molokai t)
-  (+evil|update-cursor-color))
-
-
 (use-package neotree ; Try to use dired instead
   :commands (neotree-toggle neotree-projectile-action)
   :config
