@@ -76,6 +76,9 @@
         evil-visual-state-cursor 'hollow)
   (fset 'evil-visual-update-x-selection 'ignore)
 
+  ;; Disable Evil for the states below
+  (evil-set-initial-state 'paradox-menu-mode 'emacs)
+
   ;; Change the cursor color in emacs mode
   (defvar +evil--default-cursor-color
     (or (ignore-errors (frame-parameter nil 'cursor-color))
