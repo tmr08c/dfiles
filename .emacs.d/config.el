@@ -251,8 +251,11 @@ _q_ quit            _c_ create          _<_ previous
   :hook (company-mode . company-prescient-mode)
   :config
   (prescient-persist-mode +1))
+(use-package flx)
 (use-package company-flx
   :hook (company-mode . company-flx-mode))
+(use-package company-posframe
+  :hook (company-mode . company-posframe-mode))
 
 ;; Language Server Protocol (LSP)
 (use-package lsp-mode
@@ -266,15 +269,31 @@ _q_ quit            _c_ create          _<_ previous
           elixir-mode
           go-mode) . lsp)
   :config
+  (setq lsp-auto-guess-root t
+        lsp-prefer-flymake nil)
   (add-to-list 'exec-path "~/code/github/elixir-ls/release"))
-  ;; (require 'lsp-clients)
-  ;; (setq lsp-enable-snippet t))
-;; :commands (lsp-mode lsp-define-stdio-client)
-;; :hook prog-mode
-;; :custom
-;; (lsp-message-project-root-warning t))
-(use-package company-lsp
-  :commands company-lsp)
+(use-package company-lsp)
+(use-package lsp-ui
+  :custom-face
+  (lsp-ui-doc-background ((t `(:background nil))))
+  :bind (:map lsp-ui-mode-map
+              ([remap xref-find-definitions] . lsp-ui-peek-find-definitions)
+              ([remap xref-find-references] . lsp-ui-peek-find-references)
+              ("C-c u" . lsp-ui-imenu))
+  :init
+  (setq lsp-ui-doc-enable t
+        lsp-ui-doc-include-signature t
+        lsp-ui-doc-position 'at-point
+        lsp-ui-doc-use-webkit t
+        lsp-ui-doc-border (face-foreground 'default)
+
+        lsp-ui-sideline-enable nil
+        lsp-ui-sideline-ignore-duplicate t)
+  :config
+  ;; WORKAROUND Hide mode-line of the lsp-ui-imenu buffer
+  ;; https://github.com/emacs-lsp/lsp-ui/issues/243
+  (defadvice lsp-ui-imenu (after hide-lsp-ui-imenu-mode-line activate)
+    (setq mode-line-format nil)))
 ;; (use-package dap-mode)
 
 (use-package smartparens
@@ -474,6 +493,8 @@ it to fix all that visual noise."
       fill-column)))
 
 (use-package swiper
+  :config
+  (setq swiper-action-recenter t)
   :general
   (general-define-key
    "C-s" 'swiper))
@@ -1110,34 +1131,23 @@ bin/doom while packages at compile-time (not a runtime though)."
           typescript-expr-indent-offset 2)))
 
 (use-package web-mode
-  :mode
-  (("\\.html\\'"       . web-mode)
-   ("\\.erb\\'"        . web-mode)
-   ("\\.eex\\'"        . web-mode)
-   ("\\.php\\'"        . web-mode)
-   ("\\.hbs\\'"        . web-mode)
-   ("\\.handlebars\\'" . web-mode)
-   ("\\.mustache\\'"   . web-mode)
-   ("\\.inky-erb\\'"   . web-mode)
-   ("\\.inky\\'"       . web-mode)
-   ("\\.hbs\\'"        . web-mode))
+  :mode "\\.\\(phtml\\|php|[gj]sp\\|as[cp]x\\|erb\\|djhtml\\|html?\\|hbs\\|ejs\\|jade\\|swig\\|tm?pl\\|vue\\)$"
   ;; :bind
   ;; (:map web-mode-map
   ;;       ("," . self-with-space)
   ;;       ("<C-return>" . html-newline-dwim))
   :config
-  (add-hook 'web-mode-hook #'turn-off-smartparens-mode)
-  :custom
-  (web-mode-markup-indent-offset 2)
-  (web-mode-css-indent-offset 2)
-  (web-mode-code-indent-offset 2)
-  (web-mode-enable-auto-quoting nil)
-  (web-mode-enable-current-element-highlight t))
+  (setq   web-mode-markup-indent-offset 2
+          web-mode-css-indent-offset 2
+          web-mode-code-indent-offset 2
+          web-mode-enable-auto-quoting nil
+          web-mode-enable-current-element-highlight t)
+  (add-hook 'web-mode-hook #'turn-off-smartparens-mode))
 
-(use-package company-web
-  :hook web-mode
-  :config
-  (add-to-list 'company-backends 'company-web-html))
+;; (use-package company-web
+;;   :hook web-mode
+;;   :config
+;;   (add-to-list 'company-backends 'company-web-html))
 
 (use-package css-mode
   :mode "\\.css\\.erb\\'"
