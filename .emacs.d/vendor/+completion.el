@@ -269,15 +269,6 @@
     :config
     (setq counsel-dash-browser-func 'eww
           counsel-dash-common-docsets '()))
-  ;; (use-package counsel-etags
-  ;;   :after counsel
-  ;;   :commands (counsel-etags-find-tag-at-point
-  ;;              counsel-etags-scan-code
-  ;;              counsel-etags-grep
-  ;;              counsel-etags-grep-symbol-at-point
-  ;;              counsel-etags-recent-tag
-  ;;              counsel-etags-find-tag
-  ;;              counsel-etags-list-tag))
   )
 
 (provide '+completion)
