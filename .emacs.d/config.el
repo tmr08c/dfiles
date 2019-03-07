@@ -493,6 +493,7 @@ it to fix all that visual noise."
       fill-column)))
 
 (use-package swiper
+  :after evil
   :config
   (setq swiper-action-recenter t)
   :general
