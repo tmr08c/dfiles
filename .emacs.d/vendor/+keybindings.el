@@ -7,6 +7,26 @@
                     [remap describe-key] #'helpful-key)
 
 (when (eq +completion-engine 'helm)
+  ;; Helm integration
+  (defun spacemacs/helm-persp-switch-project (arg)
+    (interactive "P")
+    (helm
+     :sources
+     (helm-build-in-buffer-source "*Helm Switch Project Layout*"
+                                  :data (lambda ()
+                                          (if (projectile-project-p)
+                                              (cons (abbreviate-file-name (projectile-project-root))
+                                                    (projectile-relevant-known-projects))
+                                            projectile-known-projects))
+                                  :fuzzy-match helm-projectile-fuzzy-match
+                                  :mode-line helm-read-file-name-mode-line-string
+                                  :action '(("Switch to Project Perspective" .
+                                             (lambda (project)
+                                               (let ((persp-reset-windows-on-nil-window-conf t))
+                                                 (persp-switch project)
+                                                 (let ((projectile-completion-system 'helm))
+                                                   (projectile-switch-project-by-name project)))))))
+     :buffer "*Helm Projectile Layouts*"))
   (general-define-key :keymaps 'global
                       [remap projectile-find-file]        'helm-projectile-find-file
                       [remap projectile-find-dir]         'helm-projectile-find-dir
@@ -41,9 +61,29 @@
       "<backtab>" 'helm-find-files-up-one-level
       "S-<tab>" 'helm-find-files-up-one-level))
   (js|global-keymap
+   "pl" '(spacemacs/helm-persp-switch-project :which-key "project layout")
    "Ts" 'helm-themes))
 
 (when (eq +completion-engine 'ivy)
+  ;; Ivy integration
+  (defun spacemacs/ivy-persp-switch-project-advice (project)
+    (let ((persp-reset-windows-on-nil-window-conf t))
+      (persp-switch project)))
+  (defun spacemacs/ivy-persp-switch-project (arg)
+    (interactive "P")
+    (require 'counsel-projectile)
+    (advice-add 'counsel-projectile-switch-project-action
+                :before #'spacemacs/ivy-persp-switch-project-advice)
+    (ivy-read "Switch to Project Perspective: "
+              (if (projectile-project-p)
+                  (cons (abbreviate-file-name (projectile-project-root))
+                        (projectile-relevant-known-projects))
+                projectile-known-projects)
+              :action #'counsel-projectile-switch-project-action
+              :caller 'spacemacs/ivy-persp-switch-project)
+    (advice-remove 'counsel-projectile-switch-project-action
+                   'spacemacs/ivy-persp-switch-project-advice))
+
   (general-define-key :keymaps 'global
                       [remap apropos]                  'counsel-apropos
                       [remap bookmark-jump]            'counsel-bookmark
@@ -79,6 +119,7 @@
           :which-key "Lookup thing at point")
    "dD" '(counsel-dash :which-key "Lookup thing at point with docset")
    "Ts"  '(counsel-load-theme :which-key "switch theme")
+   "pl" '(spacemacs/ivy-persp-switch-project :which-key "project layout")
    "p T" '(doom/ivy-tasks :which-key "List project tasks")))
 
 

@@ -123,9 +123,73 @@
   :config (editorconfig-mode 1))
 
 (use-package eyebrowse ; Easy workspaces creation and switching
+  :demand
   :delight
   :config
   (setq eyebrowse-new-workspace t)
+  (defhydra eyebrowse-hydra (:color blue)
+    "
+^
+^Eyebrowse^         ^Do^                ^Switch^
+^─────────^─────────^──^────────────────^──────^────────────
+_q_ quit            _c_ create          _<_ previous
+^^                  _k_ kill            _>_ next
+^^                  _r_ rename          _e_ last
+^^                  ^^                  _s_ switch
+^^                  ^^                  ^^
+"
+    ("q" nil)
+    ("<" eyebrowse-prev-window-config :color red)
+    (">" eyebrowse-next-window-config :color red)
+    ("c" eyebrowse-create-window-config)
+    ("e" eyebrowse-last-window-config)
+    ("k" eyebrowse-close-window-config :color red)
+    ("r" eyebrowse-rename-window-config)
+    ("s" eyebrowse-switch-to-window-config))
+  ;;  (defhydra eyebrowse-hydra (:hint nil :color red)
+  ;;    "\n\n
+  ;; Go to^^^^^^                         Actions^^
+  ;; ─────^^^^^^───────────────────────  ───────^^──────────────────────
+  ;; [_0_.._9_]^^     nth/new workspace  [_d_] close current workspace
+  ;; [_<tab>_]^^^^    last workspace     [_R_] rename current workspace
+  ;; [_c_/_C_]^^      create workspace
+  ;; [_n_/_C-l_]^^    next workspace
+  ;; [_p_/_C-h_]  prev workspace\n
+  ;; [_w_]^^^^       workspace w/helm/ivy\n"
+  ;;    ;; ("?" spacemacs//workspaces-ts-toggle-hint)
+  ;;    ("0" eyebrowse-switch-to-window-config-0 :exit t)
+  ;;    ("1" eyebrowse-switch-to-window-config-1 :exit t)
+  ;;    ("2" eyebrowse-switch-to-window-config-2 :exit t)
+  ;;    ("3" eyebrowse-switch-to-window-config-3 :exit t)
+  ;;    ("4" eyebrowse-switch-to-window-config-4 :exit t)
+  ;;    ("5" eyebrowse-switch-to-window-config-5 :exit t)
+  ;;    ("6" eyebrowse-switch-to-window-config-6 :exit t)
+  ;;    ("7" eyebrowse-switch-to-window-config-7 :exit t)
+  ;;    ("8" eyebrowse-switch-to-window-config-8 :exit t)
+  ;;    ("9" eyebrowse-switch-to-window-config-9 :exit t)
+  ;;    ("C-0" eyebrowse-switch-to-window-config-0)
+  ;;    ("C-1" eyebrowse-switch-to-window-config-1)
+  ;;    ("C-2" eyebrowse-switch-to-window-config-2)
+  ;;    ("C-3" eyebrowse-switch-to-window-config-3)
+  ;;    ("C-4" eyebrowse-switch-to-window-config-4)
+  ;;    ("C-5" eyebrowse-switch-to-window-config-5)
+  ;;    ("C-6" eyebrowse-switch-to-window-config-6)
+  ;;    ("C-7" eyebrowse-switch-to-window-config-7)
+  ;;    ("C-8" eyebrowse-switch-to-window-config-8)
+  ;;    ("C-9" eyebrowse-switch-to-window-config-9)
+  ;;    ("<tab>" eyebrowse-last-window-config)
+  ;;    ("<return>" nil :exit t)
+  ;;    ("TAB" eyebrowse-last-window-config)
+  ;;    ("RET" nil :exit t)
+  ;;    ("c" eyebrowse-create-window-config :exit t)
+  ;;    ("C" eyebrowse-create-window-config)
+  ;;    ("C-h" eyebrowse-prev-window-config)
+  ;;    ("C-l" eyebrowse-next-window-config)
+  ;;    ("d" eyebrowse-close-window-config)
+  ;;    ("n" eyebrowse-next-window-config)
+  ;;    ("p" eyebrowse-prev-window-config)
+  ;;    ("R" eyebrowse-rename-window-config :exit t)
+  ;;    ("w" eyebrowse-switch-to-window-config :exit t))
   (eyebrowse-mode t))
 
 (use-package projectile
@@ -580,6 +644,17 @@ For instance pass En as source for English."
   :hook (sql-mode . sqlind-minor-mode))
 (use-package sqlup-mode
   :hook (sql-mode . sql-interactive-mode-hook))
+
+;; Lua
+(use-package lua-mode
+  :mode "\\.lua\\'"
+  :config
+  (setq lua-indent-level 2
+        lua-indent-string-contents t))
+(use-package company-lua
+  :hook lua-mode
+  :config
+  (add-to-list 'company-backends 'company-lua))
 
 ;; CSV
 (use-package csv-mode
