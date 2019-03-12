@@ -508,10 +508,7 @@
                     "tT" 'sly-toggle-fancy-trace
                     "tu" 'sly-untrace-all)
 
-(defun js|org-keybindings ()
-  "Define all keybindings we use in org mode."
-  (js|keymap-for-mode
-   'org-mode
+(js|keymap-for-mode 'org-mode
    "'" 'org-edit-special
    "c" 'org-capture
 
@@ -674,41 +671,36 @@
    ;; "xs" (spacemacs|org-emphasize spacemacs/org-strike-through ?+)
    ;; "xu" (spacemacs|org-emphasize spacemacs/org-underline ?_)
    ;; "xv" (spacemacs|org-emphasize spacemacs/org-verbatim ?=) )
-   ))
+   )
 
-(defun js|javascript-keybindings ()
-  "Define keybindings when working with JavaScript."
-  (js|keymap-for-mode 'js2-mode
-                      "w" 'js2-mode-toggle-warnings-and-errors
+(js|keymap-for-mode 'js2-mode
+                    "w" 'js2-mode-toggle-warnings-and-errors
 
-                      "h" '(:ignore t :which-key "help")
-                      "g" '(:ignore t :which-key "goto")
-                      "r" '(:ignore t :which-key "refactor")
+                    "h" '(:ignore t :which-key "help")
+                    "g" '(:ignore t :which-key "goto")
+                    "r" '(:ignore t :which-key "refactor")
 
-                      "z" '(:ignore t :which-key "folding")
-                      "zc" 'js2-mode-hide-element
-                      "zo" 'js2-mode-show-element
-                      "zr" 'js2-mode-show-all
-                      "ze" 'js2-mode-toggle-element
-                      "zF" 'js2-mode-toggle-hide-functions
-                      "zC" 'js2-mode-toggle-hide-comments))
+                    "z" '(:ignore t :which-key "folding")
+                    "zc" 'js2-mode-hide-element
+                    "zo" 'js2-mode-show-element
+                    "zr" 'js2-mode-show-all
+                    "ze" 'js2-mode-toggle-element
+                    "zF" 'js2-mode-toggle-hide-functions
+                    "zC" 'js2-mode-toggle-hide-comments)
 
-(defun js|typescript-keybindings ()
-  "Define keybindings when working with TypeScript."
-  (js|keymap-for-mode 'typescript-mode
-                      "=" 'spacemacs/typescript-tsfmt-format-buffer
+(js|keymap-for-mode 'typescript-mode
 
-                      "g" '(:ignore t :which-key "goto")
-                      "gg" 'lsp-goto-implementation
-                      "gt" 'lsp-goto-type-definition
-                      "gu" 'xref-find-references
+                    "g" '(:ignore t :which-key "goto")
+                    "gg" 'lsp-goto-implementation
+                    "gt" 'lsp-goto-type-definition
+                    "gu" 'xref-find-references
 
-                      "h" '(:ignore t :which-key "help")
-                      "hh" 'lsp-describe-thing-at-point
-                      "hs" 'lsp-describe-session
+                    "h" '(:ignore t :which-key "help")
+                    "hh" 'lsp-describe-thing-at-point
+                    "hs" 'lsp-describe-session
 
-                      "r" '(:ignore t :which-key "refactor")
-                      "rr" 'lsp-rename))
+                    "r" '(:ignore t :which-key "refactor")
+                    "rr" 'lsp-rename)
 
 (defun js|neotree-keybindings ()
   "Define keybindings when working in Neotree"

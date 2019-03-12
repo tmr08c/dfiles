@@ -1083,53 +1083,15 @@ bin/doom while packages at compile-time (not a runtime though)."
   :hook
   (js2-mode . js2-imenu-extras-mode)
   :config
-  (js|javascript-keybindings)
   (setq-default js-switch-indent-offset 2
                 js-indent-level 2)
   (setenv "NODE_NO_READLINE" "1"))
 
 (use-package typescript-mode
-  :mode "\\.tsx?\\'"
+  ;; :mode "\\.tsx?\\'"
   :config
-  (progn
-    (defun spacemacs/typescript-tsfmt-format-buffer ()
-      "Format buffer with tsfmt."
-      (interactive)
-      (if (executable-find "tsfmt")
-          (let*  ((extension (file-name-extension (or buffer-file-name "tmp.ts") t))
-                  (tmpfile (make-temp-file "~fmt-tmp" nil extension))
-                  (coding-system-for-read 'utf-8)
-                  (coding-system-for-write 'utf-8)
-                  (outputbuf (get-buffer-create "*~fmt-tmp.ts*")))
-            (unwind-protect
-                (progn
-                  (with-current-buffer outputbuf (erase-buffer))
-                  (write-region nil nil tmpfile)
-                  (if (zerop (apply 'call-process "tsfmt" nil outputbuf nil
-                                    (list (format
-                                           "--baseDir='%s' --"
-                                           default-directory)
-                                          tmpfile)))
-                      (let ((p (point)))
-                        (save-excursion
-                          (with-current-buffer (current-buffer)
-                            (erase-buffer)
-                            (insert-buffer-substring outputbuf)))
-                        (goto-char p)
-                        (message "formatted.")
-                        (kill-buffer outputbuf))
-                    (progn
-                      (message "Formatting failed!")
-                      (display-buffer outputbuf)))
-                  (progn
-                    (delete-file tmpfile)))))
-        (error "Error: tsfmt not found. Run \"npm install -g typescript-formatter\"")))
-    (add-hook 'before-save-hook 'spacemacs/typescript-tsfmt-format-buffer)
-
-    (js|typescript-keybindings)
-
-    (setq typescript-indent-level 2
-          typescript-expr-indent-offset 2)))
+  (setq typescript-indent-level 2
+        typescript-expr-indent-offset 2))
 
 (use-package web-mode
   :mode "\\.\\(phtml\\|php|[gj]sp\\|as[cp]x\\|erb\\|djhtml\\|html?\\|hbs\\|ejs\\|jade\\|swig\\|tm?pl\\|vue\\)$"
@@ -1396,7 +1358,6 @@ bin/doom while packages at compile-time (not a runtime though)."
   :config
   (progn
     (add-hook 'before-save-hook 'langtool-check)
-    (js|org-keybindings)
     (setq org-src-tab-acts-natively t
           org-src-fontify-natively t
           org-return-follows-link t
