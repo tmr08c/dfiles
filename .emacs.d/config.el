@@ -438,6 +438,8 @@ it to fix all that visual noise."
   :disabled
   :bind ([remap fill-paragraph] . #'unfill-toggle))
 
+(use-package outshine
+  :hook (prog-mode . outshine-mode))
 (use-package hideshow
   :functions hs-toggle-hiding
   :ensure nil
@@ -935,34 +937,39 @@ bin/doom while packages at compile-time (not a runtime though)."
   :hook python-mode)
 
 ;; C (via irony-mode)
-(use-package irony
-  :hook ((c-mode . irony-mode)
-         (c++-mode . irony-mode))
+(use-package ccls
+  :requires lsp-mode
+  :hook ((c-mode c++-mode objc-mode) .
+         (lambda () (require 'ccls) (lsp)))
   :config
-  (progn
-    (setq irony-additional-clang-options '("-std=c++11"))
-    (setq-default irony-cdb-compilation-databases '(irony-cdb-clang-complete
-                                                    iron-cdb-libclang))
+  (setq ccls-executable "~/.local/bin/ccls"))
+;; (use-package irony
+;;   :hook ((c-mode . irony-mode)
+;;          (c++-mode . irony-mode))
+;;   :config
+;;   (progn
+;;     (setq irony-additional-clang-options '("-std=c++11"))
+;;     (setq-default irony-cdb-compilation-databases '(irony-cdb-clang-complete
+;;                                                     iron-cdb-libclang))
 
-    (add-hook 'irony-mode-hook 'irony-cdb-autosetup-compile-options))
-  (with-eval-after-load 'smartparens
-    (sp-with-modes '(c++-mode objc-mode)
-      (sp-local-pair "<" ">"
-                     :when '(+cc-sp-point-is-template-p +cc-sp-point-after-include-p)
-                     :post-handlers '(("| " "SPC"))))
-    (sp-with-modes '(c-mode c++-mode objc-mode java-mode)
-      (sp-local-pair "/*!" "*/" :post-handlers '(("||\n[i]" "RET") ("[d-1]< | " "SPC"))))))
-(use-package irony-eldoc
-  :hook (irony-mode . irony-eldoc))
-(use-package flycheck-irony
-  :hook (irony-mode . flycheck-irony-setup))
+;;     (add-hook 'irony-mode-hook 'irony-cdb-autosetup-compile-options))
+;;   (with-eval-after-load 'smartparens
+;;     (sp-with-modes '(c++-mode objc-mode)
+;;       (sp-local-pair "<" ">"
+;;                      :when '(+cc-sp-point-is-template-p +cc-sp-point-after-include-p)
+;;                      :post-handlers '(("| " "SPC"))))
+;;     (sp-with-modes '(c-mode c++-mode objc-mode java-mode)
+;;       (sp-local-pair "/*!" "*/" :post-handlers '(("||\n[i]" "RET") ("[d-1]< | " "SPC"))))))
+;; (use-package irony-eldoc
+;;   :hook (irony-mode . irony-eldoc))
+;; (use-package flycheck-irony
+;;   :hook (irony-mode . flycheck-irony-setup))
 ;; (use-package lsp-clangd
 ;;   :load-path "/vendor"
 ;;   :hook ((c-mode . lsp-clangd-c-enable)
 ;;          (c++-mode . lsp-clangd-c++-enable)
 ;;          (objc-mode . lsp-clangd-objc-enable)))
 (use-package platformio-mode
-  :after irony-mode
   :hook ((c-mode . platformio-conditionally-enable)
          (c++-mode . platformio-conditionally-enable)))
 (use-package clang-format
@@ -976,6 +983,7 @@ bin/doom while packages at compile-time (not a runtime though)."
 
     (add-hook 'before-save-hook #'c-mode-before-save-hook)))
 (use-package arduino-mode
+  :disabled
   :after irony
   :config
   (add-to-list 'irony-supported-major-modes 'arduino-mode)

@@ -19,5 +19,7 @@
     "editor.minimap.enabled": false,
     "editor.wordWrap": "wordWrapColumn",
     "workbench.iconTheme": "vscode-great-icons",
-    "search.runInExtensionHost": true
+    "search.runInExtensionHost": true,
+    "ccls.launch.command": "~/.local/bin/ccls",
+    "[cpp]": {}
 }

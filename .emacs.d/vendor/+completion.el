@@ -142,7 +142,7 @@
                                 :family ,(all-the-icons-icon-family icon)
                                 ))))))
 
-    (setq ivy-rich--display-transformers-list
+    (setq ivy-rich-display-transformers-list
           '(ivy-switch-buffer
             (:columns
              ((ivy-rich-buffer-icon (:width 1))
