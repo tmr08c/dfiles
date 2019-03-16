@@ -284,7 +284,7 @@ _q_ quit            _c_ create          _<_ previous
   (setq lsp-ui-doc-enable t
         lsp-ui-doc-include-signature t
         lsp-ui-doc-position 'at-point
-        lsp-ui-doc-use-webkit t
+        ;; lsp-ui-doc-use-webkit t
         lsp-ui-doc-border (face-foreground 'default)
 
         lsp-ui-sideline-enable nil

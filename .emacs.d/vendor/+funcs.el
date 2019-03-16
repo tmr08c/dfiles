@@ -204,7 +204,7 @@ MATCH is a string regexp. Only entries that match it will be included."
                (setq point1 (point))
                (setq line l1 col c1)
                (push `((,point0 . ,point1) . ,w) candidates)))
-    (require 'avy)
+    ;; (require 'avy)
     (avy-with avy-document-symbol
               (avy--process candidates
                             (avy--style-fn avy-style)))))

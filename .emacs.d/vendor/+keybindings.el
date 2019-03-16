@@ -244,96 +244,96 @@
                   "xgt" 'google-translate-at-point
 
                   "xt" '(:ignore t :which-key "transpose"))
-(js|keymap-for-mode 'elixir-mode
-                    "=" 'elixir-format
+;; (js|keymap-for-mode 'elixir-mode
+;;                     "=" 'elixir-format
 
-                    "e" '(:ignore t :which-key "eval")
-                    "el" 'alchemist-eval-current-line
-                    "eL" 'alchemist-eval-print-current-line
-                    "er" 'alchemist-eval-region
-                    "eR" 'alchemist-eval-print-region
-                    "eb" 'alchemist-eval-buffer
-                    "eB" 'alchemist-eval-print-buffer
-                    "ej" 'alchemist-eval-quoted-current-line
-                    "eJ" 'alchemist-eval-print-quoted-current-line
-                    "eu" 'alchemist-eval-quoted-region
-                    "eU" 'alchemist-eval-print-quoted-region
-                    "ev" 'alchemist-eval-quoted-buffer
-                    "eV" 'alchemist-eval-print-quoted-buffer
+;;                     "e" '(:ignore t :which-key "eval")
+;;                     "el" 'alchemist-eval-current-line
+;;                     "eL" 'alchemist-eval-print-current-line
+;;                     "er" 'alchemist-eval-region
+;;                     "eR" 'alchemist-eval-print-region
+;;                     "eb" 'alchemist-eval-buffer
+;;                     "eB" 'alchemist-eval-print-buffer
+;;                     "ej" 'alchemist-eval-quoted-current-line
+;;                     "eJ" 'alchemist-eval-print-quoted-current-line
+;;                     "eu" 'alchemist-eval-quoted-region
+;;                     "eU" 'alchemist-eval-print-quoted-region
+;;                     "ev" 'alchemist-eval-quoted-buffer
+;;                     "eV" 'alchemist-eval-print-quoted-buffer
 
-                    "g" '(:ignore t :which-key "goto")
-                    "gt" 'alchemist-project-toggle-file-and-tests
-                    "gT" 'alchemist-project-toggle-file-and-tests-other-window
-                    "gg" 'alchemist-goto-definition-at-point
-                    ;; "." 'alchemist-goto-definition-at-point
-                    "gb" 'alchemist-goto-jump-back
-                    ;; ","  'alchemist-goto-jump-back
-                    "gN" 'alchemist-goto-jump-to-previous-def-symbol
-                    "gn" 'alchemist-goto-jump-to-next-def-symbol
-                    "gj" 'alchemist-goto-list-symbol-definitions
+;;                     "g" '(:ignore t :which-key "goto")
+;;                     "gt" 'alchemist-project-toggle-file-and-tests
+;;                     "gT" 'alchemist-project-toggle-file-and-tests-other-window
+;;                     "gg" 'alchemist-goto-definition-at-point
+;;                     ;; "." 'alchemist-goto-definition-at-point
+;;                     "gb" 'alchemist-goto-jump-back
+;;                     ;; ","  'alchemist-goto-jump-back
+;;                     "gN" 'alchemist-goto-jump-to-previous-def-symbol
+;;                     "gn" 'alchemist-goto-jump-to-next-def-symbol
+;;                     "gj" 'alchemist-goto-list-symbol-definitions
 
 
-                    "h" '(:ignore t :which-key "help")
-                    "h:" 'alchemist-help
-                    "hH" 'alchemist-help-history
-                    "hh" 'alchemist-help-search-at-point
-                    "hr" 'alchemist-help--search-marked-region
+;;                     "h" '(:ignore t :which-key "help")
+;;                     "h:" 'alchemist-help
+;;                     "hH" 'alchemist-help-history
+;;                     "hh" 'alchemist-help-search-at-point
+;;                     "hr" 'alchemist-help--search-marked-region
 
-                    "m" '(:ignore t :which-key "mix")
-                    "m:" 'alchemist-mix
-                    "mc" 'alchemist-mix-compile
-                    "mx" 'alchemist-mix-run
+;;                     "m" '(:ignore t :which-key "mix")
+;;                     "m:" 'alchemist-mix
+;;                     "mc" 'alchemist-mix-compile
+;;                     "mx" 'alchemist-mix-run
 
-                    "s" '(:ignore t :which-key "iex")
-                    ;; "'"  'alchemist-iex-run
-                    "sc" 'alchemist-iex-compile-this-buffer
-                    "si" 'alchemist-iex-run
-                    "sI" 'alchemist-iex-project-run
-                    "sl" 'alchemist-iex-send-current-line
-                    "sL" 'alchemist-iex-send-current-line-and-go
-                    "sm" 'alchemist-iex-reload-module
-                    "sr" 'alchemist-iex-send-region
-                    "sR" 'alchemist-iex-send-region-and-go
+;;                     "s" '(:ignore t :which-key "iex")
+;;                     ;; "'"  'alchemist-iex-run
+;;                     "sc" 'alchemist-iex-compile-this-buffer
+;;                     "si" 'alchemist-iex-run
+;;                     "sI" 'alchemist-iex-project-run
+;;                     "sl" 'alchemist-iex-send-current-line
+;;                     "sL" 'alchemist-iex-send-current-line-and-go
+;;                     "sm" 'alchemist-iex-reload-module
+;;                     "sr" 'alchemist-iex-send-region
+;;                     "sR" 'alchemist-iex-send-region-and-go
 
-                    "t" '(:ignore t :which-key "test")
-                    "ta" 'alchemist-mix-test
-                    "tb" 'alchemist-mix-test-this-buffer
-                    "tB" 'alchemist-project-run-tests-for-current-file
-                    "tt" 'alchemist-mix-test-at-point
-                    "tF" 'alchemist-project-find-test
-                    "tf" 'alchemist-mix-test-file
-                    "tn" 'alchemist-test-mode-jump-to-next-test
-                    "tN" 'alchemist-test-mode-jump-to-previous-test
-                    "tr" 'alchemist-mix-rerun-last-test
-                    "ts" 'alchemist-mix-test-stale
-                    "tR" 'alchemist-test-toggle-test-report-display
+;;                     "t" '(:ignore t :which-key "test")
+;;                     "ta" 'alchemist-mix-test
+;;                     "tb" 'alchemist-mix-test-this-buffer
+;;                     "tB" 'alchemist-project-run-tests-for-current-file
+;;                     "tt" 'alchemist-mix-test-at-point
+;;                     "tF" 'alchemist-project-find-test
+;;                     "tf" 'alchemist-mix-test-file
+;;                     "tn" 'alchemist-test-mode-jump-to-next-test
+;;                     "tN" 'alchemist-test-mode-jump-to-previous-test
+;;                     "tr" 'alchemist-mix-rerun-last-test
+;;                     "ts" 'alchemist-mix-test-stale
+;;                     "tR" 'alchemist-test-toggle-test-report-display
 
-                    "x" '(:ignore t :which-key "execute")
-                    "xb" 'alchemist-execute-this-buffer
-                    "xf" 'alchemist-execute-file
-                    "x:" 'alchemist-execute
+;;                     "x" '(:ignore t :which-key "execute")
+;;                     "xb" 'alchemist-execute-this-buffer
+;;                     "xf" 'alchemist-execute-file
+;;                     "x:" 'alchemist-execute
 
-                    "c" '(:ignore t :which-key "compile")
-                    "cb" 'alchemist-compile-this-buffer
-                    "cf" 'alchemist-compile-file
-                    "c:" 'alchemist-compile
+;;                     "c" '(:ignore t :which-key "compile")
+;;                     "cb" 'alchemist-compile-this-buffer
+;;                     "cf" 'alchemist-compile-file
+;;                     "c:" 'alchemist-compile
 
-                    "X" '(:ignore t :which-key "hex")
-                    "Xi" 'alchemist-hex-info-at-point
-                    "Xr" 'alchemist-hex-releases-at-point
-                    "XR" 'alchemist-hex-releases
-                    "XI" 'alchemist-hex-info
-                    "Xs" 'alchemist-hex-search
+;;                     "X" '(:ignore t :which-key "hex")
+;;                     "Xi" 'alchemist-hex-info-at-point
+;;                     "Xr" 'alchemist-hex-releases-at-point
+;;                     "XR" 'alchemist-hex-releases
+;;                     "XI" 'alchemist-hex-info
+;;                     "Xs" 'alchemist-hex-search
 
-                    "o" '(:ignore t :which-key "macroexpand")
-                    "ol" 'alchemist-macroexpand-once-current-line
-                    "oL" 'alchemist-macroexpand-once-print-current-line
-                    "ok" 'alchemist-macroexpand-current-line
-                    "oK" 'alchemist-macroexpand-print-current-line
-                    "oi" 'alchemist-macroexpand-once-region
-                    "oI" 'alchemist-macroexpand-once-print-region
-                    "or" 'alchemist-macroexpand-region
-                    "oR" 'alchemist-macroexpand-print-region)
+;;                     "o" '(:ignore t :which-key "macroexpand")
+;;                     "ol" 'alchemist-macroexpand-once-current-line
+;;                     "oL" 'alchemist-macroexpand-once-print-current-line
+;;                     "ok" 'alchemist-macroexpand-current-line
+;;                     "oK" 'alchemist-macroexpand-print-current-line
+;;                     "oi" 'alchemist-macroexpand-once-region
+;;                     "oI" 'alchemist-macroexpand-once-print-region
+;;                     "or" 'alchemist-macroexpand-region
+;;                     "oR" 'alchemist-macroexpand-print-region)
 
 (js|keymap-for-mode 'pdf-view
                     ;; Slicing image
@@ -363,9 +363,11 @@
                     "O" 'pdf-outline
                     "n" 'pdf-view-midnight-minor-mode)
 
-(js|keymap-for-mode 'go-mode "t" '(:ignore t :which-key "test")
+(js|keymap-for-mode 'go-mode
+                    "t" '(:ignore t :which-key "test")
                     "ta" '(js|go-run-test-current-suite :which-key "run suite")
                     "tt" '(js|go-run-test-current-function :which-key "run current function")
+
                     "tg" '(:ignore t :which-key "generate")
                     "tgf" '(go-gen-test-exported :which-key "all exported functions")
                     "tga" '(go-gen-test-all :which-key "all functions")
@@ -676,9 +678,9 @@
 (js|keymap-for-mode 'js2-mode
                     "w" 'js2-mode-toggle-warnings-and-errors
 
-                    "h" '(:ignore t :which-key "help")
-                    "g" '(:ignore t :which-key "goto")
-                    "r" '(:ignore t :which-key "refactor")
+                    ;; "h" '(:ignore t :which-key "help")
+                    ;; "g" '(:ignore t :which-key "goto")
+                    ;; "r" '(:ignore t :which-key "refactor")
 
                     "z" '(:ignore t :which-key "folding")
                     "zc" 'js2-mode-hide-element
@@ -690,8 +692,8 @@
 
 (js|keymap-for-minor-mode 'lsp-mode
                           ;;format
-                          "=" '(:ignore t :wk "format")
-                          "=b" #'lsp-format-buffer
+                          ;; "=" '(:ignore t :wk "format")
+                          "=" #'lsp-format-buffer
 
                           ;;goto
                           "g" '(:ignore t :wk "goto")
@@ -717,19 +719,24 @@
                           ;;help
                           "h" '(:ignore t :wk "help")
                           "hh" #'lsp-describe-thing-at-point
+                          "hs" #'lsp-describe-session
+                          
                           ;;jump
                           ;;backend
                           "b" '(:ignore t :wk "backend")
                           "ba" #'lsp-execute-code-action
                           "bc" #'lsp-capabilities
                           "br" #'lsp-restart-workspace
+
                           ;;refactor
                           "r" '(:ignore t :wk "refactor")
                           "rr" #'lsp-rename
+
                           ;;toggles
                           "T" '(:ignore t :wk "toggle")
                           "Td" #'lsp-ui-doc-mode
-                          "Ts" #'lsp-ui-sideline-mode)
+                          "Ts" #'lsp-ui-sideline-mode
+                          "Tl" #'lsp-lens-mode)
 
 (js|keymap-for-mode 'typescript-mode
 
