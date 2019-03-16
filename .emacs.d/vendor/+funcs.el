@@ -161,10 +161,12 @@ MATCH is a string regexp. Only entries that match it will be included."
                            result))))))
         result)))))
 
+;;;###autoload
 (defun spacemacs/lsp-avy-goto-word ()
   (interactive)
   (spacemacs//lsp-avy-document-symbol t))
 
+;;;###autoload
 (defun spacemacs/lsp-avy-goto-symbol ()
   (interactive)
   (spacemacs//lsp-avy-document-symbol nil))
@@ -208,5 +210,27 @@ MATCH is a string regexp. Only entries that match it will be included."
     (avy-with avy-document-symbol
               (avy--process candidates
                             (avy--style-fn avy-style)))))
+
+;;;###autoload
+(defun spacemacs/nav-find-elisp-thing-at-point-other-window ()
+  "Find thing under point and go to it another window."
+  (interactive)
+  (let ((symb (variable-at-point)))
+    (if (and symb
+             (not (equal symb 0))
+             (not (fboundp symb)))
+        (find-variable-other-window symb)
+      (find-function-at-point))))
+
+;; Idea from http://www.reddit.com/r/emacs/comments/312ge1/i_created_this_function_because_i_was_tired_of/
+;;;###autoload
+(defun spacemacs/eval-current-form ()
+  "Find and evaluate the current def* or set* command.
+Unlike `eval-defun', this does not go to topmost function."
+  (interactive)
+  (save-excursion
+    (search-backward-regexp "(def\\|(set")
+    (forward-list)
+    (call-interactively 'eval-last-sexp)))
 
 (provide '+funcs)

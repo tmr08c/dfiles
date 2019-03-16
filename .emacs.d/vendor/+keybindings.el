@@ -435,17 +435,17 @@
                     "ss" 'ruby-switch-to-inf
 
                     "t" '(:ignore t :which-key "test")
-                    "ta"    'rspec-verify-all
-                    "tb"    'rspec-verify
-                    "tc"    'rspec-verify-continue
-                    "td"    'ruby/rspec-verify-directory
-                    "te"    'rspec-toggle-example-pendingness
-                    "tf"    'rspec-verify-method
-                    "tl"    'rspec-run-last-failed
-                    "tm"    'rspec-verify-matching
-                    "tr"    'rspec-rerun
-                    "tt"    'rspec-verify-single
-                    "t~"    'rspec-toggle-spec-and-target-find-example
+                    "ta" 'rspec-verify-all
+                    "tb" 'rspec-verify
+                    "tc" 'rspec-verify-continue
+                    "td" 'ruby/rspec-verify-directory
+                    "te" 'rspec-toggle-example-pendingness
+                    "tf" 'rspec-verify-method
+                    "tl" 'rspec-run-last-failed
+                    "tm" 'rspec-verify-matching
+                    "tr" 'rspec-rerun
+                    "tt" 'rspec-verify-single
+                    "t~" 'rspec-toggle-spec-and-target-find-example
                     "t TAB" 'rspec-toggle-spec-and-target
 
                     "T" '(:ignore t :which-key "toggle")
@@ -510,170 +510,213 @@
                     "tT" 'sly-toggle-fancy-trace
                     "tu" 'sly-untrace-all)
 
+(js|keymap-for-mode 'web-mode
+                    "E" '(:ignore t :wk "errors")
+                    "El" 'web-mode-dom-errors-show
+
+                    "g" '(:ignore t :wk "goto")
+                    "gb" 'web-mode-element-beginning
+                    "gc" 'web-mode-element-child
+                    "gp" 'web-mode-element-parent
+                    "gs" 'web-mode-element-sibling-next
+
+                    "h" '(:ignore t :wk "dom")
+                    "hp" 'web-mode-dom-xpath
+
+                    "r" '(:ignore t :wk "refactor")
+                    "rc" 'web-mode-element-clone
+                    "rd" 'web-mode-element-vanish
+                    "rk" 'web-mode-element-kill
+                    "rr" 'web-mode-element-rename
+                    "rw" 'web-mode-element-wrap
+
+                    "z"  'web-mode-fold-or-unfold)
+
+(js|keymap-for-mode 'emacs-lisp-mode
+                    "'" 'ielm
+
+                    "c" '(:ignore t :wk "compile")
+                    "cc" 'emacs-lisp-byte-compile
+
+                    "e" '(:ignore t :wk "eval")
+                    "e$" 'lisp-state-eval-sexp-end-of-line
+                    "eb" 'eval-buffer
+                    "eC" 'spacemacs/eval-current-form
+                    "ee" 'eval-last-sexp
+                    "er" 'eval-region
+                    "ef" 'eval-defun
+                    "el" 'lisp-state-eval-sexp-end-of-line
+
+                    "gG" 'spacemacs/nav-find-elisp-thing-at-point-other-window
+                    ","  'lisp-state-toggle-lisp-state
+
+                    "s" '(:ignore t :wk "ielm")
+                    "si" 'ielm)
+
 (js|keymap-for-mode 'org-mode
-   "'" 'org-edit-special
-   "c" 'org-capture
+                    "'" 'org-edit-special
+                    "c" 'org-capture
 
-   ;; Clock
-   ;; These keybindings should match those under the "aoC" prefix (below)
-   "C" '(:ignore t :which-key "clocks")
-   "Cc" 'org-clock-cancel
-   "Cd" 'org-clock-display
-   "Ce" 'org-evaluate-time-range
-   "Cg" 'org-clock-goto
-   "Ci" 'org-clock-in
-   "CI" 'org-clock-in-last
-   "Cj" 'org-clock-jump-to-current-clock
-   "Co" 'org-clock-out
-   "CR" 'org-clock-report
-   "Cr" 'org-resolve-clocks
+                    ;; Clock
+                    ;; These keybindings should match those under the "aoC" prefix (below)
+                    "C" '(:ignore t :which-key "clocks")
+                    "Cc" 'org-clock-cancel
+                    "Cd" 'org-clock-display
+                    "Ce" 'org-evaluate-time-range
+                    "Cg" 'org-clock-goto
+                    "Ci" 'org-clock-in
+                    "CI" 'org-clock-in-last
+                    "Cj" 'org-clock-jump-to-current-clock
+                    "Co" 'org-clock-out
+                    "CR" 'org-clock-report
+                    "Cr" 'org-resolve-clocks
 
-   "d" '(:ignore t :which-key "dates")
-   "dd" 'org-deadline
-   "ds" 'org-schedule
-   "dt" 'org-time-stamp
-   "dT" 'org-time-stamp-inactive
-   "ee" 'org-export-dispatch
-   "fi" 'org-feed-goto-inbox
-   "fu" 'org-feed-update-all
+                    "d" '(:ignore t :which-key "dates")
+                    "dd" 'org-deadline
+                    "ds" 'org-schedule
+                    "dt" 'org-time-stamp
+                    "dT" 'org-time-stamp-inactive
+                    "ee" 'org-export-dispatch
+                    "fi" 'org-feed-goto-inbox
+                    "fu" 'org-feed-update-all
 
-   "a" 'org-agenda
+                    "a" 'org-agenda
 
-   "p" 'org-priority
+                    "p" 'org-priority
 
-   "T" '(:ignore t :which-key "toggles")
-   "Tc" 'org-toggle-checkbox
-   "Te" 'org-toggle-pretty-entities
-   "Ti" 'org-toggle-inline-images
-   "Tl" 'org-toggle-link-display
-   "Tt" 'org-show-todo-tree
-   "TT" 'org-todo
-   "TV" 'space-doc-mode
-   "Tx" 'org-toggle-latex-fragment
+                    "T" '(:ignore t :which-key "toggles")
+                    "Tc" 'org-toggle-checkbox
+                    "Te" 'org-toggle-pretty-entities
+                    "Ti" 'org-toggle-inline-images
+                    "Tl" 'org-toggle-link-display
+                    "Tt" 'org-show-todo-tree
+                    "TT" 'org-todo
+                    "TV" 'space-doc-mode
+                    "Tx" 'org-toggle-latex-fragment
 
-   ;; More cycling options (timestamps, headlines, items, properties)
-   "L" 'org-shiftright
-   "H" 'org-shiftleft
-   "J" 'org-shiftdown
-   "K" 'org-shiftup
+                    ;; More cycling options (timestamps, headlines, items, properties)
+                    "L" 'org-shiftright
+                    "H" 'org-shiftleft
+                    "J" 'org-shiftdown
+                    "K" 'org-shiftup
 
-   ;; Change between TODO sets
-   "C-S-l" 'org-shiftcontrolright
-   "C-S-h" 'org-shiftcontrolleft
-   "C-S-j" 'org-shiftcontroldown
-   "C-S-k" 'org-shiftcontrolup
+                    ;; Change between TODO sets
+                    "C-S-l" 'org-shiftcontrolright
+                    "C-S-h" 'org-shiftcontrolleft
+                    "C-S-j" 'org-shiftcontroldown
+                    "C-S-k" 'org-shiftcontrolup
 
-   ;; Subtree editing
-   "s" '(:ignore t :which-key "trees/subtrees")
-   "sa" 'org-toggle-archive-tag
-   "sA" 'org-archive-subtree
-   "sb" 'org-tree-to-indirect-buffer
-   "sh" 'org-promote-subtree
-   "sj" 'org-move-subtree-down
-   "sk" 'org-move-subtree-up
-   "sl" 'org-demote-subtree
-   "sn" 'org-narrow-to-subtree
-   "sN" 'widen
-   "sr" 'org-refile
-   "ss" 'org-sparse-tree
-   "sS" 'org-sort
+                    ;; Subtree editing
+                    "s" '(:ignore t :which-key "trees/subtrees")
+                    "sa" 'org-toggle-archive-tag
+                    "sA" 'org-archive-subtree
+                    "sb" 'org-tree-to-indirect-buffer
+                    "sh" 'org-promote-subtree
+                    "sj" 'org-move-subtree-down
+                    "sk" 'org-move-subtree-up
+                    "sl" 'org-demote-subtree
+                    "sn" 'org-narrow-to-subtree
+                    "sN" 'widen
+                    "sr" 'org-refile
+                    "ss" 'org-sparse-tree
+                    "sS" 'org-sort
 
-   ;; tables
-   "t" '(:ignore t :which-key "tables")
-   "ta" 'org-table-align
-   "tb" 'org-table-blank-field
-   "tc" 'org-table-convert
-   "tdc" 'org-table-delete-column
-   "tdr" 'org-table-kill-row
-   "te" 'org-table-eval-formula
-   "tE" 'org-table-export
-   "th" 'org-table-previous-field
-   "tH" 'org-table-move-column-left
+                    ;; tables
+                    "t" '(:ignore t :which-key "tables")
+                    "ta" 'org-table-align
+                    "tb" 'org-table-blank-field
+                    "tc" 'org-table-convert
+                    "tdc" 'org-table-delete-column
+                    "tdr" 'org-table-kill-row
+                    "te" 'org-table-eval-formula
+                    "tE" 'org-table-export
+                    "th" 'org-table-previous-field
+                    "tH" 'org-table-move-column-left
 
-   "ti" '(:ignore t :which-key "insert")
-   "tic" 'org-table-insert-column
-   "tih" 'org-table-insert-hline
-   "tiH" 'org-table-hline-and-move
-   "tir" 'org-table-insert-row
+                    "ti" '(:ignore t :which-key "insert")
+                    "tic" 'org-table-insert-column
+                    "tih" 'org-table-insert-hline
+                    "tiH" 'org-table-hline-and-move
+                    "tir" 'org-table-insert-row
 
-   "tI" 'org-table-import
-   "tj" 'org-table-next-row
-   "tJ" 'org-table-move-row-down
-   "tK" 'org-table-move-row-up
-   "tl" 'org-table-next-field
-   "tL" 'org-table-move-column-right
-   "tn" 'org-table-create
-   "tN" 'org-table-create-with-table.el
-   "tr" 'org-table-recalculate
-   "ts" 'org-table-sort-lines
+                    "tI" 'org-table-import
+                    "tj" 'org-table-next-row
+                    "tJ" 'org-table-move-row-down
+                    "tK" 'org-table-move-row-up
+                    "tl" 'org-table-next-field
+                    "tL" 'org-table-move-column-right
+                    "tn" 'org-table-create
+                    "tN" 'org-table-create-with-table.el
+                    "tr" 'org-table-recalculate
+                    "ts" 'org-table-sort-lines
 
-   "tt" '(:ignore t :which-key "toggle")
-   "ttf" 'org-table-toggle-formula-debugger
-   "tto" 'org-table-toggle-coordinate-overlays
+                    "tt" '(:ignore t :which-key "toggle")
+                    "ttf" 'org-table-toggle-formula-debugger
+                    "tto" 'org-table-toggle-coordinate-overlays
 
-   "tw" 'org-table-wrap-region
+                    "tw" 'org-table-wrap-region
 
-   ;; Source blocks / org-babel
-   "b" '(:ignore t :which-key "babel")
-   "bp" 'org-babel-previous-src-block
-   "bn" 'org-babel-next-src-block
-   "be" 'org-babel-execute-maybe
-   "bo" 'org-babel-open-src-block-result
-   "bv" 'org-babel-expand-src-block
-   "bu" 'org-babel-goto-src-block-head
-   "bg" 'org-babel-goto-named-src-block
-   "br" 'org-babel-goto-named-result
-   "bb" 'org-babel-execute-buffer
-   "bs" 'org-babel-execute-subtree
-   "bd" 'org-babel-demarcate-block
-   "bt" 'org-babel-tangle
-   "bf" 'org-babel-tangle-file
-   "bc" 'org-babel-check-src-block
-   "bj" 'org-babel-insert-header-arg
-   "bl" 'org-babel-load-in-session
-   "bi" 'org-babel-lob-ingest
-   "bI" 'org-babel-view-src-block-info
-   "bz" 'org-babel-switch-to-session
-   "bZ" 'org-babel-switch-to-session-with-code
-   "ba" 'org-babel-sha1-hash
-   "bx" 'org-babel-do-key-sequence-in-edit-buffer
-   ;; "b." 'spacemacs/org-babel-transient-state/body
+                    ;; Source blocks / org-babel
+                    "b" '(:ignore t :which-key "babel")
+                    "bp" 'org-babel-previous-src-block
+                    "bn" 'org-babel-next-src-block
+                    "be" 'org-babel-execute-maybe
+                    "bo" 'org-babel-open-src-block-result
+                    "bv" 'org-babel-expand-src-block
+                    "bu" 'org-babel-goto-src-block-head
+                    "bg" 'org-babel-goto-named-src-block
+                    "br" 'org-babel-goto-named-result
+                    "bb" 'org-babel-execute-buffer
+                    "bs" 'org-babel-execute-subtree
+                    "bd" 'org-babel-demarcate-block
+                    "bt" 'org-babel-tangle
+                    "bf" 'org-babel-tangle-file
+                    "bc" 'org-babel-check-src-block
+                    "bj" 'org-babel-insert-header-arg
+                    "bl" 'org-babel-load-in-session
+                    "bi" 'org-babel-lob-ingest
+                    "bI" 'org-babel-view-src-block-info
+                    "bz" 'org-babel-switch-to-session
+                    "bZ" 'org-babel-switch-to-session-with-code
+                    "ba" 'org-babel-sha1-hash
+                    "bx" 'org-babel-do-key-sequence-in-edit-buffer
+                    ;; "b." 'spacemacs/org-babel-transient-state/body
 
-   ;; Multi-purpose keys
-   "," 'org-ctrl-c-ctrl-c
-   "*" 'org-ctrl-c-star
-   "-" 'org-ctrl-c-minus
-   "#" 'org-update-statistics-cookies
-   "RET"   'org-ctrl-c-ret
-   "M-RET" 'org-meta-return
-   ;; attachments
-   "A" 'org-attach
-   ;; insertion
-   "i" '(:ignore t :which-key "insert")
-   "id" 'org-insert-drawer
-   "ie" 'org-set-effort
-   "if" 'org-footnote-new
-   "ih" 'org-insert-heading
-   "iH" 'org-insert-heading-after-current
-   ;; "iK" 'spacemacs/insert-keybinding-org
-   "il" 'org-insert-link
-   "in" 'org-add-note
-   "ip" 'org-set-property
-   "is" 'org-insert-subheading
-   "it" 'org-set-tags
+                    ;; Multi-purpose keys
+                    "," 'org-ctrl-c-ctrl-c
+                    "*" 'org-ctrl-c-star
+                    "-" 'org-ctrl-c-minus
+                    "#" 'org-update-statistics-cookies
+                    "RET"   'org-ctrl-c-ret
+                    "M-RET" 'org-meta-return
+                    ;; attachments
+                    "A" 'org-attach
+                    ;; insertion
+                    "i" '(:ignore t :which-key "insert")
+                    "id" 'org-insert-drawer
+                    "ie" 'org-set-effort
+                    "if" 'org-footnote-new
+                    "ih" 'org-insert-heading
+                    "iH" 'org-insert-heading-after-current
+                    ;; "iK" 'spacemacs/insert-keybinding-org
+                    "il" 'org-insert-link
+                    "in" 'org-add-note
+                    "ip" 'org-set-property
+                    "is" 'org-insert-subheading
+                    "it" 'org-set-tags
 
-   "x" '(:ignore t :which-key "text")
-   ;; region manipulation
+                    "x" '(:ignore t :which-key "text")
+                    ;; region manipulation
 
-   ;; "xb" (spacemacs|org-emphasize spacemacs/org-bold ?*)
-   ;; "xc" (spacemacs|org-emphasize spacemacs/org-code ?~)
-   ;; "xi" (spacemacs|org-emphasize spacemacs/org-italic ?/)
-   "xo" 'org-open-at-point
-   ;; "xr" (spacemacs|org-emphasize spacemacs/org-clear ? )
-   ;; "xs" (spacemacs|org-emphasize spacemacs/org-strike-through ?+)
-   ;; "xu" (spacemacs|org-emphasize spacemacs/org-underline ?_)
-   ;; "xv" (spacemacs|org-emphasize spacemacs/org-verbatim ?=) )
-   )
+                    ;; "xb" (spacemacs|org-emphasize spacemacs/org-bold ?*)
+                    ;; "xc" (spacemacs|org-emphasize spacemacs/org-code ?~)
+                    ;; "xi" (spacemacs|org-emphasize spacemacs/org-italic ?/)
+                    "xo" 'org-open-at-point
+                    ;; "xr" (spacemacs|org-emphasize spacemacs/org-clear ? )
+                    ;; "xs" (spacemacs|org-emphasize spacemacs/org-strike-through ?+)
+                    ;; "xu" (spacemacs|org-emphasize spacemacs/org-underline ?_)
+                    ;; "xv" (spacemacs|org-emphasize spacemacs/org-verbatim ?=) )
+                    )
 
 (js|keymap-for-mode 'js2-mode
                     "w" 'js2-mode-toggle-warnings-and-errors
