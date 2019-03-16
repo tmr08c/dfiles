@@ -688,6 +688,49 @@
                     "zF" 'js2-mode-toggle-hide-functions
                     "zC" 'js2-mode-toggle-hide-comments)
 
+(js|keymap-for-minor-mode 'lsp-mode
+                          ;;format
+                          "=" '(:ignore t :wk "format")
+                          "=b" #'lsp-format-buffer
+
+                          ;;goto
+                          "g" '(:ignore t :wk "goto")
+                          "gt" #'lsp-find-type-definition
+                          "gk" #'spacemacs/lsp-avy-goto-word
+                          "gK" #'spacemacs/lsp-avy-goto-symbol
+                          "ge" #'lsp-ui-flycheck-list
+                          "gM" #'lsp-ui-imenu
+                          "gi" #'lsp-find-implementation
+                          "gd" #'xref-find-definitions
+                          "gr" #'xref-find-references
+                          "gs" #'lsp-ui-find-workspace-symbol
+                          "gp" #'xref-pop-marker-stack
+
+                          "G" '(:ignore t :wk "peek")
+                          "Gi" #'lsp-ui-peek-find-implementation
+                          "Gd" #'lsp-ui-peek-find-definitions
+                          "Gr" #'lsp-ui-peek-find-references
+                          "Gs" #'lsp-ui-peek-find-workspace-symbol
+                          "Gp" #'lsp-ui-peek-jump-backward
+                          "Gn" #'lsp-ui-peek-jump-forward
+
+                          ;;help
+                          "h" '(:ignore t :wk "help")
+                          "hh" #'lsp-describe-thing-at-point
+                          ;;jump
+                          ;;backend
+                          "b" '(:ignore t :wk "backend")
+                          "ba" #'lsp-execute-code-action
+                          "bc" #'lsp-capabilities
+                          "br" #'lsp-restart-workspace
+                          ;;refactor
+                          "r" '(:ignore t :wk "refactor")
+                          "rr" #'lsp-rename
+                          ;;toggles
+                          "T" '(:ignore t :wk "toggle")
+                          "Td" #'lsp-ui-doc-mode
+                          "Ts" #'lsp-ui-sideline-mode)
+
 (js|keymap-for-mode 'typescript-mode
 
                     "g" '(:ignore t :which-key "goto")

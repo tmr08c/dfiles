@@ -970,18 +970,18 @@ bin/doom while packages at compile-time (not a runtime though)."
 ;;          (c++-mode . lsp-clangd-c++-enable)
 ;;          (objc-mode . lsp-clangd-objc-enable)))
 (use-package platformio-mode
-  :hook ((c-mode . platformio-conditionally-enable)
-         (c++-mode . platformio-conditionally-enable)))
+  :hook ((c-mode c++-mode) . platformio-conditionally-enable))
 (use-package clang-format
-  :disabled
-  :after irony
-  :config
-  (progn
-    (defun c-mode-before-save-hook ()
-      (when (or (eq major-mode 'c++-mode) (eq major-mode 'c-mode))
-        (call-interactively 'clang-format)))
+  :commands (clang-format))
+  ;; :hook (c-mode c++-mode)
+  ;; :config
+  ;; (progn
+  ;;   (defun c-mode-before-save-hook ()
+  ;;     (when (or (eq major-mode 'c++-mode) (eq major-mode 'c-mode))
+  ;;       (call-interactively 'clang-format)))
 
-    (add-hook 'before-save-hook #'c-mode-before-save-hook)))
+  ;;   (add-hook 'before-save-hook #'c-mode-before-save-hook)))
+
 (use-package arduino-mode
   :disabled
   :after irony
