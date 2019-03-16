@@ -173,7 +173,7 @@ MATCH is a string regexp. Only entries that match it will be included."
 (defun spacemacs//lsp-avy-document-symbol (all)
   (interactive)
   (let ((line 0) (col 0) (w (selected-window))
-        (ccls (and (memq major-mode '(c-mode c++-mode objc-mode)) (eq c-c++-backend 'lsp-ccls)))
+        (ccls (memq major-mode '(c-mode c++-mode objc-mode)))
         (start-line (1- (line-number-at-pos (window-start))))
         (end-line (1- (line-number-at-pos (window-end))))
         ranges point0 point1
@@ -184,7 +184,7 @@ MATCH is a string regexp. Only entries that match it will be included."
                (lsp--send-request (lsp--make-request
                                    "textDocument/documentSymbol"
                                    `(:textDocument ,(lsp--text-document-identifier)
-                                                   :all ,(if all t :json-false)
+                                                   ,@(when all '(excludeRole 0))
                                                    :startLine ,start-line :endLine ,end-line)))
                for range = (if ccls loc (->> loc (gethash "location") (gethash "range")))
                for range_start = (gethash "start" range)
@@ -204,7 +204,7 @@ MATCH is a string regexp. Only entries that match it will be included."
                (setq point1 (point))
                (setq line l1 col c1)
                (push `((,point0 . ,point1) . ,w) candidates)))
-    ;; (require 'avy)
+    (require 'avy)
     (avy-with avy-document-symbol
               (avy--process candidates
                             (avy--style-fn avy-style)))))
