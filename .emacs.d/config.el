@@ -122,6 +122,9 @@
   :defer t
   :config (editorconfig-mode 1))
 
+(use-package focus
+  :commands (focus-mode))
+
 (use-package eyebrowse ; Easy workspaces creation and switching
   :demand
   :delight
