@@ -1512,5 +1512,6 @@ bin/doom while packages at compile-time (not a runtime though)."
 (add-to-list 'default-frame-alist '(ns-transparent-titlebar . t))
 (add-to-list 'default-frame-alist '(ns-appearance . dark))
 
+(load "~/.emacs.secrets" t)
 (provide 'config)
 ;;; config.el ends here
