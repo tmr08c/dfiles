@@ -21,5 +21,6 @@
     "workbench.iconTheme": "vscode-great-icons",
     "search.runInExtensionHost": true,
     "ccls.launch.command": "~/.local/bin/ccls",
-    "[cpp]": {}
+    "[cpp]": {},
+    "platformio-ide.forceUploadAndMonitor": true
 }
