@@ -540,36 +540,35 @@ For instance pass En as source for English."
 
 ;; Golang
 (use-package go-mode
-  :mode "\\.go\\'"
-  :requires (company)
-  :config
-  (add-hook 'before-save-hook 'gofmt-before-save)
-  (defun my-go-mode-hook-fn ()
-    (go-eldoc-setup)
-    ;; (set (make-local-variable 'company-backends) '(company-go))
-    (setq-local company-backends '(company-go))
-    (setq tab-width 2
-          indent-tabs-mode 1)
-    (flycheck-gometalinter-setup)
-    (flycheck-mode 1))
-  (add-hook 'go-mode-hook #'my-go-mode-hook-fn)
-  :custom
-  (gofmt-command "goimports"))
+  :mode "\\.go\\'")
+;; :config
+;; (add-hook 'before-save-hook 'gofmt-before-save)
+;; (defun my-go-mode-hook-fn ()
+;;   (go-eldoc-setup)
+;;   ;; (set (make-local-variable 'company-backends) '(company-go))
+;;   (setq-local company-backends '(company-go))
+;;   (setq tab-width 2
+;;         indent-tabs-mode 1)
+;;   (flycheck-gometalinter-setup)
+;;   (flycheck-mode 1))
+;; (add-hook 'go-mode-hook #'my-go-mode-hook-fn)
+;; :custom
+;; (gofmt-command "goimports"))
 (use-package go-eldoc
   :commands go-eldoc-setup)
-(use-package flycheck-gometalinter
-  :commands flycheck-gometalinter-setup
-  ;; :hook (go-mode . flycheck-gometalinter-setup)
-  :custom
-  ;; skip linting for vendor dirs
-  (flycheck-gometalinter-vendor t)
-  ;; use in test files
-  (flycheck-gometalinter-test t)
-  ;; only use fast linters
-  (flycheck-gometalinter-fast t)
-  ;; explicitly disable 'gotype' & 'govet' linters (also currently broken Nix overlays)
-  (flycheck-gometalinter-disable-linters
-   '("gosec" "gotype" "vet" "vetshadow" "megacheck" "interfacer" "ineffassign")))
+;; (use-package flycheck-gometalinter
+;;   :commands flycheck-gometalinter-setup
+;;   ;; :hook (go-mode . flycheck-gometalinter-setup)
+;;   :custom
+;;   ;; skip linting for vendor dirs
+;;   (flycheck-gometalinter-vendor t)
+;;   ;; use in test files
+;;   (flycheck-gometalinter-test t)
+;;   ;; only use fast linters
+;;   (flycheck-gometalinter-fast t)
+;;   ;; explicitly disable 'gotype' & 'govet' linters (also currently broken Nix overlays)
+;;   (flycheck-gometalinter-disable-linters
+;;    '("gosec" "gotype" "vet" "vetshadow" "megacheck" "interfacer" "ineffassign")))
 (use-package go-projectile
   :hook (go-mode . go-projectile-mode))
 (use-package go-gen-test
