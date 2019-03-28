@@ -244,6 +244,14 @@
                   "xgt" 'google-translate-at-point
 
                   "xt" '(:ignore t :which-key "transpose"))
+(js|keymap-for-mode 'elixir-mode
+                    "t" '(:ignore t :which-key "test")
+                    "tb" 'exunit-verify-all
+                    "tB" 'exunit-verify-all-in-umbrella
+                    "ta" 'exunit-verify
+                    "tk" 'exunit-rerun
+                    "tt" 'exunit-verify-single)
+;; NOTE outdated from alchemist set up. Here for reference
 ;; (js|keymap-for-mode 'elixir-mode
 ;;                     "=" 'elixir-format
 
@@ -403,6 +411,25 @@
 
 (js|keymap-for-mode 'json-mode
                     "=" 'spacemacs/json-reformat-dwim)
+
+(js|keymap-for-mode 'adoc-mode
+                    "h" '(:ignore t :which-key "headers")
+                    "h1" 'tempo-template-adoc-title-1
+                    ;; Alternative method of inserting top-level heading
+                    "hI" 'tempo-template-adoc-title-1
+                    "h2" 'tempo-template-adoc-title-2
+                    ;; Alternative method of inserting the most usual heading
+                    "hi" 'tempo-template-adoc-title-2
+                    "h3" 'tempo-template-adoc-title-3
+                    "h4" 'tempo-template-adoc-title-4
+                    "h5" 'tempo-template-adoc-title-5
+
+                    "x" '(:ignore t :which-key "text")
+                    "xb" 'tempo-template-adoc-strong
+                    "xi" 'tempo-template-adoc-emphasis
+
+                    "p" 'adoc-promote
+                    "d" 'adoc-demote)
 
 (js|keymap-for-mode 'ruby-mode
                     "b" '(:ignore t :which-key "bundle")

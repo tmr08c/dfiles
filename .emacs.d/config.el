@@ -263,24 +263,28 @@ _q_ quit            _c_ create          _<_ previous
 ;; Language Server Protocol (LSP)
 (use-package lsp-mode
   :commands lsp
-  :hook ((ruby-mode
-          js-mode js2-mode
-          typescript-mode
-          python-mode
-          web-mode
-          css-mode
-          sass-mode
-          scss-mode
-          elixir-mode
-          go-mode) . lsp)
+  :hook (prog-mode . lsp)
+  ;; :hook ((ruby-mode
+  ;;         js-mode js2-mode
+  ;;         typescript-mode
+  ;;         python-mode
+  ;;         web-mode
+  ;;         css-mode
+  ;;         sass-mode
+  ;;         scss-mode
+  ;;         elixir-mode
+  ;;         go-mode) . lsp)
   :config
   (setq lsp-auto-guess-root t
-        lsp-prefer-flymake nil)
+        lsp-prefer-flymake nil
+        flymake-fringe-indicator-position 'right-fringe)
   (add-to-list 'exec-path "~/code/github/elixir-ls/release"))
-(use-package company-lsp)
+(use-package company-lsp
+  :init (setq company-lsp-cache-candidates 'auto))
 (use-package lsp-ui
   :custom-face
-  (lsp-ui-doc-background ((t `(:background nil))))
+  ;; (lsp-ui-doc-background ((t `(:background nil))))
+  (lsp-ui-doc-header ((t (:inherit (font-lock-string-face italic)))))
   :bind (:map lsp-ui-mode-map
               ([remap xref-find-definitions] . lsp-ui-peek-find-definitions)
               ([remap xref-find-references] . lsp-ui-peek-find-references)
@@ -288,7 +292,8 @@ _q_ quit            _c_ create          _<_ previous
   :init
   (setq lsp-ui-doc-enable t
         lsp-ui-doc-include-signature t
-        lsp-ui-doc-position 'at-point
+        lsp-ui-doc-header t
+        lsp-ui-doc-position 'top
         ;; lsp-ui-doc-use-webkit t
         lsp-ui-doc-border (face-foreground 'default)
 
@@ -1050,6 +1055,12 @@ bin/doom while packages at compile-time (not a runtime though)."
          :when '(("SPC" "RET"))
          :post-handlers '(:add spacemacs//elixir-do-end-close-action)
          :actions '(insert))))))
+(use-package exunit
+  :commands (exunit-verify-all
+             exunit-verify-all-in-umbrella
+             exunit-verify
+             exunit-verify-single
+             exunit-rerun))
 (use-package alchemist
   :disabled
   :hook (elixir-mode . alchemist-mode)
@@ -1422,6 +1433,18 @@ bin/doom while packages at compile-time (not a runtime though)."
   :disabled ;; not ready for prime time yet
   :quelpa (matrix-client :fetcher github
                          :repo "jgkamat/matrix-client-el"))
+
+(use-package adoc-mode ; asciidoc support
+  :commands (tempo-template-adoc-title-1
+             tempo-template-adoc-title-2
+             tempo-template-adoc-title-3
+             tempo-template-adoc-title-4
+             tempo-template-adoc-title-5
+             tempo-template-adoc-strong
+             tempo-template-adoc-emphasis
+             adoc-demote
+             adoc-promote)
+  :mode ("\\.adoc?\\'" . adoc-mode))
 
 (use-package linux
   :ensure nil
