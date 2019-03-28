@@ -269,6 +269,8 @@ _q_ quit            _c_ create          _<_ previous
           python-mode
           web-mode
           css-mode
+          sass-mode
+          scss-mode
           elixir-mode
           go-mode) . lsp)
   :config
@@ -1104,7 +1106,7 @@ bin/doom while packages at compile-time (not a runtime though)."
         typescript-expr-indent-offset 2))
 
 (use-package web-mode
-  :mode "\\.\\(phtml\\|php|[gj]sp\\|as[cp]x\\|erb\\|djhtml\\|html?\\|hbs\\|ejs\\|jade\\|swig\\|tm?pl\\|vue\\)$"
+  :mode "\\.\\(phtml\\|php|[gj]sp\\|as[cp]x\\|erb\\|djhtml\\|html?\\|hbs\\|ejs\\|jade\\|swig\\|tm?pl\\|vue\\|eex\\)$"
   ;; :bind
   ;; (:map web-mode-map
   ;;       ("," . self-with-space)
@@ -1123,11 +1125,9 @@ bin/doom while packages at compile-time (not a runtime though)."
 ;;   (add-to-list 'company-backends 'company-web-html))
 
 (use-package css-mode
-  :mode "\\.css\\.erb\\'"
+  :mode "\\.\\(css\\|erb\\|eex\\)$"
   :custom
-  (css-indent-offset 2)
-  :config
-  (add-to-list 'company-backends 'company-css))
+  (css-indent-offset 2))
 
 (use-package scss-mode
   :mode "\\.scss$")
