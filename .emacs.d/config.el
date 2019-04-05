@@ -290,7 +290,8 @@ _q_ quit            _c_ create          _<_ previous
               ([remap xref-find-references] . lsp-ui-peek-find-references)
               ("C-c u" . lsp-ui-imenu))
   :init
-  (setq lsp-ui-doc-enable t
+  (setq lsp-ui-doc-enable nil
+        ;; lsp-ui-doc-delay 1
         lsp-ui-doc-include-signature t
         lsp-ui-doc-header t
         lsp-ui-doc-position 'top
@@ -1117,7 +1118,23 @@ bin/doom while packages at compile-time (not a runtime though)."
         typescript-expr-indent-offset 2))
 
 (use-package web-mode
-  :mode "\\.\\(phtml\\|php|[gj]sp\\|as[cp]x\\|erb\\|djhtml\\|html?\\|hbs\\|ejs\\|jade\\|swig\\|tm?pl\\|vue\\|eex\\)$"
+  :mode
+  (("\\.phtml\\'"      . web-mode)
+   ("\\.tpl\\.php\\'"  . web-mode)
+   ("\\.twig\\'"       . web-mode)
+   ("\\.xml\\'"        . web-mode)
+   ("\\.html\\'"       . web-mode)
+   ("\\.htm\\'"        . web-mode)
+   ("\\.[gj]sp\\'"     . web-mode)
+   ("\\.as[cp]x?\\'"   . web-mode)
+   ("\\.eex\\'"        . web-mode)
+   ("\\.erb\\'"        . web-mode)
+   ("\\.mustache\\'"   . web-mode)
+   ("\\.handlebars\\'" . web-mode)
+   ("\\.hbs\\'"        . web-mode)
+   ("\\.eco\\'"        . web-mode)
+   ("\\.ejs\\'"        . web-mode)
+   ("\\.djhtml\\'" . web-mode))
   ;; :bind
   ;; (:map web-mode-map
   ;;       ("," . self-with-space)
@@ -1130,13 +1147,16 @@ bin/doom while packages at compile-time (not a runtime though)."
           web-mode-enable-current-element-highlight t)
   (add-hook 'web-mode-hook #'turn-off-smartparens-mode))
 
+(use-package prettier-js
+  :commands prettier-js)
+
 ;; (use-package company-web
 ;;   :hook web-mode
 ;;   :config
 ;;   (add-to-list 'company-backends 'company-web-html))
 
 (use-package css-mode
-  :mode "\\.\\(css\\|erb\\|eex\\)$"
+  :mode "\\.css$"
   :custom
   (css-indent-offset 2))
 
@@ -1146,8 +1166,8 @@ bin/doom while packages at compile-time (not a runtime though)."
 (use-package ssass-mode
   :mode "\\.sass$")
 
-(use-package web-beautify
-  :hook web-mode)
+;; (use-package web-beautify
+;;   :hook web-mode)
 
 (with-eval-after-load 'smartparens
   (sp-with-modes '(css-mode scss-mode less-css-mode stylus-mode)
