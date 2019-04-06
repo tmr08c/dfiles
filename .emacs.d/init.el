@@ -61,6 +61,9 @@
   (quelpa-use-package-activate-advice))
 
 (use-package hydra)
+(use-package hydra-posframe
+  :quelpa (hydra-posframe :fetcher github :repo "Ladicle/hydra-posframe")
+  :hook (after-init . hydra-posframe-enable))
 (use-package use-package-hydra
   :after hydra
   :demand)
