@@ -30,6 +30,9 @@
     :after helm
     :config
     (setq helm-ag-base-command "rg --smart-case --no-heading --vimgrep"))
+  (use-package helm-dash
+    :quelpa (helm-dash :fetcher github :repo "canatella/helm-dash")
+    :after helm)
   (use-package helm-company
     :after (helm company))
   (use-package helm-projectile

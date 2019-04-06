@@ -436,6 +436,8 @@ it to fix all that visual noise."
 
   ;; Exit snippets on ESC from normal mode
   (add-hook '+evil-esc-hook #'yas-exit-all-snippets))
+(use-package yasnippet-snippets
+  :after yasnippet)
 
 (use-package hl-todo
   :defer 10
