@@ -721,7 +721,8 @@ If ARG is a numerical prefix argument then specify the indentation level."
 ;; Common Lisp
 (use-package sly
   :requires (evil company)
-  :hook ((lisp-mode emacs-lisp-mode) . (lambda ()  (sly-setup '(sly-fancy))))
+  :disabled
+  ;; :hook ((lisp-mode emacs-lisp-mode) . (lambda ()  (sly-setup '(sly-fancy))))
   :defer t
   :custom
   (inferior-lisp-program "sbcl")
