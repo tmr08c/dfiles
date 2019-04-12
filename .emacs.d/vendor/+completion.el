@@ -77,78 +77,76 @@
           ivy-format-function 'ivy-format-function-arrow
           ivy-initial-inputs-alist nil
           ivy-use-selectable-prompt t))
-  ;; (use-package ivy-rich
-  ;;   :after ivy
-  ;;   :config
-  ;;   (setq ivy-virtual-abbreviate 'full
-  ;;         ivy-rich-switch-buffer-align-virtual-buffer t
-  ;;         ivy-rich-path-style 'abbrev)
-  ;;   (ivy-rich-mode 1))
+
   (use-package ivy-rich
-    :after counsel-projectile
-    :defines (all-the-icons-mode-icon-alist all-the-icons-dir-icon-alist bookmark-alist)
-    :functions (all-the-icons-icon-family
+    :after (counsel-projectile all-the-icons ivy counsel)
+    :defines (all-the-icons-icon-alist
+              all-the-icons-dir-icon-alist
+              bookmark-alist)
+    :functions (all-the-icons-icon-for-file
+                all-the-icons-icon-for-mode
+                all-the-icons-icon-family
                 all-the-icons-match-to-alist
-                all-the-icons-auto-mode-match?
+                all-the-icons-faicon
                 all-the-icons-octicon
                 all-the-icons-dir-is-submodule)
-    :hook (ivy-rich-mode . (lambda ()
-                             (setq ivy-virtual-abbreviate
-                                   (or (and ivy-rich-mode 'abbreviate) 'name))))
     :preface
-    (with-eval-after-load 'all-the-icons
-      (add-to-list 'all-the-icons-mode-icon-alist
-                   '(gfm-mode  all-the-icons-octicon "markdown" :v-adjust 0.0 :face all-the-icons-lblue)))
-
     (defun ivy-rich-bookmark-name (candidate)
       (car (assoc candidate bookmark-alist)))
 
     (defun ivy-rich-buffer-icon (candidate)
       "Display buffer icons in `ivy-rich'."
       (when (display-graphic-p)
-        (when-let* ((buffer (get-buffer candidate))
-                    (major-mode (buffer-local-value 'major-mode buffer))
-                    (icon (if (and (buffer-file-name buffer)
-                                   (all-the-icons-auto-mode-match? candidate))
-                              (all-the-icons-icon-for-file candidate)
-                            (all-the-icons-icon-for-mode major-mode))))
+        (let* ((buffer (get-buffer candidate))
+               (buffer-file-name (buffer-file-name buffer))
+               (major-mode (buffer-local-value 'major-mode buffer))
+               (icon (if (and buffer-file-name
+                              (all-the-icons-match-to-alist buffer-file-name
+                                                            all-the-icons-icon-alist))
+                         (all-the-icons-icon-for-file (file-name-nondirectory buffer-file-name)
+                                                      :height 0.9 :v-adjust -0.05)
+                       (all-the-icons-icon-for-mode major-mode :height 0.9 :v-adjust -0.05))))
           (if (symbolp icon)
-              (setq icon (all-the-icons-icon-for-mode 'fundamental-mode)))
-          (unless (symbolp icon)
-            (propertize icon
-                        'face `(
-                                :height 1.1
-                                :family ,(all-the-icons-icon-family icon)
-                                ))))))
+              (setq icon (all-the-icons-faicon "file-o" :face 'all-the-icons-dsilver :height 0.9 :v-adjust -0.05))
+            icon))))
 
     (defun ivy-rich-file-icon (candidate)
       "Display file icons in `ivy-rich'."
       (when (display-graphic-p)
-        (let ((icon (if (file-directory-p candidate)
-                        (cond
-                         ((and (fboundp 'tramp-tramp-file-p)
-                               (tramp-tramp-file-p default-directory))
-                          (all-the-icons-octicon "file-directory"))
-                         ((file-symlink-p candidate)
-                          (all-the-icons-octicon "file-symlink-directory"))
-                         ((all-the-icons-dir-is-submodule candidate)
-                          (all-the-icons-octicon "file-submodule"))
-                         ((file-exists-p (format "%s/.git" candidate))
-                          (all-the-icons-octicon "repo"))
-                         (t (let ((matcher (all-the-icons-match-to-alist candidate all-the-icons-dir-icon-alist)))
-                              (apply (car matcher) (list (cadr matcher))))))
-                      (all-the-icons-icon-for-file candidate))))
-          (unless (symbolp icon)
-            (propertize icon
-                        'face `(
-                                :height 1.1
-                                :family ,(all-the-icons-icon-family icon)
-                                ))))))
+        (let* ((path (concat ivy--directory candidate))
+               (file (file-name-nondirectory path))
+               (icon (cond ((file-directory-p path)
+                            (cond
+                             ((and (fboundp 'tramp-tramp-file-p)
+                                   (tramp-tramp-file-p default-directory))
+                              (all-the-icons-octicon "file-directory" :height 0.93 :v-adjust 0.01))
+                             ((file-symlink-p path)
+                              (all-the-icons-octicon "file-symlink-directory" :height 0.93 :v-adjust 0.01))
+                             ((all-the-icons-dir-is-submodule path)
+                              (all-the-icons-octicon "file-submodule" :height 0.93 :v-adjust 0.01))
+                             ((file-exists-p (format "%s/.git" path))
+                              (all-the-icons-octicon "repo" :height 1.0 :v-adjust -0.01))
+                             (t (let ((matcher (all-the-icons-match-to-alist candidate all-the-icons-dir-icon-alist)))
+                                  (apply (car matcher) (list (cadr matcher) :height 0.93 :v-adjust 0.01))))))
+                           ((string-match "^/.*:$" path)
+                            (all-the-icons-material "settings_remote" :height 0.9 :v-adjust -0.2))
+                           ((not (string-empty-p file))
+                            (all-the-icons-icon-for-file file :height 0.9 :v-adjust -0.05)))))
+          (if (symbolp icon)
+              (setq icon (all-the-icons-faicon "file-o" :face 'all-the-icons-dsilver :height 0.9 :v-adjust -0.05))
+            icon))))
+    :hook ((ivy-mode . ivy-rich-mode)
+           (ivy-rich-mode . (lambda ()
+                              (setq ivy-virtual-abbreviate
+                                    (or (and ivy-rich-mode 'abbreviate) 'name)))))
+    :init
+    ;; For better performance
+    (setq ivy-rich-parse-remote-buffer nil)
 
     (setq ivy-rich-display-transformers-list
           '(ivy-switch-buffer
             (:columns
-             ((ivy-rich-buffer-icon (:width 1))
+             ((ivy-rich-buffer-icon)
               (ivy-rich-candidate (:width 30))
               (ivy-rich-switch-buffer-size (:width 7))
               (ivy-rich-switch-buffer-indicators (:width 4 :face error :align right))
@@ -158,6 +156,28 @@
              :predicate
              (lambda (cand) (get-buffer cand)))
             ivy-switch-buffer-other-window
+            (:columns
+             ((ivy-rich-buffer-icon)
+              (ivy-rich-candidate (:width 30))
+              (ivy-rich-switch-buffer-size (:width 7))
+              (ivy-rich-switch-buffer-indicators (:width 4 :face error :align right))
+              (ivy-rich-switch-buffer-major-mode (:width 12 :face warning))
+              (ivy-rich-switch-buffer-project (:width 15 :face success))
+              (ivy-rich-switch-buffer-path (:width (lambda (x) (ivy-rich-switch-buffer-shorten-path x (ivy-rich-minibuffer-width 0.3))))))
+             :predicate
+             (lambda (cand) (get-buffer cand)))
+            counsel-switch-buffer
+            (:columns
+             ((ivy-rich-buffer-icon)
+              (ivy-rich-candidate (:width 30))
+              (ivy-rich-switch-buffer-size (:width 7))
+              (ivy-rich-switch-buffer-indicators (:width 4 :face error :align right))
+              (ivy-rich-switch-buffer-major-mode (:width 12 :face warning))
+              (ivy-rich-switch-buffer-project (:width 15 :face success))
+              (ivy-rich-switch-buffer-path (:width (lambda (x) (ivy-rich-switch-buffer-shorten-path x (ivy-rich-minibuffer-width 0.3))))))
+             :predicate
+             (lambda (cand) (get-buffer cand)))
+            persp-switch-to-buffer
             (:columns
              ((ivy-rich-buffer-icon)
               (ivy-rich-candidate (:width 30))
@@ -183,41 +203,51 @@
             counsel-find-file
             (:columns
              ((ivy-rich-file-icon)
-              (ivy-rich-candidate (:width 30))))
+              (ivy-read-file-transformer)))
             counsel-file-jump
             (:columns
              ((ivy-rich-file-icon)
-              (ivy-rich-candidate (:width 30))))
+              (ivy-rich-candidate)))
+            counsel-dired
+            (:columns
+             ((ivy-rich-file-icon)
+              (ivy-read-file-transformer)))
             counsel-dired-jump
             (:columns
              ((ivy-rich-file-icon)
-              (ivy-rich-candidate (:width 30))))
+              (ivy-rich-candidate)))
             counsel-git
             (:columns
              ((ivy-rich-file-icon)
-              (ivy-rich-candidate (:width 30))))
-            counsel-projectile-find-file
-            (:columns
-             ((ivy-rich-file-icon)
-              (ivy-rich-candidate (:width 30))))
-            counsel-projectile-find-dir
-            (:columns
-             ((ivy-rich-file-icon)
-              (ivy-rich-candidate (:width 30))))
+              (ivy-rich-candidate)))
             counsel-recentf
             (:columns
              ((ivy-rich-file-icon)
-              (ivy-rich-candidate (:width 90))
+              (ivy-rich-candidate (:width 0.8))
               (ivy-rich-file-last-modified-time (:face font-lock-comment-face))))
             counsel-bookmark
             (:columns
              ((ivy-rich-bookmark-type)
               (ivy-rich-bookmark-name (:width 40))
               (ivy-rich-bookmark-info)))
-            ))
-    :init
-    (setq ivy-rich-parse-remote-buffer nil)
-    (ivy-rich-mode 1))
+            counsel-projectile-switch-project
+            (:columns
+             ((ivy-rich-file-icon)
+              (ivy-rich-candidate)))
+            counsel-projectile-find-file
+            (:columns
+             ((ivy-rich-file-icon)
+              (counsel-projectile-find-file-transformer)))
+            counsel-projectile-find-dir
+            (:columns
+             ((ivy-rich-file-icon)
+              (counsel-projectile-find-dir-transformer)))
+            treemacs-projectile
+            (:columns
+             ((ivy-rich-file-icon)
+              (ivy-rich-candidate)))))
+    (ivy-rich-mode +1))
+
   (use-package doom-todo-ivy
     :commands doom/ivy-tasks
     :load-path "vendor/")

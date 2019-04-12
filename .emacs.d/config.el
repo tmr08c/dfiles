@@ -934,16 +934,24 @@ If ARG is a numerical prefix argument then specify the indentation level."
                       alchemist-test-report-mode-map))
     (evil-define-key 'normal mode
       (kbd "q") 'quit-window)))
+(use-package alchemist-company
+  :ensure nil
+  :hook (elixir-mode . (lambda ()
+                         (setq-local company-backends '(alchemist-company company-yasnippet)))))
+(use-package flycheck-credo
+  :hook (elixir-mode . flycheck-credo-setup))
 (use-package flycheck-mix
-  :commands (flycheck-mix-setup)
-  :init
-  (progn
-    (add-to-list 'safe-local-variable-values
-                 (cons 'elixir-enable-compilation-checking nil))
-    (add-to-list 'safe-local-variable-values
-                 (cons 'elixir-enable-compilation-checking t))
-    (add-hook 'elixir-mode-local-vars-hook
-              'spacemacs//elixir-enable-compilation-checking)))
+  :hook (elixir-mode . flycheck-mix-setup))
+;; (use-package flycheck-mix
+;;   :commands (flycheck-mix-setup)
+;;   :init
+;;   (progn
+;;     (add-to-list 'safe-local-variable-values
+;;                  (cons 'elixir-enable-compilation-checking nil))
+;;     (add-to-list 'safe-local-variable-values
+;;                  (cons 'elixir-enable-compilation-checking t))
+;;     (add-hook 'elixir-mode-local-vars-hook
+;;               'spacemacs//elixir-enable-compilation-checking)))
 
 (use-package scala-mode
   :mode ("\\.\\(scala\\|sbt\\)\\'" . scala-mode))
