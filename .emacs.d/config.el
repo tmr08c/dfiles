@@ -1066,7 +1066,31 @@ If ARG is a numerical prefix argument then specify the indentation level."
 (use-package writeroom-mode
   :commands writeroom-mode)
 
-(use-package all-the-icons)
+(use-package all-the-icons
+  :config
+  (add-to-list 'all-the-icons-icon-alist
+               '("\\.ipynb" all-the-icons-fileicon "jupyter" :height 1.2 :face all-the-icons-orange))
+  (add-to-list 'all-the-icons-mode-icon-alist
+               '(ein:notebooklist-mode all-the-icons-faicon "book" :face all-the-icons-orange))
+  (add-to-list 'all-the-icons-mode-icon-alist
+               '(ein:notebook-mode all-the-icons-fileicon "jupyter" :height 1.2 :face all-the-icons-orange))
+  (add-to-list 'all-the-icons-mode-icon-alist
+               '(ein:notebook-multilang-mode all-the-icons-fileicon "jupyter" :height 1.2 :face all-the-icons-orange))
+  (add-to-list 'all-the-icons-icon-alist
+               '("\\.epub$" all-the-icons-faicon "book" :face all-the-icons-green))
+  (add-to-list 'all-the-icons-mode-icon-alist
+               '(nov-mode all-the-icons-faicon "book" :face all-the-icons-green))
+  (add-to-list 'all-the-icons-mode-icon-alist
+               '(gfm-mode all-the-icons-octicon "markdown" :face all-the-icons-blue)))
+
+;; Display Time
+(use-package time
+  :ensure nil
+  :unless (display-graphic-p)
+  :hook (after-init . display-time-mode)
+  :init
+  (setq display-time-24hr-format t
+        display-time-day-and-date t))
 
 (use-package base16-theme
   :defer t

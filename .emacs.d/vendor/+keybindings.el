@@ -78,8 +78,8 @@
                (substring-no-properties (or (thing-at-point 'symbol) "")))))
           :which-key "Lookup thing at point")
    "dD" '(counsel-dash :which-key "Lookup thing at point with docset")
-   "Ts"  '(counsel-load-theme :which-key "switch theme")
-   "p T" '(doom/ivy-tasks :which-key "List project tasks")))
+   "Ts" '(counsel-load-theme :which-key "switch theme")
+   "pT" '(doom/ivy-tasks :which-key "List project tasks")))
 
 
 (general-define-key :states 'insert
