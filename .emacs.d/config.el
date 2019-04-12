@@ -26,6 +26,13 @@
         which-key-side-window-max-width 0.33)
   (which-key-setup-side-window-right-bottom)
   (which-key-mode))
+(use-package which-key-posframe
+  :disabled
+  :after which-key
+  :quelpa (which-key-posframe :fetcher github :repo "yanghaoxie/which-key-posframe")
+  :config
+  (setq which-key-posframe-poshandler 'posframe-poshandler-frame-center)
+  (which-key-posframe-enable))
 
 (use-package general
   :demand
@@ -205,7 +212,7 @@ _q_ quit            _c_ create          _<_ previous
         company-frontends '(company-pseudo-tooltip-frontend
                             company-echo-metadata-frontend)
         company-transformers '(company-sort-by-occurrence)
-        company-backends '()))
+        company-backends '(company-yasnippet)))
 (use-package company-prescient
   :hook (company-mode . company-prescient-mode)
   :config
@@ -225,7 +232,7 @@ _q_ quit            _c_ create          _<_ previous
           python-mode
           web-mode
           css-mode sass-mode scss-mode
-          ;; elixir-mode
+          elixir-mode
           go-mode) . lsp)
   :config
   (setq lsp-auto-guess-root t
@@ -233,7 +240,8 @@ _q_ quit            _c_ create          _<_ previous
         flymake-fringe-indicator-position 'right-fringe)
   (add-to-list 'exec-path "~/code/github/elixir-ls/release"))
 (use-package company-lsp
-  :init (setq company-lsp-cache-candidates 'auto))
+  :init (setq company-lsp-cache-candidates 'auto
+              company-lsp-enable-snippet t))
 (use-package lsp-ui
   :custom-face
   ;; (lsp-ui-doc-background ((t `(:background nil))))
@@ -243,13 +251,13 @@ _q_ quit            _c_ create          _<_ previous
               ([remap xref-find-references] . lsp-ui-peek-find-references)
               ("C-c u" . lsp-ui-imenu))
   :init
-  (setq lsp-ui-doc-enable nil
-        ;; lsp-ui-doc-delay 1
+  (setq lsp-ui-doc-enable t
+        lsp-ui-doc-delay 1
         lsp-ui-doc-include-signature t
         lsp-ui-doc-header t
         lsp-ui-doc-position 'top
         ;; lsp-ui-doc-use-webkit t
-        lsp-ui-doc-border (face-foreground 'default)
+        ;; lsp-ui-doc-border (face-foreground 'default)
 
         lsp-ui-sideline-enable nil
         lsp-ui-sideline-ignore-duplicate t)
@@ -307,11 +315,11 @@ _q_ quit            _c_ create          _<_ previous
     (smartparens-global-mode +1)))
 
 (use-package rainbow-delimiters
-  :defer t
+  :defer 5
   :hook (prog-mode . rainbow-delimiters-mode))
 
 (use-package dtrt-indent
-  :defer t
+  :defer 5
   :delight
   :custom (dtrt-indent-min-quality 60)
   :init (dtrt-indent-global-mode))
@@ -334,8 +342,7 @@ _q_ quit            _c_ create          _<_ previous
              dump-jump-go-prompt
              dump-jump-go-prefer-external
              dumb-jump-go-prefer-external-other-window)
-  ;; TODO FIXME this needs to swap to helm based on +configuration
-  :custom (dumb-jump-selector 'ivy))
+  :custom (dumb-jump-selector +completion-engine))
 
 (use-package whitespace
   :defer 5
@@ -389,7 +396,8 @@ it to fix all that visual noise."
   :defer t
   :delight auto-revert-mode
   :config
-  (setq auto-revert-verbose nil)
+  (setq auto-revert-verbose nil
+        auto-revert-check-vc-info t)
   (global-auto-revert-mode +1))
 
 (use-package undo-tree
@@ -424,9 +432,10 @@ it to fix all that visual noise."
 (use-package yasnippet
   :defer 5
   :hook ((text-mode prog-mode snippet-mode) . yas-minor-mode-on)
-  :commands (yas-minor-mode yas-minor-mode-on yas-expand yas-expand-snippet
-                            yas-lookup-snippet yas-insert-snippet yas-new-snippet
-                            yas-visit-snippet-file snippet-mode)
+  :commands
+  (yas-minor-mode yas-minor-mode-on yas-expand yas-expand-snippet
+   yas-lookup-snippet yas-insert-snippet yas-new-snippet
+   yas-visit-snippet-file snippet-mode)
   :config
   (setq yas-also-auto-indent-first-line t
         yas-triggers-in-field t) ; Allow nested snippets
@@ -719,79 +728,78 @@ If ARG is a numerical prefix argument then specify the indentation level."
           langtool-mother-tongue "en-US")))
 
 ;; Common Lisp
-(use-package sly
-  :requires (evil company)
-  :disabled
-  ;; :hook ((lisp-mode emacs-lisp-mode) . (lambda ()  (sly-setup '(sly-fancy))))
-  :defer t
-  :custom
-  (inferior-lisp-program "sbcl")
-  (sly-autodoc-use-multiline t)
-  (sly-complete-symbol*-fancy t)
-  (sly-kill-without-query-p t)
-  (sly-repl-history-remove-duplicates t)
-  (sly-repl-history-trim-whitespaces t)
-  (sly-net-coding-system 'utf-8-unix)
-  :config
-  (progn
-    (add-to-list 'company-backends 'company-capf)
-    ;; (add-to-list 'evil-emacs-state-modes 'sly-mrepl-mode) (this one we want evil)
-    (add-to-list 'evil-emacs-state-modes 'sly-inspector-mode)
-    (add-to-list 'evil-emacs-state-modes 'sly-db-mode)
-    (add-to-list 'evil-emacs-state-modes 'sly-xref-mode)
-    (add-to-list 'evil-emacs-state-modes 'sly-stickers--replay-mode)
-    (defun +common-lisp|cleanup-sly-maybe ()
-      "Kill processes and leftover buffers when killing the last sly buffer."
-      (unless (cl-loop for buf in (delq (current-buffer) (buffer-list))
-                       if (and (buffer-local-value 'sly-mode buf)
-                               (get-buffer-window buf))
-                       return t)
-        (dolist (conn (sly--purge-connections))
-          (sly-quit-lisp-internal conn 'sly-quit-sentinel t))
-        (let (kill-buffer-hook kill-buffer-query-functions)
-          (mapc #'kill-buffer
-                (cl-loop for buf in (delq (current-buffer) (buffer-list))
-                         if (buffer-local-value 'sly-mode buf)
-                         collect buf)))))
+;; (use-package sly
+;;   :requires (evil company)
+;;   :hook ((lisp-mode emacs-lisp-mode) . (lambda ()  (sly-setup '(sly-fancy))))
+;;   :defer t
+;;   :custom
+;;   (inferior-lisp-program "sbcl")
+;;   (sly-autodoc-use-multiline t)
+;;   (sly-complete-symbol*-fancy t)
+;;   (sly-kill-without-query-p t)
+;;   (sly-repl-history-remove-duplicates t)
+;;   (sly-repl-history-trim-whitespaces t)
+;;   (sly-net-coding-system 'utf-8-unix)
+;;   :config
+;;   (progn
+;;     (add-to-list 'company-backends 'company-capf)
+;;     ;; (add-to-list 'evil-emacs-state-modes 'sly-mrepl-mode) (this one we want evil)
+;;     (add-to-list 'evil-emacs-state-modes 'sly-inspector-mode)
+;;     (add-to-list 'evil-emacs-state-modes 'sly-db-mode)
+;;     (add-to-list 'evil-emacs-state-modes 'sly-xref-mode)
+;;     (add-to-list 'evil-emacs-state-modes 'sly-stickers--replay-mode)
+;;     (defun +common-lisp|cleanup-sly-maybe ()
+;;       "Kill processes and leftover buffers when killing the last sly buffer."
+;;       (unless (cl-loop for buf in (delq (current-buffer) (buffer-list))
+;;                        if (and (buffer-local-value 'sly-mode buf)
+;;                                (get-buffer-window buf))
+;;                        return t)
+;;         (dolist (conn (sly--purge-connections))
+;;           (sly-quit-lisp-internal conn 'sly-quit-sentinel t))
+;;         (let (kill-buffer-hook kill-buffer-query-functions)
+;;           (mapc #'kill-buffer
+;;                 (cl-loop for buf in (delq (current-buffer) (buffer-list))
+;;                          if (buffer-local-value 'sly-mode buf)
+;;                          collect buf)))))
 
-    (defun +common-lisp|init-sly ()
-      "Attempt to auto-start sly when opening a lisp buffer."
-      (cond ((sly-connected-p))
-            ((executable-find inferior-lisp-program)
-             (let ((sly-auto-start 'always))
-               (sly-auto-start)
-               (add-hook 'kill-buffer-hook #'+common-lisp|cleanup-sly-maybe nil t)))
-            ((message "WARNING: Couldn't find `inferior-lisp-program' (%s)"
-                      inferior-lisp-program))))
-    (add-hook 'sly-mode-hook #'+common-lisp|init-sly)
+;;     (defun +common-lisp|init-sly ()
+;;       "Attempt to auto-start sly when opening a lisp buffer."
+;;       (cond ((sly-connected-p))
+;;             ((executable-find inferior-lisp-program)
+;;              (let ((sly-auto-start 'always))
+;;                (sly-auto-start)
+;;                (add-hook 'kill-buffer-hook #'+common-lisp|cleanup-sly-maybe nil t)))
+;;             ((message "WARNING: Couldn't find `inferior-lisp-program' (%s)"
+;;                       inferior-lisp-program))))
+;;     (add-hook 'sly-mode-hook #'+common-lisp|init-sly)
 
-    (defun +common-lisp*refresh-sly-version (version conn)
-      "Update `sly-protocol-version', which will likely be incorrect or nil due to
-an issue where `load-file-name' is incorrect. Because Doom's packages are
-installed through an external script (bin/doom), `load-file-name' is set to
-bin/doom while packages at compile-time (not a runtime though)."
-      (unless sly-protocol-version
-        (setq sly-protocol-version (sly-version nil (locate-library "sly.el"))))
-      (advice-remove #'sly-check-version #'+common-lisp*refresh-sly-version))
-    (advice-add #'sly-check-version :before #'+common-lisp*refresh-sly-version)))
-(use-package sly-mrepl
-  :ensure nil ;; built-in to sly
-  :defines sly-mrepl-mode-map
-  :bind
-  (:map sly-mrepl-mode-map
-        ("<up>" . sly-mrepl-previous-input-or-button)
-        ("<down>" . sly-mrepl-next-input-or-button)
-        ("<C-up>" . sly-mrepl-previous-input-or-button)
-        ("<C-down>" . sly-mrepl-next-input-or-button))
-  :config
-  (with-eval-after-load 'smartparens
-    (sp-with-modes '(sly-mrepl-mode)
-      (sp-local-pair "'" "'" :actions nil)
-      (sp-local-pair "`" "`" :actions nil))))
-(use-package sly-repl-ansi-color
-  :requires sly
-  :demand t
-  :config (push 'sly-repl-ansi-color sly-contribs))
+;;     (defun +common-lisp*refresh-sly-version (version conn)
+;;       "Update `sly-protocol-version', which will likely be incorrect or nil due to
+;; an issue where `load-file-name' is incorrect. Because Doom's packages are
+;; installed through an external script (bin/doom), `load-file-name' is set to
+;; bin/doom while packages at compile-time (not a runtime though)."
+;;       (unless sly-protocol-version
+;;         (setq sly-protocol-version (sly-version nil (locate-library "sly.el"))))
+;;       (advice-remove #'sly-check-version #'+common-lisp*refresh-sly-version))
+;;     (advice-add #'sly-check-version :before #'+common-lisp*refresh-sly-version)))
+;; (use-package sly-mrepl
+;;   :ensure nil ;; built-in to sly
+;;   :defines sly-mrepl-mode-map
+;;   :bind
+;;   (:map sly-mrepl-mode-map
+;;         ("<up>" . sly-mrepl-previous-input-or-button)
+;;         ("<down>" . sly-mrepl-next-input-or-button)
+;;         ("<C-up>" . sly-mrepl-previous-input-or-button)
+;;         ("<C-down>" . sly-mrepl-next-input-or-button))
+;;   :config
+;;   (with-eval-after-load 'smartparens
+;;     (sp-with-modes '(sly-mrepl-mode)
+;;       (sp-local-pair "'" "'" :actions nil)
+;;       (sp-local-pair "`" "`" :actions nil))))
+;; (use-package sly-repl-ansi-color
+;;   :requires sly
+;;   :demand t
+;;   :config (push 'sly-repl-ansi-color sly-contribs))
 ;; (use-package sly-company
 ;; 	:requires (company sly))
 ;; (use-package slime
@@ -866,31 +874,6 @@ bin/doom while packages at compile-time (not a runtime though)."
 (use-package highlight-quoted
   :hook (emacs-lisp-mode . highlight-quoted-mode)
   :commands highlight-quoted-mode)
-;; (use-package macrostep
-;; 	:commands macrostep-expand
-;;   ;; :config
-;;   ;; (map! :map macrostep-keymap
-;;   ;;       :n "RET"    #'macrostep-expand
-;;   ;;       :n "e"      #'macrostep-expand
-;;   ;;       :n "u"      #'macrostep-collapse
-;;   ;;       :n "c"      #'macrostep-collapse
-
-;;   ;;       :n "TAB"    #'macrostep-next-macro
-;;   ;;       :n "n"      #'macrostep-next-macro
-;;   ;;       :n "J"      #'macrostep-next-macro
-
-;;   ;;       :n "S-TAB"  #'macrostep-prev-macro
-;;   ;;       :n "K"      #'macrostep-prev-macro
-;;   ;;       :n "p"      #'macrostep-prev-macro
-
-;;   ;;       :n "q"      #'macrostep-collapse-all
-;;   ;;       :n "C"      #'macrostep-collapse-all)
-;;   ;; ;; `evil-normalize-keymaps' seems to be required for macrostep or it won't
-;;   ;; ;; apply for the very first invocation
-;; 	;; (add-hook 'macrostep-mode-hook #'evil-normalize-keymaps)
-;; 	)
-;; (use-package overseer
-;; 	:commands overseer-test)
 
 ;; Python
 (use-package python-mode
@@ -909,51 +892,10 @@ bin/doom while packages at compile-time (not a runtime though)."
          (lambda () (require 'ccls) (lsp)))
   :config
   (setq ccls-executable "~/.local/bin/ccls"))
-;; (use-package irony
-;;   :hook ((c-mode . irony-mode)
-;;          (c++-mode . irony-mode))
-;;   :config
-;;   (progn
-;;     (setq irony-additional-clang-options '("-std=c++11"))
-;;     (setq-default irony-cdb-compilation-databases '(irony-cdb-clang-complete
-;;                                                     iron-cdb-libclang))
-
-;;     (add-hook 'irony-mode-hook 'irony-cdb-autosetup-compile-options))
-;;   (with-eval-after-load 'smartparens
-;;     (sp-with-modes '(c++-mode objc-mode)
-;;       (sp-local-pair "<" ">"
-;;                      :when '(+cc-sp-point-is-template-p +cc-sp-point-after-include-p)
-;;                      :post-handlers '(("| " "SPC"))))
-;;     (sp-with-modes '(c-mode c++-mode objc-mode java-mode)
-;;       (sp-local-pair "/*!" "*/" :post-handlers '(("||\n[i]" "RET") ("[d-1]< | " "SPC"))))))
-;; (use-package irony-eldoc
-;;   :hook (irony-mode . irony-eldoc))
-;; (use-package flycheck-irony
-;;   :hook (irony-mode . flycheck-irony-setup))
-;; (use-package lsp-clangd
-;;   :load-path "/vendor"
-;;   :hook ((c-mode . lsp-clangd-c-enable)
-;;          (c++-mode . lsp-clangd-c++-enable)
-;;          (objc-mode . lsp-clangd-objc-enable)))
 (use-package platformio-mode
   :hook ((c-mode c++-mode) . platformio-conditionally-enable))
 (use-package clang-format
   :commands (clang-format))
-  ;; :hook (c-mode c++-mode)
-  ;; :config
-  ;; (progn
-  ;;   (defun c-mode-before-save-hook ()
-  ;;     (when (or (eq major-mode 'c++-mode) (eq major-mode 'c-mode))
-  ;;       (call-interactively 'clang-format)))
-
-  ;;   (add-hook 'before-save-hook #'c-mode-before-save-hook)))
-
-(use-package arduino-mode
-  :disabled
-  :after irony
-  :config
-  (add-to-list 'irony-supported-major-modes 'arduino-mode)
-  (add-to-list 'irony-lang-compile-option-alist '(arduino-mode . "c++")))
 
 ;; Erlang / Elixir
 (use-package erlang
@@ -962,56 +904,14 @@ bin/doom while packages at compile-time (not a runtime though)."
   :mode "\\.exs?"
   :config
   (progn
-    (defun spacemacs//elixir-enable-compilation-checking ()
-      "Enable compile checking if `elixir-enable-compilation-checking' is non nil."
-      (when (or elixir-enable-compilation-checking)
-        (flycheck-mix-setup)
-        ;; enable credo only if there are no compilation errors
-        (flycheck-add-next-checker 'elixir-mix '(warning . elixir-credo))))
-
-    (defun spacemacs//elixir-point-after-fn-p (id action context)
-      (save-excursion
-        (when (looking-back id) (backward-char))
-        (looking-back "fn")))
-
-    (defun spacemacs//elixir-looking-back-special-p (expr)
-      (save-excursion
-        (when (or (looking-back " ")
-                  (looking-back "-")) (backward-char))
-        (looking-back expr)))
-
-    (defun spacemacs//elixir-do-end-close-action (id action context)
-      (when (eq action 'insert)
-        (cond ((spacemacs//elixir-looking-back-special-p id)
-               (insert " ") (backward-char))
-              ((looking-back "(")
-               (insert ") ") (backward-char) (backward-char))
-              (t
-               (newline-and-indent)
-               (forward-line -1)
-               (indent-according-to-mode)))))
-    (with-eval-after-load 'smartparens
-      ;; (sp-with-modes 'elixir-mode
-      ;;   (sp-local-pair "do" "end"
-      ;;                  :when '(("RET" "<evil-ret>"))
-      ;;                  :unless '(sp-in-comment-p sp-in-string-p)
-      ;;                  :post-handlers '("||\n[i]"))
-      ;;   (sp-local-pair "do " " end" :unless '(sp-in-comment-p sp-in-string-p))
-      ;;   (sp-local-pair "fn " " end" :unless '(sp-in-comment-p sp-in-string-p)))
-      (sp-with-modes '(elixir-mode)
-        (sp-local-pair
-         "(" ")"
-         :unless '(:add spacemacs//elixir-point-after-fn-p))
-        (sp-local-pair
-         "fn" "end"
-         :when '(("SPC" "RET" "-" "("))
-         :post-handlers '(:add spacemacs//elixir-do-end-close-action)
-         :actions '(insert))
-        (sp-local-pair
-         "do" "end"
-         :when '(("SPC" "RET"))
-         :post-handlers '(:add spacemacs//elixir-do-end-close-action)
-         :actions '(insert))))))
+    (add-hook 'elixir-mode-hook
+              (lambda () (add-hook 'before-save-hook 'elixir-format nil t)))
+    (add-hook 'elixir-format-hook (lambda ()
+                                    (if (projectile-project-p)
+                                        (setq elixir-format-arguments
+                                              (list "--dot-formatter"
+                                                    (concat (locate-dominating-file buffer-file-name ".formatter.exs") ".formatter.exs")))
+                                      (setq elixir-format-arguments nil))))))
 (use-package exunit
   :commands (exunit-verify-all
              exunit-verify-all-in-umbrella
@@ -1019,7 +919,6 @@ bin/doom while packages at compile-time (not a runtime though)."
              exunit-verify-single
              exunit-rerun))
 (use-package alchemist
-  ;; :disabled
   :hook (elixir-mode . alchemist-mode)
   :config
   (setq alchemist-project-compile-when-needed t
@@ -1048,10 +947,8 @@ bin/doom while packages at compile-time (not a runtime though)."
 
 (use-package scala-mode
   :mode ("\\.\\(scala\\|sbt\\)\\'" . scala-mode))
-
 (use-package ensime
   :hook (scala-mode . ensime-mode))
-
 (use-package sbt-mode
   :hook (scala-mode . sbt-mode))
 
@@ -1066,9 +963,8 @@ bin/doom while packages at compile-time (not a runtime though)."
   (setq-default js-switch-indent-offset 2
                 js-indent-level 2)
   (setenv "NODE_NO_READLINE" "1"))
-
 (use-package typescript-mode
-  ;; :mode "\\.tsx?\\'"
+  :mode "\\.tsx?\\'"
   :config
   (setq typescript-indent-level 2
         typescript-expr-indent-offset 2))
@@ -1090,11 +986,7 @@ bin/doom while packages at compile-time (not a runtime though)."
    ("\\.hbs\\'"        . web-mode)
    ("\\.eco\\'"        . web-mode)
    ("\\.ejs\\'"        . web-mode)
-   ("\\.djhtml\\'" . web-mode))
-  ;; :bind
-  ;; (:map web-mode-map
-  ;;       ("," . self-with-space)
-  ;;       ("<C-return>" . html-newline-dwim))
+   ("\\.djhtml\\'"     . web-mode))
   :config
   (setq   web-mode-markup-indent-offset 2
           web-mode-css-indent-offset 2
@@ -1105,11 +997,6 @@ bin/doom while packages at compile-time (not a runtime though)."
 
 (use-package prettier-js
   :commands prettier-js)
-
-;; (use-package company-web
-;;   :hook web-mode
-;;   :config
-;;   (add-to-list 'company-backends 'company-web-html))
 
 (use-package css-mode
   :mode "\\.css$"
@@ -1220,8 +1107,6 @@ bin/doom while packages at compile-time (not a runtime though)."
       (when (string-match-p (buffer-name) ".*\\*NeoTree\\*.*") 10))
     (add-to-list 'winum-assign-functions #'winum-assign-0-to-neotree)
     (winum-mode)))
-
-
 (use-package window
   :ensure nil
   :preface (provide 'window)
@@ -1335,7 +1220,6 @@ bin/doom while packages at compile-time (not a runtime though)."
         eshell-kill-processes-on-exit t))
 
 (use-package helpful
-  ;; :after ivy
   :commands (helpful-callable
              helpful-command
              helpful-variable
@@ -1397,13 +1281,6 @@ bin/doom while packages at compile-time (not a runtime though)."
                         navigation
                         additional
                         todo)))
-
-(use-package pdf-tools
-  :disabled
-  :mode ("\\.pdf\\'" . pdf-view-mode)
-  :config
-  (pdf-tools-install)
-  (setq-default pdf-view-display-size 'fit-page))
 
 (use-package matrix-client
   :disabled ;; not ready for prime time yet
@@ -1495,11 +1372,7 @@ bin/doom while packages at compile-time (not a runtime though)."
 ;; relegate tooltips to echo area only
 (if (boundp 'tooltip-mode) (tooltip-mode -1))
 
-;; Handle ansi codes in compilation buffer
-(defun doom|apply-ansi-color-to-compilation-buffer ()
-  "Apply ansi codes to the compilation buffers. Meant for 'compilation-filter-hook'."
-  (with-silent-modifications
-    (ansi-color-apply-on-region compilation-filter-start (point))))
+;; Handle ANSI codes in compilation buffer
 (add-hook 'compilation-filter-hook #'doom|apply-ansi-color-to-compilation-buffer)
 
 ;; This is MUCH faster than using set-face-attribute

@@ -233,4 +233,11 @@ Unlike `eval-defun', this does not go to topmost function."
     (forward-list)
     (call-interactively 'eval-last-sexp)))
 
+;; Handle ansi codes in compilation buffer
+;;;###autoload
+(defun doom|apply-ansi-color-to-compilation-buffer ()
+  "Apply ansi codes to the compilation buffers. Meant for 'compilation-filter-hook'."
+  (with-silent-modifications
+    (ansi-color-apply-on-region compilation-filter-start (point))))
+
 (provide '+funcs)

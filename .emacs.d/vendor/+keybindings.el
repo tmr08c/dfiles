@@ -109,6 +109,7 @@
                   "h" '(:ignore t :which-key "Help")
                   "hdf" '(describe-function :which-key "describe function")
                   "hdm" '(describe-mode :which-key "describe modes") ;; TODO: https://framagit.org/steckerhalter/discover-my-major
+                  "hds" '(yas-describe-tables :which-key "describve snippets")
                   "hdv" '(describe-variable :which-key "describe variable")
 
                   ;; Buffers
@@ -256,7 +257,7 @@
 ;;                     "tt" 'exunit-verify-single)
 ;; NOTE outdated from alchemist set up. Here for reference
 (js|keymap-for-mode 'elixir-mode
-                    "=" 'elixir-format
+                    ;; "f" 'elixir-format
 
                     "e" '(:ignore t :which-key "eval")
                     "el" 'alchemist-eval-current-line
