@@ -252,12 +252,12 @@ _q_ quit            _c_ create          _<_ previous
               ("C-c u" . lsp-ui-imenu))
   :init
   (setq lsp-ui-doc-enable t
-        lsp-ui-doc-delay 1
+        lsp-ui-doc-delay 3
         lsp-ui-doc-include-signature t
         lsp-ui-doc-header t
         lsp-ui-doc-position 'top
         ;; lsp-ui-doc-use-webkit t
-        ;; lsp-ui-doc-border (face-foreground 'default)
+        lsp-ui-doc-border (face-foreground 'default)
 
         lsp-ui-sideline-enable nil
         lsp-ui-sideline-ignore-duplicate t)
@@ -961,7 +961,7 @@ If ARG is a numerical prefix argument then specify the indentation level."
   :hook (scala-mode . sbt-mode))
 
 (use-package add-node-modules-path
-  :hook ((js-mode json-mode typescript-mode) . add-node-modules-path))
+  :hook ((js2-mode js-mode json-mode typescript-mode) . add-node-modules-path))
 
 (use-package js2-mode
   :mode "\\.m?js\\'"
