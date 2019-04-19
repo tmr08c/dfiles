@@ -281,8 +281,8 @@ _q_ quit            _c_ create          _<_ previous
   :hook ((ruby-mode
           js2-mode typescript-mode
           python-mode
-          web-mode
-          css-mode sass-mode scss-mode
+          ;; web-mode
+          ;; css-mode sass-mode scss-mode
           elixir-mode
           go-mode) . lsp)
   :config
@@ -1029,53 +1029,51 @@ If ARG is a numerical prefix argument then specify the indentation level."
   (setq typescript-indent-level 2
         typescript-expr-indent-offset 2))
 
+(use-package company-web
+  :requires company
+  :hook (web-mode . (lambda ()
+                      (setq-local company-backends '(company-web-html company-css company-yasnippet)))))
 (use-package web-mode
-  :mode
-  (("\\.phtml\\'"      . web-mode)
-   ("\\.tpl\\.php\\'"  . web-mode)
-   ("\\.twig\\'"       . web-mode)
-   ("\\.xml\\'"        . web-mode)
-   ("\\.html\\'"       . web-mode)
-   ("\\.htm\\'"        . web-mode)
-   ("\\.[gj]sp\\'"     . web-mode)
-   ("\\.as[cp]x?\\'"   . web-mode)
-   ;; ("\\.eex\\'"        . web-mode)
-   ("\\.erb\\'"        . web-mode)
-   ("\\.mustache\\'"   . web-mode)
-   ("\\.handlebars\\'" . web-mode)
-   ("\\.hbs\\'"        . web-mode)
-   ("\\.eco\\'"        . web-mode)
-   ("\\.ejs\\'"        . web-mode)
-   ("\\.djhtml\\'"     . web-mode))
+  :hook (html-mode . web-mode)
+  :diminish
   :config
   (setq   web-mode-markup-indent-offset 2
           web-mode-css-indent-offset 2
           web-mode-code-indent-offset 2
-          web-mode-enable-auto-quoting nil
+          web-mode-enable-block-face t
+          web-mode-enable-current-column-highlight t
+          ;; web-mode-enable-auto-quoting nil
           web-mode-enable-current-element-highlight t)
   (add-hook 'web-mode-hook #'turn-off-smartparens-mode))
+(use-package emmet-mode
+  :diminish
+  :hook ((css-mode web-mode) . emmet-mode))
 
 (use-package prettier-js
   :commands prettier-js)
 
 (use-package css-mode
   :mode "\\.css$"
+  :hook (css-mode . (lambda ()
+                      (setq-local company-backends '(company-css company-yasnippet))))
   :custom
   (css-indent-offset 2))
 
 (use-package scss-mode
   :mode "\\.scss$")
 
-(use-package ssass-mode
+(use-package sass-mode
   :mode "\\.sass$")
 
-;; (use-package web-beautify
-;;   :hook web-mode)
+(use-package web-beautify
+  :commands web-beautify-buffer
+  :quelpa
+  (web-beautify :fetcher github :repo "jguenther/web-beautify" :branch "add-web-beautify-buffer-cmd"))
 
-(with-eval-after-load 'smartparens
-  (sp-with-modes '(css-mode scss-mode less-css-mode stylus-mode)
-    (sp-local-pair "/*" "*/"
-                   :post-handlers '(("[d-3]||\n[i]" "RET") ("| " "SPC")))))
+;; (with-eval-after-load 'smartparens
+;;   (sp-with-modes '(css-mode scss-mode less-css-mode stylus-mode)
+;;     (sp-local-pair "/*" "*/"
+;;                    :post-handlers '(("[d-3]||\n[i]" "RET") ("| " "SPC")))))
 
 ;; Syntax Checking - Flycheck
 (use-package flycheck
