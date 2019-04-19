@@ -120,3 +120,7 @@ source ~/.zpluginrc
 
 # Aliases
 [[ -f ~/.aliases ]] && source ~/.aliases
+
+. $HOME/.asdf/asdf.sh
+
+. $HOME/.asdf/completions/asdf.bash
