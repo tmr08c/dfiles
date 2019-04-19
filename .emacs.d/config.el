@@ -1042,8 +1042,11 @@ If ARG is a numerical prefix argument then specify the indentation level."
           web-mode-code-indent-offset 2
           web-mode-enable-block-face t
           web-mode-enable-current-column-highlight t
-          ;; web-mode-enable-auto-quoting nil
-          web-mode-enable-current-element-highlight t)
+          web-mode-auto-close-style 2
+          web-mode-enable-html-entities-fontification t
+          web-mode-enable-current-element-highlight t
+          web-mode-enable-auto-quoting nil
+          web-mode-enable-auto-pairing t)
   (add-hook 'web-mode-hook #'turn-off-smartparens-mode))
 (use-package emmet-mode
   :diminish
@@ -1070,10 +1073,11 @@ If ARG is a numerical prefix argument then specify the indentation level."
   :quelpa
   (web-beautify :fetcher github :repo "jguenther/web-beautify" :branch "add-web-beautify-buffer-cmd"))
 
-;; (with-eval-after-load 'smartparens
-;;   (sp-with-modes '(css-mode scss-mode less-css-mode stylus-mode)
-;;     (sp-local-pair "/*" "*/"
-;;                    :post-handlers '(("[d-3]||\n[i]" "RET") ("| " "SPC")))))
+(with-eval-after-load 'smartparens
+  (sp-local-pair 'web-mode "<" ">")
+  (sp-with-modes '(css-mode scss-mode)
+    (sp-local-pair "/*" "*/"
+                   :post-handlers '(("[d-3]||\n[i]" "RET") ("| " "SPC")))))
 
 ;; Syntax Checking - Flycheck
 (use-package flycheck
