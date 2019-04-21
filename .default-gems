@@ -1,6 +1,5 @@
 bundler
 pry
-gem-ctags
 rspec
 rubocop
 solargraph
