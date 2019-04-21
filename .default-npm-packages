@@ -29,3 +29,4 @@ textlint-rule-en-max-word-count
 textlint-rule-diacritics
 textlint-rule-stop-words
 vue-language-server
+ocaml-language-server

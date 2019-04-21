@@ -1028,7 +1028,6 @@ If ARG is a numerical prefix argument then specify the indentation level."
   :config
   (setq typescript-indent-level 2
         typescript-expr-indent-offset 2))
-
 (use-package company-web
   :requires company
   :hook (web-mode . (lambda ()
@@ -1082,7 +1081,8 @@ If ARG is a numerical prefix argument then specify the indentation level."
 ;; Syntax Checking - Flycheck
 (use-package flycheck
   :commands (flycheck-=list-errors flycheck-buffer)
-  :quelpa (flycheck :fetcher github :repo "flycheck/flycheck")
+  ;; :quelpa (flycheck :fetcher github :repo "flycheck/flycheck")
+  :pin melpa
   :init (global-flycheck-mode)
   :config
   (setq flycheck-rubocop-lint-only t
