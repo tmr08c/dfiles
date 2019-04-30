@@ -1,7 +1,13 @@
 ;;; config.el --- -*- lexical-binding: t; -*-
 ;;; Commentary:
-;;; TODO add eshell mode for project at SPC '
-
+;;;
+;;; FIXME evil has issues with Messages buffer
+;;; FIXME how to exit snake in evil mode
+;;;
+;;; TODO popups need to be controlled to use the same area of screen
+;;; TODO word wrap in completion buffers by default
+;;; TODO no line numbers in completion buffers
+;;;
 ;;; Code:
 
 (require '+funcs)
@@ -1295,7 +1301,6 @@ If ARG is a numerical prefix argument then specify the indentation level."
   :hook ((ielm-mode eval-expression-minibuffer-setup) . eldoc-mode))
 
 (use-package eshell
-  :commands (eshell eshell-mode)
   :config
   (setq eshell-visual-commands '("tmux" "htop" "bash" "zsh" "fish" "vim" "nvim")
         eshell-visual-subcommands '(("git" "log" "l" "diff" "show"))
@@ -1305,7 +1310,11 @@ If ARG is a numerical prefix argument then specify the indentation level."
         eshell-scroll-to-bottom-on-input 'all
         eshell-buffer-shorthand t
         eshell-kill-processes-on-exit t))
-
+(use-package eshell-toggle
+  :commands (eshell-toggle)
+  :quelpa (eshell-toggle :fetcher github :repo "4DA/eshell-toggle")
+  :config
+  (setq eshell-toggle-use-projectile-root t))
 (use-package helpful
   :commands (helpful-callable
              helpful-command

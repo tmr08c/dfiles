@@ -89,7 +89,8 @@
                     "C-z" 'undo-tree-undo
                     "C-Z" 'undo-tree-redo)
 
-(js|global-keymap "`" 'winum-select-window-by-number
+(js|global-keymap "'" '(eshell-toggle :which-key "toggle shell")
+                  "`" 'winum-select-window-by-number
                   ;; "²" 'winum-select-window-by-number
                   "0" 'winum-select-window-0-or-10
                   "1" 'winum-select-window-1
