@@ -1,5 +1,6 @@
 ;;; config.el --- -*- lexical-binding: t; -*-
 ;;; Commentary:
+;;; TODO add eshell mode for project at SPC '
 
 ;;; Code:
 
