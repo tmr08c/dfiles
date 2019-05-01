@@ -41,6 +41,10 @@
       "<backtab>" 'helm-find-files-up-one-level
       "S-<tab>" 'helm-find-files-up-one-level))
   (js|global-keymap
+   "feD" '((lambda ()
+             (interactive)
+             (helm-find-files user-emacs-directory))
+           :which-key "search emacs config directory")
    "Ts" 'helm-themes))
 
 (when (eq +completion-engine 'ivy)
@@ -78,6 +82,10 @@
                (substring-no-properties (or (thing-at-point 'symbol) "")))))
           :which-key "Lookup thing at point")
    "dD" '(counsel-dash :which-key "Lookup thing at point with docset")
+   "feD" '((lambda ()
+             (interactive)
+             (counsel-find-file user-emacs-directory))
+           :which-key "search emacs config directory")
    "Ts" '(counsel-load-theme :which-key "switch theme")
    "pT" '(doom/ivy-tasks :which-key "List project tasks")))
 
@@ -146,6 +154,7 @@
                             (interactive)
                             (find-file-existing js|config-file))
                           :which-key "open emacs configuration")
+
                   "ft" 'neotree-toggle
 
                   ;; Docs

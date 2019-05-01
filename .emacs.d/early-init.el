@@ -8,7 +8,7 @@
 
 (defun startup/reset-gc ()
   (setq gc-cons-threshold 16777216
-	gc-cons-percentage 0.1))
+        gc-cons-percentage 0.1))
 
 (defvar startup/file-name-handler-alist file-name-handler-alist)
 (setq file-name-handler-alist nil)
