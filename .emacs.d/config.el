@@ -133,8 +133,9 @@
 
 
 (use-package editorconfig
-  :defer t
-  :config (editorconfig-mode 1))
+  :hook (prog-mode . editorconfig-mode)
+  :config
+  (setq editorconfig-trim-whitespaces-mode 'ws-butler-mode))
 
 (use-package focus
   :commands (focus-mode))
@@ -938,13 +939,14 @@ If ARG is a numerical prefix argument then specify the indentation level."
   :config
   (progn
     (add-hook 'elixir-mode-hook
-              (lambda () (add-hook 'before-save-hook 'elixir-format nil t)))
-    (add-hook 'elixir-format-hook (lambda ()
-                                    (if (projectile-project-p)
-                                        (setq elixir-format-arguments
-                                              (list "--dot-formatter"
-                                                    (concat (locate-dominating-file buffer-file-name ".formatter.exs") ".formatter.exs")))
-                                      (setq elixir-format-arguments nil))))))
+              (lambda () (add-hook 'before-save-hook 'lsp-format-buffer)))
+    ;; (add-hook 'elixir-format-hook (lambda ()
+    ;;                                 (if (projectile-project-p)
+    ;;                                     (setq elixir-format-arguments
+    ;;                                           (list "--dot-formatter"
+    ;;                                                 (concat (locate-dominating-file buffer-file-name ".formatter.exs") ".formatter.exs")))
+    ;;                                   (setq elixir-format-arguments nil))))
+    ))
 (use-package exunit
   :commands (exunit-verify-all
              exunit-verify-all-in-umbrella
@@ -995,7 +997,6 @@ If ARG is a numerical prefix argument then specify the indentation level."
 
 (use-package add-node-modules-path
   :hook ((js2-mode js-mode json-mode typescript-mode) . add-node-modules-path))
-
 (use-package js2-mode
   :mode "\\.m?js\\'"
   :hook
@@ -1009,6 +1010,30 @@ If ARG is a numerical prefix argument then specify the indentation level."
   :config
   (setq typescript-indent-level 2
         typescript-expr-indent-offset 2))
+
+;; Elm
+;; NOTE watch for the release of an LSP for Elm (none as of 2019-05)
+(use-package elm-mode
+  :mode ("\\.elm\\'" . elm-mode)
+  :hook (elm-mode . (lambda ()
+                      (setq-local company-backends '(company-elm company-yasnippet)))))
+(use-package elm-test-runner
+  :after elm-mode)
+(use-package flycheck-elm
+  :hook (flycheck-mode . flycheck-elm-setup))
+
+;; OCaml / ReasonML
+(use-package reason-mode
+  :mode ("\\.rei?\\'" . reason-mode)
+  :config
+  (add-hook 'reason-mode-hook (lambda ()
+                                (add-hook 'before-save-hook 'reason/refmt-before-save nil t))))
+(use-package merlin
+  :after reason-mode
+  :config
+  (setq merlin-completion-with-doc t))
+(use-package flycheck-ocaml)
+
 (use-package company-web
   :requires company
   :hook (web-mode . (lambda ()
@@ -1032,8 +1057,11 @@ If ARG is a numerical prefix argument then specify the indentation level."
   :diminish
   :hook ((css-mode web-mode) . emmet-mode))
 
-(use-package prettier-js
-  :commands prettier-js)
+;; NOTE does not work yet due to TRAMP stuff
+;; (use-package prettier
+;;   :quelpa
+;;   (prettier :fetcher github :repo "jscheid/prettier.el")
+;;   :init (global-prettier-mode 1))
 
 (use-package css-mode
   :mode "\\.css$"

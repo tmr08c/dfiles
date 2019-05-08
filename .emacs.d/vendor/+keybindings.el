@@ -445,6 +445,76 @@
                     "p" 'adoc-promote
                     "d" 'adoc-demote)
 
+(js|keymap-for-mode 'elm-mode
+                    "'"  'elm-repl-load
+                    ;; format
+                    "=b" 'elm-mode-format-buffer
+
+                    "c" '(:ignore t :which-key "compile")
+                    "cb" 'elm-compile-buffer
+                    ;; "cB" 'spacemacs/elm-compile-buffer-output
+                    "cm" 'elm-compile-main
+
+                    "h" '(:ignore t :which-key "help")
+                    "hh" 'elm-oracle-doc-at-point
+                    "ht" 'elm-oracle-type-at-point
+                    ;; refactoring
+                    "r" '(:ignore t :which-key "refactor")
+                    "ri" 'elm-sort-imports
+
+                    "s" '(:ignore t :which-key "repl")
+                    "si" 'elm-repl-load
+                    "sf" 'elm-repl-push-decl
+                    ;; "sF" 'spacemacs/elm-repl-push-decl-focus
+                    "sr" 'elm-repl-push
+                    ;; "sR" 'spacemacs/elm-repl-push-focus
+
+                    "R" '(:ignore t :which-key "reactor")
+                    "Rn" 'elm-preview-buffer
+                    "Rm" 'elm-preview-main
+
+                    "p" '(:ignore t :which-key "package")
+                    "pi" 'elm-import
+                    "pc" 'elm-package-catalog
+                    "pd" 'elm-documentation-lookup
+
+                    "t" '(:ignore t :which-key "test")
+                    "tb" 'elm-test-runner-run
+                    "td" 'elm-test-runner-run-directory
+                    "tp" 'elm-test-runner-run-project
+                    "tr" 'elm-test-runner-rerun
+                    "tw" 'elm-test-runner-watch
+                    "t TAB" 'elm-test-runner-toggle-test-and-target)
+
+(js|keymap-for-mode 'reason-mode
+                    ;; Not complete
+                    ;; See spacemacs PR to follow status
+                    ;; https://github.com/syl20bnr/spacemacs/pull/11963
+                    "c" '(:ignore t :which-key "compile")
+                    "cp" 'merlin-project-check
+                    "cv" 'merlin-goto-project-file
+                    "e" '(:ignore t :which-key "errors/eval")
+                    "eC" 'merlin-error-check
+                    "en" 'merlin-error-next
+                    "eN" 'merlin-error-prev
+
+                    "g" '(:ignore t :which-key "goto")
+                    "gb" 'merlin-pop-stack
+                    "gg" 'merlin-locate
+                    ;; "gG" 'spacemacs/merlin-locate-other-window
+                    "gl" 'merlin-locate-ident
+                    "gi" 'merlin-switch-to-ml
+                    "gI" 'merlin-switch-to-mli
+                    "go" 'merlin-occurrences
+
+                    "h" '(:ignore t :which-key "help")
+                    "hh" 'merlin-document
+                    "ht" 'merlin-type-enclosing
+                    "hT" 'merlin-type-expr
+
+                    "r" '(:ignore t :which-key "refactor")
+                    "rd" 'merlin-destruct)
+
 (js|keymap-for-mode 'ruby-mode
                     "b" '(:ignore t :which-key "bundle")
                     "bc" 'bundle-check

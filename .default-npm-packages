@@ -30,3 +30,8 @@ textlint-rule-diacritics
 textlint-rule-stop-words
 vue-language-server
 ocaml-language-server
+elm
+elm-oracle
+elm-format
+elm-test
+
