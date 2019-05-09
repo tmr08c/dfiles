@@ -996,7 +996,7 @@ If ARG is a numerical prefix argument then specify the indentation level."
   :hook (scala-mode . sbt-mode))
 
 (use-package add-node-modules-path
-  :hook ((js2-mode js-mode json-mode typescript-mode) . add-node-modules-path))
+  :hook ((js2-mode js-mode json-mode typescript-mode elm-mode) . add-node-modules-path))
 (use-package js2-mode
   :mode "\\.m?js\\'"
   :hook
@@ -1015,8 +1015,10 @@ If ARG is a numerical prefix argument then specify the indentation level."
 ;; NOTE watch for the release of an LSP for Elm (none as of 2019-05)
 (use-package elm-mode
   :mode ("\\.elm\\'" . elm-mode)
-  :hook (elm-mode . (lambda ()
-                      (setq-local company-backends '(company-elm company-yasnippet)))))
+  :config
+  (setq elm-tags-on-save t
+        elm-format-on-save t)
+  (add-to-list 'company-backends 'company-elm))
 (use-package elm-test-runner
   :after elm-mode)
 (use-package flycheck-elm
@@ -1175,6 +1177,9 @@ If ARG is a numerical prefix argument then specify the indentation level."
     git-commit-mode
     magit-status-mode
     magit-log-mode) . emojify-mode))
+
+;; Git
+(use-package magit)
 
 ;;; Restart Emacs
 (use-package restart-emacs
