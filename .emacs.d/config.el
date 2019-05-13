@@ -1180,6 +1180,8 @@ If ARG is a numerical prefix argument then specify the indentation level."
 
 ;; Git
 (use-package magit)
+(use-package evil-magit
+  :after magit)
 
 ;;; Restart Emacs
 (use-package restart-emacs
