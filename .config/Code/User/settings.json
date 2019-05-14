@@ -38,6 +38,8 @@
             ]
         },
     ],
+    "vim.leader": ",",
+    "vim.surround": true,
     "workbench.editor.tabSizing": "shrink",
     "window.title": "${dirty}${activeEditorShort}${separator}${rootName}",
     "editor.minimap.enabled": false,
