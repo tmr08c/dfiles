@@ -1047,12 +1047,13 @@ If ARG is a numerical prefix argument then specify the indentation level."
   (setq   web-mode-markup-indent-offset 2
           web-mode-css-indent-offset 2
           web-mode-code-indent-offset 2
+          web-mode-block-padding 0
           web-mode-enable-block-face t
           web-mode-enable-current-column-highlight t
           web-mode-auto-close-style 2
           web-mode-enable-html-entities-fontification t
           web-mode-enable-current-element-highlight t
-          web-mode-enable-auto-quoting nil
+          web-mode-enable-auto-quoting t
           web-mode-enable-auto-pairing t)
   (add-hook 'web-mode-hook #'turn-off-smartparens-mode))
 (use-package emmet-mode
