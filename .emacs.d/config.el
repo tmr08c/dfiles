@@ -315,8 +315,8 @@ _q_ quit            _c_ create          _<_ previous
         lsp-ui-doc-include-signature t
         lsp-ui-doc-header t
         lsp-ui-doc-position 'top
-        ;; lsp-ui-doc-use-webkit t
-        lsp-ui-doc-use-webkit (eq system-type 'linux)
+        lsp-ui-doc-use-webkit nil ;; It is ugly and too big
+        ;; lsp-ui-doc-use-webkit (eq system-type 'linux)
         lsp-ui-doc-border (face-foreground 'default)
 
         lsp-ui-sideline-enable nil
@@ -957,7 +957,8 @@ If ARG is a numerical prefix argument then specify the indentation level."
   :hook (elixir-mode . alchemist-mode)
   :config
   (setq alchemist-project-compile-when-needed t
-        alchemist-test-status-modeline t)
+        alchemist-test-status-modeline t
+        alchemist-test-truncate-lines nil)
   (dolist (mode (list alchemist-compile-mode-map
                       alchemist-eval-mode-map
                       alchemist-execute-mode-map
