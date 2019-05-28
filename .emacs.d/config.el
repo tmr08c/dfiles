@@ -310,7 +310,7 @@ _q_ quit            _c_ create          _<_ previous
               ([remap xref-find-references] . lsp-ui-peek-find-references)
               ("C-c u" . lsp-ui-imenu))
   :init
-  (setq lsp-ui-doc-enable t
+  (setq lsp-ui-doc-enable nil
         lsp-ui-doc-delay 3
         lsp-ui-doc-include-signature t
         lsp-ui-doc-header t
