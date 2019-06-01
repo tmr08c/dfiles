@@ -25,22 +25,25 @@ else
 
   if [ -f /etc/redhat-release ]; then
     echo "Fedora / RHEL detected"
-    sudo dnf install -y -q direnv util-linux-user vim mozilla-fira-mono-fonts mozilla-fira-sans-fonts google-roboto-mono-fonts google-roboto-slab-fonts aspell-en clang cmake clang-devel pop-gtk-theme pop-icon-theme
+    sudo dnf install -y direnv util-linux-user vim mozilla-fira-mono-fonts mozilla-fira-sans-fonts google-roboto-slab-fonts aspell-en
+
+    echo "C/C++ stuff"
+    sudo dnf install -y clang cmake clang-devel
 
     echo "Configure Yubikey dependencies"
-    sudo dnf install -y -q pcsc-lite yubioath-desktop powertop
+    sudo dnf install -y pcsc-lite yubioath-desktop powertop
 
     echo "Install Ruby dependencies"
-    sudo dnf install -y -q bzip2 openssl-devel libyaml-devel libffi-devel readline-devel zlib-devel gdbm-devel ncurses-devel perl-Digest-SHA postgresql-devel patch
+    sudo dnf install -y bzip2 openssl-devel libyaml-devel libffi-devel readline-devel zlib-devel gdbm-devel ncurses-devel perl-Digest-SHA postgresql-devel patch
 
     echo "Install Python dependencies"
-    sudo dnf install -y -q zlib-devel bzip2 bzip2-devel readline-devel sqlite sqlite-devel openssl-devel tk-devel libffi-devel
+    sudo dnf install -y zlib-devel bzip2 bzip2-devel readline-devel sqlite sqlite-devel openssl-devel tk-devel libffi-devel
 
     echo "Install Erlang dependencies"
-    sudo dnf install -y -q autoconf ncurses-devel wxGTK-devel wxBase openssl-devel java-1.8.0-openjdk-devel libiodbc unixODBC.x86_64 erlang-odbc.x86_64 libxslt fop
+    sudo dnf install -y autoconf ncurses-devel wxGTK-devel wxBase openssl-devel java-1.8.0-openjdk-devel libiodbc unixODBC.x86_64 erlang-odbc.x86_64 libxslt fop
 
     echo "Install Printer dependencies"
-    sudo dnf install -y -q libnsl
+    sudo dnf install -y libnsl
   elif [ -f /etc/SUSE-brand ]; then
     echo "SUSE detected"
     sudo zypper install direnv zsh
