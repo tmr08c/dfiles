@@ -925,7 +925,7 @@ If ARG is a numerical prefix argument then specify the indentation level."
   :hook ((c-mode c++-mode objc-mode) .
          (lambda () (require 'ccls) (lsp)))
   :config
-  (setq ccls-executable "~/.local/bin/ccls"))
+  (setq ccls-executable "ccls"))
 (use-package platformio-mode
   :hook ((c-mode c++-mode) . platformio-conditionally-enable))
 (use-package clang-format
