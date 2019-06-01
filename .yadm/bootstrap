@@ -28,7 +28,7 @@ else
     sudo dnf install -y direnv util-linux-user vim mozilla-fira-mono-fonts mozilla-fira-sans-fonts google-roboto-slab-fonts aspell-en
 
     echo "C/C++ stuff"
-    sudo dnf install -y clang cmake clang-devel
+    sudo dnf install -y clang cmake clang-devel llvm-devel ccls
 
     echo "Configure Yubikey dependencies"
     sudo dnf install -y pcsc-lite yubioath-desktop powertop
