@@ -47,6 +47,8 @@
     "workbench.iconTheme": "vscode-great-icons",
     "search.runInExtensionHost": true,
     "ccls.launch.command": "~/.local/bin/ccls",
-    "[cpp]": {},
+    "[cpp]": {
+        "editor.defaultFormatter": "ms-vscode.cpptools"
+    },
     "platformio-ide.forceUploadAndMonitor": true
 }
