@@ -34,5 +34,6 @@ elm
 elm-oracle
 elm-format
 elm-test
+@elm-tooling/elm-language-server
 bs-platform
 

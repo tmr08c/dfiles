@@ -289,6 +289,7 @@ _q_ quit            _c_ create          _<_ previous
   :hook ((ruby-mode
           js2-mode typescript-mode
           python-mode
+          elm-mode
           ;; web-mode
           ;; css-mode sass-mode scss-mode
           elixir-mode
@@ -1405,6 +1406,9 @@ If ARG is a numerical prefix argument then specify the indentation level."
              adoc-demote
              adoc-promote)
   :mode ("\\.adoc?\\'" . adoc-mode))
+
+(use-package po-mode
+  :mode ("\\.pot?\\'" . po-mode))
 
 (use-package linux
   :ensure nil
