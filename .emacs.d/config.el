@@ -1094,7 +1094,7 @@ If ARG is a numerical prefix argument then specify the indentation level."
 
 ;; Syntax Checking - Flycheck
 (use-package flycheck
-  :commands (flycheck-=list-errors flycheck-buffer)
+  :commands (flycheck-list-errors flycheck-buffer)
   ;; :quelpa (flycheck :fetcher github :repo "flycheck/flycheck")
   :pin melpa
   :init (global-flycheck-mode)
