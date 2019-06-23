@@ -44,7 +44,7 @@
    "feD" '((lambda ()
              (interactive)
              (helm-find-files user-emacs-directory))
-           :which-key "search emacs config directory")
+           :wk "search emacs config directory")
    "Ts" 'helm-themes))
 
 (when (eq +completion-engine 'ivy)
@@ -73,21 +73,21 @@
                       ;; [remap persp-switch-to-buffer] '+ivy/switch-workspace-buffer
                       [remap imenu-anywhere]         'ivy-imenu-anywhere)
   (js|global-keymap
-   "?"   '(counsel-descbinds :which-key "Help")
+   "?"   '(counsel-descbinds :wk "Help")
    "dd" '((lambda ()
             (interactive)
             (counsel-dash
              (if (use-region-p)
                  (buffer-substring-no-properties (region-beginning) (region-end))
                (substring-no-properties (or (thing-at-point 'symbol) "")))))
-          :which-key "Lookup thing at point")
-   "dD" '(counsel-dash :which-key "Lookup thing at point with docset")
+          :wk "Lookup thing at point")
+   "dD" '(counsel-dash :wk "Lookup thing at point with docset")
    "feD" '((lambda ()
              (interactive)
              (counsel-find-file user-emacs-directory))
-           :which-key "search emacs config directory")
-   "Ts" '(counsel-load-theme :which-key "switch theme")
-   "pT" '(doom/ivy-tasks :which-key "List project tasks")))
+           :wk "search emacs config directory")
+   "Ts" '(counsel-load-theme :wk "switch theme")
+   "pT" '(doom/ivy-tasks :wk "List project tasks")))
 
 
 (general-define-key :states 'insert
@@ -97,46 +97,59 @@
                     "C-z" 'undo-tree-undo
                     "C-Z" 'undo-tree-redo)
 
-(js|global-keymap "'" '(eshell-toggle :which-key "toggle shell")
-                  "`" 'winum-select-window-by-number
-                  ;; "²" 'winum-select-window-by-number
-                  "0" 'winum-select-window-0-or-10
-                  "1" 'winum-select-window-1
-                  "2" 'winum-select-window-2
-                  "3" 'winum-select-window-3
-                  "4" 'winum-select-window-4
-                  "5" 'winum-select-window-5
-                  "6" 'winum-select-window-6
-                  "7" 'winum-select-window-7
-                  "8" 'winum-select-window-8
-                  "9" 'winum-select-window-9
+(js|global-keymap "'" '(eshell-toggle :wk "toggle shell")
+                  ";" 'eval-expression
+                  ;; "`" 'winum-select-window-by-number
+                  "0" '( winum-select-window-0-or-10 :wk t )
+                  "1" '( winum-select-window-1 :wk t )
+                  "2" '( winum-select-window-2 :wk t )
+                  "3" '( winum-select-window-3 :wk t )
+                  "4" '( winum-select-window-4 :wk t )
+                  "5" '( winum-select-window-5 :wk t )
+                  "6" '( winum-select-window-6 :wk t )
+                  "7" '( winum-select-window-7 :wk t )
+                  "8" '( winum-select-window-8 :wk t )
+                  "9" '( winum-select-window-9 :wk t )
 
-                  "SPC" '(execute-extended-command :which-key "M-x")
-                  ;; "TAB" '(switch-to-other-buffer :which-key "prev buffer")
+                  "o" '(:ignore t :wk "Open")
+                  "oA" 'org-agenda
+
+                  "oa" '(:ignore t :wk "org agenda")
+                  "oaa" 'org-agenda
+                  "oat" 'org-todo-list
+                  "oam" 'org-tags-view
+                  "oav" 'org-search-view
+
+                  "n" '(:ignore t :wk "Notes")
+                  "nc" 'org-capture
+                  "nl" 'org-store-link
+                  
+                  "SPC" '(execute-extended-command :wk "M-x")
+                  ;; "TAB" '(switch-to-other-buffer :wk "prev buffer")
 
                   ;; Help bindings
-                  "h" '(:ignore t :which-key "Help")
-                  "hdf" '(describe-function :which-key "describe function")
-                  "hdm" '(describe-mode :which-key "describe modes") ;; TODO: https://framagit.org/steckerhalter/discover-my-major
-                  "hds" '(yas-describe-tables :which-key "describve snippets")
-                  "hdv" '(describe-variable :which-key "describe variable")
+                  "h" '(:ignore t :wk "Help")
+                  "hdf" '(describe-function :wk "describe function")
+                  "hdm" '(describe-mode :wk "describe modes") ;; TODO: https://framagit.org/steckerhalter/discover-my-major
+                  "hds" '(yas-describe-tables :wk "describve snippets")
+                  "hdv" '(describe-variable :wk "describe variable")
 
                   ;; Buffers
-                  "b"   '(:ignore t :which-key "Buffers")
-                  "bb" '(switch-buffer :which-key "list buffers")
-                  "bn" '(next-buffer :which-key "next buffer")
-                  "bp" '(previous-buffer :which-key "prev buffer")
+                  "b"   '(:ignore t :wk "Buffers")
+                  "bb" '(switch-buffer :wk "list buffers")
+                  "bn" '(next-buffer :wk "next buffer")
+                  "bp" '(previous-buffer :wk "prev buffer")
                   "bd" '((lambda ()
                            (interactive)
                            (kill-buffer (current-buffer)))
-                         :which-key "close current buffer")
+                         :wk "close current buffer")
                   "bs" '((lambda ()
                            (interactive)
                            (switch-to-buffer (get-buffer-create "*scratch*")))
-                         :which-key "scratch buffer")
+                         :wk "scratch buffer")
 
                   ;; Files
-                  "f"  '(:ignore t :which-key "Files")
+                  "f"  '(:ignore t :wk "Files")
                   "fD" '((lambda ()
                            (interactive)
                            (let ((filename (buffer-file-name))
@@ -148,24 +161,24 @@
                                  (delete-file filename t)
                                  (kill-buffer buffer)
                                  (message "File '%s' successfully removed" filename)))))
-                         :which-key "delete file and kill buffer")
-                  "ff" '(find-file :which-key "find file")
+                         :wk "delete file and kill buffer")
+                  "ff" '(find-file :wk "find file")
                   "fed" '((lambda ()
                             (interactive)
                             (find-file-existing js|config-file))
-                          :which-key "open emacs configuration")
+                          :wk "open emacs configuration")
 
                   "ft" 'neotree-toggle
 
                   ;; Docs
-                  "d" '(:ignore t :which-key "Docs")
+                  "d" '(:ignore t :wk "Docs")
 
                   ;; Go to
-                  "g" '(:ignore t :which-key "Go to")
-                  "gd" '(dumb-jump-go :which-key "definition")
-                  "gD" '(dumb-jump-go-other-window :which-key "definition (other window)")
+                  "g" '(:ignore t :wk "Go to")
+                  "gd" '(dumb-jump-go :wk "definition")
+                  "gD" '(dumb-jump-go-other-window :wk "definition (other window)")
 
-                  "hh" '(:ignore t :which-key "helpful")
+                  "hh" '(:ignore t :wk "helpful")
                   "hhh" 'helpful-at-point
                   "hhc" 'helpful-command
                   "hhf" 'helpful-callable
@@ -174,33 +187,33 @@
                   "hhv" 'helpful-variable
 
                   ;; Layouts
-                  "l" '(eyebrowse-hydra/body :which-key "Layouts")
+                  "l" '(eyebrowse-hydra/body :wk "Layouts")
 
                   ;; Project
-                  "p"  '(:ignore t :which-key "Projects")
-                  "p!" '(projectile-run-shell-command-in-root :which-key "run command")
-                  "p%" '(projectile-replace-regexp :which-key "replace regexp")
-                  ;; "p a" '(projectile-toggle-between-implementation-and-test :which-key "toggle test")
+                  "p"  '(:ignore t :wk "Projects")
+                  "p!" '(projectile-run-shell-command-in-root :wk "run command")
+                  "p%" '(projectile-replace-regexp :wk "replace regexp")
+                  ;; "p a" '(projectile-toggle-between-implementation-and-test :wk "toggle test")
                   "pc" 'org-projectile-projectile-project-todo-completing-read
-                  "pI" '(projectile-invalidate-cache :which-key "clear cache")
-                  "pR" '(projectile-replace :which-key "replace")
-                  "pk" '(projectile-kill-buffers :which-key "kill buffers")
-                  "pr" '(projectile-recentf :which-key "recent files")
-                  "pb" '(projectile-switch-to-buffer :which-key "switch to buffer")
-                  "pd" '(projectile-find-dir :which-key "find directory")
-                  "pf" '(projectile-find-file :which-key "open file")
-                  "pp" '(projectile-switch-project :which-key "open project")
-                  "ps" '(projectile-ag :which-key "search in project")
+                  "pI" '(projectile-invalidate-cache :wk "clear cache")
+                  "pR" '(projectile-replace :wk "replace")
+                  "pk" '(projectile-kill-buffers :wk "kill buffers")
+                  "pr" '(projectile-recentf :wk "recent files")
+                  "pb" '(projectile-switch-to-buffer :wk "switch to buffer")
+                  "pd" '(projectile-find-dir :wk "find directory")
+                  "pf" '(projectile-find-file :wk "open file")
+                  "pp" '(projectile-switch-project :wk "open project")
+                  "ps" '(projectile-ag :wk "search in project")
                   "pt" 'neotree-projectile-action
 
                   ;; Quit
-                  "q"  '(:ignore t :which-key "Quit")
-                  "qq" '(kill-emacs :which-key "quit")
-                  "qr" '(restart-emacs :which-key "restart")
+                  "q"  '(:ignore t :wk "Quit")
+                  "qq" '(kill-emacs :wk "quit")
+                  "qr" '(restart-emacs :wk "restart")
 
                   ;; Search
-                  "s" '(:ignore t :which-key "Search")
-                  "ss" '(swiper :which-key "search buffer")
+                  "s" '(:ignore t :wk "Search")
+                  "ss" '(swiper :wk "search buffer")
                   "sS" '(lambda ()
                           (interactive)
                           (let ((input (if (region-active-p)
@@ -208,16 +221,14 @@
                                             (region-beginning) (region-end))
                                          (thing-at-point 'symbol t))))
                             (swiper input))
-                          :which-key "search buffer")
+                          :wk "search buffer")
 
-                  "S" '(:ignore t :which-key "Spelling")
-                  "Sb" 'flyspell-buffer
-                  "Sn" 'flyspell-goto-next-error
+
 
                   ;; Toggle
-                  "t" '(:ignore t :which-key "Toggles")
+                  "t" '(:ignore t :wk "Toggles")
                   "tc" 'hide/show-comments-toggle
-                  "th" '(:ignore t :which-key "highlight")
+                  "th" '(:ignore t :wk "highlight")
                   "thi" 'highlight-indentation-mode
                   "thc" 'highlight-indentation-current-column-mode
                   "tS" 'js|flyspell-mode-toggle
@@ -227,39 +238,44 @@
                   "u" 'universal-argument-more
 
                   ;; Windows
-                  "w"   '(:ignore t :which-key "Windows")
-                  "wd" '(delete-window :which-key "close window")
+                  "w"   '(:ignore t :wk "Windows")
+                  "wd" '(delete-window :wk "close window")
                   "w/" '((lambda ()
                            (interactive)
                            (split-window-horizontally)
                            (other-window 1))
-                         :which-key "split vertical")
+                         :wk "split vertical")
                   "w-" '((lambda ()
                            (interactive)
                            (split-window-vertically)
                            (other-window 1))
-                         :which-key "split horizontal")
-                  "wh" '(evil-window-left :which-key "window left")
-                  "w<left>" '(evil-window-left :which-key nil)
-                  "wj" '(evil-window-down :which-key "window down")
-                  "w<down>" '(evil-window-down :which-key nil)
-                  "wk" '(evil-window-up :which-key "window up")
-                  "w<up>" '(evil-window-up :which-key nil)
-                  "wl" '(evil-window-right :which-key "window right")
-                  "w<right>" '(evil-window-right :which-key nil)
-                  "w=" '(balance-windows :which-key "balance window split")
+                         :wk "split horizontal")
+                  "wh" '(evil-window-left :wk "window left")
+                  "w<left>" '(evil-window-left :wk nil)
+                  "wj" '(evil-window-down :wk "window down")
+                  "w<down>" '(evil-window-down :wk nil)
+                  "wk" '(evil-window-up :wk "window up")
+                  "w<up>" '(evil-window-up :wk nil)
+                  "wl" '(evil-window-right :wk "window right")
+                  "w<right>" '(evil-window-right :wk nil)
+                  "w=" '(balance-windows :wk "balance window split")
 
-                  "x" '(:ignore t :which-key "text")
-                  "xg" '(:ignore t :which-key "google translate")
+                  "x" '(:ignore t :wk "text")
+
+                  "xs" '(:ignore t :wk "Spelling")
+                  "xsb" 'flyspell-buffer
+                  "xsn" 'flyspell-goto-next-error
+
+                  "xg" '(:ignore t :wk "google translate")
                   "xgl" 'spacemacs/set-google-translate-languages
                   "xgQ" 'google-translate-query-translate-reverse
                   "xgq" 'google-translate-query-translate
                   "xgT" 'google-translate-at-point-reverse
                   "xgt" 'google-translate-at-point
 
-                  "xt" '(:ignore t :which-key "transpose"))
+                  "xt" '(:ignore t :wk "transpose"))
 ;; (js|keymap-for-mode 'elixir-mode
-;;                     "t" '(:ignore t :which-key "test")
+;;                     "t" '(:ignore t :wk "test")
 ;;                     "tb" 'exunit-verify-all
 ;;                     "tB" 'exunit-verify-all-in-umbrella
 ;;                     "ta" 'exunit-verify
@@ -269,7 +285,7 @@
 (js|keymap-for-mode 'elixir-mode
                     ;; "f" 'elixir-format
 
-                    "e" '(:ignore t :which-key "eval")
+                    "e" '(:ignore t :wk "eval")
                     "el" 'alchemist-eval-current-line
                     "eL" 'alchemist-eval-print-current-line
                     "er" 'alchemist-eval-region
@@ -283,7 +299,7 @@
                     "ev" 'alchemist-eval-quoted-buffer
                     "eV" 'alchemist-eval-print-quoted-buffer
 
-                    "g" '(:ignore t :which-key "goto")
+                    "g" '(:ignore t :wk "goto")
                     "gt" 'alchemist-project-toggle-file-and-tests
                     "gT" 'alchemist-project-toggle-file-and-tests-other-window
                     "gg" 'alchemist-goto-definition-at-point
@@ -295,18 +311,18 @@
                     "gj" 'alchemist-goto-list-symbol-definitions
 
 
-                    "h" '(:ignore t :which-key "help")
+                    "h" '(:ignore t :wk "help")
                     "h:" 'alchemist-help
                     "hH" 'alchemist-help-history
                     "hh" 'alchemist-help-search-at-point
                     "hr" 'alchemist-help--search-marked-region
 
-                    "m" '(:ignore t :which-key "mix")
+                    "m" '(:ignore t :wk "mix")
                     "m:" 'alchemist-mix
                     "mc" 'alchemist-mix-compile
                     "mx" 'alchemist-mix-run
 
-                    "s" '(:ignore t :which-key "iex")
+                    "s" '(:ignore t :wk "iex")
                     ;; "'"  'alchemist-iex-run
                     "sc" 'alchemist-iex-compile-this-buffer
                     "si" 'alchemist-iex-run
@@ -317,7 +333,7 @@
                     "sr" 'alchemist-iex-send-region
                     "sR" 'alchemist-iex-send-region-and-go
 
-                    "t" '(:ignore t :which-key "test")
+                    "t" '(:ignore t :wk "test")
                     "ta" 'alchemist-mix-test
                     "tb" 'alchemist-mix-test-this-buffer
                     "tB" 'alchemist-project-run-tests-for-current-file
@@ -330,24 +346,24 @@
                     "ts" 'alchemist-mix-test-stale
                     "tR" 'alchemist-test-toggle-test-report-display
 
-                    "x" '(:ignore t :which-key "execute")
+                    "x" '(:ignore t :wk "execute")
                     "xb" 'alchemist-execute-this-buffer
                     "xf" 'alchemist-execute-file
                     "x:" 'alchemist-execute
 
-                    "c" '(:ignore t :which-key "compile")
+                    "c" '(:ignore t :wk "compile")
                     "cb" 'alchemist-compile-this-buffer
                     "cf" 'alchemist-compile-file
                     "c:" 'alchemist-compile
 
-                    "X" '(:ignore t :which-key "hex")
+                    "X" '(:ignore t :wk "hex")
                     "Xi" 'alchemist-hex-info-at-point
                     "Xr" 'alchemist-hex-releases-at-point
                     "XR" 'alchemist-hex-releases
                     "XI" 'alchemist-hex-info
                     "Xs" 'alchemist-hex-search
 
-                    "o" '(:ignore t :which-key "macroexpand")
+                    "o" '(:ignore t :wk "macroexpand")
                     "ol" 'alchemist-macroexpand-once-current-line
                     "oL" 'alchemist-macroexpand-once-print-current-line
                     "ok" 'alchemist-macroexpand-current-line
@@ -363,7 +379,7 @@
                     "sb" 'pdf-view-set-slice-from-bounding-box
                     "sr" 'pdf-view-reset-slice
                     ;; Annotations
-                    "a" '(:ignore t :which-key "annotations")
+                    "a" '(:ignore t :wk "annotations")
                     "aD" 'pdf-annot-delete
                     "at"	'pdf-annot-attachment-dired
                     "ah"	'pdf-annot-add-highlight-markup-annotation
@@ -374,60 +390,60 @@
                     "at"	'pdf-annot-add-text-annotation
                     "au"	'pdf-annot-add-underline-markup-annotation
                     ;; Fit image to window
-                    "f" '(:ignore t :which-key "fit")
+                    "f" '(:ignore t :wk "fit")
                     "fw" 'pdf-view-fit-width-to-window
                     "fh" 'pdf-view-fit-height-to-window
                     "fp" 'pdf-view-fit-page-to-window
                     ;; Other
-                    "s" '(:ignore t :which-key "slice/search")
+                    "s" '(:ignore t :wk "slice/search")
                     "ss" 'pdf-occur
                     "p" 'pdf-misc-print-document
                     "O" 'pdf-outline
                     "n" 'pdf-view-midnight-minor-mode)
 
 (js|keymap-for-mode 'go-mode
-                    "t" '(:ignore t :which-key "test")
-                    "ta" '(js|go-run-test-current-suite :which-key "run suite")
-                    "tt" '(js|go-run-test-current-function :which-key "run current function")
+                    "t" '(:ignore t :wk "test")
+                    "ta" '(js|go-run-test-current-suite :wk "run suite")
+                    "tt" '(js|go-run-test-current-function :wk "run current function")
 
-                    "tg" '(:ignore t :which-key "generate")
-                    "tgf" '(go-gen-test-exported :which-key "all exported functions")
-                    "tga" '(go-gen-test-all :which-key "all functions")
-                    "tgs" '(go-gen-test-dwim :which-key "selected region")
+                    "tg" '(:ignore t :wk "generate")
+                    "tgf" '(go-gen-test-exported :wk "all exported functions")
+                    "tga" '(go-gen-test-all :wk "all functions")
+                    "tgs" '(go-gen-test-dwim :wk "selected region")
 
                     ;; Go To
-                    "g" '(:ignore t :which-key "goto")
-                    "gc" '(go-coverage :which-key "coverage")
+                    "g" '(:ignore t :wk "goto")
+                    "gc" '(go-coverage :wk "coverage")
 
                     ;; Imports
-                    "i" '(:ignore t :which-key "imports")
-                    "ia" '(go-import-add :which-key "add")
-                    "ig" '(go-import-add :which-key "goto")
-                    "ir" '(go-remove-unused-imports :which-key "remove unused")
+                    "i" '(:ignore t :wk "imports")
+                    "ia" '(go-import-add :wk "add")
+                    "ig" '(go-import-add :wk "goto")
+                    "ir" '(go-remove-unused-imports :wk "remove unused")
 
                     ;; Execute
-                    "x" '(:ignore t :which-key "execute")
-                    "xx" '(js|go-run-main :which-key "run main")
+                    "x" '(:ignore t :wk "execute")
+                    "xx" '(js|go-run-main :wk "run main")
 
                     ;; Refactoring
-                    "r" '(:ignore t :which-key "refactoring")
-                    "ri" '(go-impl :which-key "implement interface")
-                    "rs" '(go-fill-struct :which-key "fill struct")
-                    "rd" '(godoctor-godoc :which-key "godoc")
-                    "re" '(godoctor-extract :which-key "extract")
-                    "rn" '(godoctor-rename :which-key "rename")
-                    ;; "rN" '(go-rename :which-key "rename")
-                    "rt" '(godoctor-toggle :which-key "toggle")
+                    "r" '(:ignore t :wk "refactoring")
+                    "ri" '(go-impl :wk "implement interface")
+                    "rs" '(go-fill-struct :wk "fill struct")
+                    "rd" '(godoctor-godoc :wk "godoc")
+                    "re" '(godoctor-extract :wk "extract")
+                    "rn" '(godoctor-rename :wk "rename")
+                    ;; "rN" '(go-rename :wk "rename")
+                    "rt" '(godoctor-toggle :wk "toggle")
 
                     ;; Help
-                    "h" '(:ignore t :which-key "help")
-                    "hh" '(godoc-at-point :which-key "godoc at point"))
+                    "h" '(:ignore t :wk "help")
+                    "hh" '(godoc-at-point :wk "godoc at point"))
 
 (js|keymap-for-mode 'json-mode
                     "=" 'spacemacs/json-reformat-dwim)
 
 (js|keymap-for-mode 'adoc-mode
-                    "h" '(:ignore t :which-key "headers")
+                    "h" '(:ignore t :wk "headers")
                     "h1" 'tempo-template-adoc-title-1
                     ;; Alternative method of inserting top-level heading
                     "hI" 'tempo-template-adoc-title-1
@@ -438,7 +454,7 @@
                     "h4" 'tempo-template-adoc-title-4
                     "h5" 'tempo-template-adoc-title-5
 
-                    "x" '(:ignore t :which-key "text")
+                    "x" '(:ignore t :wk "text")
                     "xb" 'tempo-template-adoc-strong
                     "xi" 'tempo-template-adoc-emphasis
 
@@ -450,35 +466,35 @@
                     ;; format
                     "=b" 'elm-mode-format-buffer
 
-                    "c" '(:ignore t :which-key "compile")
+                    "c" '(:ignore t :wk "compile")
                     "cb" 'elm-compile-buffer
                     ;; "cB" 'spacemacs/elm-compile-buffer-output
                     "cm" 'elm-compile-main
 
-                    "h" '(:ignore t :which-key "help")
+                    "h" '(:ignore t :wk "help")
                     "hh" 'elm-oracle-doc-at-point
                     "ht" 'elm-oracle-type-at-point
                     ;; refactoring
-                    "r" '(:ignore t :which-key "refactor")
+                    "r" '(:ignore t :wk "refactor")
                     "ri" 'elm-sort-imports
 
-                    "s" '(:ignore t :which-key "repl")
+                    "s" '(:ignore t :wk "repl")
                     "si" 'elm-repl-load
                     "sf" 'elm-repl-push-decl
                     ;; "sF" 'spacemacs/elm-repl-push-decl-focus
                     "sr" 'elm-repl-push
                     ;; "sR" 'spacemacs/elm-repl-push-focus
 
-                    "R" '(:ignore t :which-key "reactor")
+                    "R" '(:ignore t :wk "reactor")
                     "Rn" 'elm-preview-buffer
                     "Rm" 'elm-preview-main
 
-                    "p" '(:ignore t :which-key "package")
+                    "p" '(:ignore t :wk "package")
                     "pi" 'elm-import
                     "pc" 'elm-package-catalog
                     "pd" 'elm-documentation-lookup
 
-                    "t" '(:ignore t :which-key "test")
+                    "t" '(:ignore t :wk "test")
                     "tb" 'elm-test-runner-run
                     "td" 'elm-test-runner-run-directory
                     "tp" 'elm-test-runner-run-project
@@ -490,15 +506,15 @@
                     ;; Not complete
                     ;; See spacemacs PR to follow status
                     ;; https://github.com/syl20bnr/spacemacs/pull/11963
-                    "c" '(:ignore t :which-key "compile")
+                    "c" '(:ignore t :wk "compile")
                     "cp" 'merlin-project-check
                     "cv" 'merlin-goto-project-file
-                    "e" '(:ignore t :which-key "errors/eval")
+                    "e" '(:ignore t :wk "errors/eval")
                     "eC" 'merlin-error-check
                     "en" 'merlin-error-next
                     "eN" 'merlin-error-prev
 
-                    "g" '(:ignore t :which-key "goto")
+                    "g" '(:ignore t :wk "goto")
                     "gb" 'merlin-pop-stack
                     "gg" 'merlin-locate
                     ;; "gG" 'spacemacs/merlin-locate-other-window
@@ -507,16 +523,16 @@
                     "gI" 'merlin-switch-to-mli
                     "go" 'merlin-occurrences
 
-                    "h" '(:ignore t :which-key "help")
+                    "h" '(:ignore t :wk "help")
                     "hh" 'merlin-document
                     "ht" 'merlin-type-enclosing
                     "hT" 'merlin-type-expr
 
-                    "r" '(:ignore t :which-key "refactor")
+                    "r" '(:ignore t :wk "refactor")
                     "rd" 'merlin-destruct)
 
 (js|keymap-for-mode 'ruby-mode
-                    "b" '(:ignore t :which-key "bundle")
+                    "b" '(:ignore t :wk "bundle")
                     "bc" 'bundle-check
                     "bi" 'bundle-install
                     "bs" 'bundle-console
@@ -526,7 +542,7 @@
 
                     "fh" 'ruby-hash-syntax-toggle
 
-                    "rr" '(:ignore t :which-key "Rubocop")
+                    "rr" '(:ignore t :wk "Rubocop")
                     "rrd" 'rubocop-check-directory
                     "rrD" 'rubocop-autocorrect-directory
                     "rrf" 'rubocop-check-current-file
@@ -534,7 +550,7 @@
                     "rrp" 'rubocop-check-project
                     "rrP" 'rubocop-autocorrect-project
 
-                    "s" '(:ignore t :which-key "repl")
+                    "s" '(:ignore t :wk "repl")
                     "sb" 'ruby-send-buffer
                     "sB" 'ruby-send-buffer-and-go
                     "sf" 'ruby-send-definition
@@ -545,7 +561,7 @@
                     "sR" 'ruby-send-region-and-go
                     "ss" 'ruby-switch-to-inf
 
-                    "t" '(:ignore t :which-key "test")
+                    "t" '(:ignore t :wk "test")
                     "ta" 'rspec-verify-all
                     "tb" 'rspec-verify
                     "tc" 'rspec-verify-continue
@@ -559,14 +575,14 @@
                     "t~" 'rspec-toggle-spec-and-target-find-example
                     "t TAB" 'rspec-toggle-spec-and-target
 
-                    "T" '(:ignore t :which-key "toggle")
+                    "T" '(:ignore t :wk "toggle")
                     "T'" 'ruby-toggle-string-quotes
                     "T{" 'ruby-toggle-block)
 
 (js|keymap-for-mode 'lisp-mode
                     "'" 'sly
 
-                    "h" '(:ignore t :which-key "help")
+                    "h" '(:ignore t :wk "help")
                     "ha" 'sly-apropos
                     "hb" 'sly-who-binds
                     "hd" 'sly-disassemble-symbol
@@ -580,7 +596,7 @@
                     "h<" 'sly-who-calls
                     "h>" 'sly-calls-who
 
-                    "c" '(:ignore t :which-key "compile")
+                    "c" '(:ignore t :wk "compile")
                     "cc" 'sly-compile-file
                     "cC" 'sly-compile-and-load-file
                     "cf" 'sly-compile-defun
@@ -588,7 +604,7 @@
                     "cn" 'sly-remove-notes
                     "cr" 'sly-compile-region
 
-                    "e" '(:ignore t :which-key "eval")
+                    "e" '(:ignore t :wk "eval")
                     "eb" 'sly-eval-buffer
                     "ee" 'sly-eval-last-expression
                     "eE" 'sly-eval-print-last-expression
@@ -597,18 +613,18 @@
                     "er" 'sly-eval-region
 
                     ;; "m g" 'spacemacs/common-lisp-navigation-transient-state/body
-                    "m" '(:ignore t :which-key "macro")
+                    "m" '(:ignore t :wk "macro")
                     "me" 'sly-macroexpand-1
                     "mE" 'sly-macroexpand-all
 
-                    "s" '(:ignore t :which-key "repl")
+                    "s" '(:ignore t :wk "repl")
                     "sc" 'sly-mrepl-clear-repl
                     "si" 'sly
                     "sq" 'sly-quit-lisp
                     "sr" 'sly-restart-inferior-lisp
                     "ss" 'sly-mrepl-sync
 
-                    "S" '(:ignore t :which-key "stickers")
+                    "S" '(:ignore t :wk "stickers")
                     "Sb" 'sly-stickers-toggle-break-on-stickers
                     "Sc" 'sly-stickers-clear-defun-stickers
                     "SC" 'sly-stickers-clear-buffer-stickers
@@ -616,7 +632,7 @@
                     "Sr" 'sly-stickers-replay
                     "Ss" 'sly-stickers-dwim
 
-                    "t" '(:ignore t :which-key "trace")
+                    "t" '(:ignore t :wk "trace")
                     "tt" 'sly-toggle-trace-fdefinition
                     "tT" 'sly-toggle-fancy-trace
                     "tu" 'sly-untrace-all)
@@ -670,7 +686,7 @@
 
                     ;; Clock
                     ;; These keybindings should match those under the "aoC" prefix (below)
-                    "C" '(:ignore t :which-key "clocks")
+                    "C" '(:ignore t :wk "clocks")
                     "Cc" 'org-clock-cancel
                     "Cd" 'org-clock-display
                     "Ce" 'org-evaluate-time-range
@@ -682,7 +698,7 @@
                     "CR" 'org-clock-report
                     "Cr" 'org-resolve-clocks
 
-                    "d" '(:ignore t :which-key "dates")
+                    "d" '(:ignore t :wk "dates")
                     "dd" 'org-deadline
                     "ds" 'org-schedule
                     "dt" 'org-time-stamp
@@ -695,7 +711,7 @@
 
                     "p" 'org-priority
 
-                    "T" '(:ignore t :which-key "toggles")
+                    "T" '(:ignore t :wk "toggles")
                     "Tc" 'org-toggle-checkbox
                     "Te" 'org-toggle-pretty-entities
                     "Ti" 'org-toggle-inline-images
@@ -718,7 +734,7 @@
                     "C-S-k" 'org-shiftcontrolup
 
                     ;; Subtree editing
-                    "s" '(:ignore t :which-key "trees/subtrees")
+                    "s" '(:ignore t :wk "trees/subtrees")
                     "sa" 'org-toggle-archive-tag
                     "sA" 'org-archive-subtree
                     "sb" 'org-tree-to-indirect-buffer
@@ -733,7 +749,7 @@
                     "sS" 'org-sort
 
                     ;; tables
-                    "t" '(:ignore t :which-key "tables")
+                    "t" '(:ignore t :wk "tables")
                     "ta" 'org-table-align
                     "tb" 'org-table-blank-field
                     "tc" 'org-table-convert
@@ -744,7 +760,7 @@
                     "th" 'org-table-previous-field
                     "tH" 'org-table-move-column-left
 
-                    "ti" '(:ignore t :which-key "insert")
+                    "ti" '(:ignore t :wk "insert")
                     "tic" 'org-table-insert-column
                     "tih" 'org-table-insert-hline
                     "tiH" 'org-table-hline-and-move
@@ -761,14 +777,14 @@
                     "tr" 'org-table-recalculate
                     "ts" 'org-table-sort-lines
 
-                    "tt" '(:ignore t :which-key "toggle")
+                    "tt" '(:ignore t :wk "toggle")
                     "ttf" 'org-table-toggle-formula-debugger
                     "tto" 'org-table-toggle-coordinate-overlays
 
                     "tw" 'org-table-wrap-region
 
                     ;; Source blocks / org-babel
-                    "b" '(:ignore t :which-key "babel")
+                    "b" '(:ignore t :wk "babel")
                     "bp" 'org-babel-previous-src-block
                     "bn" 'org-babel-next-src-block
                     "be" 'org-babel-execute-maybe
@@ -803,7 +819,7 @@
                     ;; attachments
                     "A" 'org-attach
                     ;; insertion
-                    "i" '(:ignore t :which-key "insert")
+                    "i" '(:ignore t :wk "insert")
                     "id" 'org-insert-drawer
                     "ie" 'org-set-effort
                     "if" 'org-footnote-new
@@ -816,7 +832,7 @@
                     "is" 'org-insert-subheading
                     "it" 'org-set-tags
 
-                    "x" '(:ignore t :which-key "text")
+                    "x" '(:ignore t :wk "text")
                     ;; region manipulation
 
                     ;; "xb" (spacemacs|org-emphasize spacemacs/org-bold ?*)
@@ -832,11 +848,11 @@
 (js|keymap-for-mode 'js2-mode
                     "w" 'js2-mode-toggle-warnings-and-errors
 
-                    ;; "h" '(:ignore t :which-key "help")
-                    ;; "g" '(:ignore t :which-key "goto")
-                    ;; "r" '(:ignore t :which-key "refactor")
+                    ;; "h" '(:ignore t :wk "help")
+                    ;; "g" '(:ignore t :wk "goto")
+                    ;; "r" '(:ignore t :wk "refactor")
 
-                    "z" '(:ignore t :which-key "folding")
+                    "z" '(:ignore t :wk "folding")
                     "zc" 'js2-mode-hide-element
                     "zo" 'js2-mode-show-element
                     "zr" 'js2-mode-show-all
@@ -894,16 +910,16 @@
 
 (js|keymap-for-mode 'typescript-mode
 
-                    "g" '(:ignore t :which-key "goto")
+                    "g" '(:ignore t :wk "goto")
                     "gg" 'lsp-goto-implementation
                     "gt" 'lsp-goto-type-definition
                     "gu" 'xref-find-references
 
-                    "h" '(:ignore t :which-key "help")
+                    "h" '(:ignore t :wk "help")
                     "hh" 'lsp-describe-thing-at-point
                     "hs" 'lsp-describe-session
 
-                    "r" '(:ignore t :which-key "refactor")
+                    "r" '(:ignore t :wk "refactor")
                     "rr" 'lsp-rename)
 
 (defun js|neotree-keybindings ()

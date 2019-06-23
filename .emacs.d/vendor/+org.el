@@ -9,6 +9,8 @@
   ;; (add-hook 'before-save-hook 'langtool-check)
   (add-hook 'org-mode-hook 'variable-pitch-mode)
 
+  (add-hook 'org-capture-mode-hook 'evil-insert-state)
+
   ;; (add-hook 'org-mode-hook 'refill-mode)
   ;; (add-hook 'org-mode-hook 'visual-fill-column-mode)
 
@@ -41,9 +43,6 @@
                         navigation
                         additional
                         todo)))
-
-;; TODO
-;; (add-hook 'org-capture-mode-hook 'evil-insert-state)
 
 (use-package ox-pandoc
   :after org)
