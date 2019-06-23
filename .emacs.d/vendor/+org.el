@@ -3,36 +3,35 @@
 ;;; Code:
 
 (use-package org
-  :requires langtool
   :pin org
-  :mode "\\.org\'"
+  ;; :mode "\\.org\'"
   :config
-  (progn
-    (add-hook 'before-save-hook 'langtool-check)
-    (add-hook 'org-mode-hook 'variable-pitch-mode)
+  ;; (add-hook 'before-save-hook 'langtool-check)
+  (add-hook 'org-mode-hook 'variable-pitch-mode)
 
-    ;; (add-hook 'org-mode-hook 'refill-mode)
-    ;; (add-hook 'org-mode-hook 'visual-fill-column-mode)
+  ;; (add-hook 'org-mode-hook 'refill-mode)
+  ;; (add-hook 'org-mode-hook 'visual-fill-column-mode)
 
-    (setq-local line-spacing 0.1)
+  (setq-local line-spacing 0.1)
 
-    (setq org-src-tab-acts-natively t
-          org-src-fontify-natively t
-          org-return-follows-link t
-          org-startup-indented t
-          org-insert-heading-respect-content t
-          org-hide-leading-stars t
-          org-hide-emphasis-markers t ; hide /.../, *..*, etc
-          org-directory "~/org"
-          org-M-RET-may-split-line '((item . nil))
-          org-default-notes-file (expand-file-name "notes.org" org-directory))
+  (setq org-src-tab-acts-natively t
+        org-src-fontify-natively t
+        org-return-follows-link t
+        org-startup-indented t
+        org-insert-heading-respect-content t
+        org-hide-leading-stars t
+        org-hide-emphasis-markers t ; hide /.../, *..*, etc
+        org-directory "~/org"
+        org-M-RET-may-split-line '((item . nil))
+        org-default-notes-file (expand-file-name "notes.org" org-directory))
 
-    ;; Configure org-indent to inherit from fixed-pitch to fix the vertical spacing in code blocks.
-    (org-indent ((t (:inherit (org-hide fixed-pitch)))))
+  ;; Configure org-indent to inherit from fixed-pitch to fix the vertical spacing in code blocks.
+  (require 'org-indent)
+  (set-face-attribute 'org-indent nil :inherit '(org-hide fixed-pitch))
 
-    (setq org-todo-keywords '((sequence "☛ TODO(t)" "|" "✔ DONE(d)")
-                              (sequence "⚑ WAITING(w)" "|")
-                              (sequence "|" "✘ CANCELED(c)")))))
+  (setq org-todo-keywords '((sequence "☛ TODO(t)" "|" "✔ DONE(d)")
+                            (sequence "⚑ WAITING(w)" "|")
+                            (sequence "|" "✘ CANCELED(c)"))))
 
 (use-package evil-org
   :hook (org-mode . evil-org-mode)
@@ -87,7 +86,17 @@
    `(org-level-3 ((t (,@headline ,@variable-font :height 1.25))))
    `(org-level-2 ((t (,@headline ,@variable-font :height 1.5))))
    `(org-level-1 ((t (,@headline ,@variable-font :height 1.75))))
-   `(org-document-title ((t (,@headline ,@variable-font :height 2.0 :underline nil))))))
+   `(org-document-title ((t (,@headline ,@variable-font :height 2.0 :underline nil))))
+   '(org-block                 ((t (:inherit fixed-pitch))))
+   '(org-document-info         ((t (:foreground "dark orange"))))
+   '(org-document-info-keyword ((t (:inherit (shadow fixed-pitch)))))
+   '(org-link                  ((t (:foreground "royal blue" :underline t))))
+   '(org-meta-line             ((t (:inherit (font-lock-comment-face fixed-pitch)))))
+   '(org-property-value        ((t (:inherit fixed-pitch))) t)
+   '(org-special-keyword       ((t (:inherit (font-lock-comment-face fixed-pitch)))))
+   '(org-tag                   ((t (:inherit (shadow fixed-pitch) :weight bold :height 0.8))))
+   '(org-verbatim              ((t (:inherit (shadow fixed-pitch)))))
+   '(org-indent                ((t (:inherit (org-hide fixed-pitch)))))))
 
 (set-face-attribute 'variable-pitch nil
                     :family "Fira Sans" :height 1.3 :weight 'light)
