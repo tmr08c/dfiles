@@ -1398,13 +1398,20 @@ If ARG is a numerical prefix argument then specify the indentation level."
       window-resize-pixelwise t
       frame-resize-pixelwise t
 
+      find-file-visit-truename t ; resolve symlinks when opening files
+
       byte-compile-warnings '(not free-vars unresolved noruntime lexical make-local)
-      idle-update-delay 2 ; update ui less often (0.5 default)
+      idle-update-delay 1 ; update UI slightly less often (0.5 default)
       create-lockfiles nil
       cua-mode t
       desktop-save-mode nil
       indent-tabs-mode nil
+
+      make-backup-files nil ; don't create backup~ files
+
+      ;; Use org mode in scratch buffer
       initial-scratch-message nil
+      initial-major-mode 'org-mode
 
       load-prefer-newer t ; Prevent loading old code
 
