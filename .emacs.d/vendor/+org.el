@@ -4,14 +4,17 @@
 
 (use-package org
   :requires langtool
-  :defer 3
   :pin org
   :mode "\\.org\'"
   :config
   (progn
     (add-hook 'before-save-hook 'langtool-check)
     (add-hook 'org-mode-hook 'variable-pitch-mode)
-    (add-hook 'org-mode-hook 'visual-line-mode)
+
+    ;; (add-hook 'org-mode-hook 'refill-mode)
+    ;; (add-hook 'org-mode-hook 'visual-fill-column-mode)
+
+    (setq-local line-spacing 0.1)
 
     (setq org-src-tab-acts-natively t
           org-src-fontify-natively t
@@ -67,21 +70,21 @@
         org-agenda-files (append org-agenda-files (org-projectile-todo-files))))
 
 ;; Org Fonts / UI
-(let* ((variable-tuple '(:font "Fira Sans"))
+(let* ((variable-font '(:font "Fira Sans"))
        (base-font-color     (face-foreground 'default nil 'default))
        (headline           `(:inherit default :weight bold :foreground ,base-font-color)))
 
   (custom-theme-set-faces
    'user
-   `(org-level-8 ((t (,@headline ,@variable-tuple))))
-   `(org-level-7 ((t (,@headline ,@variable-tuple))))
-   `(org-level-6 ((t (,@headline ,@variable-tuple))))
-   `(org-level-5 ((t (,@headline ,@variable-tuple))))
-   `(org-level-4 ((t (,@headline ,@variable-tuple :height 1.1))))
-   `(org-level-3 ((t (,@headline ,@variable-tuple :height 1.25))))
-   `(org-level-2 ((t (,@headline ,@variable-tuple :height 1.5))))
-   `(org-level-1 ((t (,@headline ,@variable-tuple :height 1.75))))
-   `(org-document-title ((t (,@headline ,@variable-tuple :height 2.0 :underline nil))))))
+   `(org-level-8 ((t (,@headline ,@variable-font))))
+   `(org-level-7 ((t (,@headline ,@variable-font))))
+   `(org-level-6 ((t (,@headline ,@variable-font))))
+   `(org-level-5 ((t (,@headline ,@variable-font))))
+   `(org-level-4 ((t (,@headline ,@variable-font :height 1.1))))
+   `(org-level-3 ((t (,@headline ,@variable-font :height 1.25))))
+   `(org-level-2 ((t (,@headline ,@variable-font :height 1.5))))
+   `(org-level-1 ((t (,@headline ,@variable-font :height 1.75))))
+   `(org-document-title ((t (,@headline ,@variable-font :height 2.0 :underline nil))))))
 
 (set-face-attribute 'variable-pitch nil
                     :family "Fira Sans" :height 1.3 :weight 'light)

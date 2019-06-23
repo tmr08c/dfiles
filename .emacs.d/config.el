@@ -522,13 +522,17 @@ it to fix all that visual noise."
              highlight-indentation-current-column-mode))
 
 (use-package visual-fill-column
+  :hook ((text-mode org-mode) . visual-fill-column-mode)
   :config
-  (setq-default
-   visual-fill-column-center-text t
-   visual-fill-column-width
-   ;; take Emacs 26 line numbers into account
-   (+ (if (boundp 'display-line-numbers) 6 0)
-      fill-column)))
+  (add-hook 'visual-fill-column-mode-hook #'visual-line-mode)
+  (advice-add 'text-scale-adjust :after
+              #'visual-fill-column-adjust))
+  ;; :config
+  ;; (setq visual-fill-column-center-text t
+  ;;       ;; visual-fill-column-width
+  ;;       ;; take Emacs 26 line numbers into account
+  ;;       (+ (if (boundp 'display-line-numbers) 6 0)
+  ;;          fill-column)))
 
 (use-package swiper
   :after evil
@@ -1383,10 +1387,11 @@ If ARG is a numerical prefix argument then specify the indentation level."
 (defalias 'yes-or-no-p 'y-or-n-p)
 
 (setq-default tab-width 2
-              indent-tabs-mode nil)
+              indent-tabs-mode nil
+              fill-column 125 ; Use Github as the standard, ref http://hilton.org.uk/blog/source-code-line-length
+              )
 
-(setq fill-column 125 ; Use Github as the standard, ref http://hilton.org.uk/blog/source-code-line-length
-      inhibit-startup-screen t
+(setq inhibit-startup-screen t
       blink-matching-paren nil
       visible-bell nil
       ring-bell-function 'ignore
