@@ -1416,7 +1416,7 @@ If ARG is a numerical prefix argument then specify the indentation level."
 
       ;; Use org mode in scratch buffer
       initial-scratch-message nil
-      initial-major-mode 'org-mode
+      initial-major-mode 'fundamental-mode
 
       load-prefer-newer t ; Prevent loading old code
 

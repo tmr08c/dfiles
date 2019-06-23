@@ -38,11 +38,14 @@
 (use-package evil-org
   :hook (org-mode . evil-org-mode)
   :custom
-  (evil-org-use-additional-insert t)
-  (evil-org-key-theme '(textobjects
-                        navigation
-                        additional
-                        todo)))
+  ;; (evil-org-use-additional-insert t)
+  (add-hook 'evil-org-mode-hook
+            (lambda ()
+              (evil-org-key-theme '(textobjects
+                                    navigation
+                                    insert))))
+  (require 'evil-org-agenda)
+  (evil-org-agenda-set-keys))
 
 (use-package ox-pandoc
   :after org)
