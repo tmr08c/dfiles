@@ -20,6 +20,7 @@ zplugin light greymd/docker-zsh-completion
 
 zplugin light mafredri/zsh-async
 zplugin light sindresorhus/pure
+#zplugin load denysdovhan/spaceship-prompt, use:spaceship.zsh, from:github, as:theme
 
 # zplugin light zsh-users/zsh-history-substring-search
 zplugin light zsh-users/zsh-syntax-highlighting
