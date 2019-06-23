@@ -43,6 +43,9 @@
                         additional
                         todo)))
 
+;; TODO
+;; (add-hook 'org-capture-mode-hook 'evil-insert-state)
+
 (use-package ox-pandoc
   :after org)
 ;; (use-package ox-minutes
