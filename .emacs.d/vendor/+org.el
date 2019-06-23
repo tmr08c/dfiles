@@ -10,6 +10,9 @@
   :config
   (progn
     (add-hook 'before-save-hook 'langtool-check)
+    (add-hook 'org-mode-hook 'variable-pitch-mode)
+    (add-hook 'org-mode-hook 'visual-line-mode)
+
     (setq org-src-tab-acts-natively t
           org-src-fontify-natively t
           org-return-follows-link t
@@ -20,6 +23,10 @@
           org-directory "~/org"
           org-M-RET-may-split-line '((item . nil))
           org-default-notes-file (expand-file-name "notes.org" org-directory))
+
+    ;; Configure org-indent to inherit from fixed-pitch to fix the vertical spacing in code blocks.
+    (org-indent ((t (:inherit (org-hide fixed-pitch)))))
+
     (setq org-todo-keywords '((sequence "☛ TODO(t)" "|" "✔ DONE(d)")
                               (sequence "⚑ WAITING(w)" "|")
                               (sequence "|" "✘ CANCELED(c)")))))
@@ -58,6 +65,29 @@
   :config
   (setq org-projectile-per-project-filepath "TODO.org"
         org-agenda-files (append org-agenda-files (org-projectile-todo-files))))
+
+;; Org Fonts / UI
+(let* ((variable-tuple '(:font "Fira Sans"))
+       (base-font-color     (face-foreground 'default nil 'default))
+       (headline           `(:inherit default :weight bold :foreground ,base-font-color)))
+
+  (custom-theme-set-faces
+   'user
+   `(org-level-8 ((t (,@headline ,@variable-tuple))))
+   `(org-level-7 ((t (,@headline ,@variable-tuple))))
+   `(org-level-6 ((t (,@headline ,@variable-tuple))))
+   `(org-level-5 ((t (,@headline ,@variable-tuple))))
+   `(org-level-4 ((t (,@headline ,@variable-tuple :height 1.1))))
+   `(org-level-3 ((t (,@headline ,@variable-tuple :height 1.25))))
+   `(org-level-2 ((t (,@headline ,@variable-tuple :height 1.5))))
+   `(org-level-1 ((t (,@headline ,@variable-tuple :height 1.75))))
+   `(org-document-title ((t (,@headline ,@variable-tuple :height 2.0 :underline nil))))))
+
+(set-face-attribute 'variable-pitch nil
+                    :family "Fira Sans" :height 1.3 :weight 'light)
+
+(set-face-attribute 'fixed-pitch nil
+                    :family "Fira Code" :weight 'medium)
 
 (provide '+org)
 ;;; +org.el ends here
