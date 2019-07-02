@@ -30,6 +30,8 @@
   ;; Configure org-indent to inherit from fixed-pitch to fix the vertical spacing in code blocks.
   (require 'org-indent)
   (set-face-attribute 'org-indent nil :inherit '(org-hide fixed-pitch))
+  (advice-add 'text-scale-adjust :after
+              #'visual-fill-column-adjust)
 
   (setq org-todo-keywords '((sequence "☛ TODO(t)" "|" "✔ DONE(d)")
                             (sequence "⚑ WAITING(w)" "|")
@@ -65,13 +67,24 @@
   :hook (org-mode . org-autolist-mode))
 
 
-(use-package org-projectile
-  :commands org-projectile-projectile-project-todo-completing-read
-  :functions org-projectile-todo-files
-  :hook (projectile-before-switch-project-hook . org-projectile-per-project)
+(use-package org-gcal
+  :after org
   :config
-  (setq org-projectile-per-project-filepath "TODO.org"
-        org-agenda-files (append org-agenda-files (org-projectile-todo-files))))
+  (setq org-gcal-client-id "784734461161-i9ggdi0n5ct4qb6vo0ftbjs3n90pdd1a.apps.googleusercontent.com"
+        org-gcal-file-alist '(("justin.smestad@gmail.com" . "~/org/gcal-p.org")
+                              ("justin@keyp.io" . "~/org/gcal-k.org"))
+        org-gcal-auto-archive nil
+        org-gcal-notify-p nil)
+  (add-hook 'org-agenda-mode-hook 'org-gcal-fetch)
+  (add-hook 'org-capture-after-finalize-hook 'org-gcal-fetch))
+
+;; (use-package org-projectile
+;;   :commands org-projectile-projectile-project-todo-completing-read
+;;   :functions org-projectile-todo-files
+;;   :hook (projectile-before-switch-project-hook . org-projectile-per-project)
+;;   :config
+;;   (setq org-projectile-per-project-filepath "TODO.org"
+;;         org-agenda-files (append org-agenda-files (org-projectile-todo-files))))
 
 ;; Org Fonts / UI
 (let* ((variable-font '(:font "Fira Sans"))

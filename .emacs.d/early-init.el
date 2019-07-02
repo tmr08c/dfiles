@@ -19,8 +19,6 @@
 
 (add-hook 'after-init-hook 'startup/revert-file-name-handler-alist)
 (add-hook 'after-init-hook 'startup/reset-gc)
-;; (add-hook 'emacs-startup-hook 'startup/revert-file-name-handler-alist)
-;; (add-hook 'emacs-startup-hook 'startup/reset-gc)
 
 ;; Package initialize occurs automatically, before `user-init-file' is
 ;; loaded, but after `early-init-file'.

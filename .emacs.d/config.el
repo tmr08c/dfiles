@@ -196,6 +196,9 @@ _q_ quit            _c_ create          _<_ previous
 (use-package amx
   :hook (after-init . amx-initialize))
 
+(use-package zoom
+  :commands zoom-mode)
+
 ;; Company
 (use-package company
   :defer t
@@ -394,6 +397,7 @@ _q_ quit            _c_ create          _<_ previous
          (css-mode . aggressive-indent-mode)))
 
 (use-package adaptive-wrap
+  :disabled
   :defer t
   :config (adaptive-wrap-prefix-mode))
 
@@ -765,6 +769,19 @@ If ARG is a numerical prefix argument then specify the indentation level."
                 ((eq system-type 'linux)
                  "/usr/share/java/languagetool/languagetool-commandline.jar"))
           langtool-mother-tongue "en-US")))
+
+;; latex
+(use-package tex-site
+  :ensure auctex
+  :mode ( "\\.tex\\'" . latex-mode )
+  :config
+  (setq TeX-auto-save t
+        TeX-parse-self t)
+  (setq-default TeX-master nil)
+  (add-hook 'TeX-mode-hook #'visual-line-mode)
+  (add-hook 'TeX-mode-hook #'rainbow-delimiters-mode))
+(use-package latex-preview-pane)
+(use-package company-auctex)
 
 ;; Common Lisp
 ;; (use-package sly

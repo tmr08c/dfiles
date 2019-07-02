@@ -845,6 +845,38 @@
                     ;; "xv" (spacemacs|org-emphasize spacemacs/org-verbatim ?=) )
                     )
 
+
+(js|keymap-for-mode 'tex-mode
+                    "*"   'LaTeX-mark-section      ;; C-c *
+                    "."   'LaTeX-mark-environment  ;; C-c .
+                    "c"   'LaTeX-close-environment ;; C-c ]
+                    "e"   'LaTeX-environment       ;; C-c C-e
+                    "i" '(:ignore t :wk "insert")
+                    "ii"   'LaTeX-insert-item       ;; C-c C-j
+                    "s"   'LaTeX-section           ;; C-c C-s
+
+                    "f" '(:ignore t :wk "fill")
+                    "fe"  'LaTeX-fill-environment  ;; C-c C-q C-e
+                    "fp"  'LaTeX-fill-paragraph    ;; C-c C-q C-p
+                    "fr"  'LaTeX-fill-region       ;; C-c C-q C-r
+                    "fs"  'LaTeX-fill-section      ;; C-c C-q C-s
+
+                    "p" '(:ignore t :wk "preview")
+                    "pb"  'preview-buffer
+                    "pc"  'preview-clearout
+                    "pd"  'preview-document
+                    "pe"  'preview-environment
+                    "pf"  'preview-cache-preamble
+                    "pp"  'preview-at-point
+                    "pr"  'preview-region
+                    "ps"  'preview-section
+
+                    "xB"  'latex/font-medium
+                    "xr"  'latex/font-clear
+                    "xfa" 'latex/font-calligraphic
+                    "xfn" 'latex/font-normal
+                    "xfu" 'latex/font-upright)
+
 (js|keymap-for-mode 'js2-mode
                     "w" 'js2-mode-toggle-warnings-and-errors
 
