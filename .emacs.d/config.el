@@ -58,7 +58,8 @@
   (general-create-definer space-leader-def
     :prefix "SPC"
     :non-normal-prefix "C-SPC")
-  (general-evil-setup))
+  (general-evil-setup)
+  (general-nmap "," (general-simulate-key "SPC m")))
 
 (use-package evil
   :demand

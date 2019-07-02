@@ -82,6 +82,7 @@
                (substring-no-properties (or (thing-at-point 'symbol) "")))))
           :wk "Lookup thing at point")
    "dD" '(counsel-dash :wk "Lookup thing at point with docset")
+   "m" '(:ignore t :wk "major mode")
    "feD" '((lambda ()
              (interactive)
              (counsel-find-file user-emacs-directory))
@@ -844,6 +845,18 @@
                     ;; "xu" (spacemacs|org-emphasize spacemacs/org-underline ?_)
                     ;; "xv" (spacemacs|org-emphasize spacemacs/org-verbatim ?=) )
                     )
+
+(js|keymap-for-mode 'org-agenda-mode
+                    "a" 'org-agenda
+                    "Cc" 'org-agenda-clock-cancel
+                    "Ci" 'org-agenda-clock-in
+                    "Co" 'org-agenda-clock-out
+                    "dd" 'org-agenda-deadline
+                    "ds" 'org-agenda-schedule
+                    "ie" 'org-agenda-set-effort
+                    "ip" 'org-agenda-set-property
+                    "it" 'org-agenda-set-tags
+                    "sr" 'org-agenda-refile)
 
 
 (js|keymap-for-mode 'tex-mode
