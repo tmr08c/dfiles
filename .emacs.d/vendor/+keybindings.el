@@ -283,6 +283,7 @@
 ;;                     "tk" 'exunit-rerun
 ;;                     "tt" 'exunit-verify-single)
 ;; NOTE outdated from alchemist set up. Here for reference
+
 (js|keymap-for-mode 'elixir-mode
                     ;; "f" 'elixir-format
 
@@ -338,13 +339,13 @@
                     "ta" 'alchemist-mix-test
                     "tb" 'alchemist-mix-test-this-buffer
                     "tB" 'alchemist-project-run-tests-for-current-file
-                    "tt" 'alchemist-mix-test-at-point
+                    "ts" 'alchemist-mix-test-at-point
                     "tF" 'alchemist-project-find-test
                     "tf" 'alchemist-mix-test-file
                     "tn" 'alchemist-test-mode-jump-to-next-test
                     "tN" 'alchemist-test-mode-jump-to-previous-test
                     "tr" 'alchemist-mix-rerun-last-test
-                    "ts" 'alchemist-mix-test-stale
+                    "tS" 'alchemist-mix-test-stale
                     "tR" 'alchemist-test-toggle-test-report-display
 
                     "x" '(:ignore t :wk "execute")
