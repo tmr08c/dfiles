@@ -51,7 +51,6 @@
 (use-package which-key-posframe
   :disabled
   :after which-key
-  :quelpa (which-key-posframe :fetcher github :repo "yanghaoxie/which-key-posframe")
   :config
   (setq which-key-posframe-poshandler 'posframe-poshandler-frame-center)
   (which-key-posframe-enable))
@@ -217,8 +216,7 @@ _q_ quit            _c_ create          _<_ previous
 
 ;; Company
 (use-package company
-  :defer t
-  :delight
+  :diminish company-mode
   :defines company-backends
   :hook (after-init . global-company-mode)
   :config
@@ -226,7 +224,7 @@ _q_ quit            _c_ create          _<_ previous
   (setq company-dabbrev-downcase nil
         company-dabbrev-ignore-case nil
         ;; company-dabbrev-code-other-buffers t
-        company-echo-delay 0 ; remove annoying blinking
+        company-echo-delay (if (display-graphic-p) nil 0) ; remove annoying blinking
         company-idle-delay .2 ; 0.6
         company-minimum-prefix-length 2
         company-require-match nil
@@ -241,25 +239,80 @@ _q_ quit            _c_ create          _<_ previous
         company-transformers '(company-sort-by-occurrence)
         company-backends '(company-yasnippet)))
 (use-package company-prescient
-  :hook (company-mode . company-prescient-mode)
-  :config
-  (prescient-persist-mode +1))
-(use-package flx)
-(use-package company-flx
-  :hook (company-mode . company-flx-mode))
+  :init (company-prescient-mode 1))
+;; TODO remove?
+;; (use-package flx)
+;; (use-package company-flx
+;;   :hook (company-mode . company-flx-mode))
 (use-package company-posframe
   :hook (company-mode . company-posframe-mode))
 (use-package company-box
   :diminish
-  :after all-the-icons
+  :functions (my-company-box--make-line my-company-box-icons--elisp)
   :hook (company-mode . company-box-mode)
-  :init (setq company-box-icons-alist 'company-box-icons-all-the-icons)
   :config
-  (setq company-box-backends-colors nil)
-  (setq company-box-show-single-candidate t)
-  (setq company-box-max-candidates 50)
+  (setq company-box-backends-colors nil
+        company-box-show-single-candidate t
+        company-box-max-candidates 50
+        company-box-doc-delay 0.5
+        company-box-icons-alist 'company-box-icons-all-the-icons)
 
-  (defun company-box-icons--elisp (candidate)
+  (setq company-box-icons-lsp
+        '((1 . fa_text_height) ;; Text
+          (2 . (fa_tags :face font-lock-function-name-face)) ;; Method
+          (3 . (fa_tag :face font-lock-function-name-face)) ;; Function
+          (4 . (fa_tag :face font-lock-function-name-face)) ;; Constructor
+          (5 . (fa_cog :foreground "#FF9800")) ;; Field
+          (6 . (fa_cog :foreground "#FF9800")) ;; Variable
+          (7 . (fa_cube :foreground "#7C4DFF")) ;; Class
+          (8 . (fa_cube :foreground "#7C4DFF")) ;; Interface
+          (9 . (fa_cube :foreground "#7C4DFF")) ;; Module
+          (10 . (fa_cog :foreground "#FF9800")) ;; Property
+          (11 . md_settings_system_daydream) ;; Unit
+          (12 . (fa_cog :foreground "#FF9800")) ;; Value
+          (13 . (md_storage :face font-lock-type-face)) ;; Enum
+          (14 . (md_closed_caption :foreground "#009688")) ;; Keyword
+          (15 . md_closed_caption) ;; Snippet
+          (16 . (md_color_lens :face font-lock-doc-face)) ;; Color
+          (17 . fa_file_text_o) ;; File
+          (18 . md_refresh) ;; Reference
+          (19 . fa_folder_open) ;; Folder
+          (20 . (md_closed_caption :foreground "#009688")) ;; EnumMember
+          (21 . (fa_square :face font-lock-constant-face)) ;; Constant
+          (22 . (fa_cube :face font-lock-type-face)) ;; Struct
+          (23 . fa_calendar) ;; Event
+          (24 . fa_square_o) ;; Operator
+          (25 . fa_arrows)) ;; TypeParameter
+        )
+  ;; Support `company-common'
+  (defun my-company-box--make-line (candidate)
+    (-let* (((candidate annotation len-c len-a backend) candidate)
+            (color (company-box--get-color backend))
+            ((c-color a-color i-color s-color) (company-box--resolve-colors color))
+            (icon-string (and company-box--with-icons-p (company-box--add-icon candidate)))
+            (candidate-string (concat (propertize (or company-common "") 'face 'company-tooltip-common)
+                                      (substring (propertize candidate 'face 'company-box-candidate) (length company-common) nil)))
+            (align-string (when annotation
+                            (concat " " (and company-tooltip-align-annotations
+                                             (propertize " " 'display `(space :align-to (- right-fringe ,(or len-a 0) 1)))))))
+            (space company-box--space)
+            (icon-p company-box-enable-icon)
+            (annotation-string (and annotation (propertize annotation 'face 'company-box-annotation)))
+            (line (concat (unless (or (and (= space 2) icon-p) (= space 0))
+                            (propertize " " 'display `(space :width ,(if (or (= space 1) (not icon-p)) 1 0.75))))
+                          (company-box--apply-color icon-string i-color)
+                          (company-box--apply-color candidate-string c-color)
+                          align-string
+                          (company-box--apply-color annotation-string a-color)))
+            (len (length line)))
+      (add-text-properties 0 len (list 'company-box--len (+ len-c len-a)
+                                       'company-box--color s-color)
+                           line)
+      line))
+  (advice-add #'company-box--make-line :override #'my-company-box--make-line)
+
+  ;; Prettify icons
+  (defun my-company-box-icons--elisp (candidate)
     (when (derived-mode-p 'emacs-lisp-mode)
       (let ((sym (intern candidate)))
         (cond ((fboundp sym) 'Function)
@@ -268,6 +321,7 @@ _q_ quit            _c_ create          _<_ previous
               ((boundp sym) 'Variable)
               ((symbolp sym) 'Text)
               (t . nil)))))
+  (advice-add #'company-box-icons--elisp :override #'my-company-box-icons--elisp)
 
   (with-eval-after-load 'all-the-icons
     (declare-function all-the-icons-faicon 'all-the-icons)
@@ -303,8 +357,8 @@ _q_ quit            _c_ create          _<_ previous
 
 ;; Language Server Protocol (LSP)
 (use-package lsp-mode
+  :diminish lsp-mode
   :commands lsp
-  ;; :hook (prog-mode . lsp)
   :hook ((ruby-mode
           js2-mode typescript-mode
           python-mode
@@ -312,36 +366,43 @@ _q_ quit            _c_ create          _<_ previous
           ;; web-mode
           ;; css-mode sass-mode scss-mode
           elixir-mode
-          go-mode) . lsp)
+          go-mode) . lsp-deferred)
   :config
   (setq lsp-auto-guess-root t
         lsp-prefer-flymake nil
         flymake-fringe-indicator-position 'right-fringe)
   (add-to-list 'exec-path "~/code/github/elixir-ls/release"))
 (use-package company-lsp
-  :init (setq company-lsp-cache-candidates 'auto
-              company-lsp-enable-snippet t))
+  :init (setq company-lsp-cache-candidates 'auto))
 (use-package lsp-ui
-  :custom-face
-  ;; (lsp-ui-doc-background ((t `(:background nil))))
-  (lsp-ui-doc-header ((t (:inherit (font-lock-string-face italic)))))
+  :custom-face (lsp-ui-doc-background ((t (:background ,(face-background 'tooltip)))))
   :bind (:map lsp-ui-mode-map
               ([remap xref-find-definitions] . lsp-ui-peek-find-definitions)
               ([remap xref-find-references] . lsp-ui-peek-find-references)
               ("C-c u" . lsp-ui-imenu))
   :init
-  (setq lsp-ui-doc-enable nil
+  (setq lsp-ui-doc-enable t
         lsp-ui-doc-delay 3
         lsp-ui-doc-include-signature t
         lsp-ui-doc-header t
-        lsp-ui-doc-position 'top
+        lsp-ui-doc-position 'at-point
         lsp-ui-doc-use-webkit nil ;; It is ugly and too big
-        ;; lsp-ui-doc-use-webkit (eq system-type 'linux)
         lsp-ui-doc-border (face-foreground 'default)
 
         lsp-ui-sideline-enable nil
         lsp-ui-sideline-ignore-duplicate t)
   :config
+  (add-to-list 'lsp-ui-doc-frame-parameters '(right-fringe . 8))
+
+  ;; `C-g'to close doc
+  (advice-add #'keyboard-quit :before #'lsp-ui-doc-hide)
+
+  ;; Reset `lsp-ui-doc-background' after loading theme
+  ;; (add-hook 'after-load-theme-hook
+  ;;           (lambda ()
+  ;;             (setq lsp-ui-doc-border (face-foreground 'default))
+  ;;             (set-face-background 'lsp-ui-doc-background
+  ;;                                  (face-background 'tooltip))))
   ;; WORKAROUND Hide mode-line of the lsp-ui-imenu buffer
   ;; https://github.com/emacs-lsp/lsp-ui/issues/243
   (defadvice lsp-ui-imenu (after hide-lsp-ui-imenu-mode-line activate)
@@ -1132,7 +1193,6 @@ If ARG is a numerical prefix argument then specify the indentation level."
 ;; Syntax Checking - Flycheck
 (use-package flycheck
   :commands (flycheck-list-errors flycheck-buffer)
-  ;; :quelpa (flycheck :fetcher github :repo "flycheck/flycheck")
   :pin melpa
   :init (global-flycheck-mode)
   :config
@@ -1171,6 +1231,21 @@ If ARG is a numerical prefix argument then specify the indentation level."
 (use-package writeroom-mode
   :commands writeroom-mode)
 
+(use-package doom-modeline
+  :hook (after-init . doom-modeline-mode)
+  :config
+  (setq doom-modeline-icon t
+        doom-modeline-major-mode-icon t
+        doom-modeline-minor-modes nil
+        doom-modeline-lsp t))
+
+(use-package hide-mode-line
+  :hook (((completion-list-mode completion-in-region-mode) . hide-mode-line-mode)))
+
+(use-package icons-in-terminal
+  :disabled
+  :quelpa (icons-in-terminal :fetcher github :repo "seagle0128/icons-in-terminal.el"))
+
 (use-package all-the-icons
   :config
   (add-to-list 'all-the-icons-icon-alist
@@ -1198,8 +1273,9 @@ If ARG is a numerical prefix argument then specify the indentation level."
         display-time-day-and-date t))
 
 (use-package base16-theme
-  :defer t
+  ;; :quelpa (base16-theme :fetcher github :repo "jsmestad/base16-emacs" :branch "patch-1")
   :init
+  ;; (add-to-list 'custom-theme-load-path "~/.emacs.d/quelpa/build/base16-theme/build")
   (load-theme 'base16-oceanicnext t))
 
 (use-package hide-mode-line
@@ -1364,7 +1440,6 @@ If ARG is a numerical prefix argument then specify the indentation level."
         eshell-kill-processes-on-exit t))
 (use-package eshell-toggle
   :commands (eshell-toggle)
-  :quelpa (eshell-toggle :fetcher github :repo "4DA/eshell-toggle")
   :config
   (setq eshell-toggle-use-projectile-root t))
 (use-package helpful
@@ -1377,13 +1452,6 @@ If ARG is a numerical prefix argument then specify the indentation level."
   :defer t
   :defines ivy-initial-inputs-alist
   :bind (("C-c C-d" . helpful-at-point)))
-
-
-
-(use-package matrix-client
-  :disabled ;; not ready for prime time yet
-  :quelpa (matrix-client :fetcher github
-                         :repo "jgkamat/matrix-client-el"))
 
 (use-package adoc-mode ; asciidoc support
   :commands (tempo-template-adoc-title-1
@@ -1472,13 +1540,6 @@ If ARG is a numerical prefix argument then specify the indentation level."
       history-delete-duplicates t ; Get rid of duplicates in minibuffer history
       ;; keep the point out of the minibuffer
       minibuffer-prompt-properties '(read-only t point-entered minibuffer-avoid-prompt face minibuffer-prompt))
-
-;; Adjust Font Faces for Company
-(custom-set-faces
- '(company-tooltip-common
-   ((t (:inherit company-tooltip :weight bold :underline nil))))
- '(company-tooltip-common-selection
-   ((t (:inherit company-tooltip-selection :weight bold :underline nil)))))
 
 ;; relegate tooltips to echo area only
 (if (boundp 'tooltip-mode) (tooltip-mode -1))

@@ -28,16 +28,17 @@
         org-M-RET-may-split-line '((item . nil))
         org-default-notes-file (expand-file-name "notes.org" org-directory))
 
-  (setq-default
-   org-agenda-dim-blocked-tasks nil
-   org-agenda-inhibit-startup t
-   org-agenda-skip-unavailable-files t
-   ;; Move the agenda to show the previous 3 days and the next 7 days for a bit
-   ;; better context instead of just the current week which is a bit confusing
-   ;; on, for example, a sunday
-   org-agenda-span 10
-   org-agenda-start-on-weekday nil
-   org-agenda-start-day "-3d")
+  (setq-default org-agenda-dim-blocked-tasks nil
+                org-agenda-inhibit-startup t
+                org-agenda-skip-unavailable-files t
+                ;; Move the agenda to show the previous 3 days and the next 7 days for a bit
+                ;; better context instead of just the current week which is a bit confusing
+                ;; on, for example, a sunday
+                org-agenda-span 10
+                org-agenda-start-on-weekday nil
+                org-agenda-start-day "-3d")
+
+  (setq org-agenda-files (list "~/org/gcal-k.org" "~/org/gcal-p.org" "~/org/inbox.org"))
 
   (evil-set-initial-state 'org-agenda-mode 'motion)
 

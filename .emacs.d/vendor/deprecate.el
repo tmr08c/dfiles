@@ -5,13 +5,6 @@
 
 ;;; Code:
 
-(use-package doom-modeline ; TODO install spaceline all-the-icons
-  :hook (after-init . doom-modeline-mode)
-  :config
-  (setq doom-modeline-icon t
-        doom-modeline-major-mode-icon t
-        doom-modeline-lsp t))
-
 (use-package neotree ; Try to use dired instead
   :commands (neotree-toggle neotree-projectile-action)
   :config
