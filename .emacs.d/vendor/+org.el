@@ -132,7 +132,7 @@
    '(org-indent                ((t (:inherit (org-hide fixed-pitch)))))))
 
 (set-face-attribute 'variable-pitch nil
-                    :family "Fira Sans" :height 1.3 :weight 'light)
+                    :family "Fira Sans" :weight 'light)
 
 (set-face-attribute 'fixed-pitch nil
                     :family "Fira Code" :weight 'medium)

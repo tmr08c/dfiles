@@ -1133,13 +1133,26 @@ If ARG is a numerical prefix argument then specify the indentation level."
   :ensure nil
   :unless (display-graphic-p)
   :hook (after-init . display-time-mode)
-  :init
-  (setq display-time-24hr-format t
-        display-time-day-and-date t))
+  :init (setq display-time-24hr-format t
+              display-time-day-and-date t))
 
-(use-package base16-theme
-  :init
-  (load-theme 'base16-oceanicnext t))
+(use-package doom-themes
+  ;; :init (centaur-load-theme centaur-theme)
+  :config
+  (load-theme 'doom-one t)
+  ;; Enable flashing mode-line on errors
+  (doom-themes-visual-bell-config)
+  ;; (set-face-attribute 'doom-visual-bell nil
+  ;;                     :background (face-foreground 'error)
+  ;;                     :foreground (face-background 'default)
+  ;;                     :inverse-video nil)
+  ;; Corrects (and improves) org-mode's native fontification.
+  (doom-themes-org-config)
+  ;; Enable custom treemacs theme (all-the-icons must be installed!)
+  (doom-themes-treemacs-config))
+;; (use-package base16-theme
+;;   :init
+;;   (load-theme 'base16-oceanicnext t))
 
 (use-package hide-mode-line
   :hook ((neotree-mode
