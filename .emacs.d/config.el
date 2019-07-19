@@ -73,6 +73,7 @@
     :prefix "SPC"
     :non-normal-prefix "C-SPC")
   (general-evil-setup)
+  (general-vmap "," (general-simulate-key "SPC m"))
   (general-nmap "," (general-simulate-key "SPC m")))
 
 (use-package evil
@@ -375,7 +376,6 @@ _q_ quit            _c_ create          _<_ previous
 (use-package company-lsp
   :init (setq company-lsp-cache-candidates 'auto))
 (use-package lsp-ui
-  :custom-face (lsp-ui-doc-background ((t (:background ,(face-background 'tooltip)))))
   :bind (:map lsp-ui-mode-map
               ([remap xref-find-definitions] . lsp-ui-peek-find-definitions)
               ([remap xref-find-references] . lsp-ui-peek-find-references)
@@ -387,7 +387,7 @@ _q_ quit            _c_ create          _<_ previous
         lsp-ui-doc-header t
         lsp-ui-doc-position 'at-point
         lsp-ui-doc-use-webkit nil ;; It is ugly and too big
-        lsp-ui-doc-border (face-foreground 'default)
+        ;; lsp-ui-doc-border (face-foreground 'default)
 
         lsp-ui-sideline-enable nil
         lsp-ui-sideline-ignore-duplicate t)
@@ -397,12 +397,6 @@ _q_ quit            _c_ create          _<_ previous
   ;; `C-g'to close doc
   (advice-add #'keyboard-quit :before #'lsp-ui-doc-hide)
 
-  ;; Reset `lsp-ui-doc-background' after loading theme
-  ;; (add-hook 'after-load-theme-hook
-  ;;           (lambda ()
-  ;;             (setq lsp-ui-doc-border (face-foreground 'default))
-  ;;             (set-face-background 'lsp-ui-doc-background
-  ;;                                  (face-background 'tooltip))))
   ;; WORKAROUND Hide mode-line of the lsp-ui-imenu buffer
   ;; https://github.com/emacs-lsp/lsp-ui/issues/243
   (defadvice lsp-ui-imenu (after hide-lsp-ui-imenu-mode-line activate)
@@ -860,153 +854,22 @@ If ARG is a numerical prefix argument then specify the indentation level."
 (use-package latex-preview-pane)
 (use-package company-auctex)
 
-;; Common Lisp
-;; (use-package sly
-;;   :requires (evil company)
-;;   :hook ((lisp-mode emacs-lisp-mode) . (lambda ()  (sly-setup '(sly-fancy))))
-;;   :defer t
-;;   :custom
-;;   (inferior-lisp-program "sbcl")
-;;   (sly-autodoc-use-multiline t)
-;;   (sly-complete-symbol*-fancy t)
-;;   (sly-kill-without-query-p t)
-;;   (sly-repl-history-remove-duplicates t)
-;;   (sly-repl-history-trim-whitespaces t)
-;;   (sly-net-coding-system 'utf-8-unix)
-;;   :config
-;;   (progn
-;;     (add-to-list 'company-backends 'company-capf)
-;;     ;; (add-to-list 'evil-emacs-state-modes 'sly-mrepl-mode) (this one we want evil)
-;;     (add-to-list 'evil-emacs-state-modes 'sly-inspector-mode)
-;;     (add-to-list 'evil-emacs-state-modes 'sly-db-mode)
-;;     (add-to-list 'evil-emacs-state-modes 'sly-xref-mode)
-;;     (add-to-list 'evil-emacs-state-modes 'sly-stickers--replay-mode)
-;;     (defun +common-lisp|cleanup-sly-maybe ()
-;;       "Kill processes and leftover buffers when killing the last sly buffer."
-;;       (unless (cl-loop for buf in (delq (current-buffer) (buffer-list))
-;;                        if (and (buffer-local-value 'sly-mode buf)
-;;                                (get-buffer-window buf))
-;;                        return t)
-;;         (dolist (conn (sly--purge-connections))
-;;           (sly-quit-lisp-internal conn 'sly-quit-sentinel t))
-;;         (let (kill-buffer-hook kill-buffer-query-functions)
-;;           (mapc #'kill-buffer
-;;                 (cl-loop for buf in (delq (current-buffer) (buffer-list))
-;;                          if (buffer-local-value 'sly-mode buf)
-;;                          collect buf)))))
-
-;;     (defun +common-lisp|init-sly ()
-;;       "Attempt to auto-start sly when opening a lisp buffer."
-;;       (cond ((sly-connected-p))
-;;             ((executable-find inferior-lisp-program)
-;;              (let ((sly-auto-start 'always))
-;;                (sly-auto-start)
-;;                (add-hook 'kill-buffer-hook #'+common-lisp|cleanup-sly-maybe nil t)))
-;;             ((message "WARNING: Couldn't find `inferior-lisp-program' (%s)"
-;;                       inferior-lisp-program))))
-;;     (add-hook 'sly-mode-hook #'+common-lisp|init-sly)
-
-;;     (defun +common-lisp*refresh-sly-version (version conn)
-;;       "Update `sly-protocol-version', which will likely be incorrect or nil due to
-;; an issue where `load-file-name' is incorrect. Because Doom's packages are
-;; installed through an external script (bin/doom), `load-file-name' is set to
-;; bin/doom while packages at compile-time (not a runtime though)."
-;;       (unless sly-protocol-version
-;;         (setq sly-protocol-version (sly-version nil (locate-library "sly.el"))))
-;;       (advice-remove #'sly-check-version #'+common-lisp*refresh-sly-version))
-;;     (advice-add #'sly-check-version :before #'+common-lisp*refresh-sly-version)))
-;; (use-package sly-mrepl
-;;   :ensure nil ;; built-in to sly
-;;   :defines sly-mrepl-mode-map
-;;   :bind
-;;   (:map sly-mrepl-mode-map
-;;         ("<up>" . sly-mrepl-previous-input-or-button)
-;;         ("<down>" . sly-mrepl-next-input-or-button)
-;;         ("<C-up>" . sly-mrepl-previous-input-or-button)
-;;         ("<C-down>" . sly-mrepl-next-input-or-button))
-;;   :config
-;;   (with-eval-after-load 'smartparens
-;;     (sp-with-modes '(sly-mrepl-mode)
-;;       (sp-local-pair "'" "'" :actions nil)
-;;       (sp-local-pair "`" "`" :actions nil))))
-;; (use-package sly-repl-ansi-color
-;;   :requires sly
-;;   :demand t
-;;   :config (push 'sly-repl-ansi-color sly-contribs))
-;; (use-package sly-company
-;; 	:requires (company sly))
-;; (use-package slime
-;; 	:hook lisp-mode
-;; 	:defer t
-;; 	:custom
-;; 	(inferior-lisp-program "sbcl")
-;; 	:config
-;; 	(require 'slime-fuzzy)
-;; 	(slime-setup)
-;; 	:general
-;; 	(space-leader-def 'normal lisp-mode
-;;     "m '" 'slime
-
-;;     "m c" '(:ignore t :which-key "compile")
-;;     "m cc" 'slime-compile-file
-;;     "m cC" 'slime-compile-and-load-file
-;;     "m cl" 'slime-load-file
-;;     "m cf" 'slime-compile-defun
-;;     "m cr" 'slime-compile-region
-;;     "m cn" 'slime-remove-notes
-
-;;     "m e" '(:ignore t :which-key "eval")
-;;     "m eb"  'slime-eval-buffer
-;;     "m ef"  'slime-eval-defun
-;;     "m eF"  'slime-undefine-function
-;;     "m ee"  'slime-eval-last-expression
-;;     "m er"  'slime-eval-region
-
-;;     "m g" '(:ignore t :which-key "nav")
-;;     "m gb"  'slime-pop-find-definition-stack
-;;     "m gn"  'slime-next-note
-;;     "m gN"  'slime-previous-note
-
-;;     "m h" '(:ignore t :which-key "help")
-;;     "m ha"  'slime-apropos
-;;     "m hA"  'slime-apropos-all
-;;     "m hd"  'slime-disassemble-symbol
-;;     "m hh"  'slime-describe-symbol
-;;     "m hH"  'slime-hyperspec-lookup
-;;     "m hi"  'slime-inspect-definition
-;;     "m hp"  'slime-apropos-package
-;;     "m ht"  'slime-toggle-trace-fdefinition
-;;     "m hT"  'slime-untrace-all
-;;     "m h<"  'slime-who-calls
-;;     "m h>"  'slime-calls-who
-;;     ;; TODO: Add key bindings for who binds/sets globals?
-;;     "m hr"  'slime-who-references
-;;     "m hm"  'slime-who-macroexpands
-;;     "m hs"  'slime-who-specializes
-
-;;     "m m" '(:ignore t :which-key "macro")
-;;     "m ma"  'slime-macroexpand-all
-;;     "m mo"  'slime-macroexpand-1
-
-;;     "m s" '(:ignore t :which-key "repl")
-;;     "m se"  'slime-eval-last-expression-in-repl
-;;     "m si"  'slime
-;;     "m sq"  'slime-quit-lisp
-
-;;     "m t" '(:ignore t :which-key "toggle")
-;; 		"m tf"  'slime-toggle-fancy-trace
-;; 		)
-;; 	)
-;; (use-package slime-company
-;; 	:requires (slime company))
-;; (use-package auto-compile
-;; 	:commands auto-compile-on-save-mode
-;;   :custom
-;;   (auto-compile-display-buffer nil)
-;; 	(auto-compile-use-mode-line nil))
+;; Emacs Lisp (elisp)
+(use-package ielm)
+(use-package eros
+  :commands (eros-eval-defun eros-eval-last-sexp eros-mode))
 (use-package highlight-quoted
   :hook (emacs-lisp-mode . highlight-quoted-mode)
   :commands highlight-quoted-mode)
+(use-package macrostep
+  :mode ("\\*.el\\'" . emacs-lisp-mode))
+(use-package overseer)
+(use-package elisp-def
+  :disabled)
+(use-package elisp-demos
+  :disabled)
+(use-package flycheck-cask
+  :hook (emacs-lisp-mode . flycheck-cask-setup))
 
 ;; Python
 (use-package python-mode
@@ -1122,7 +985,7 @@ If ARG is a numerical prefix argument then specify the indentation level."
 (use-package elm-test-runner
   :after elm-mode)
 (use-package flycheck-elm
-  :hook (flycheck-mode . flycheck-elm-setup))
+  :hook (elm-mode . flycheck-elm-setup))
 
 ;; OCaml / ReasonML
 (use-package reason-mode
@@ -1134,7 +997,8 @@ If ARG is a numerical prefix argument then specify the indentation level."
   :after reason-mode
   :config
   (setq merlin-completion-with-doc t))
-(use-package flycheck-ocaml)
+(use-package flycheck-ocaml
+  :after reason-mode)
 
 (use-package company-web
   :requires company
@@ -1198,8 +1062,9 @@ If ARG is a numerical prefix argument then specify the indentation level."
   :config
   (setq flycheck-rubocop-lint-only t
         flycheck-idle-change-delay 1.75
-        flycheck-check-syntax-automatically '(save idle-change mode-enabled)
-        flycheck-disabled-checkers '(ruby-rubylint))
+        flycheck-check-syntax-automatically '(save idle-change mode-enabled))
+  (setq-default flycheck-disabled-checkers '(ruby-rubylint
+                                             emacs-lisp-checkdoc))
   (global-flycheck-mode +1))
 (use-package flycheck-posframe
   :commands flycheck-posframe-show-posframe
@@ -1273,9 +1138,7 @@ If ARG is a numerical prefix argument then specify the indentation level."
         display-time-day-and-date t))
 
 (use-package base16-theme
-  ;; :quelpa (base16-theme :fetcher github :repo "jsmestad/base16-emacs" :branch "patch-1")
   :init
-  ;; (add-to-list 'custom-theme-load-path "~/.emacs.d/quelpa/build/base16-theme/build")
   (load-theme 'base16-oceanicnext t))
 
 (use-package hide-mode-line

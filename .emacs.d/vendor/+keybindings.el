@@ -670,17 +670,31 @@
                     "e" '(:ignore t :wk "eval")
                     "e$" 'lisp-state-eval-sexp-end-of-line
                     "eb" 'eval-buffer
-                    "eC" 'spacemacs/eval-current-form
-                    "ee" 'eval-last-sexp
+                    "eE" 'eval-last-sexp
+                    "ee" 'eros-eval-last-sexp
                     "er" 'eval-region
-                    "ef" 'eval-defun
+                    "eF" 'eros-eval-defun
+                    "eF" 'eval-defun
                     "el" 'lisp-state-eval-sexp-end-of-line
 
-                    "gG" 'spacemacs/nav-find-elisp-thing-at-point-other-window
                     ","  'lisp-state-toggle-lisp-state
 
                     "s" '(:ignore t :wk "ielm")
-                    "si" 'ielm)
+                    "si" 'ielm
+
+                    "t" '(:ignore t :wk "test")
+                    "ta" 'overseer-test
+                    "tt" 'overseer-test-run-test
+                    "tb" 'overseer-test-this-buffer
+                    "tf" 'overseer-test-file
+                    "tg" 'overseer-test-tags
+                    "tp" 'overseer-test-prompt
+                    "tA" 'overseer-test-debug
+                    "tq" 'overseer-test-quiet
+                    "tv" 'overseer-test-verbose
+                    "th" 'overseer-help
+
+                    "tq" 'ert)
 
 (js|keymap-for-mode 'org-mode
                     "'" 'org-edit-special
