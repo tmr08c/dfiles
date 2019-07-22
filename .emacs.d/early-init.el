@@ -4,24 +4,15 @@
 ;; before package and UI initialization happens.
 
 ;; Defer garbage collection further back in the startup process
-(setq gc-cons-threshold 268435456)
-
-(defun startup/reset-gc ()
-  (setq gc-cons-threshold 16777216
-        gc-cons-percentage 0.1))
-
-(defvar startup/file-name-handler-alist file-name-handler-alist)
-(setq file-name-handler-alist nil)
-
-(defun startup/revert-file-name-handler-alist ()
-  (setq file-name-handler-alist startup/file-name-handler-alist))
-
-
-(add-hook 'after-init-hook 'startup/revert-file-name-handler-alist)
-(add-hook 'after-init-hook 'startup/reset-gc)
+(setq gc-cons-threshold 80000000)
 
 ;; Package initialize occurs automatically, before `user-init-file' is
-;; loaded, but after `early-init-file'.
-(setq package-enable-at-startup nil
-      load-prefer-newer t)
+;; loaded, but after `early-init-file'. We handle package
+;; initialization, so we must prevent Emacs from doing it early!
+(setq package-enable-at-startup nil)
 
+;; Faster to disable these here (before they've been initialized)
+(unless (and (display-graphic-p) (eq system-type 'darwin))
+  (push '(menu-bar-lines . 0) default-frame-alist))
+(push '(tool-bar-lines . 0) default-frame-alist)
+(push '(vertical-scroll-bars) default-frame-alist)

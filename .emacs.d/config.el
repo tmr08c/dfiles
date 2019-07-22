@@ -10,6 +10,36 @@
 ;;;
 ;;; Code:
 
+;; Speed up startup
+(defvar default-file-name-handler-alist file-name-handler-alist)
+(setq file-name-handler-alist nil)
+(setq gc-cons-threshold 40000000)
+(add-hook 'emacs-startup-hook
+          (lambda ()
+            "Restore defalut values after startup."
+            (setq file-name-handler-alist default-file-name-handler-alist)
+            (setq gc-cons-threshold 800000)
+
+            ;; GC automatically while unfocusing the frame
+            ;; `focus-out-hook' is obsolete since 27.1
+            (if (boundp 'after-focus-change-function)
+                (add-function :after after-focus-change-function
+                              (lambda ()
+                                (unless (frame-focus-state)
+                                  (garbage-collect))))
+              (add-hook 'focus-out-hook 'garbage-collect))
+
+            ;; Avoid GCs while using `ivy'/`counsel'/`swiper' and `helm', etc.
+            ;; @see http://bling.github.io/blog/2016/01/18/why-are-you-changing-gc-cons-threshold/
+            (defun my-minibuffer-setup-hook ()
+              (setq gc-cons-threshold most-positive-fixnum))
+
+            (defun my-minibuffer-exit-hook ()
+              (setq gc-cons-threshold 800000))
+
+            (add-hook 'minibuffer-setup-hook #'my-minibuffer-setup-hook)
+            (add-hook 'minibuffer-exit-hook #'my-minibuffer-exit-hook)))
+
 (require '+funcs)
 
 (defvar +completion-engine 'ivy
@@ -1136,26 +1166,30 @@ If ARG is a numerical prefix argument then specify the indentation level."
   :init (setq display-time-24hr-format t
               display-time-day-and-date t))
 
+
 (use-package doom-themes
-  ;; :init (centaur-load-theme centaur-theme)
   :config
+  (setq doom-treemacs-enable-variable-pitch t)
   (load-theme 'doom-one t)
   ;; Enable flashing mode-line on errors
   (doom-themes-visual-bell-config)
-  ;; (set-face-attribute 'doom-visual-bell nil
-  ;;                     :background (face-foreground 'error)
-  ;;                     :foreground (face-background 'default)
-  ;;                     :inverse-video nil)
+  (set-face-attribute 'doom-visual-bell nil
+                      :background (face-foreground 'error)
+                      :foreground (face-background 'default)
+                      :inverse-video nil)
   ;; Corrects (and improves) org-mode's native fontification.
   (doom-themes-org-config)
+
   ;; Enable custom treemacs theme (all-the-icons must be installed!)
   (doom-themes-treemacs-config))
-;; (use-package base16-theme
+
+;; (use-package base16-theme)
 ;;   :init
 ;;   (load-theme 'base16-oceanicnext t))
 
 (use-package hide-mode-line
   :hook ((neotree-mode
+          treemacs-mode
           completion-list-mode
           completion-in-region-mode) . hide-mode-line-mode))
 
