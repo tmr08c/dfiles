@@ -1183,9 +1183,7 @@ If ARG is a numerical prefix argument then specify the indentation level."
   ;; Enable custom treemacs theme (all-the-icons must be installed!)
   (doom-themes-treemacs-config))
 
-;; (use-package base16-theme)
-;;   :init
-;;   (load-theme 'base16-oceanicnext t))
+(use-package base16-theme)
 
 (use-package hide-mode-line
   :hook ((neotree-mode
@@ -1459,11 +1457,6 @@ If ARG is a numerical prefix argument then specify the indentation level."
 
 ;; This is MUCH faster than using set-face-attribute
 (add-to-list 'default-frame-alist '(font . "Fira Code:13"))
-
-;; Appearance
-;; Theme Emacs for dark color scheme
-(add-to-list 'default-frame-alist '(ns-transparent-titlebar . t))
-(add-to-list 'default-frame-alist '(ns-appearance . dark))
 
 (load "~/.emacs.secrets" t)
 (provide 'config)

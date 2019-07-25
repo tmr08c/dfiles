@@ -10,6 +10,14 @@
           (lambda (frame)
             (set-fontset-font t 'unicode "Apple Color Emoji" frame 'prepend)))
 
+(add-to-list 'default-frame-alist '(ns-transparent-titlebar . t))
+(add-to-list 'default-frame-alist '(ns-appearance . dark))
+(add-hook 'after-load-theme-hook
+          (lambda ()
+            (let ((bg (frame-parameter nil 'background-mode)))
+              (set-frame-parameter nil 'ns-appearance bg)
+              (setcdr (assq 'ns-appearance default-frame-alist) bg))))
+
 (use-package reveal-in-osx-finder
   :commands reveal-in-osx-finder)
 
@@ -34,10 +42,6 @@
         mac-option-key-is-meta 't
         mac-option-modifier 'meta)
 
-
-  ;; (global-set-key (kbd "s-=") 'spacemacs/scale-up-font)
-  ;; (global-set-key (kbd "s--") 'spacemacs/scale-down-font)
-  ;; (global-set-key (kbd "s-0") 'spacemacs/reset-font-size)
   (global-set-key (kbd "s-q") 'save-buffers-kill-terminal)
   (global-set-key (kbd "s-v") 'yank)
   (global-set-key (kbd "s-c") 'evil-yank)
