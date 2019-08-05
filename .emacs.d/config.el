@@ -1066,10 +1066,8 @@ If ARG is a numerical prefix argument then specify the indentation level."
                       (setq-local company-backends '(company-css company-yasnippet))))
   :custom
   (css-indent-offset 2))
-
 (use-package scss-mode
   :mode "\\.scss$")
-
 (use-package sass-mode
   :mode "\\.sass$")
 
@@ -1104,6 +1102,11 @@ If ARG is a numerical prefix argument then specify the indentation level."
         flycheck-posframe-info-prefix "··· "
         flycheck-posframe-error-prefix "✕ "))
 
+;; Ansible
+(use-package ansible)
+(use-package ansible-doc)
+
+;; Spell Checking
 (use-package flyspell
   :commands (flyspell-buffer
              flyspell-goto-next-error)
