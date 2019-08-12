@@ -38,7 +38,7 @@
                 org-agenda-start-on-weekday nil
                 org-agenda-start-day "-3d")
 
-  (setq org-agenda-files (list "~/org/gcal-k.org" "~/org/gcal-p.org" "~/org/inbox.org"))
+  (setq org-agenda-files (list "~/org/gcal-p.org" "~/org/inbox.org"))
 
   (evil-set-initial-state 'org-agenda-mode 'motion)
 
@@ -89,8 +89,7 @@
   :after org
   :config
   (setq org-gcal-client-id "784734461161-i9ggdi0n5ct4qb6vo0ftbjs3n90pdd1a.apps.googleusercontent.com"
-        org-gcal-file-alist '(("justin.smestad@gmail.com" . "~/org/gcal-p.org")
-                              ("justin@keyp.io" . "~/org/gcal-k.org"))
+        org-gcal-file-alist '(("justin.smestad@gmail.com" . "~/org/gcal-p.org"))
         org-gcal-auto-archive nil
         org-gcal-notify-p nil)
   (add-hook 'org-agenda-mode-hook 'org-gcal-fetch)
