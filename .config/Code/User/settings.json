@@ -1,6 +1,5 @@
 {
     "telemetry.enableTelemetry": false,
-    "workbench.colorTheme": "Base16 Dark Oceanic Next",
     "workbench.startupEditor": "newUntitledFile",
     "window.zoomLevel": 0.6,
     "editor.fontFamily": "'Fira Mono', 'monospace', monospace, 'Droid Sans Fallback'",
@@ -44,11 +43,12 @@
     "window.title": "${dirty}${activeEditorShort}${separator}${rootName}",
     "editor.minimap.enabled": false,
     "editor.wordWrap": "wordWrapColumn",
-    "workbench.iconTheme": "vscode-great-icons",
     "search.runInExtensionHost": true,
     "ccls.launch.command": "~/.local/bin/ccls",
     "[cpp]": {
         "editor.defaultFormatter": "ms-vscode.cpptools"
     },
-    "platformio-ide.forceUploadAndMonitor": true
+    "platformio-ide.forceUploadAndMonitor": true,
+    "workbench.colorTheme": "Base16 Dark Oceanic Next",
+    "workbench.iconTheme": "vscode-great-icons"
 }
