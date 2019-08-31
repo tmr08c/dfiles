@@ -411,7 +411,7 @@ _q_ quit            _c_ create          _<_ previous
               ([remap xref-find-references] . lsp-ui-peek-find-references)
               ("C-c u" . lsp-ui-imenu))
   :init
-  (setq lsp-ui-doc-enable t
+  (setq lsp-ui-doc-enable nil
         lsp-ui-doc-delay 3
         lsp-ui-doc-include-signature t
         lsp-ui-doc-header t
@@ -508,7 +508,9 @@ _q_ quit            _c_ create          _<_ previous
              dump-jump-go-prompt
              dump-jump-go-prefer-external
              dumb-jump-go-prefer-external-other-window)
-  :custom (dumb-jump-selector +completion-engine))
+  :config
+  (setq dump-jump-force-searcher 'rg
+        dumb-jump-selector +completion-engine))
 
 (use-package whitespace
   :defer 5
