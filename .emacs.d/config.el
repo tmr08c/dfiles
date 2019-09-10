@@ -733,11 +733,24 @@ For instance pass En as source for English."
   :config
   (add-to-list 'company-backends 'company-inf-ruby))
 (use-package rspec-mode
-  :hook (ruby-mode . rspec-mode)
-  :custom
-  (compilation-scroll-output 'first-error)
-  (rspec-autosave-buffer t)
+  :mode ("/\\.rspec\\'" . text-mode)
+  :commands (rspec-verify-all
+             rspec-rerun
+             rspec-verify
+             rspec-verify-continue
+             rspec-run-last-failed
+             rspec-toggle-spec-and-target
+             rspec-toggle-spec-and-target-find-example
+             rspec-verify-method
+             rspec-verify-matching
+             rspec-verify-single
+             rspec-toggle-example-pendingness
+             rspec-dired-verify
+             rspec-dired-verify-single)
+  ;; :hook (ruby-mode . rspec-mode)
   :config
+  (setq compilation-scroll-output 'first-error
+        rspec-autosave-buffer t)
   (add-hook 'rspec-compilation-mode-hook 'inf-ruby-auto-enter nil t)
   (with-eval-after-load 'smartparens
     (sp-with-modes 'ruby-mode
@@ -756,10 +769,25 @@ For instance pass En as source for English."
 (use-package yard-mode
   :hook (ruby-mode . yard-mode))
 (use-package ruby-hash-syntax
-  :requires ruby-mode)
+  :requires ruby-mode
+  :commands (ruby-hash-syntax-toggle))
+(use-package ruby-refactor
+  :commands (ruby-refactor-extract-to-method
+             ruby-refactor-extract-local-variable
+             ruby-refactor-extract-constant
+             ruby-refactor-extract-to-let))
 (use-package projectile-rails
   :requires projectile
   :hook (projectile-mode . projectile-rails-on))
+;; (use-package ruby-test-mode
+;;   :commands (ruby-test-run
+;;              ruby-test-run-at-point
+;;              ruby-test-toggle-between-implementation-and-specification))
+(use-package minitest
+  :commands (minitest-verify-all
+             minitest-verify
+             minitest-rerun
+             minitest-verify-single))
 
 ;; SQL
 (use-package sql
