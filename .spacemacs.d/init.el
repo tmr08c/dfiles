@@ -39,7 +39,7 @@ This function should only modify configuration layer settings."
                       spacemacs-default-company-backends '(company-files company-capf))
      better-defaults
      (c-c++ :variables
-            c-c++-backend 'lsp-cquery
+            c-c++-backend 'lsp-ccls
             c-c++-enable-clang-format-on-save t
             c-c++-default-mode-for-headers 'c++-mode)
      common-lisp
@@ -49,15 +49,18 @@ This function should only modify configuration layer settings."
      helm
      emacs-lisp
      emoji
-     elixir
+     (elixir :variables
+             elixir-backend 'alchemist)
      erlang
      (go :variables
+         go-backend 'lsp
          go-format-before-save t
          godoc-at-point-function 'godoc-gogetdoc
          go-use-test-args "-race -timeout 10s")
      (html :variables
            web-fmt-tool 'web-beautify)
      (javascript :variables
+                 javascript-backend 'lsp
                  javascript-fmt-tool 'web-beautify
                  js2-basic-offset 2
                  js-indent-level 2
@@ -69,7 +72,9 @@ This function should only modify configuration layer settings."
      (python :variables
              python-test-runner 'pytest)
      (ruby :variables
-           ruby-test-runner 'rspec)
+           ruby-backend 'lsp
+           ruby-test-runner 'rspec
+           ruby-version-manager 'rbenv)
      ruby-on-rails
      rust
      git
@@ -83,7 +88,7 @@ This function should only modify configuration layer settings."
      org
      pandoc
      (shell :variables
-            shell-default-shell 'eshell
+            shell-default-shell 'vterm
             shell-default-height 30
             shell-default-position 'bottom)
      shell-scripts
@@ -91,6 +96,7 @@ This function should only modify configuration layer settings."
      syntax-checking
      (unicode-fonts :variables unicode-fonts-force-multi-color-on-mac t)
      (typescript :variables
+                 typescript-backend 'lsp
                  typescript-fmt-on-save t)
      version-control
      yaml)
