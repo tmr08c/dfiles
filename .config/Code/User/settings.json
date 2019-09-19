@@ -2,7 +2,7 @@
     "telemetry.enableTelemetry": false,
     "workbench.startupEditor": "newUntitledFile",
     "window.zoomLevel": 0.6,
-    "editor.fontFamily": "'Fira Mono', 'monospace', monospace, 'Droid Sans Fallback'",
+    "editor.fontFamily": "'Fira Code', 'monospace', monospace, 'Droid Sans Fallback'",
     "platformio-ide.activateOnlyOnPlatformIOProject": true,
     "files.trimTrailingWhitespace": true,
     "workbench.editor.enablePreview": false,
@@ -50,5 +50,6 @@
     },
     "platformio-ide.forceUploadAndMonitor": true,
     "workbench.colorTheme": "Base16 Dark Oceanic Next",
-    "workbench.iconTheme": "vscode-great-icons"
+    "workbench.iconTheme": "vscode-great-icons",
+    "editor.fontLigatures": true
 }
