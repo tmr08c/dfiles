@@ -134,7 +134,7 @@
                     :family "Fira Sans" :weight 'light)
 
 (set-face-attribute 'fixed-pitch nil
-                    :family "Fira Code" :weight 'medium)
+                    :family "Cascadia Code" :weight 'regular)
 
 (provide '+org)
 ;;; +org.el ends here
