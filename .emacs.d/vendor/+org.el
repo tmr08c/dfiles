@@ -136,5 +136,10 @@
 (set-face-attribute 'fixed-pitch nil
                     :family "Cascadia Code" :weight 'regular)
 
+(face-spec-set 'default
+               '((((type x)) :family "Cascadia Code" :height 120)
+                 (((type ns)) :family "Cascadia Code" :height 120)
+                 (t :family :height 120)))
+
 (provide '+org)
 ;;; +org.el ends here
