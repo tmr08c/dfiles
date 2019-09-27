@@ -2,7 +2,7 @@
     "telemetry.enableTelemetry": false,
     "workbench.startupEditor": "newUntitledFile",
     "window.zoomLevel": 0.6,
-    "editor.fontFamily": "'Fira Code', 'monospace', monospace, 'Droid Sans Fallback'",
+    "editor.fontFamily": "'Cascadia Code', 'Fira Code', 'monospace', monospace, 'Droid Sans Fallback'",
     "platformio-ide.activateOnlyOnPlatformIOProject": true,
     "files.trimTrailingWhitespace": true,
     "workbench.editor.enablePreview": false,

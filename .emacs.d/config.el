@@ -177,6 +177,8 @@
   (setq evil-collection-company-use-tng nil)
   (evil-collection-init))
 
+(use-package auto-sudoedit
+  :init (auto-sudoedit-mode 1))
 
 (use-package editorconfig
   :hook (prog-mode . editorconfig-mode)
