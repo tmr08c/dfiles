@@ -291,17 +291,21 @@
                counsel-projectile-ag
                counsel-projectile-rg))
   (use-package counsel-dash
-    :commands counsel-dash
+    :commands (counsel-dash
+               counsel-dash-at-point
+               counsel-dash-install-docset)
     :hook
     ((lisp-mode . (lambda () (setq-local counsel-dash-docsets '("Common_Lisp"))))
      (emacs-lisp-mode . (lambda () (setq-local counsel-dash-docsets '("Emacs_Lisp"))))
+     (elixir-mode . (lambda () (setq-local counsel-dash-docsets '("Elixir"))))
      (ruby-mode . (lambda () (setq-local counsel-dash-docsets '("Ruby"))))
      (projectile-rails-mode . (lambda () (setq-local counsel-dash-docsets '("Ruby_on_Rails_5"))))
      (sql-mode . (lambda () (setq-local counsel-dash-docsets '("PostgreSQL"))))
      (web-mode . (lambda () (setq-local counsel-dash-docsets '("Javascript" "HTML")))))
     :config
     (setq counsel-dash-browser-func 'eww
-          counsel-dash-common-docsets '()))
+          counsel-dash-common-docsets '()
+          counsel-dash-docsets-url "https://raw.github.com/Kapeli/feeds/master"))
   )
 
 (provide '+completion)
