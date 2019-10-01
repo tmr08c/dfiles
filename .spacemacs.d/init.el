@@ -94,7 +94,8 @@ This function should only modify configuration layer settings."
      shell-scripts
      ;; spell-checking
      syntax-checking
-     (unicode-fonts :variables unicode-fonts-force-multi-color-on-mac t)
+     (unicode-fonts :variables
+                    unicode-fonts-force-multi-color-on-mac t)
      (typescript :variables
                  typescript-backend 'lsp
                  typescript-fmt-on-save t)
@@ -257,7 +258,7 @@ It should only modify the values of Spacemacs settings."
    ;; Default font, or prioritized list of fonts. `powerline-scale' allows to
    ;; quickly tweak the mode-line size to make separators look not too crappy.
    dotspacemacs-default-font `("Cascadia Code"
-                               :size ,(when (spacemacs/system-is-mac) 13 14)
+                               :size ,(when (spacemacs/system-is-mac) 13 13)
                                :weight ,(when (spacemacs/system-is-mac) 'normal 'medium))
 
    ;; The leader key (default "SPC")
