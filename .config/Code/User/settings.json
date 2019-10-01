@@ -51,5 +51,6 @@
     "platformio-ide.forceUploadAndMonitor": true,
     "workbench.colorTheme": "Base16 Dark Oceanic Next",
     "workbench.iconTheme": "vscode-great-icons",
-    "editor.fontLigatures": true
+    "editor.fontLigatures": true,
+    "window.menuBarVisibility": "toggle"
 }
