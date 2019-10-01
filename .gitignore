@@ -16,3 +16,4 @@ zeus.json
 .projectile
 .dir-locals
 .elixir_ls
+.uuid
