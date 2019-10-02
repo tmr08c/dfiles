@@ -506,6 +506,9 @@ If you are unsure, try setting them in `dotspacemacs/user-config' first."
    ;; Custom Configuration file
    custom-file "~/.spacemacs.d/custom.el"
 
+   ;; Font GC
+   inhibit-compacting-font-caches t
+
    ;; Files
    create-lockfiles nil
    indent-tabs-mode nil
