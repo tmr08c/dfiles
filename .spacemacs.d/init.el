@@ -75,8 +75,10 @@ This function should only modify configuration layer settings."
            ruby-backend 'lsp
            ruby-test-runner 'rspec
            ruby-version-manager 'rbenv)
+
      ruby-on-rails
      rust
+     systemd
      git
      markdown
      ;; osx
@@ -88,7 +90,7 @@ This function should only modify configuration layer settings."
      org
      pandoc
      (shell :variables
-            shell-default-shell 'vterm
+            shell-default-shell 'vterm ; requires --with-modules support
             shell-default-height 30
             shell-default-position 'bottom)
      shell-scripts
