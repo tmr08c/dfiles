@@ -38,10 +38,11 @@ This function should only modify configuration layer settings."
                       auto-completion-enable-sort-by-usage t
                       spacemacs-default-company-backends '(company-files company-capf))
      better-defaults
-     (c-c++ :variables
-            c-c++-backend 'lsp-ccls
-            c-c++-enable-clang-format-on-save t
-            c-c++-default-mode-for-headers 'c++-mode)
+     ;; NOTE disabled till dap-mode error is resolved
+     ;; (c-c++ :variables
+     ;;        c-c++-backend 'lsp-ccls
+     ;;        c-c++-enable-clang-format-on-save t
+     ;;        c-c++-default-mode-for-headers 'c++-mode)
      common-lisp
      copy-as-format
      csv
