@@ -11,6 +11,17 @@ Lint/AmbiguousBlockAssociation:
   StyleGuide: '#syntax'
   Enabled: false #true
 
+Layout/EmptyLineAfterMagicComment:
+  Enabled: false # true
+
+Lint/UnneededDisable:
+  Description: >-
+                 Checks for rubocop:disable comments that can be removed.
+                 Note: this cop is not disabled when disabling all cops.
+                 It must be explicitly disabled.
+  Enabled: false #true
+
+
 Lint/AmbiguousOperator:
   Description: >-
                  Checks for ambiguous operators in the first argument of a
@@ -29,7 +40,7 @@ Lint/AssignmentInCondition:
   StyleGuide: '#safe-assignment-in-condition'
   Enabled: false #true
 
-Lint/BlockAlignment:
+Layout/BlockAlignment:
   Description: 'Align block ends correctly.'
   Enabled: true
 
@@ -37,7 +48,7 @@ Lint/CircularArgumentReference:
   Description: "Default values in optional keyword arguments and optional ordinal arguments should not refer back to the name of the argument."
   Enabled: true
 
-Lint/ConditionPosition:
+Layout/ConditionPosition:
   Description: >-
                  Checks for condition placed in a confusing position relative to
                  the keyword.
@@ -48,7 +59,7 @@ Lint/Debugger:
   Description: 'Check for debugger calls.'
   Enabled: true
 
-Lint/DefEndAlignment:
+Layout/DefEndAlignment:
   Description: 'Align ends corresponding to defs correctly.'
   Enabled: true
 
@@ -93,7 +104,7 @@ Lint/EmptyWhen:
   Description: 'Checks for `when` branches with empty bodies.'
   Enabled: true
 
-Lint/EndAlignment:
+Layout/EndAlignment:
   Description: 'Align ends correctly.'
   Enabled: true
 
@@ -135,10 +146,6 @@ Lint/IneffectiveAccessModifier:
 
 Lint/InheritException:
   Description: 'Avoid inheriting from the `Exception` class.'
-  Enabled: true
-
-Lint/LiteralInCondition:
-  Description: 'Checks of literals used in conditions.'
   Enabled: true
 
 Lint/LiteralInInterpolation:
@@ -232,13 +239,6 @@ Lint/UnderscorePrefixedVariableName:
 
 Lint/UnifiedInteger:
   Description: 'Use Integer instead of Fixnum or Bignum'
-  Enabled: true
-
-Lint/UnneededDisable:
-  Description: >-
-                 Checks for rubocop:disable comments that can be removed.
-                 Note: this cop is not disabled when disabling all cops.
-                 It must be explicitly disabled.
   Enabled: true
 
 Lint/UnneededSplatExpansion:
