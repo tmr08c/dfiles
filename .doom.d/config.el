@@ -2,7 +2,7 @@
 
 ;; (load! "+bindings")
 
-(setq doom-font (font-spec :family "Fira Code")
+(setq doom-font (font-spec :family "Cascadia Code")
       doom-variable-pitch-font (font-spec :family "Fira Sans")
       doom-theme 'doom-one)
 
