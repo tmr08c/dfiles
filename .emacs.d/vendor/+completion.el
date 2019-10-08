@@ -78,6 +78,9 @@
           ivy-initial-inputs-alist nil
           ivy-use-selectable-prompt t))
 
+  (use-package ivy-prescient
+    :hook (ivy-mode . ivy-prescient-mode))
+
   (use-package ivy-rich
     :after (counsel-projectile all-the-icons ivy counsel)
     :defines (all-the-icons-icon-alist
@@ -248,6 +251,9 @@
               (ivy-rich-candidate)))))
     (ivy-rich-mode +1))
 
+  (use-package all-the-icons-ivy
+    :config (all-the-icons-ivy-setup))
+
   (use-package doom-todo-ivy
     :commands doom/ivy-tasks
     :load-path "vendor/")
@@ -277,6 +283,7 @@
           counsel-rg-base-command "rg -S --no-heading --line-number --color never %s ."
           counsel-ag-base-command "ag -S --nocolor --nogroup %s"
           counsel-pt-base-command "pt -S --nocolor --nogroup -e %s"))
+
   (use-package counsel-projectile
     :commands (counsel-projectile-switch-to-buffer
                counsel-projectile-find-dir
@@ -290,6 +297,7 @@
                counsel-projectile-org-agenda
                counsel-projectile-ag
                counsel-projectile-rg))
+
   (use-package counsel-dash
     :commands (counsel-dash
                counsel-dash-at-point

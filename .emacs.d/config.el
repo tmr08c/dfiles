@@ -180,13 +180,11 @@
 (use-package auto-sudoedit
   :init (auto-sudoedit-mode 1))
 
+;; EditorConfig
 (use-package editorconfig
   :hook (prog-mode . editorconfig-mode)
   :config
   (setq editorconfig-trim-whitespaces-mode 'ws-butler-mode))
-
-(use-package focus
-  :commands (focus-mode))
 
 (use-package eyebrowse ; Easy workspaces creation and switching
   :demand
@@ -273,10 +271,6 @@ _q_ quit            _c_ create          _<_ previous
         company-backends '(company-yasnippet)))
 (use-package company-prescient
   :init (company-prescient-mode 1))
-;; TODO remove?
-;; (use-package flx)
-;; (use-package company-flx
-;;   :hook (company-mode . company-flx-mode))
 (use-package company-posframe
   :hook (company-mode . company-posframe-mode))
 (use-package company-box
@@ -402,7 +396,7 @@ _q_ quit            _c_ create          _<_ previous
           go-mode) . lsp-deferred)
   :config
   (setq lsp-auto-guess-root t
-        lsp-prefer-flymake nil
+        lsp-prefer-flymake t
         flymake-fringe-indicator-position 'right-fringe)
   (add-to-list 'exec-path "~/code/github/elixir-ls/release"))
 (use-package company-lsp
@@ -1162,6 +1156,7 @@ If ARG is a numerical prefix argument then specify the indentation level."
   :commands writeroom-mode)
 
 (use-package doom-modeline
+  :defer 5
   :hook (after-init . doom-modeline-mode)
   :config
   (setq doom-modeline-icon t
@@ -1193,15 +1188,8 @@ If ARG is a numerical prefix argument then specify the indentation level."
   (add-to-list 'all-the-icons-mode-icon-alist
                '(gfm-mode all-the-icons-octicon "markdown" :face all-the-icons-blue)))
 
-;; Display Time
-(use-package time
-  :ensure nil
-  :unless (display-graphic-p)
-  :hook (after-init . display-time-mode)
-  :init (setq display-time-24hr-format t
-              display-time-day-and-date t))
-
-
+;; Themes
+(use-package base16-theme)
 (use-package doom-themes
   :config
   (setq doom-treemacs-enable-variable-pitch t)
@@ -1218,8 +1206,8 @@ If ARG is a numerical prefix argument then specify the indentation level."
   ;; Enable custom treemacs theme (all-the-icons must be installed!)
   (doom-themes-treemacs-config))
 
-(use-package base16-theme)
 
+;; Hide Mode Line
 (use-package hide-mode-line
   :hook ((neotree-mode
           treemacs-mode
@@ -1242,10 +1230,11 @@ If ARG is a numerical prefix argument then specify the indentation level."
 (use-package evil-magit
   :after magit)
 
-;;; Restart Emacs
+;; Restart Emacs
 (use-package restart-emacs
   :commands restart-emacs)
 
+;; Window Numbers
 (use-package winum
   :commands (winum-select-window-by-number
              winum-select-window-0-or-10
@@ -1371,20 +1360,20 @@ If ARG is a numerical prefix argument then specify the indentation level."
 (use-package vterm ; https://github.com/akermu/emacs-libvterm
   :commands (vterm vterm-other-window)
   :load-path "~/code/github/emacs-libvterm")
-(use-package eshell
-  :config
-  (setq eshell-visual-commands '("tmux" "htop" "bash" "zsh" "fish" "vim" "nvim")
-        eshell-visual-subcommands '(("git" "log" "l" "diff" "show"))
-        eshell-history-size 10000
-        eshell-hist-ignoredups t
-        eshell-scroll-to-bottom-on-output 'this
-        eshell-scroll-to-bottom-on-input 'all
-        eshell-buffer-shorthand t
-        eshell-kill-processes-on-exit t))
-(use-package eshell-toggle
-  :commands (eshell-toggle)
-  :config
-  (setq eshell-toggle-use-projectile-root t))
+;; (use-package eshell
+;;   :config
+;;   (setq eshell-visual-commands '("tmux" "htop" "bash" "zsh" "fish" "vim" "nvim")
+;;         eshell-visual-subcommands '(("git" "log" "l" "diff" "show"))
+;;         eshell-history-size 10000
+;;         eshell-hist-ignoredups t
+;;         eshell-scroll-to-bottom-on-output 'this
+;;         eshell-scroll-to-bottom-on-input 'all
+;;         eshell-buffer-shorthand t
+;;         eshell-kill-processes-on-exit t))
+;; (use-package eshell-toggle
+;;   :commands (eshell-toggle)
+;;   :config
+;;   (setq eshell-toggle-use-projectile-root t))
 (use-package helpful
   :commands (helpful-callable
              helpful-command
@@ -1408,10 +1397,11 @@ If ARG is a numerical prefix argument then specify the indentation level."
              adoc-promote)
   :mode ("\\.adoc?\\'" . adoc-mode))
 
-(require '+org)
-
+;; Language Files for Elixir
 (use-package po-mode
   :mode ("\\.pot?\\'" . po-mode))
+
+(require '+org)
 
 (use-package linux
   :ensure nil
@@ -1461,9 +1451,8 @@ If ARG is a numerical prefix argument then specify the indentation level."
 
       make-backup-files nil ; don't create backup~ files
 
-      ;; Use org mode in scratch buffer
       initial-scratch-message nil
-      initial-major-mode 'fundamental-mode
+      ;; initial-major-mode 'fundamental-mode
 
       load-prefer-newer t ; Prevent loading old code
 
@@ -1495,4 +1484,3 @@ If ARG is a numerical prefix argument then specify the indentation level."
 
 (load "~/.emacs.secrets" t)
 (provide 'config)
-;;; config.el ends here
