@@ -46,6 +46,7 @@
   "Setting to control whether to use helm or ivy.")
 
 (use-package dashboard
+  :disabled
   :config
   (setq dashboard-set-heading-icons nil
         dashboard-set-file-icons t
@@ -185,6 +186,9 @@
   :hook (prog-mode . editorconfig-mode)
   :config
   (setq editorconfig-trim-whitespaces-mode 'ws-butler-mode))
+(use-package direnv
+  :defer 2
+  :ensure-system-package direnv)
 
 (use-package eyebrowse ; Easy workspaces creation and switching
   :demand
@@ -235,9 +239,6 @@ _q_ quit            _c_ create          _<_ previous
     (add-to-list 'projectile-project-root-files ".clang_complete")
     (projectile-mode +1)))
 
-(use-package direnv
-  :defer 2
-  :ensure-system-package direnv)
 
 (use-package amx
   :hook (after-init . amx-initialize))
@@ -651,142 +652,6 @@ it to fix all that visual noise."
 (use-package midnight
   :defer 10)
 
-(use-package google-translate
-  :commands (spacemacs/set-google-translate-languages
-             google-translate-query-translate
-             google-translate-at-point
-             google-translate-query-translate-reverse
-             google-translate-at-point-reverse)
-  :init
-  (progn
-    (defun spacemacs/set-google-translate-languages (source target)
-      "Set source language for google translate.
-For instance pass En as source for English."
-      (interactive
-       "sEnter source language (ie. en): \nsEnter target language (ie. en): "
-       source target)
-      (message
-       (format "Set google translate source language to %s and target to %s"
-               source target))
-      (setq google-translate-default-source-language (downcase source))
-      (setq google-translate-default-target-language (downcase target))))
-  :config
-  (progn
-    (require 'google-translate-default-ui)
-    (setq google-translate-enable-ido-completion t
-          google-translate-show-phonetic t
-          google-translate-default-source-language "en"
-          google-translate-default-target-language "de")))
-
-;; Golang
-(use-package go-mode
-  :mode "\\.go\\'")
-(use-package go-eldoc
-  :commands go-eldoc-setup)
-(use-package go-projectile
-  :hook (go-mode . go-projectile-mode))
-(use-package go-gen-test
-  :commands (go-gen-test-exported
-             go-gen-test-all
-             go-gen-test-dwim))
-(use-package go-fill-struct
-  :commands (go-fill-struct))
-(use-package godoctor
-  :commands (godoctor-godoc
-             godoctor-extract
-             godoctor-rename
-             godoctor-toggle))
-(use-package go-rename
-  :commands  go-rename)
-(use-package go-impl
-  :commands go-impl)
-
-
-(use-package ruby-mode
-  :ensure nil
-  :ensure-system-package
-  ((ruby-lint   . "gem install ruby-lint")
-   (ripper-tags . "gem install ripper-tags")
-   (pry . "gem install pry"))
-  :hook (ruby-mode . flycheck-mode)
-  :config
-  (add-hook 'ruby-mode-hook
-            '(lambda ()
-               (setq evil-shift-width ruby-indent-level)))
-  :custom
-  (ruby-insert-encoding-magic-comment nil)
-  (ruby-align-to-stmt-keywords
-   '(if while unless until begin case for def)))
-(use-package bundler
-  :hook (ruby-mode . bundler-mode))
-(use-package inf-ruby
-  :hook ((ruby-mode . inf-ruby-minor-mode)
-         (compilation-filter-hook . inf-ruby-auto-enter))
-  :custom
-  (inf-ruby-console-environment "development"))
-(use-package company-inf-ruby
-  :after inf-ruby
-  :config
-  (add-to-list 'company-backends 'company-inf-ruby))
-(use-package rspec-mode
-  :mode ("/\\.rspec\\'" . text-mode)
-  :commands (rspec-verify-all
-             rspec-rerun
-             rspec-verify
-             rspec-verify-continue
-             rspec-run-last-failed
-             rspec-toggle-spec-and-target
-             rspec-toggle-spec-and-target-find-example
-             rspec-verify-method
-             rspec-verify-matching
-             rspec-verify-single
-             rspec-toggle-example-pendingness
-             rspec-dired-verify
-             rspec-dired-verify-single)
-  ;; :hook (ruby-mode . rspec-mode)
-  :config
-  (setq compilation-scroll-output 'first-error
-        rspec-autosave-buffer t)
-  (add-hook 'rspec-compilation-mode-hook 'inf-ruby-auto-enter nil t)
-  (with-eval-after-load 'smartparens
-    (sp-with-modes 'ruby-mode
-      (sp-local-pair
-       "{" "}"
-       :pre-handlers '(sp-ruby-pre-handler)
-       :post-handlers '(sp-ruby-post-handler
-                        (js|smartparens-pair-newline-and-indent "RET"))
-       :suffix ""))))
-(use-package rubocop
-  :ensure-system-package
-  (rubocop . "gem install rubocop")
-  :hook (ruby-mode . rubocop-mode))
-(use-package rbenv
-  :hook (ruby-mode . global-rbenv-mode))
-(use-package yard-mode
-  :hook (ruby-mode . yard-mode))
-(use-package ruby-hash-syntax
-  :requires ruby-mode
-  :commands (ruby-hash-syntax-toggle))
-(use-package ruby-refactor
-  :commands (ruby-refactor-extract-to-method
-             ruby-refactor-extract-local-variable
-             ruby-refactor-extract-constant
-             ruby-refactor-extract-to-let))
-(use-package projectile-rails
-  :requires projectile
-  :hook (projectile-mode . projectile-rails-on))
-;; (use-package ruby-test-mode
-;;   :commands (ruby-test-run
-;;              ruby-test-run-at-point
-;;              ruby-test-toggle-between-implementation-and-specification))
-(use-package minitest
-  :commands (minitest-verify-all
-             minitest-verify
-             minitest-rerun
-             minitest-verify-single))
-(use-package feature-mode
-  :mode (("\\.feature\\'" . feature-mode)))
-
 ;; SQL
 (use-package sql
   :ensure nil
@@ -877,27 +742,6 @@ If ARG is a numerical prefix argument then specify the indentation level."
   :mode "\\.ya?ml\'")
 
 
-(use-package markdown-mode
-  :mode "\\.md$"
-  :hook (markdown-mode . flyspell-mode))
-
-(use-package langtool
-  :commands (langtool-check
-             langtool-check-done
-             langtool-show-message-at-point
-             langtool-correct-buffer)
-  :init (setq langtool-default-language "en-US")
-  :config
-  (unless langtool-language-tool-jar
-    (setq langtool-language-tool-jar
-          (cond ((eq system-type 'darwin)
-                 (locate-file "libexec/languagetool-commandline.jar"
-                              (js|files-in "/usr/local/cellar/languagetool"
-                                           :type 'dirs
-                                           :depth 1)))
-                ((eq system-type 'linux)
-                 "/usr/share/java/languagetool/languagetool-commandline.jar"))
-          langtool-mother-tongue "en-US")))
 
 ;; latex
 (use-package tex-site
@@ -911,23 +755,6 @@ If ARG is a numerical prefix argument then specify the indentation level."
   (add-hook 'TeX-mode-hook #'rainbow-delimiters-mode))
 (use-package latex-preview-pane)
 (use-package company-auctex)
-
-;; Emacs Lisp (elisp)
-(use-package ielm)
-(use-package eros
-  :commands (eros-eval-defun eros-eval-last-sexp eros-mode))
-(use-package highlight-quoted
-  :hook (emacs-lisp-mode . highlight-quoted-mode)
-  :commands highlight-quoted-mode)
-(use-package macrostep
-  :mode ("\\*.el\\'" . emacs-lisp-mode))
-(use-package overseer)
-(use-package elisp-def
-  :disabled)
-(use-package elisp-demos
-  :disabled)
-(use-package flycheck-cask
-  :hook (emacs-lisp-mode . flycheck-cask-setup))
 
 ;; Python
 (use-package python-mode
@@ -951,63 +778,6 @@ If ARG is a numerical prefix argument then specify the indentation level."
 (use-package clang-format
   :commands (clang-format))
 
-;; Erlang / Elixir
-(use-package erlang
-  :mode "\\.erl$")
-(use-package elixir-mode
-  :mode "\\.exs?"
-  :config
-  (progn
-    (add-hook 'elixir-mode-hook
-              (lambda () (add-hook 'before-save-hook 'lsp-format-buffer)))
-    ;; (add-hook 'elixir-format-hook (lambda ()
-    ;;                                 (if (projectile-project-p)
-    ;;                                     (setq elixir-format-arguments
-    ;;                                           (list "--dot-formatter"
-    ;;                                                 (concat (locate-dominating-file buffer-file-name ".formatter.exs") ".formatter.exs")))
-    ;;                                   (setq elixir-format-arguments nil))))
-    ))
-(use-package exunit
-  :commands (exunit-verify-all
-             exunit-verify-all-in-umbrella
-             exunit-verify
-             exunit-verify-single
-             exunit-rerun))
-(use-package alchemist
-  :hook (elixir-mode . alchemist-mode)
-  :config
-  (setq alchemist-project-compile-when-needed t
-        alchemist-test-status-modeline t
-        alchemist-test-truncate-lines nil)
-  (dolist (mode (list alchemist-compile-mode-map
-                      alchemist-eval-mode-map
-                      alchemist-execute-mode-map
-                      alchemist-message-mode-map
-                      alchemist-help-minor-mode-map
-                      alchemist-mix-mode-map
-                      alchemist-macroexpand-mode-map
-                      alchemist-refcard-mode-map
-                      alchemist-test-report-mode-map))
-    (evil-define-key 'normal mode
-      (kbd "q") 'quit-window)))
-(use-package alchemist-company
-  :ensure nil
-  :hook (elixir-mode . (lambda ()
-                         (setq-local company-backends '(alchemist-company company-yasnippet)))))
-(use-package flycheck-credo
-  :hook (elixir-mode . flycheck-credo-setup))
-(use-package flycheck-mix
-  :hook (elixir-mode . flycheck-mix-setup))
-;; (use-package flycheck-mix
-;;   :commands (flycheck-mix-setup)
-;;   :init
-;;   (progn
-;;     (add-to-list 'safe-local-variable-values
-;;                  (cons 'elixir-enable-compilation-checking nil))
-;;     (add-to-list 'safe-local-variable-values
-;;                  (cons 'elixir-enable-compilation-checking t))
-;;     (add-hook 'elixir-mode-local-vars-hook
-;;               'spacemacs//elixir-enable-compilation-checking)))
 
 (use-package scala-mode
   :mode ("\\.\\(scala\\|sbt\\)\\'" . scala-mode))
@@ -1016,21 +786,6 @@ If ARG is a numerical prefix argument then specify the indentation level."
 (use-package sbt-mode
   :hook (scala-mode . sbt-mode))
 
-(use-package add-node-modules-path
-  :hook ((js2-mode js-mode json-mode typescript-mode elm-mode) . add-node-modules-path))
-(use-package js2-mode
-  :mode "\\.m?js\\'"
-  :hook
-  (js2-mode . js2-imenu-extras-mode)
-  :config
-  (setq-default js-switch-indent-offset 2
-                js-indent-level 2)
-  (setenv "NODE_NO_READLINE" "1"))
-(use-package typescript-mode
-  :mode "\\.tsx?\\'"
-  :config
-  (setq typescript-indent-level 2
-        typescript-expr-indent-offset 2))
 
 ;; Elm
 ;; NOTE watch for the release of an LSP for Elm (none as of 2019-05)
@@ -1058,57 +813,6 @@ If ARG is a numerical prefix argument then specify the indentation level."
 (use-package flycheck-ocaml
   :after reason-mode)
 
-(use-package company-web
-  :requires company
-  :hook (web-mode . (lambda ()
-                      (setq-local company-backends '(company-web-html company-css company-yasnippet)))))
-(use-package web-mode
-  :hook (html-mode . web-mode)
-  :diminish
-  :config
-  (setq   web-mode-markup-indent-offset 2
-          web-mode-css-indent-offset 2
-          web-mode-code-indent-offset 2
-          web-mode-block-padding 0
-          web-mode-enable-block-face t
-          web-mode-enable-current-column-highlight t
-          web-mode-auto-close-style 2
-          web-mode-enable-html-entities-fontification t
-          web-mode-enable-current-element-highlight t
-          web-mode-enable-auto-quoting t
-          web-mode-enable-auto-pairing t)
-  (add-hook 'web-mode-hook #'turn-off-smartparens-mode))
-(use-package emmet-mode
-  :diminish
-  :hook ((css-mode web-mode) . emmet-mode))
-
-;; NOTE does not work yet due to TRAMP stuff
-;; (use-package prettier
-;;   :quelpa
-;;   (prettier :fetcher github :repo "jscheid/prettier.el")
-;;   :init (global-prettier-mode 1))
-
-(use-package css-mode
-  :mode "\\.css$"
-  :hook (css-mode . (lambda ()
-                      (setq-local company-backends '(company-css company-yasnippet))))
-  :custom
-  (css-indent-offset 2))
-(use-package scss-mode
-  :mode "\\.scss$")
-(use-package sass-mode
-  :mode "\\.sass$")
-
-(use-package web-beautify
-  :commands web-beautify-buffer
-  :quelpa
-  (web-beautify :fetcher github :repo "jguenther/web-beautify" :branch "add-web-beautify-buffer-cmd"))
-
-(with-eval-after-load 'smartparens
-  (sp-local-pair 'web-mode "<" ">")
-  (sp-with-modes '(css-mode scss-mode)
-    (sp-local-pair "/*" "*/"
-                   :post-handlers '(("[d-3]||\n[i]" "RET") ("| " "SPC")))))
 
 ;; Syntax Checking - Flycheck
 (use-package flycheck
@@ -1134,37 +838,16 @@ If ARG is a numerical prefix argument then specify the indentation level."
 (use-package ansible)
 (use-package ansible-doc)
 
-;; Spell Checking
-(use-package flyspell
-  :commands (flyspell-buffer
-             flyspell-goto-next-error)
-  ;; Disable on Windows because `aspell' 0.6+ isn't available.
-  :if (not (eq system-type 'windows-nt))
-  :commands flyspell-mode
-  :hook
-  ((text-mode writeroom-mode org-mode markdown-mode gfm-mode) . turn-on-flyspell)
-  ;; (prog-mode . flyspell-prog-mode)
-  :delight
-  :config
-  (setq flyspell-issue-message-flag nil
-        ;; ispell-silently-savep t
-        ispell-program-name (executable-find "aspell")
-        ispell-list-command "--list"
-        ispell-extra-args '("--sug-mode=ultra"
-                            "--lang=en_US"
-                            "--dont-tex-check-comments")))
-
-(use-package writeroom-mode
-  :commands writeroom-mode)
 
 (use-package doom-modeline
   :defer 5
   :hook (after-init . doom-modeline-mode)
   :config
-  (setq doom-modeline-icon t
-        doom-modeline-major-mode-icon t
-        doom-modeline-minor-modes nil
-        doom-modeline-lsp t))
+  (setq
+   ;; doom-modeline-icon t
+   ;; doom-modeline-color-icons t
+   ;; doom-modeline-minor-modes nil
+   doom-modeline-lsp t))
 
 (use-package hide-mode-line
   :hook (((completion-list-mode completion-in-region-mode) . hide-mode-line-mode)))
@@ -1414,6 +1097,12 @@ If ARG is a numerical prefix argument then specify the indentation level."
   :ensure nil
   :load-path "vendor/"
   :if (eq system-type 'darwin))
+
+(require 'web)
+(require 'ruby)
+(require 'elixir)
+(require 'golang)
+(require 'write)
 
 (require '+completion)
 (require 'deprecate)
