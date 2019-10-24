@@ -71,6 +71,7 @@ This function should only modify configuration layer settings."
                  node-add-modules-path t)
      (json :variables
            json-fmt-tool 'web-beautify)
+     lua
      phoenix
      parinfer
      (python :variables
