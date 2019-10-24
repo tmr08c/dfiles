@@ -13,6 +13,7 @@ zeus.json
 .idea/**/*
 *.private
 .tool-versions
+.envrc
 .projectile
 .dir-locals
 .elixir_ls

@@ -784,6 +784,8 @@ For instance pass En as source for English."
              minitest-verify
              minitest-rerun
              minitest-verify-single))
+(use-package feature-mode
+  :mode (("\\.feature\\'" . feature-mode)))
 
 ;; SQL
 (use-package sql
