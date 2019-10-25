@@ -45,22 +45,6 @@
 (defvar +completion-engine 'ivy
   "Setting to control whether to use helm or ivy.")
 
-(use-package dashboard
-  :disabled
-  :config
-  (setq dashboard-set-heading-icons nil
-        dashboard-set-file-icons t
-        dashboard-startup-banner 'logo
-        show-week-agenda-p t
-
-        ;; show Dashboard in frames created with emacsclient -c
-        initial-buffer-choice (lambda () (get-buffer "*dashboard*"))
-
-        dashboard-items '((agenda . 5)
-                          (recents  . 5)
-                          (projects . 5)))
-  (dashboard-setup-startup-hook))
-
 (use-package exec-path-from-shell
   :if (memq window-system '(mac ns x))
   :config
