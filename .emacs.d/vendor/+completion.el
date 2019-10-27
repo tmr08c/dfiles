@@ -64,6 +64,7 @@
 (when (eq +completion-engine 'ivy)
 
   (use-package ivy
+    :pin melpa-stable
     :demand
     :delight
     :config

@@ -14,6 +14,7 @@
 (defvar default-file-name-handler-alist file-name-handler-alist)
 (setq file-name-handler-alist nil)
 (setq gc-cons-threshold 40000000)
+
 (add-hook 'emacs-startup-hook
           (lambda ()
             "Restore defalut values after startup."
@@ -59,16 +60,9 @@
         which-key-sort-uppercase-first nil
         which-key-add-column-padding 1
         which-key-max-display-columns nil
-        which-key-min-display-lines 6
-        which-key-side-window-max-width 0.33)
-  (which-key-setup-side-window-right-bottom)
+        which-key-min-display-lines 6)
+  (which-key-setup-side-window-bottom)
   (which-key-mode))
-(use-package which-key-posframe
-  :disabled
-  :after which-key
-  :config
-  (setq which-key-posframe-poshandler 'posframe-poshandler-frame-center)
-  (which-key-posframe-enable))
 
 (use-package general
   :demand
@@ -370,7 +364,7 @@ _q_ quit            _c_ create          _<_ previous
 ;; Language Server Protocol (LSP)
 (use-package lsp-mode
   :diminish lsp-mode
-  :commands lsp
+  :commands (lsp lsp-deferred)
   :hook ((ruby-mode
           js2-mode typescript-mode
           python-mode
@@ -824,6 +818,7 @@ If ARG is a numerical prefix argument then specify the indentation level."
 
 
 (use-package doom-modeline
+  :pin melpa-stable
   :defer 5
   :hook (after-init . doom-modeline-mode)
   :config
