@@ -30,8 +30,8 @@ else
     echo "C/C++ stuff"
     sudo dnf install -y clang cmake clang-devel llvm-devel ccls
 
-    echo "Configure Yubikey dependencies"
-    sudo dnf install -y pcsc-lite yubioath-desktop powertop
+    #echo "Configure Yubikey dependencies"
+    #sudo dnf install -y pcsc-lite yubioath-desktop powertop
 
     echo "Install Ruby dependencies"
     sudo dnf install -y bzip2 openssl-devel libyaml-devel libffi-devel readline-devel zlib-devel gdbm-devel ncurses-devel perl-Digest-SHA postgresql-devel patch
