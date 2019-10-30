@@ -1,8 +1,6 @@
 ;; Erlang / Elixir
-(use-package erlang
-  :mode "\\.erl$")
+(use-package erlang)
 (use-package elixir-mode
-  :mode "\\.exs?"
   :config
   (progn
     (add-hook 'elixir-mode-hook
@@ -21,6 +19,7 @@
              exunit-verify-single
              exunit-rerun))
 (use-package alchemist
+  :disabled
   :hook (elixir-mode . alchemist-mode)
   :config
   (setq alchemist-project-compile-when-needed t
@@ -38,6 +37,7 @@
     (evil-define-key 'normal mode
       (kbd "q") 'quit-window)))
 (use-package alchemist-company
+  :disabled
   :ensure nil
   :hook (elixir-mode . (lambda ()
                          (setq-local company-backends '(alchemist-company company-yasnippet)))))
