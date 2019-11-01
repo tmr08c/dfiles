@@ -58,13 +58,16 @@ else
 
     if [ "$distro" = "Ubuntu" ]; then
       echo "Ubuntu detected"
-      sudo apt install -y pinentry-gnome3 pinentry-curses direnv dconf-cli xsel m4 libssh-dev xsltproc fop
+      sudo apt install -y pinentry-gnome3 direnv dconf-cli xsel m4 libssh-dev xsltproc fop
 
       echo "Install Ruby dependencies"
       sudo apt install -y autoconf bison build-essential libssl-dev libyaml-dev libreadline-dev zlib1g-dev libncurses5-dev libffi-dev
 
       echo "Configure Yubikey dependencies"
-      sudo apt install -y gnupg2 gnupg-agent pinentry-curses scdaemon pcscd yubikey-personalization libusb-1.0-0-dev
+      sudo apt install -y gnupg2 gnupg-agent pinentry-curses scdaemon pcscd libusb-1.0-0-dev
+
+      echo "Erlang dependencies"
+      sudo apt install -y libcanberra-gtk-module libcanberra-gtk3-module
     fi
 
     if [ "$distro" = "ManjaroLinux" ]; then
