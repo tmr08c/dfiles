@@ -487,52 +487,12 @@ _q_ quit            _c_ create          _<_ previous
   (setq dump-jump-force-searcher 'rg
         dumb-jump-selector +completion-engine))
 
-(use-package whitespace
-  :defer 5
-  :config
-  (setq whitespace-line-column nil
-        whitespace-style
-        '(face indentation tabs tab-mark spaces space-mark newline newline-mark
-               trailing lines-tail)
-        whitespace-display-mappings
-        '((tab-mark ?\t [?› ?\t])
-          (newline-mark ?\n [?¬ ?\n])
-          (space-mark ?\  [?·] [?.])))
-  (defun doom|disable-whitespace-mode-in-childframes (frame)
-    "`whitespace-mode' inundates child frames with whitspace markers, so disable
-it to fix all that visual noise."
-    (when (frame-parameter frame 'parent-frame)
-      (with-selected-frame frame
-        (setq-local whitespace-style nil)
-        frame)))
-  (add-hook 'after-make-frame-functions #'doom|disable-whitespace-mode-in-childframes)
-  (defun doom|highlight-non-default-indentation ()
-    "Highlight whitespace that doesn't match your `indent-tabs-mode' setting."
-    (unless (or (bound-and-true-p global-whitespace-mode)
-                (bound-and-true-p whitespace-mode)
-                (eq indent-tabs-mode (default-value 'indent-tabs-mode))
-                (eq major-mode 'fundamental-mode)
-                (derived-mode-p 'special-mode))
-      (require 'whitespace)
-      (set (make-local-variable 'whitespace-style)
-           (if (or (bound-and-true-p whitespace-mode)
-                   (bound-and-true-p whitespace-newline-mode))
-               (cl-union (if indent-tabs-mode '(tabs tab-mark) '(spaces space-mark))
-                         whitespace-style)
-             `(face ,@(if indent-tabs-mode '(tabs tab-mark) '(spaces space-mark))
-                    trailing-lines tail)))
-      (whitespace-mode +1)))
-
-  (add-hook 'after-change-major-mode-hook #'doom|highlight-non-default-indentation))
-
 (use-package ws-butler
-  :delight
   :defer t
+  :delight
+  :hook (prog-mode . ws-butler-mode)
   :config
-  (setq ws-butler-global-exempt-modes
-        (append ws-butler-global-exempt-modes
-                '(special-mode comint-mode term-mode eshell-mode)))
-  (ws-butler-global-mode))
+  (setq ws-butler-keep-whitespace-before-point nil))
 
 (use-package autorevert
   :ensure nil
@@ -545,8 +505,8 @@ it to fix all that visual noise."
 
 (use-package undo-tree
   :delight
-  :custom
-  (undo-tree-auto-save-history nil)
+  :config
+  (setq undo-tree-auto-save-history nil)
   :hook (evil-mode . global-undo-tree-mode))
 
 (use-package unfill

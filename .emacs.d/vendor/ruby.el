@@ -57,6 +57,9 @@
   :ensure-system-package
   (rubocop . "gem install rubocop")
   :hook (ruby-mode . rubocop-mode))
+(use-package rubocopfmt
+  :requires rubocop
+  :hook (ruby-mode . rubocopfmt-mode))
 (use-package rbenv
   :hook (ruby-mode . global-rbenv-mode))
 (use-package yard-mode

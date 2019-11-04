@@ -1,5 +1,5 @@
 AllCops:
-  TargetRubyVersion: 2.4
+  TargetRubyVersion: 2.6
 
 #################### Lint ##################################
 ### Warnings
@@ -18,14 +18,6 @@ Lint/AmbiguousBlockAssociation:
 
 Layout/EmptyLineAfterMagicComment:
   Enabled: false # true
-
-Lint/UnneededDisable:
-  Description: >-
-                 Checks for rubocop:disable comments that can be removed.
-                 Note: this cop is not disabled when disabling all cops.
-                 It must be explicitly disabled.
-  Enabled: false #true
-
 
 Lint/AmbiguousOperator:
   Description: >-
@@ -246,7 +238,7 @@ Lint/UnifiedInteger:
   Description: 'Use Integer instead of Fixnum or Bignum'
   Enabled: true
 
-Lint/UnneededSplatExpansion:
+Lint/RedundantSplatExpansion:
   Description: 'Checks for splat unnecessarily being called on literals'
   Enabled: true
 
