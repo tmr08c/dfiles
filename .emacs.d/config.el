@@ -93,6 +93,7 @@
   :config
   (setq evil-want-visual-char-semi-exclusive t
         evil-want-Y-yank-to-eol t
+        evil-want-fine-undo t
         evil-shift-width 2
         evil-magic t
         evil-echo-state t
@@ -229,6 +230,11 @@ _q_ quit            _c_ create          _<_ previous
   :diminish company-mode
   :defines company-backends
   :hook (after-init . global-company-mode)
+  :bind (:map company-active-map ; Use tab for completion
+              ( "RET" . nil)
+              ( [return] . nil )
+              ( "tab" . company-complete-selection )
+              ( "<tab>" . company-complete-selection ))
   :config
   ;; (company-begin-commands '(self-insert-command)) ; start autocompletion only after typing
   (setq company-dabbrev-downcase nil
@@ -381,6 +387,7 @@ _q_ quit            _c_ create          _<_ previous
 (use-package company-lsp
   :init (setq company-lsp-cache-candidates 'auto))
 (use-package lsp-ui
+  :disabled
   :bind (:map lsp-ui-mode-map
               ([remap xref-find-definitions] . lsp-ui-peek-find-definitions)
               ([remap xref-find-references] . lsp-ui-peek-find-references)
@@ -534,11 +541,11 @@ _q_ quit            _c_ create          _<_ previous
 
 (use-package yasnippet
   :defer 5
-  :hook ((text-mode prog-mode snippet-mode) . yas-minor-mode-on)
+  :hook ((prog-mode snippet-mode) . yas-minor-mode-on)
   :commands
   (yas-minor-mode yas-minor-mode-on yas-expand yas-expand-snippet
-   yas-lookup-snippet yas-insert-snippet yas-new-snippet
-   yas-visit-snippet-file snippet-mode)
+                  yas-lookup-snippet yas-insert-snippet yas-new-snippet
+                  yas-visit-snippet-file snippet-mode)
   :config
   (setq yas-also-auto-indent-first-line t
         yas-triggers-in-field t) ; Allow nested snippets

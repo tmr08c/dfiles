@@ -52,6 +52,7 @@
   (global-set-key (kbd "s-n") 'make-frame)
   (global-set-key (kbd "s-z") 'undo-tree-undo)
   (global-set-key (kbd "s-Z") 'undo-tree-redo)
+  (global-set-key (kbd "s-r") 'undo-tree-redo)
   (global-set-key (kbd "s-s") (lambda ()
                                 (interactive)
                                 (call-interactively (key-binding "\C-x\C-s")))))
