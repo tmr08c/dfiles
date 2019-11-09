@@ -128,12 +128,13 @@
 (use-package evil-escape
   :load-path "vendor/" ; Vendored due to missing vterm support - https://github.com/syl20bnr/evil-escape/pull/87
   :requires evil
-  :init (evil-escape-mode 1)
+  :defer t
   :delight
   :config
   (setq evil-escape-delay 0.2
         evil-escape-excluded-major-modes '(vterm-mode)
-        evil-escape-key-sequence "jk"))
+        evil-escape-key-sequence "jk")
+  (evil-escape-mode 1))
 (use-package evil-surround
   :defer 5
   :init (global-evil-surround-mode 1))
@@ -258,6 +259,11 @@ _q_ quit            _c_ create          _<_ previous
         ;;                     company-echo-metadata-frontend)
         company-transformers '(company-sort-by-occurrence)
         company-backends '(company-yasnippet)))
+(use-package company-emoji
+  ;; :disabled
+  :requires company
+  :config
+  (add-to-list 'company-backends 'company-emoji))
 (use-package company-prescient
   :init (company-prescient-mode 1))
 (use-package company-posframe
@@ -820,6 +826,49 @@ If ARG is a numerical prefix argument then specify the indentation level."
                '(gfm-mode all-the-icons-octicon "markdown" :face all-the-icons-blue)))
 
 ;; Themes
+(use-package composite ; Use symbols in fonts (requires Emacs >= 27)
+  :ensure nil
+  :when (version<= "27.0" emacs-version)
+  :defer t
+  :config
+  (dolist (hook `(ediff-mode-hook
+                  mu4e-headers-mode-hook
+                  package-menu-mode-hook))
+    (add-hook hook (lambda () (setq-local auto-composition-mode nil))))
+
+  ;; support ligatures, some toned down to prevent hang
+  (let ((alist
+         '((33 . ".\\(?:\\(==\\|[!=]\\)[!=]?\\)")
+           (35 . ".\\(?:\\(###?\\|_(\\|[(:=?[_{]\\)[#(:=?[_{]?\\)")
+           (36 . ".\\(?:\\(>\\)>?\\)")
+           (37 . ".\\(?:\\(%\\)%?\\)")
+           (38 . ".\\(?:\\(&\\)&?\\)")
+           (42 . ".\\(?:\\(\\*\\*\\|[*>]\\)[*>]?\\)")
+           ;; (42 . ".\\(?:\\(\\*\\*\\|[*/>]\\).?\\)")
+           (43 . ".\\(?:\\([>]\\)>?\\)")
+           ;; (43 . ".\\(?:\\(\\+\\+\\|[+>]\\).?\\)")
+           (45 . ".\\(?:\\(-[->]\\|<<\\|>>\\|[-<>|~]\\)[-<>|~]?\\)")
+           (46 . ".\\(?:\\(\\.[.<]\\|[-.=]\\)[-.<=]?\\)")
+           (47 . ".\\(?:\\(//\\|==\\|[=>]\\)[/=>]?\\)")
+           ;; (47 . ".\\(?:\\(//\\|==\\|[*/=>]\\).?\\)")
+           (48 . ".\\(?:\\(x[a-fA-F0-9]\\).?\\)")
+           (58 . ".\\(?:\\(::\\|[:<=>]\\)[:<=>]?\\)")
+           (59 . ".\\(?:\\(;\\);?\\)")
+           (60 . ".\\(?:\\(!--\\|\\$>\\|\\*>\\|\\+>\\|-[-<>|]\\|/>\\|<[-<=]\\|=[<>|]\\|==>?\\||>\\||||?\\|~[>~]\\|[$*+/:<=>|~-]\\)[$*+/:<=>|~-]?\\)")
+           (61 . ".\\(?:\\(!=\\|/=\\|:=\\|<<\\|=[=>]\\|>>\\|[=>]\\)[=<>]?\\)")
+           (62 . ".\\(?:\\(->\\|=>\\|>[-=>]\\|[-:=>]\\)[-:=>]?\\)")
+           (63 . ".\\(?:\\([.:=?]\\)[.:=?]?\\)")
+           (91 . ".\\(?:\\(|\\)|?\\)")
+           ;; (92 . ".\\(?:\\([\\n]\\)[\\]?\\)")
+           (94 . ".\\(?:\\(=\\)=?\\)")
+           (95 . ".\\(?:\\(|_\\|[_]\\)_?\\)")
+           (119 . ".\\(?:\\(ww\\)w?\\)")
+           (123 . ".\\(?:\\(|\\).?\\)")
+           (124 . ".\\(?:\\(->\\|=>\\||[-=>]\\||||*>\\|[]=>|}-]\\).?\\)")
+           (126 . ".\\(?:\\(~>\\|[-=>@~]\\).?\\)"))))
+    (dolist (char-regexp alist)
+      (set-char-table-range composition-function-table (car char-regexp)
+                            `([,(cdr char-regexp) 0 font-shape-gstring])))))
 (use-package base16-theme)
 (use-package doom-themes
   :config
@@ -848,8 +897,9 @@ If ARG is a numerical prefix argument then specify the indentation level."
 ;;; Support Emojis in Emacs
 (use-package emojify
   :defer 5
-  :custom
-  (emojify-display-style 'unicode)
+  :config
+  (setq emojify-display-style (if (eq system-type 'gnu/linux) 'image 'unicode)
+        emojify-company-tooltips-p t)
   :hook
   ((markdown-mode
     git-commit-mode
