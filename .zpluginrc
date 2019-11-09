@@ -28,29 +28,3 @@ zplugin light romkatv/powerlevel10k
 
 # zplugin ice atclone"dircolors -b LS_COLORS > c.zsh" atpull'%atclone' pick"c.zsh" nocompile'!'
 # zplugin light trapd00r/LS_COLORS
-
-# zplugin light mafredri/zsh-async
-# zplugin light sindresorhus/pure
-#zplugin load denysdovhan/spaceship-prompt, use:spaceship.zsh, from:github, as:theme
-
-# zplugin light zsh-users/zsh-history-substring-search
-# zplugin light zsh-users/zsh-syntax-highlighting
-
-# zplugin ice lucid wait'2' as"program" pick"bin/git-dsf"
-# zplugin light zdharma/zsh-diff-so-fancy
-
-# zplugin ice lucid wait'2' pick"*.plugin.zsh" atload'_zsh_autosuggest_start'
-
-# zplugin light zdharma/fast-syntax-highlighting
-
-# zplugin ice lucid wait'3' atload'_zsh_nvm_load'
-# zplugin light lukechilds/zsh-nvm
-
-# zplugin ice lucid wait'4'
-# zplugin load lukechilds/zsh-better-npm-completion
-
-# zplugin load zdharma/history-search-multi-word
-# zplugin load nnao45/zsh-kubectl-completion
-
-# bindkey '^[[A' history-substring-search-up
-# bindkey '^[[B' history-substring-search-down
