@@ -126,10 +126,14 @@
   (evil-mode 1))
 
 (use-package evil-escape
+  :load-path "vendor/" ; Vendored due to missing vterm support - https://github.com/syl20bnr/evil-escape/pull/87
   :requires evil
   :init (evil-escape-mode 1)
   :delight
-  :custom (evil-escape-delay 0.2))
+  :config
+  (setq evil-escape-delay 0.2
+        evil-escape-excluded-major-modes '(vterm-mode)
+        evil-escape-key-sequence "jk"))
 (use-package evil-surround
   :defer 5
   :init (global-evil-surround-mode 1))
@@ -796,11 +800,7 @@ If ARG is a numerical prefix argument then specify the indentation level."
    doom-modeline-lsp t))
 
 (use-package hide-mode-line
-  :hook (((completion-list-mode completion-in-region-mode) . hide-mode-line-mode)))
-
-(use-package icons-in-terminal
-  :disabled
-  :quelpa (icons-in-terminal :fetcher github :repo "seagle0128/icons-in-terminal.el"))
+  :hook (((completion-list-mode completion-in-region-mode vterm-mode) . hide-mode-line-mode)))
 
 (use-package all-the-icons
   :config
@@ -990,21 +990,21 @@ If ARG is a numerical prefix argument then specify the indentation level."
 
 (use-package vterm ; https://github.com/akermu/emacs-libvterm
   :commands (vterm vterm-other-window)
+  :general
+  (general-nmap vterm-mode-map
+    [escape] 'vterm--self-insert
+    [return] 'vterm--self-insert
+    "p" 'vterm-yank
+    "u" 'vterm-undo)
+  (general-imap vterm-mode-map
+    "C-y" 'vterm-yank)
+  (general-def vterm-mode-map
+    "M-n" 'vterm-send-down
+    "M-p" 'vterm-send-up
+    "M-y" 'vterm-yank-pop
+    "M-/" 'vterm-send-tab)
   :load-path "~/code/github/emacs-libvterm")
-;; (use-package eshell
-;;   :config
-;;   (setq eshell-visual-commands '("tmux" "htop" "bash" "zsh" "fish" "vim" "nvim")
-;;         eshell-visual-subcommands '(("git" "log" "l" "diff" "show"))
-;;         eshell-history-size 10000
-;;         eshell-hist-ignoredups t
-;;         eshell-scroll-to-bottom-on-output 'this
-;;         eshell-scroll-to-bottom-on-input 'all
-;;         eshell-buffer-shorthand t
-;;         eshell-kill-processes-on-exit t))
-;; (use-package eshell-toggle
-;;   :commands (eshell-toggle)
-;;   :config
-;;   (setq eshell-toggle-use-projectile-root t))
+
 (use-package helpful
   :commands (helpful-callable
              helpful-command

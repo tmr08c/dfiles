@@ -98,7 +98,7 @@
                     "C-z" 'undo-tree-undo
                     "C-Z" 'undo-tree-redo)
 
-(js|global-keymap "'" '(eshell-toggle :wk "toggle shell")
+(js|global-keymap "'" '(vterm-other-window :wk "open shell")
                   ";" 'eval-expression
                   ;; "`" 'winum-select-window-by-number
                   "0" '( winum-select-window-0-or-10 :wk t )
