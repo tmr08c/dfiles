@@ -828,7 +828,7 @@ If ARG is a numerical prefix argument then specify the indentation level."
 ;; Themes
 (use-package composite ; Use symbols in fonts (requires Emacs >= 27)
   :ensure nil
-  :when (version<= "27.0" emacs-version)
+  :if (version<= "27.0" emacs-version)
   :defer t
   :config
   (dolist (hook `(ediff-mode-hook
@@ -872,7 +872,7 @@ If ARG is a numerical prefix argument then specify the indentation level."
 (use-package base16-theme)
 (use-package doom-themes
   :config
-  (setq doom-treemacs-enable-variable-pitch t)
+  ;; (setq doom-treemacs-enable-variable-pitch t)
   (load-theme 'doom-one t)
   ;; Enable flashing mode-line on errors
   (doom-themes-visual-bell-config)

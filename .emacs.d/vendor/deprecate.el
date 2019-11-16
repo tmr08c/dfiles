@@ -55,13 +55,13 @@
         ;; treemacs-space-between-root-nodes      t
         ;; treemacs-tag-follow-cleanup            t
         ;; treemacs-tag-follow-delay              1.5
-        treemacs-width                         35)
+        treemacs-width                         28)
   )
 
 (use-package treemacs-evil
-  :after treemacs)
+  :after treemacs evil)
 (use-package treemacs-projectile
-  :after treemacs)
+  :after treemacs projectile)
 (use-package treemacs-magit
   :after treemacs magit
   :commands treemacs-magit--schedule-update

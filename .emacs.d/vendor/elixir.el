@@ -3,14 +3,14 @@
 (use-package elixir-mode
   :config
   (progn
+    (defun exs-freeze-workaround ()
+      (when (and (stringp buffer-file-name)
+                 (string-match "\\.exs\\'" buffer-file-name))
+        (auto-composition-mode -1)
+        (elixir-mode)))
     (add-hook 'elixir-mode-hook
+              (if (version<= "27.0" emacs-version) (exs-freeze-workaround))
               (lambda () (add-hook 'before-save-hook 'lsp-format-buffer)))
-    ;; (add-hook 'elixir-format-hook (lambda ()
-    ;;                                 (if (projectile-project-p)
-    ;;                                     (setq elixir-format-arguments
-    ;;                                           (list "--dot-formatter"
-    ;;                                                 (concat (locate-dominating-file buffer-file-name ".formatter.exs") ".formatter.exs")))
-    ;;                                   (setq elixir-format-arguments nil))))
     ))
 (use-package exunit
   :commands (exunit-verify-all
