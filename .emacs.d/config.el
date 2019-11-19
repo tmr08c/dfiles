@@ -171,7 +171,8 @@
   :config
   (setq editorconfig-trim-whitespaces-mode 'ws-butler-mode))
 (use-package direnv
-  :defer 2
+  :config
+  (direnv-mode)
   :ensure-system-package direnv)
 
 (use-package eyebrowse ; Easy workspaces creation and switching
@@ -795,14 +796,17 @@ If ARG is a numerical prefix argument then specify the indentation level."
 
 
 (use-package doom-modeline
-  :pin melpa-stable
-  :defer 5
+  ;; :after (winum)
+  ;; :pin melpa-stable
+  ;; :defer 5
   :hook (after-init . doom-modeline-mode)
   :config
   (setq
    ;; doom-modeline-icon t
    ;; doom-modeline-color-icons t
    ;; doom-modeline-minor-modes nil
+   doom-modeline-buffer-file-name-style 'relative-from-project
+   doom-modeline-project-detection 'projectile
    doom-modeline-lsp t))
 
 (use-package hide-mode-line
@@ -917,6 +921,7 @@ If ARG is a numerical prefix argument then specify the indentation level."
 
 ;; Window Numbers
 (use-package winum
+  :demand
   :commands (winum-select-window-by-number
              winum-select-window-0-or-10
              winum-select-window-1

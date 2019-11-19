@@ -9,6 +9,7 @@
   :config
   (add-hook 'ruby-mode-hook
             '(lambda ()
+               (add-hook 'before-save-hook 'lsp-format-buffer)
                (setq evil-shift-width ruby-indent-level)))
   :custom
   (ruby-insert-encoding-magic-comment nil)
@@ -40,9 +41,10 @@
              rspec-toggle-example-pendingness
              rspec-dired-verify
              rspec-dired-verify-single)
-  ;; :hook (ruby-mode . rspec-mode)
+  :hook (ruby-mode . rspec-mode)
   :config
   (setq compilation-scroll-output 'first-error
+        rspec-use-spring-when-possible nil
         rspec-autosave-buffer t)
   (add-hook 'rspec-compilation-mode-hook 'inf-ruby-auto-enter nil t)
   (with-eval-after-load 'smartparens
@@ -56,9 +58,13 @@
 (use-package rubocop
   :ensure-system-package
   (rubocop . "gem install rubocop")
-  :hook (ruby-mode . rubocop-mode))
+  :hook (ruby-mode . rubocop-mode)
+  ;; :config
+  ;; (add-hook 'ruby-mode-hook
+  ;;           (lambda () (add-hook 'before-save-hook 'rubocop-autocorrect-current-file)))
+  )
 (use-package rubocopfmt
-  :requires rubocop
+  :disabled
   :hook (ruby-mode . rubocopfmt-mode))
 (use-package rbenv
   :hook (ruby-mode . global-rbenv-mode))
@@ -79,11 +85,11 @@
 ;;   :commands (ruby-test-run
 ;;              ruby-test-run-at-point
 ;;              ruby-test-toggle-between-implementation-and-specification))
-(use-package minitest
-  :commands (minitest-verify-all
-             minitest-verify
-             minitest-rerun
-             minitest-verify-single))
+;; (use-package minitest
+;;   :commands (minitest-verify-all
+;;              minitest-verify
+;;              minitest-rerun
+;;              minitest-verify-single))
 (use-package feature-mode
   :mode (("\\.feature\\'" . feature-mode)))
 

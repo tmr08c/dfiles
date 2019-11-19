@@ -570,18 +570,18 @@
                     "ss" 'ruby-switch-to-inf
 
                     "t" '(:ignore t :wk "test")
-                    "ta" 'minitest-verify-all ;rspec-verify-all
-                    "tb" 'minitest-verify ; Try this instead of rspec
-                    ;; "tc" 'rspec-verify-continue
-                    ;; "td" 'ruby/rspec-verify-directory
-                    ;; "te" 'rspec-toggle-example-pendingness
-                    ;; "tf" 'rspec-verify-method
-                    ;; "tl" 'rspec-run-last-failed
-                    ;; "tm" 'rspec-verify-matching
-                    "tr" 'minitest-rerun ; rspec-rerun
-                    "tt" 'minitest-verify-single ;ruby-test-run-at-point 
-                    ;; "t~" 'rspec-toggle-spec-and-target-find-example
-                    ;; "t TAB" 'rspec-toggle-spec-and-target
+                    "ta" 'rspec-verify-all
+                    "tb" 'rspec-verify
+                    "tc" 'rspec-verify-continue
+                    "td" 'ruby/rspec-verify-directory
+                    "te" 'rspec-toggle-example-pendingness
+                    "tf" 'rspec-verify-method
+                    "tl" 'rspec-run-last-failed
+                    "tm" 'rspec-verify-matching
+                    "tr" 'rspec-rerun
+                    "tt" 'rspec-verify-single
+                    "t~" 'rspec-toggle-spec-and-target-find-example
+                    "t TAB" 'rspec-toggle-spec-and-target
 
                     "T" '(:ignore t :wk "toggle")
                     "T'" 'ruby-toggle-string-quotes
