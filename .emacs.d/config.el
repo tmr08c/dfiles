@@ -216,9 +216,13 @@ _q_ quit            _c_ create          _<_ previous
   :config
   (progn
     (setq projectile-indexing-method 'alien
-          projectile-enable-caching nil
+          ;; projectile-enable-caching nil
+          ;; projectile-use-git-grep t
+          projectile-files-cache-expire 604800 ; expire after a week
           projectile-switch-project-action 'projectile-find-file
-          projectile-sort-order 'recentf)
+          projectile-sort-order 'recentf
+          projectile-globally-ignored-files '(".DS_Store" "Icon" "TAGS")
+          projectile-globally-ignored-file-suffixes '(".jar" ".elc" ".pyc" ".o"))
     (define-key projectile-mode-map (kbd "s-p") 'projectile-command-map)
     (define-key projectile-mode-map (kbd "C-c p") 'projectile-command-map)
     (add-to-list 'projectile-project-root-files ".clang_complete")

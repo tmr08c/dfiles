@@ -9,7 +9,7 @@
   :config
   (add-hook 'ruby-mode-hook
             '(lambda ()
-               (add-hook 'before-save-hook 'lsp-format-buffer)
+               ;; (add-hook 'before-save-hook 'lsp-format-buffer) ; Wait for newer solargraph gem
                (setq evil-shift-width ruby-indent-level)))
   :custom
   (ruby-insert-encoding-magic-comment nil)
@@ -58,14 +58,14 @@
 (use-package rubocop
   :ensure-system-package
   (rubocop . "gem install rubocop")
-  :hook (ruby-mode . rubocop-mode)
+  :hook (ruby-mode . rubocop-mode))
+(use-package rubocopfmt
+  :hook (ruby-mode . rubocopfmt-mode)
   ;; :config
   ;; (add-hook 'ruby-mode-hook
-  ;;           (lambda () (add-hook 'before-save-hook 'rubocop-autocorrect-current-file)))
+  ;;           (lambda ()
+  ;;             (add-hook 'before-save-hook 'rubocopfmt)))
   )
-(use-package rubocopfmt
-  :disabled
-  :hook (ruby-mode . rubocopfmt-mode))
 (use-package rbenv
   :hook (ruby-mode . global-rbenv-mode))
 (use-package yard-mode

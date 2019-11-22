@@ -42,7 +42,6 @@
     "workbench.editor.tabSizing": "shrink",
     "window.title": "${dirty}${activeEditorShort}${separator}${rootName}",
     "editor.minimap.enabled": false,
-    "editor.wordWrap": "wordWrapColumn",
     "search.runInExtensionHost": true,
     "ccls.launch.command": "~/.local/bin/ccls",
     "[cpp]": {
