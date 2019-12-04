@@ -1175,8 +1175,5 @@ If ARG is a numerical prefix argument then specify the indentation level."
 ;; Handle ANSI codes in compilation buffer
 (add-hook 'compilation-filter-hook #'doom|apply-ansi-color-to-compilation-buffer)
 
-;; This is MUCH faster than using set-face-attribute
-;; (add-to-list 'default-frame-alist '(font . "Fira Code:13"))
-
 (load "~/.emacs.secrets" t)
 (provide 'config)

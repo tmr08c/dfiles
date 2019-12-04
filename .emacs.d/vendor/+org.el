@@ -104,7 +104,7 @@
 ;;         org-agenda-files (append org-agenda-files (org-projectile-todo-files))))
 
 ;; Org Fonts / UI
-(let* ((variable-font '(:font "Fira Sans"))
+(let* ((variable-font '(:font "Ubuntu"))
        (base-font-color     (face-foreground 'default nil 'default))
        (headline           `(:inherit default :weight bold :foreground ,base-font-color)))
 
@@ -131,7 +131,7 @@
    '(org-indent                ((t (:inherit (org-hide fixed-pitch)))))))
 
 (set-face-attribute 'variable-pitch nil
-                    :family "Fira Sans" :weight 'light)
+                    :family "Ubuntu" :weight 'regular)
 
 (set-face-attribute 'fixed-pitch nil
                     :family "Cascadia Code" :weight 'regular)
