@@ -28,7 +28,9 @@
                               (lambda ()
                                 (unless (frame-focus-state)
                                   (garbage-collect))))
-              (add-hook 'focus-out-hook 'garbage-collect))
+              (if (version<= "27.0" emacs-version)
+                  (add-hook 'after-focus-change-function 'garbage-collect)
+                (add-hook 'focus-out-hook 'garbage-collect)))
 
             ;; Avoid GCs while using `ivy'/`counsel'/`swiper' and `helm', etc.
             ;; @see http://bling.github.io/blog/2016/01/18/why-are-you-changing-gc-cons-threshold/
@@ -275,42 +277,42 @@ _q_ quit            _c_ create          _<_ previous
   :hook (company-mode . company-posframe-mode))
 (use-package company-box
   :diminish
-  :functions (my-company-box--make-line my-company-box-icons--elisp)
+  :functions (my-company-box--make-line
+              my-company-box-icons--elisp)
   :hook (company-mode . company-box-mode)
+  :init (setq company-box-backends-colors nil
+              company-box-show-single-candidate t
+              company-box-max-candidates 50
+              company-box-doc-delay 0.5)
   :config
-  (setq company-box-backends-colors nil
-        company-box-show-single-candidate t
-        company-box-max-candidates 50
-        company-box-doc-delay 0.5
-        company-box-icons-alist 'company-box-icons-all-the-icons)
+  ;; (setq company-box-icons-lsp
+  ;;       '((1 . fa_text_height) ;; Text
+  ;;         (2 . (fa_tags :face font-lock-function-name-face)) ;; Method
+  ;;         (3 . (fa_tag :face font-lock-function-name-face)) ;; Function
+  ;;         (4 . (fa_tag :face font-lock-function-name-face)) ;; Constructor
+  ;;         (5 . (fa_cog :foreground "#FF9800")) ;; Field
+  ;;         (6 . (fa_cog :foreground "#FF9800")) ;; Variable
+  ;;         (7 . (fa_cube :foreground "#7C4DFF")) ;; Class
+  ;;         (8 . (fa_cube :foreground "#7C4DFF")) ;; Interface
+  ;;         (9 . (fa_cube :foreground "#7C4DFF")) ;; Module
+  ;;         (10 . (fa_cog :foreground "#FF9800")) ;; Property
+  ;;         (11 . md_settings_system_daydream) ;; Unit
+  ;;         (12 . (fa_cog :foreground "#FF9800")) ;; Value
+  ;;         (13 . (md_storage :face font-lock-type-face)) ;; Enum
+  ;;         (14 . (md_closed_caption :foreground "#009688")) ;; Keyword
+  ;;         (15 . md_closed_caption) ;; Snippet
+  ;;         (16 . (md_color_lens :face font-lock-doc-face)) ;; Color
+  ;;         (17 . fa_file_text_o) ;; File
+  ;;         (18 . md_refresh) ;; Reference
+  ;;         (19 . fa_folder_open) ;; Folder
+  ;;         (20 . (md_closed_caption :foreground "#009688")) ;; EnumMember
+  ;;         (21 . (fa_square :face font-lock-constant-face)) ;; Constant
+  ;;         (22 . (fa_cube :face font-lock-type-face)) ;; Struct
+  ;;         (23 . fa_calendar) ;; Event
+  ;;         (24 . fa_square_o) ;; Operator
+  ;;         (25 . fa_arrows)) ;; TypeParameter
+  ;;       )
 
-  (setq company-box-icons-lsp
-        '((1 . fa_text_height) ;; Text
-          (2 . (fa_tags :face font-lock-function-name-face)) ;; Method
-          (3 . (fa_tag :face font-lock-function-name-face)) ;; Function
-          (4 . (fa_tag :face font-lock-function-name-face)) ;; Constructor
-          (5 . (fa_cog :foreground "#FF9800")) ;; Field
-          (6 . (fa_cog :foreground "#FF9800")) ;; Variable
-          (7 . (fa_cube :foreground "#7C4DFF")) ;; Class
-          (8 . (fa_cube :foreground "#7C4DFF")) ;; Interface
-          (9 . (fa_cube :foreground "#7C4DFF")) ;; Module
-          (10 . (fa_cog :foreground "#FF9800")) ;; Property
-          (11 . md_settings_system_daydream) ;; Unit
-          (12 . (fa_cog :foreground "#FF9800")) ;; Value
-          (13 . (md_storage :face font-lock-type-face)) ;; Enum
-          (14 . (md_closed_caption :foreground "#009688")) ;; Keyword
-          (15 . md_closed_caption) ;; Snippet
-          (16 . (md_color_lens :face font-lock-doc-face)) ;; Color
-          (17 . fa_file_text_o) ;; File
-          (18 . md_refresh) ;; Reference
-          (19 . fa_folder_open) ;; Folder
-          (20 . (md_closed_caption :foreground "#009688")) ;; EnumMember
-          (21 . (fa_square :face font-lock-constant-face)) ;; Constant
-          (22 . (fa_cube :face font-lock-type-face)) ;; Struct
-          (23 . fa_calendar) ;; Event
-          (24 . fa_square_o) ;; Operator
-          (25 . fa_arrows)) ;; TypeParameter
-        )
   ;; Support `company-common'
   (defun my-company-box--make-line (candidate)
     (-let* (((candidate annotation len-c len-a backend) candidate)
@@ -350,37 +352,39 @@ _q_ quit            _c_ create          _<_ previous
               (t . nil)))))
   (advice-add #'company-box-icons--elisp :override #'my-company-box-icons--elisp)
 
-  (with-eval-after-load 'all-the-icons
-    (declare-function all-the-icons-faicon 'all-the-icons)
-    (declare-function all-the-icons-material 'all-the-icons)
-    (setq company-box-icons-all-the-icons
-          `((Unknown . ,(all-the-icons-material "find_in_page" :height 0.9 :v-adjust -0.2))
-            (Text . ,(all-the-icons-faicon "text-width" :height 0.85 :v-adjust -0.05))
-            (Method . ,(all-the-icons-faicon "cube" :height 0.85 :v-adjust -0.05 :face 'all-the-icons-purple))
-            (Function . ,(all-the-icons-faicon "cube" :height 0.85 :v-adjust -0.05 :face 'all-the-icons-purple))
-            (Constructor . ,(all-the-icons-faicon "cube" :height 0.85 :v-adjust -0.05 :face 'all-the-icons-purple))
-            (Field . ,(all-the-icons-faicon "tag" :height 0.85 :v-adjust -0.05 :face 'all-the-icons-lblue))
-            (Variable . ,(all-the-icons-faicon "tag" :height 0.85 :v-adjust -0.05 :face 'all-the-icons-lblue))
-            (Class . ,(all-the-icons-material "settings_input_component" :height 0.9 :v-adjust -0.2 :face 'all-the-icons-orange))
-            (Interface . ,(all-the-icons-material "share" :height 0.9 :v-adjust -0.2 :face 'all-the-icons-lblue))
-            (Module . ,(all-the-icons-material "view_module" :height 0.9 :v-adjust -0.2 :face 'all-the-icons-lblue))
-            (Property . ,(all-the-icons-faicon "wrench" :height 0.85 :v-adjust -0.05))
-            (Unit . ,(all-the-icons-material "settings_system_daydream" :height 0.9 :v-adjust -0.2))
-            (Value . ,(all-the-icons-material "format_align_right" :height 0.9 :v-adjust -0.2 :face 'all-the-icons-lblue))
-            (Enum . ,(all-the-icons-material "storage" :height 0.9 :v-adjust -0.2 :face 'all-the-icons-orange))
-            (Keyword . ,(all-the-icons-material "filter_center_focus" :height 0.9 :v-adjust -0.2))
-            (Snippet . ,(all-the-icons-material "format_align_center" :height 0.9 :v-adjust -0.2))
-            (Color . ,(all-the-icons-material "palette" :height 0.9 :v-adjust -0.2))
-            (File . ,(all-the-icons-faicon "file-o" :height 0.9 :v-adjust -0.05))
-            (Reference . ,(all-the-icons-material "collections_bookmark" :height 0.9 :v-adjust -0.2))
-            (Folder . ,(all-the-icons-faicon "folder-open" :height 0.9 :v-adjust -0.05))
-            (EnumMember . ,(all-the-icons-material "format_align_right" :height 0.9 :v-adjust -0.2 :face 'all-the-icons-lblue))
-            (Constant . ,(all-the-icons-faicon "square-o" :height 0.9 :v-adjust -0.05))
-            (Struct . ,(all-the-icons-material "settings_input_component" :height 0.9 :v-adjust -0.2 :face 'all-the-icons-orange))
-            (Event . ,(all-the-icons-faicon "bolt" :height 0.85 :v-adjust -0.05 :face 'all-the-icons-orange))
-            (Operator . ,(all-the-icons-material "control_point" :height 0.9 :v-adjust -0.2))
-            (TypeParameter . ,(all-the-icons-faicon "arrows" :height 0.85 :v-adjust -0.05))
-            (Template . ,(all-the-icons-material "format_align_center" :height 0.9 :v-adjust -0.2))))))
+  (declare-function all-the-icons-faicon 'all-the-icons)
+  (declare-function all-the-icons-material 'all-the-icons)
+  (declare-function all-the-icons-octicon 'all-the-icons)
+  (setq company-box-icons-all-the-icons
+        `((Unknown . ,(all-the-icons-material "find_in_page" :height 0.85 :v-adjust -0.2))
+          (Text . ,(all-the-icons-faicon "text-width" :height 0.8 :v-adjust -0.05))
+          (Method . ,(all-the-icons-faicon "cube" :height 0.8 :v-adjust -0.05 :face 'all-the-icons-purple))
+          (Function . ,(all-the-icons-faicon "cube" :height 0.8 :v-adjust -0.05 :face 'all-the-icons-purple))
+          (Constructor . ,(all-the-icons-faicon "cube" :height 0.8 :v-adjust -0.05 :face 'all-the-icons-purple))
+          (Field . ,(all-the-icons-octicon "tag" :height 0.8 :v-adjust 0 :face 'all-the-icons-lblue))
+          (Variable . ,(all-the-icons-octicon "tag" :height 0.8 :v-adjust 0 :face 'all-the-icons-lblue))
+          (Class . ,(all-the-icons-material "settings_input_component" :height 0.85 :v-adjust -0.2 :face 'all-the-icons-orange))
+          (Interface . ,(all-the-icons-material "share" :height 0.85 :v-adjust -0.2 :face 'all-the-icons-lblue))
+          (Module . ,(all-the-icons-material "view_module" :height 0.85 :v-adjust -0.2 :face 'all-the-icons-lblue))
+          (Property . ,(all-the-icons-faicon "wrench" :height 0.8 :v-adjust -0.05))
+          (Unit . ,(all-the-icons-material "settings_system_daydream" :height 0.85 :v-adjust -0.2))
+          (Value . ,(all-the-icons-material "format_align_right" :height 0.85 :v-adjust -0.2 :face 'all-the-icons-lblue))
+          (Enum . ,(all-the-icons-material "storage" :height 0.85 :v-adjust -0.2 :face 'all-the-icons-orange))
+          (Keyword . ,(all-the-icons-material "filter_center_focus" :height 0.85 :v-adjust -0.2))
+          (Snippet . ,(all-the-icons-material "format_align_center" :height 0.85 :v-adjust -0.2))
+          (Color . ,(all-the-icons-material "palette" :height 0.85 :v-adjust -0.2))
+          (File . ,(all-the-icons-faicon "file-o" :height 0.85 :v-adjust -0.05))
+          (Reference . ,(all-the-icons-material "collections_bookmark" :height 0.85 :v-adjust -0.2))
+          (Folder . ,(all-the-icons-faicon "folder-open" :height 0.85 :v-adjust -0.05))
+          (EnumMember . ,(all-the-icons-material "format_align_right" :height 0.85 :v-adjust -0.2 :face 'all-the-icons-lblue))
+          (Constant . ,(all-the-icons-faicon "square-o" :height 0.85 :v-adjust -0.05))
+          (Struct . ,(all-the-icons-material "settings_input_component" :height 0.85 :v-adjust -0.2 :face 'all-the-icons-orange))
+          (Event . ,(all-the-icons-octicon "zap" :height 0.8 :v-adjust 0 :face 'all-the-icons-orange))
+          (Operator . ,(all-the-icons-material "control_point" :height 0.85 :v-adjust -0.2))
+          (TypeParameter . ,(all-the-icons-faicon "arrows" :height 0.8 :v-adjust -0.05))
+          (Template . ,(all-the-icons-material "format_align_center" :height 0.85 :v-adjust -0.2)))
+        company-box-icons-alist 'company-box-icons-all-the-icons)
+  )
 
 ;; Language Server Protocol (LSP)
 (use-package lsp-mode
