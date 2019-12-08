@@ -746,7 +746,6 @@ If ARG is a numerical prefix argument then specify the indentation level."
 (use-package sbt-mode
   :hook (scala-mode . sbt-mode))
 
-
 ;; Elm
 ;; NOTE watch for the release of an LSP for Elm (none as of 2019-05)
 (use-package elm-mode
@@ -1104,6 +1103,7 @@ If ARG is a numerical prefix argument then specify the indentation level."
   :if (eq system-type 'darwin))
 
 (require 'web)
+(require 'ember)
 (require 'ruby)
 (require 'elixir)
 (require 'golang)
