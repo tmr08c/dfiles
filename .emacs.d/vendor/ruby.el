@@ -58,14 +58,18 @@
 (use-package rubocop
   :ensure-system-package
   (rubocop . "gem install rubocop")
-  :hook (ruby-mode . rubocop-mode))
-(use-package rubocopfmt
-  :hook (ruby-mode . rubocopfmt-mode)
-  ;; :config
-  ;; (add-hook 'ruby-mode-hook
-  ;;           (lambda ()
-  ;;             (add-hook 'before-save-hook 'rubocopfmt)))
-  )
+  :hook (ruby-mode . rubocop-mode)
+  :config
+  (setq rubocop-autocorrect-on-save t))
+;; (use-package rubocopfmt
+;;   :hook (ruby-mode . rubocopfmt-mode)
+;;   :config
+;;   (setq rubocopfmt-rubocop-command "rubocop-daemon-wrapper")
+;;   ;; :config
+;;   ;; (add-hook 'ruby-mode-hook
+;;   ;;           (lambda ()
+;;   ;;             (add-hook 'before-save-hook 'rubocopfmt)))
+;;   )
 (use-package rbenv
   :hook (ruby-mode . global-rbenv-mode))
 (use-package yard-mode

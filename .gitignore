@@ -16,5 +16,7 @@ zeus.json
 .envrc
 .projectile
 .dir-locals
+.dir-locals.el
 .elixir_ls
 .uuid
+.log/**/*

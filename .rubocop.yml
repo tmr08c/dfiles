@@ -4,7 +4,7 @@ AllCops:
 #################### Lint ##################################
 ### Warnings
 
-Metrics/LineLength:
+Layout/LineLength:
   Description: 'Limit lines to 80 characters.'
   StyleGuide: '#80-character-limits'
   Enabled: false
@@ -72,7 +72,7 @@ Lint/DuplicateMethods:
   Description: 'Check for duplicate method definitions.'
   Enabled: true
 
-Lint/DuplicatedKey:
+Lint/DuplicateHashKey:
   Description: 'Check for duplicate keys in hash literals.'
   Enabled: true
 
@@ -124,7 +124,7 @@ Lint/FormatParameterMismatch:
   Description: 'The number of parameters to format/sprint must match the fields.'
   Enabled: true
 
-Lint/HandleExceptions:
+Lint/SuppressedException:
   Description: "Don't suppress exception."
   StyleGuide: '#dont-hide-exceptions'
   Enabled: true
@@ -156,7 +156,7 @@ Lint/Loop:
   StyleGuide: '#loop-with-break'
   Enabled: true
 
-Lint/MultipleCompare:
+Lint/MultipleComparison:
   Description: "Use `&&` operator to compare multiple value."
   Enabled: true
 
@@ -225,7 +225,7 @@ Lint/ShadowingOuterLocalVariable:
                  for block arguments or block local variables.
   Enabled: true
 
-Lint/StringConversionInInterpolation:
+Lint/RedundantStringCoercion:
   Description: 'Checks for Object#to_s usage in string interpolation.'
   StyleGuide: '#no-to-s'
   Enabled: true
