@@ -611,7 +611,7 @@ before packages are loaded."
   (global-git-commit-mode t)
 
   ;; Miscellaneous
-  (spacemacs/add-to-hooks 'turn-on-fci-mode '(text-mode-hook))
+  ;; (spacemacs/add-to-hooks 'turn-on-fci-mode '(text-mode-hook))
 
   ;; Periodicly commit the ~/org directory every N minutes
   ;; (spacemacs/add-to-hooks 'git-auto-commit-mode '(org-mode-hook))
