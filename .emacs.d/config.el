@@ -223,8 +223,8 @@ _q_ quit            _c_ create          _<_ previous
           projectile-files-cache-expire 604800 ; expire after a week
           projectile-switch-project-action 'projectile-find-file
           projectile-sort-order 'recentf
-          projectile-globally-ignored-files '(".DS_Store" "Icon" "TAGS")
-          projectile-globally-ignored-file-suffixes '(".jar" ".elc" ".pyc" ".o"))
+          projectile-globally-ignored-files (append '(".git" ".DS_Store" "Icon" "TAGS") projectile-globally-ignored-directories)
+          projectile-globally-ignored-file-suffixes (append '("*.jar" "*.elc" "*.pyc" "*.o") projectile-globally-ignored-files))
     (define-key projectile-mode-map (kbd "s-p") 'projectile-command-map)
     (define-key projectile-mode-map (kbd "C-c p") 'projectile-command-map)
     (add-to-list 'projectile-project-root-files ".clang_complete")
