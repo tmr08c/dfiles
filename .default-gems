@@ -3,3 +3,5 @@ pry
 rspec
 rubocop
 solargraph
+ruby-debug-ide
+debase

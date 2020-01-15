@@ -387,23 +387,36 @@ _q_ quit            _c_ create          _<_ previous
   )
 
 ;; Language Server Protocol (LSP)
+(use-package eglot
+  :disabled
+  :hook (ruby-mode . eglot-ensure))
 (use-package lsp-mode
   :diminish lsp-mode
-  :commands (lsp lsp-deferred)
-  :hook ((ruby-mode
+  ;; :commands (lsp lsp-deferred)
+  :hook ((
+          ruby-mode
           js2-mode typescript-mode
           python-mode
           elm-mode
-          ;; web-mode
-          ;; css-mode sass-mode scss-mode
+          web-mode
+          css-mode sass-mode scss-mode
           elixir-mode
           go-mode) . lsp-deferred)
   :config
-  (setq lsp-auto-guess-root t
-        lsp-prefer-flymake t
-        flymake-fringe-indicator-position 'right-fringe)
+  (require 'lsp-clients)
+  (setq
+   lsp-prefer-flymake nil
+   lsp-keep-workspace-alive nil
+   flymake-fringe-indicator-position 'right-fringe)
   (add-to-list 'exec-path "~/code/github/elixir-ls/release"))
+;; Ivy integration
+(use-package lsp-ivy
+  :after lsp-mode
+  :bind (:map lsp-mode-map
+              ([remap xref-find-apropos] . lsp-ivy-workspace-symbol)
+              ("C-s-." . lsp-ivy-global-workspace-symbol)))
 (use-package company-lsp
+  :disabled
   :init (setq company-lsp-cache-candidates 'auto))
 (use-package lsp-ui
   :disabled
@@ -432,7 +445,21 @@ _q_ quit            _c_ create          _<_ previous
   ;; https://github.com/emacs-lsp/lsp-ui/issues/243
   (defadvice lsp-ui-imenu (after hide-lsp-ui-imenu-mode-line activate)
     (setq mode-line-format nil)))
-;; (use-package dap-mode)
+(use-package dap-mode
+  :commands dap-mode
+  :config
+  (add-hook 'dap-stopped-hook
+            (lambda (arg) (call-interactively #'dap-hydra)))
+  (dap-mode 1)
+  (dap-ui-mode 1)
+  ;; enables mouse hover support
+  (dap-tooltip-mode 1)
+  ;; use tooltips for mouse hover
+  ;; if it is not enabled `dap-mode' will use the minibuffer.
+  (tooltip-mode 1)
+
+  (require 'dap-elixir)
+  (require 'dap-ruby))
 
 (use-package smartparens
   :defer 2
