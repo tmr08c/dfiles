@@ -173,9 +173,12 @@
   :config
   (setq editorconfig-trim-whitespaces-mode 'ws-butler-mode))
 (use-package direnv
+  :hook
+  (flycheck-before-syntax-check . direnv-update-environment)
+  (before-hack-local-variables . direnv-update-environment)
   :config
-  (direnv-mode)
-  :ensure-system-package direnv)
+  (setq direnv-always-show-summary nil)
+  (direnv-mode))
 
 (use-package eyebrowse ; Easy workspaces creation and switching
   :demand
@@ -393,19 +396,21 @@ _q_ quit            _c_ create          _<_ previous
 (use-package lsp-mode
   :diminish lsp-mode
   ;; :commands (lsp lsp-deferred)
-  :hook ((
-          ruby-mode
-          js2-mode typescript-mode
-          python-mode
-          elm-mode
-          web-mode
-          css-mode sass-mode scss-mode
-          elixir-mode
-          go-mode) . lsp-deferred)
+  :hook
+  (prog-mode . lsp)
+  ;; ((
+  ;;   ruby-mode
+  ;;   js2-mode typescript-mode
+  ;;   python-mode
+  ;;   elm-mode
+  ;;   web-mode
+  ;;   css-mode sass-mode scss-mode
+  ;;   elixir-mode
+  ;;   go-mode) . lsp-deferred)
   :config
   (require 'lsp-clients)
   (setq
-   lsp-prefer-flymake nil
+   lsp-prefer-flymake t
    lsp-keep-workspace-alive nil
    flymake-fringe-indicator-position 'right-fringe)
   (add-to-list 'exec-path "~/code/github/elixir-ls/release"))
@@ -416,8 +421,10 @@ _q_ quit            _c_ create          _<_ previous
               ([remap xref-find-apropos] . lsp-ivy-workspace-symbol)
               ("C-s-." . lsp-ivy-global-workspace-symbol)))
 (use-package company-lsp
-  :disabled
-  :init (setq company-lsp-cache-candidates 'auto))
+  :after lsp-mode company
+  :config
+  (setq company-lsp-cache-candidates 'auto)
+  (push 'company-lsp company-backends))
 (use-package lsp-ui
   :disabled
   :bind (:map lsp-ui-mode-map
@@ -839,6 +846,7 @@ If ARG is a numerical prefix argument then specify the indentation level."
    ;; doom-modeline-icon t
    ;; doom-modeline-color-icons t
    ;; doom-modeline-minor-modes nil
+   ;; doom-modeline-before-update-env-hook 
    doom-modeline-buffer-file-name-style 'relative-from-project
    doom-modeline-project-detection 'projectile
    doom-modeline-lsp t))

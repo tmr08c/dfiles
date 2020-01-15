@@ -1,31 +1,28 @@
 
 (use-package ruby-mode
   :ensure nil
-  :ensure-system-package
-  ((ruby-lint   . "gem install ruby-lint")
-   (ripper-tags . "gem install ripper-tags")
-   (pry . "gem install pry"))
+  ;; :ensure-system-package
+  ;; ((ruby-lint   . "gem install ruby-lint")
+  ;;  (ripper-tags . "gem install ripper-tags")
+  ;;  (pry . "gem install pry"))
   :hook (ruby-mode . flycheck-mode)
   :config
   (add-hook 'ruby-mode-hook
             '(lambda ()
                ;; (add-hook 'before-save-hook 'lsp-format-buffer) ; Wait for newer solargraph gem
                (setq evil-shift-width ruby-indent-level)))
-  :custom
-  (ruby-insert-encoding-magic-comment nil)
-  (ruby-align-to-stmt-keywords
-   '(if while unless until begin case for def)))
+  (setq ruby-insert-encoding-magic-comment nil
+        ruby-align-to-stmt-keywords
+        '(if while unless until begin case for def)))
 (use-package bundler
   :hook (ruby-mode . bundler-mode))
 (use-package inf-ruby
   :hook ((ruby-mode . inf-ruby-minor-mode)
-         (compilation-filter-hook . inf-ruby-auto-enter))
-  :custom
-  (inf-ruby-console-environment "development"))
-(use-package company-inf-ruby
-  :after inf-ruby
-  :config
-  (add-to-list 'company-backends 'company-inf-ruby))
+          (compilation-filter . inf-ruby-auto-enter)))
+;; (use-package company-inf-ruby
+;;   :after inf-ruby
+;;   :config
+;;   (add-to-list 'company-backends 'company-inf-ruby))
 (use-package rspec-mode
   :mode ("/\\.rspec\\'" . text-mode)
   :commands (rspec-verify-all
@@ -40,35 +37,43 @@
              rspec-verify-single
              rspec-toggle-example-pendingness
              rspec-dired-verify
+             rspec-install-snippets
              rspec-dired-verify-single)
-  :hook (ruby-mode . rspec-mode)
+  :hook ((dired-mode . rspec-dired-mode)
+         (ruby-mode . rspec-mode))
   :config
   (setq compilation-scroll-output 'first-error
         rspec-use-spring-when-possible nil
         rspec-autosave-buffer t)
   (add-hook 'rspec-compilation-mode-hook 'inf-ruby-auto-enter nil t)
-  (with-eval-after-load 'smartparens
-    (sp-with-modes 'ruby-mode
-      (sp-local-pair
-       "{" "}"
-       :pre-handlers '(sp-ruby-pre-handler)
-       :post-handlers '(sp-ruby-post-handler
-                        (js|smartparens-pair-newline-and-indent "RET"))
-       :suffix ""))))
-(use-package rubocop
-  :ensure-system-package
-  (rubocop . "gem install rubocop")
-  :hook (ruby-mode . rubocop-mode)
-  :config
-  (setq rubocop-autocorrect-on-save t))
-;; (use-package rubocopfmt
-;;   :hook (ruby-mode . rubocopfmt-mode)
-;;   :config
-;;   (setq rubocopfmt-rubocop-command "rubocop-daemon-wrapper")
+  (with-eval-after-load 'yasnippet
+    (rspec-install-snippets))
+  ;; (with-eval-after-load 'smartparens
+  ;;   (sp-with-modes 'ruby-mode
+  ;;     (sp-local-pair
+  ;;      "{" "}"
+  ;;      :pre-handlers '(sp-ruby-pre-handler)
+  ;;      :post-handlers '(sp-ruby-post-handler
+  ;;                       (js|smartparens-pair-newline-and-indent "RET"))
+  ;;      :suffix "")))
+  )
+;; (use-package rubocop
+;;   :diminish
+;;   ;; :ensure-system-package
+;;   ;; (rubocop . "gem install rubocop")
+;;   :hook (ruby-mode . rubocop-mode)
 ;;   ;; :config
-;;   ;; (add-hook 'ruby-mode-hook
-;;   ;;           (lambda ()
-;;   ;;             (add-hook 'before-save-hook 'rubocopfmt)))
+;;   ;; (setq rubocop-autocorrect-on-save t)
+;;   )
+;; (use-package rubocopfmt
+;;   :disabled
+;;   :hook (ruby-mode . rubocopfmt-mode)
+;;   ;; :config
+;;   ;; (setq rubocopfmt-rubocop-command "rubocop-daemon-wrapper")
+;;   :config
+;;   (add-hook 'ruby-mode-hook
+;;             (lambda ()
+;;               (add-hook 'before-save-hook 'rubocopfmt)))
 ;;   )
 (use-package rbenv
   :hook (ruby-mode . global-rbenv-mode))
@@ -83,8 +88,10 @@
              ruby-refactor-extract-constant
              ruby-refactor-extract-to-let))
 (use-package projectile-rails
-  :requires projectile
-  :hook (projectile-mode . projectile-rails-on))
+  :diminish
+  :config
+  (projectile-rails-global-mode))
+
 ;; (use-package ruby-test-mode
 ;;   :commands (ruby-test-run
 ;;              ruby-test-run-at-point

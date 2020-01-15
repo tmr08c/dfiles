@@ -64,7 +64,6 @@
 (when (eq +completion-engine 'ivy)
 
   (use-package ivy
-    :pin melpa-stable
     :demand
     :delight
     :config
@@ -75,7 +74,6 @@
           ivy-fixed-height-minibuffer t
           projectile-completion-system 'ivy
           ivy-wrap t
-          ivy-format-function 'ivy-format-function-arrow
           ivy-initial-inputs-alist nil
           ivy-use-selectable-prompt t))
 
@@ -253,7 +251,12 @@
     (ivy-rich-mode +1))
 
   (use-package all-the-icons-ivy
-    :config (all-the-icons-ivy-setup))
+    :after ivy
+    :config
+    ;; let (all-the-icons-ivy-file-commands '(counsel-projectile
+    ;;                                          counsel-projectile-find-file
+    ;;                                          counsel-projectile-find-dir))
+    (all-the-icons-ivy-setup))
 
   (use-package doom-todo-ivy
     :commands doom/ivy-tasks
