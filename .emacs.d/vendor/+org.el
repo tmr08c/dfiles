@@ -75,7 +75,12 @@
   :after org)
 (use-package ox-asciidoc
   :after org)
+(use-package org-make-toc
+  :after org
+  :hook (org-mode . org-make-toc-mode)
+  :commands (org-make-toc org-make-toc-at-point))
 (use-package toc-org
+  :disabled
   :custom (toc-org-max-depth 10)
   :hook (org-mode . toc-org-enable))
 (use-package org-bullets

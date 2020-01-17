@@ -256,8 +256,8 @@ _q_ quit            _c_ create          _<_ previous
         company-dabbrev-ignore-case nil
         ;; company-dabbrev-code-other-buffers t
         company-echo-delay (if (display-graphic-p) nil 0) ; remove annoying blinking
-        company-idle-delay .2 ; 0.6
-        company-minimum-prefix-length 2
+        company-idle-delay 0.6 ; 0.6
+        company-minimum-prefix-length 3
         company-require-match nil
         company-selection-wrap-around t
         company-tooltip-align-annotations t

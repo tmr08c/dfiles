@@ -20,3 +20,7 @@ zeus.json
 .elixir_ls
 .uuid
 .log/**/*
+.solargraph.yml
+
+# Custom definition
+backend/config/definitions.rb

@@ -71,4 +71,8 @@ For instance pass En as source for English."
 (use-package writeroom-mode
   :commands writeroom-mode)
 
+(use-package pandoc-mode
+  :hook ((pandoc-mode . pandoc-load-default-settings)
+         (markdown-mode . conditionally-load-default-settings)))
+
 (provide 'write)
