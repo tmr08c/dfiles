@@ -55,11 +55,6 @@
 (use-package sass-mode
   :mode "\\.sass$")
 
-(use-package web-beautify
-  :commands web-beautify-buffer
-  :quelpa
-  (web-beautify :fetcher github :repo "jguenther/web-beautify" :branch "add-web-beautify-buffer-cmd"))
-
 (with-eval-after-load 'smartparens
   (sp-local-pair 'web-mode "<" ">")
   (sp-with-modes '(css-mode scss-mode)

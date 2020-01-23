@@ -88,6 +88,7 @@
              ruby-refactor-extract-constant
              ruby-refactor-extract-to-let))
 (use-package projectile-rails
+	     :after projectile
   :diminish
   :config
   (projectile-rails-global-mode))

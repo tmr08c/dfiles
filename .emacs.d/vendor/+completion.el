@@ -31,7 +31,6 @@
     :config
     (setq helm-ag-base-command "rg --smart-case --no-heading --vimgrep"))
   (use-package helm-dash
-    :quelpa (helm-dash :fetcher github :repo "canatella/helm-dash")
     :after helm)
   (use-package helm-company
     :after (helm company))
@@ -259,8 +258,8 @@
     (all-the-icons-ivy-setup))
 
   (use-package doom-todo-ivy
-    :commands doom/ivy-tasks
-    :load-path "vendor/")
+	       :straight (doom-todo-ivy :type git :host github :repo "jsmestad/doom-todo-ivy")
+    :commands doom/ivy-tasks)
 
   ;; Counsel
   (use-package counsel

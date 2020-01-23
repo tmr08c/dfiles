@@ -19,30 +19,46 @@
 ;; Ensure Emacs is running out of this file's directory
 (setq user-emacs-directory (file-name-directory load-file-name))
 
+;; Bootstrap straight.el
+(defvar bootstrap-version)
+(let ((bootstrap-file
+       (expand-file-name "straight/repos/straight.el/bootstrap.el" user-emacs-directory))
+      (bootstrap-version 5))
+  (unless (file-exists-p bootstrap-file)
+    (with-current-buffer
+        (url-retrieve-synchronously
+         "https://raw.githubusercontent.com/raxod502/straight.el/develop/install.el"
+         'silent 'inhibit-cookies)
+      (goto-char (point-max))
+      (eval-print-last-sexp)))
+  (load bootstrap-file nil 'nomessage))
+(setq straight-use-package-by-default t)
+
 (defvar js|config-file
   (expand-file-name "config.el" user-emacs-directory)
   "The file path of your literate config file.")
 
 
 ;;; Get package repos configured
-(require 'package)
-(add-to-list 'package-archives '("melpa-stable" . "https://stable.melpa.org/packages/"))
-(add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/"))
-(add-to-list 'package-archives '("org" . "https://orgmode.org/elpa/") t)
-(setq package-archive-priorities '(("org" . 4)
-                                   ("melpa" . 3)
-                                   ("melpa-stable" . 2)
-                                   ("gnu" . 1)))
+;; (require 'package)
+;; (add-to-list 'package-archives '("melpa-stable" . "https://stable.melpa.org/packages/"))
+;; (add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/"))
+;; (add-to-list 'package-archives '("org" . "https://orgmode.org/elpa/") t)
+;; (setq package-archive-priorities '(("org" . 4)
+;;                                    ("melpa" . 3)
+;;                                    ("melpa-stable" . 2)
+;;                                    ("gnu" . 1)))
 
-(unless package--initialized
-  (package-initialize))
+;; (unless package--initialized
+;;   (package-initialize))
 
-(unless (package-installed-p 'use-package)
-  (package-refresh-contents)
-  (package-install 'use-package))
+(straight-use-package 'use-package)
+;; (unless (package-installed-p 'use-package)
+;;   (package-refresh-contents)
+;;   (package-install 'use-package))
 
 (setq use-package-compute-statistics t
-      use-package-always-ensure t
+      ;; use-package-always-ensure t
       ;; use-package-always-defer t
       use-package-verbose t
       use-package-minimum-reported-time 0.01)
@@ -56,15 +72,9 @@
   :config
   (setq quelpa-update-melpa-p nil))
 
-(use-package quelpa-use-package
-  :after quelpa
-  :demand
-  :config
-  (quelpa-use-package-activate-advice))
-
 (use-package hydra)
 (use-package hydra-posframe
-  :quelpa (hydra-posframe :fetcher github :repo "Ladicle/hydra-posframe")
+  :straight (hydra-posframe :type git :host github :repo "Ladicle/hydra-posframe")
   :hook (after-init . hydra-posframe-enable))
 (use-package use-package-hydra
   :after hydra
@@ -87,6 +97,7 @@
         custom-file (no-littering-expand-var-file-name "custom.el")))
 
 (use-package paradox
+  :disabled
   :config
   (setq paradox-execute-asynchronously t
         paradox-automatically-star t))

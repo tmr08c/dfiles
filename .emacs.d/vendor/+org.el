@@ -1,10 +1,11 @@
 ;;; org.el --- -*- lexical-binding: t; -*-
 ;;; Commentary:
 ;;; Code:
-
+;;(use-package org-plus-contrib)
 (use-package org
-  :ensure org-plus-contrib
-  :pin org
+
+	     :straight (org :type git :host github :repo "emacsmirror/org" :no-build t)
+  ;; :ensure org-plus-contrib
   ;; :mode "\\.org\'"
   :config
   ;; (add-hook 'before-save-hook 'langtool-check)
@@ -54,7 +55,7 @@
 
 (use-package evil-org
   :hook (org-mode . evil-org-mode)
-  :custom
+  :config
   ;; (evil-org-use-additional-insert t)
   (add-hook 'evil-org-mode-hook
             (lambda ()
