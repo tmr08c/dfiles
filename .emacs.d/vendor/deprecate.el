@@ -18,12 +18,13 @@
   :config
   (js|neotree-keybindings)
   (setq neo-create-file-auto-open t
-        neo-point-auto-indent nil
-        neo-modern-sidebar t
         neo-theme 'icons
+        neo-reset-size-on-open t
         neo-window-fixed-size nil
         neo-window-width 28
         neo-show-hidden-files nil
+        neo-autorefresh nil
+        neo-smart-open nil
         neo-keymap-style 'concise))
 
 (use-package treemacs
