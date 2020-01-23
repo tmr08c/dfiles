@@ -6,16 +6,25 @@
 ;;; Code:
 
 (use-package neotree ; Try to use dired instead
-  :commands (neotree-toggle neotree-projectile-action)
+  :commands (neotree-toggle
+             neotree-projectile-action
+             neotree-show
+             neotree-hide
+             neotree-toggle
+             neotree-dir
+             neotree-find
+             neo-global--with-buffer
+             neo-global--window-exists-p)
   :config
   (js|neotree-keybindings)
   (setq neo-create-file-auto-open t
-        neo-modern-sidebar t
-        neo-point-auto-indent nil
-        neo-theme (if (display-graphic-p) 'icons 'arrow)
+        neo-theme 'icons
+        neo-reset-size-on-open t
         neo-window-fixed-size nil
         neo-window-width 28
-        neo-show-hidden-files t
+        neo-show-hidden-files nil
+        neo-autorefresh nil
+        neo-smart-open nil
         neo-keymap-style 'concise))
 
 (use-package treemacs

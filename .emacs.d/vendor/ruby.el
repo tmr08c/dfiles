@@ -87,7 +87,9 @@
              ruby-refactor-extract-local-variable
              ruby-refactor-extract-constant
              ruby-refactor-extract-to-let))
+(use-package inflections) ; required by projectile-rails
 (use-package projectile-rails
+	:requires projectile inflections
   :diminish
   :config
   (projectile-rails-global-mode))

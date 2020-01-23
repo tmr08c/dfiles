@@ -49,6 +49,7 @@
   "Setting to control whether to use helm or ivy.")
 
 (use-package exec-path-from-shell
+	     :demand
   :if (memq window-system '(mac ns x))
   :config
   (setq exec-path-from-shell-arguments '("-l"))
@@ -288,34 +289,6 @@ _q_ quit            _c_ create          _<_ previous
               company-box-max-candidates 50
               company-box-doc-delay 0.5)
   :config
-  ;; (setq company-box-icons-lsp
-  ;;       '((1 . fa_text_height) ;; Text
-  ;;         (2 . (fa_tags :face font-lock-function-name-face)) ;; Method
-  ;;         (3 . (fa_tag :face font-lock-function-name-face)) ;; Function
-  ;;         (4 . (fa_tag :face font-lock-function-name-face)) ;; Constructor
-  ;;         (5 . (fa_cog :foreground "#FF9800")) ;; Field
-  ;;         (6 . (fa_cog :foreground "#FF9800")) ;; Variable
-  ;;         (7 . (fa_cube :foreground "#7C4DFF")) ;; Class
-  ;;         (8 . (fa_cube :foreground "#7C4DFF")) ;; Interface
-  ;;         (9 . (fa_cube :foreground "#7C4DFF")) ;; Module
-  ;;         (10 . (fa_cog :foreground "#FF9800")) ;; Property
-  ;;         (11 . md_settings_system_daydream) ;; Unit
-  ;;         (12 . (fa_cog :foreground "#FF9800")) ;; Value
-  ;;         (13 . (md_storage :face font-lock-type-face)) ;; Enum
-  ;;         (14 . (md_closed_caption :foreground "#009688")) ;; Keyword
-  ;;         (15 . md_closed_caption) ;; Snippet
-  ;;         (16 . (md_color_lens :face font-lock-doc-face)) ;; Color
-  ;;         (17 . fa_file_text_o) ;; File
-  ;;         (18 . md_refresh) ;; Reference
-  ;;         (19 . fa_folder_open) ;; Folder
-  ;;         (20 . (md_closed_caption :foreground "#009688")) ;; EnumMember
-  ;;         (21 . (fa_square :face font-lock-constant-face)) ;; Constant
-  ;;         (22 . (fa_cube :face font-lock-type-face)) ;; Struct
-  ;;         (23 . fa_calendar) ;; Event
-  ;;         (24 . fa_square_o) ;; Operator
-  ;;         (25 . fa_arrows)) ;; TypeParameter
-  ;;       )
-
   ;; Support `company-common'
   (defun my-company-box--make-line (candidate)
     (-let* (((candidate annotation len-c len-a backend) candidate)
@@ -746,10 +719,7 @@ If ARG is a numerical prefix argument then specify the indentation level."
 
 
 ;; latex
-(use-package tex-site
-  :ensure auctex
-  :mode ( "\\.tex\\'" . latex-mode )
-  :config
+(with-eval-after-load 'latex-mode
   (setq TeX-auto-save t
         TeX-parse-self t)
   (setq-default TeX-master nil)
@@ -783,8 +753,6 @@ If ARG is a numerical prefix argument then specify the indentation level."
 
 (use-package scala-mode
   :mode ("\\.\\(scala\\|sbt\\)\\'" . scala-mode))
-(use-package ensime
-  :hook (scala-mode . ensime-mode))
 (use-package sbt-mode
   :hook (scala-mode . sbt-mode))
 
@@ -818,7 +786,6 @@ If ARG is a numerical prefix argument then specify the indentation level."
 ;; Syntax Checking - Flycheck
 (use-package flycheck
   :commands (flycheck-list-errors flycheck-buffer)
-  :pin melpa
   :init (global-flycheck-mode)
   :config
   (setq flycheck-rubocop-lint-only t
@@ -842,7 +809,6 @@ If ARG is a numerical prefix argument then specify the indentation level."
 
 (use-package doom-modeline
   ;; :after (winum)
-  ;; :pin melpa-stable
   ;; :defer 5
   :hook (after-init . doom-modeline-mode)
   :config
@@ -877,6 +843,7 @@ If ARG is a numerical prefix argument then specify the indentation level."
 
 ;; Themes
 (use-package composite ; Use symbols in fonts (requires Emacs >= 27)
+	     :disabled
   :ensure nil
   :if (version<= "27.0" emacs-version)
   :defer t
@@ -990,6 +957,7 @@ If ARG is a numerical prefix argument then specify the indentation level."
     (add-to-list 'winum-assign-functions #'winum-assign-0-to-neotree)
     (winum-mode)))
 (use-package window
+	     :straight nil
   :ensure nil
   :preface (provide 'window)
   :custom
@@ -1011,52 +979,35 @@ If ARG is a numerical prefix argument then specify the indentation level."
       (window-height   . 0.5))
      ("." nil (reusable-frames . visible)))))
 
-(use-package files
-  :no-require t
-  :ensure nil
-  :demand t
-  :config
-  (setq backup-directory-alist
-        `((".*" . ,(no-littering-expand-var-file-name "backup/"))))
-  (setq auto-save-file-name-transforms
-        `((".*" ,(no-littering-expand-var-file-name "auto-save/") t)))
-  (setq kept-old-versions 2
-        kept-new-versions 6
-        backup-by-copying t
-        require-final-newline t
-        delete-old-versions t
-        version-control t
-        large-file-warning-threshold (* 20 1000 1000)))
+;; Files
+(setq backup-directory-alist
+`((".*" . ,(no-littering-expand-var-file-name "backup/"))))
+(setq auto-save-file-name-transforms
+`((".*" ,(no-littering-expand-var-file-name "auto-save/") t)))
+(setq kept-old-versions 2
+kept-new-versions 6
+backup-by-copying t
+require-final-newline t
+delete-old-versions t
+version-control t
+large-file-warning-threshold (* 20 1000 1000))
 
-(use-package vc-hooks
-  :no-require t
-  :ensure nil
-  :demand t
-  :custom (vc-follow-symlinks t))
-
-(use-package dired
-  :no-require t
-  :ensure nil
-  :demand t
-  :commands (dired)
-  :config
-  (setq dired-dwim-target t ; "Enable side-by-side `dired` buffer targets."
+(setq vc-follow-symlinks t)
+(setq dired-dwim-target t ; "Enable side-by-side `dired` buffer targets."
         dired-recursive-copies 'always ; "Better recursion in `dired`."
         dired-recursive-deletes 'top
         delete-by-moving-to-trash t
-        dired-use-ls-dired nil))
+        dired-use-ls-dired nil)
 
 (use-package display-line-numbers
+  :straight nil
   :ensure nil
   :hook (prog-mode . display-line-numbers-mode))
 
-(use-package uniquify
-  :no-require t
-  :ensure nil
-  :demand t
-  :custom (uniquify-buffer-name-style 'forward))
+(setq uniquify-buffer-name-style 'forward)
 
 (use-package sh-mode
+	     :straight nil
   :ensure nil
   :mode
   (("\\.zshrc" . sh-mode)
@@ -1067,6 +1018,7 @@ If ARG is a numerical prefix argument then specify the indentation level."
    ("bash_completion$" . sh-mode)))
 
 (use-package recentf
+	     :straight nil
   :requires no-littering
   :defer t
   :ensure nil
@@ -1085,6 +1037,7 @@ If ARG is a numerical prefix argument then specify the indentation level."
   (add-to-list 'recentf-exclude no-littering-etc-directory))
 
 (use-package eldoc
+	     :straight nil
   :ensure nil
   :delight
   :hook ((ielm-mode eval-expression-minibuffer-setup) . eldoc-mode))
@@ -1113,7 +1066,6 @@ If ARG is a numerical prefix argument then specify the indentation level."
              helpful-key
              helpful-macro
              helpful-function)
-  :defer t
   :defines ivy-initial-inputs-alist
   :bind (("C-c C-d" . helpful-at-point)))
 
@@ -1136,11 +1088,13 @@ If ARG is a numerical prefix argument then specify the indentation level."
 (require '+org)
 
 (use-package linux
+	     :straight nil
   :ensure nil
   :load-path "vendor/"
   :if (eq system-type 'gnu/linux))
 
 (use-package osx
+	     :straight nil
   :ensure nil
   :load-path "vendor/"
   :if (eq system-type 'darwin))
