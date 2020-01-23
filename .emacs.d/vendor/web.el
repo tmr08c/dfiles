@@ -1,25 +1,53 @@
 (use-package add-node-modules-path
+  :disabled
   :hook ((js2-mode js-mode json-mode typescript-mode elm-mode) . add-node-modules-path))
+
 (use-package js2-mode
   :mode "\\.m?js\\'"
   :hook
   (js2-mode . js2-imenu-extras-mode)
   :config
+  (setq js-chain-indent t
+        ;; Don't mishighlight shebang lines
+        js2-skip-preprocessor-directives t
+        ;; let flycheck handle this
+        js2-mode-show-parse-errors nil
+        js2-mode-show-strict-warnings nil
+        ;; Flycheck provides these features, so disable them: conflicting with
+        ;; the eslint settings.
+        js2-strict-trailing-comma-warning nil
+        js2-strict-missing-semi-warning nil
+        ;; maximum fontification
+        js2-highlight-level 3
+        js2-highlight-external-variables t
+        js2-idle-timer-delay 0.1)
+  (add-hook 'js2-mode-hook #'rainbow-delimiters-mode)
   (setq-default js-switch-indent-offset 2
                 js-indent-level 2)
   (setenv "NODE_NO_READLINE" "1"))
+
+;; (use-package rjsx-mode) ;; React
+
+;; (use-package js2-refactor)
+;; (use-package npm-mode)
+(use-package eslintd-fix
+  :hook (js2-mode . eslintd-fix-mode))
+
 (use-package typescript-mode
-  :mode "\\.tsx?\\'"
   :config
+  (add-hook 'typescript-mode-hook #'rainbow-delimiters-mode)
   (setq typescript-indent-level 2
         typescript-expr-indent-offset 2))
 
-(use-package company-web
-  :requires company
-  :hook (web-mode . (lambda ()
-                      (setq-local company-backends '(company-web-html company-css company-yasnippet)))))
+;; (use-package company-web
+;;   :requires company
+;;   :hook (web-mode . (lambda ()
+;;                       (setq-local company-backends '(company-web-html company-css company-yasnippet)))))
+
 (use-package web-mode
-  :hook (html-mode . web-mode)
+  :mode "\\.\\(?:as\\(?:[cp]x\\)\\|blade\\.php\\|erb\\|hbs\\|j\\(?:inja\\|sp\\)\\|mustache\\|p?html?\\|svelte\\|t\\(?:pl\\.php\\|sx\\|wig\\)\\|vue\\)\\'"
+  :mode "wp-content/themes/.+/.+\\.php\\'"
+  :mode "templates/.+\\.php\\'"
   :diminish
   :config
   (setq   web-mode-markup-indent-offset 2
@@ -36,20 +64,19 @@
   (add-hook 'web-mode-hook #'turn-off-smartparens-mode))
 (use-package emmet-mode
   :diminish
-  :hook ((css-mode web-mode) . emmet-mode))
+  :hook ((css-mode web-mode) . emmet-mode)
+  :config
+  (add-hook 'emmet-mode-hook #'yas-minor-mode-on)
+  (setq emmet-move-cursor-between-quotes t))
 
-;; NOTE does not work yet due to TRAMP stuff
-;; (use-package prettier
-;;   :quelpa
-;;   (prettier :fetcher github :repo "jscheid/prettier.el")
-;;   :init (global-prettier-mode 1))
 
 (use-package css-mode
   :mode "\\.css$"
   :hook (css-mode . (lambda ()
                       (setq-local company-backends '(company-css company-yasnippet))))
-  :custom
-  (css-indent-offset 2))
+  :config
+  (setq css-indent-offset 2)
+  (add-hook 'css-mode-hook #'rainbow-delimiters-mode))
 (use-package scss-mode
   :mode "\\.scss$")
 (use-package sass-mode

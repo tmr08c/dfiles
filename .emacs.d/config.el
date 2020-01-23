@@ -383,7 +383,8 @@ _q_ quit            _c_ create          _<_ previous
   :config
   (require 'lsp-clients)
   (setq
-   lsp-prefer-flymake t
+   ;;lsp-prefer-flymake t
+   lsp-auto-guess-root t
    lsp-keep-workspace-alive nil
    flymake-fringe-indicator-position 'right-fringe)
   (add-to-list 'exec-path "~/code/github/elixir-ls/release"))
