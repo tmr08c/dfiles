@@ -222,6 +222,12 @@ MATCH is a string regexp. Only entries that match it will be included."
         (find-variable-other-window symb)
       (find-function-at-point))))
 
+(defun create-scratch-buffer nil
+  "create a scratch buffer"
+  (interactive)
+  (switch-to-buffer (get-buffer-create "*scratch*"))
+  (org-mode))
+
 ;; Idea from http://www.reddit.com/r/emacs/comments/312ge1/i_created_this_function_because_i_was_tired_of/
 ;;;###autoload
 (defun spacemacs/eval-current-form ()

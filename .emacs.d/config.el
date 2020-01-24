@@ -1,47 +1,14 @@
 ;;; config.el --- -*- lexical-binding: t; -*-
 ;;; Commentary:
 ;;;
-;;; FIXME evil has issues with Messages buffer
-;;; FIXME how to exit snake in evil mode
 ;;;
 ;;; TODO popups need to be controlled to use the same area of screen
 ;;; TODO word wrap in completion buffers by default
 ;;; TODO no line numbers in completion buffers
+;;; TODO look into emacs-quickrun (run commands quickly)
 ;;;
 ;;; Code:
 
-;; Speed up startup
-(defvar default-file-name-handler-alist file-name-handler-alist)
-(setq file-name-handler-alist nil)
-(setq gc-cons-threshold 40000000)
-
-(add-hook 'emacs-startup-hook
-          (lambda ()
-            "Restore defalut values after startup."
-            (setq file-name-handler-alist default-file-name-handler-alist)
-            (setq gc-cons-threshold 800000)
-
-            ;; GC automatically while unfocusing the frame
-            ;; `focus-out-hook' is obsolete since 27.1
-            (if (boundp 'after-focus-change-function)
-                (add-function :after after-focus-change-function
-                              (lambda ()
-                                (unless (frame-focus-state)
-                                  (garbage-collect))))
-              (if (version<= "27.0" emacs-version)
-                  (add-hook 'after-focus-change-function 'garbage-collect)
-                (add-hook 'focus-out-hook 'garbage-collect)))
-
-            ;; Avoid GCs while using `ivy'/`counsel'/`swiper' and `helm', etc.
-            ;; @see http://bling.github.io/blog/2016/01/18/why-are-you-changing-gc-cons-threshold/
-            (defun my-minibuffer-setup-hook ()
-              (setq gc-cons-threshold most-positive-fixnum))
-
-            (defun my-minibuffer-exit-hook ()
-              (setq gc-cons-threshold 800000))
-
-            (add-hook 'minibuffer-setup-hook #'my-minibuffer-setup-hook)
-            (add-hook 'minibuffer-exit-hook #'my-minibuffer-exit-hook)))
 
 (require '+funcs)
 
@@ -49,15 +16,14 @@
   "Setting to control whether to use helm or ivy.")
 
 (use-package exec-path-from-shell
-	     :demand
-  :if (memq window-system '(mac ns x))
+  :diminish
   :config
   (setq exec-path-from-shell-arguments '("-l"))
   (exec-path-from-shell-initialize))
 
 (use-package which-key
   :defer 1
-  :delight
+  :diminish
   :config
   (setq which-key-sort-order 'which-key-prefix-then-key-order
         which-key-sort-uppercase-first nil
@@ -68,6 +34,7 @@
   (which-key-mode))
 
 (use-package general
+  :after evil
   :demand
   :functions space-leader-def
   :init
@@ -120,7 +87,7 @@
   (fset 'evil-visual-update-x-selection 'ignore)
 
   ;; Disable Evil for the states below
-  (evil-set-initial-state 'paradox-menu-mode 'emacs)
+  (evil-set-initial-state 'Custom-mode 'emacs)
 
   (defun +evil|update-shift-width ()
     (setq evil-shift-width tab-width))
@@ -130,56 +97,48 @@
 
 (use-package evil-escape
   :load-path "vendor/" ; Vendored due to missing vterm support - https://github.com/syl20bnr/evil-escape/pull/87
-  :requires evil
-  :defer t
-  :delight
+  :diminish
   :config
   (setq evil-escape-delay 0.2
         evil-escape-excluded-major-modes '(vterm-mode)
         evil-escape-key-sequence "jk")
-  (evil-escape-mode 1))
+  (evil-escape-mode))
 (use-package evil-surround
-  :defer 5
-  :init (global-evil-surround-mode 1))
+  :diminish
+  :hook (after-init . global-evil-surround-mode))
 (use-package evil-matchit
-  :defer 5
-  :init (global-evil-matchit-mode))
+  :diminish
+  :hook (after-init . global-evil-matchit-mode))
 (use-package evil-goggles
-  :defer 5
-  :delight
+  :diminish
   :config
-  (setq evil-goggles-duration 0.1
-        evil-goggles-enable-delete nil)
-  :init
+  ;;  (setq evil-goggles-duration 0.1
+  ;;        evil-goggles-enable-delete nil)
   (evil-goggles-mode))
-(use-package evil-easymotion
-  :defer 5
-  :delight)
 (use-package evil-commentary
-  :defer t
-  :delight
-  :init (evil-commentary-mode))
+  :diminish
+  :hook (after-init . evil-commentary-mode))
 (use-package evil-collection
-  :after evil
   :init
   (setq evil-collection-company-use-tng nil)
   (evil-collection-init))
 
 (use-package auto-sudoedit
-  :init (auto-sudoedit-mode 1))
+  :hook (after-init . auto-sudoedit-mode))
 
 ;; EditorConfig
 (use-package editorconfig
   :hook (prog-mode . editorconfig-mode)
   :config
   (setq editorconfig-trim-whitespaces-mode 'ws-butler-mode))
+
 (use-package direnv
   :hook
-  (flycheck-before-syntax-check . direnv-update-environment)
-  (before-hack-local-variables . direnv-update-environment)
+  ((flycheck-before-syntax-check . direnv-update-environment)
+   (before-hack-local-variables . direnv-update-environment)
+   (prog-mode . direnv-mode))
   :config
-  (setq direnv-always-show-summary nil)
-  (direnv-mode))
+  (setq direnv-always-show-summary nil))
 
 (use-package eyebrowse ; Easy workspaces creation and switching
   :demand
@@ -208,31 +167,19 @@ _q_ quit            _c_ create          _<_ previous
   (eyebrowse-mode t))
 
 (use-package projectile
-  :commands (projectile-run-shell-command-in-root
-             projectile-replace-regexp
-             projectile-toggle-between-implementation-and-test
-             projectile-invalidate-cache
-             projectile-replace
-             projectile-kill-buffers
-             projectile-recentf
-             projectile-ag
-             projectile-find-file
-             projectile-find-dir
-             projectile-switch-project)
+  :hook (after-init . projectile-mode)
   :config
-  (progn
-    (setq projectile-indexing-method 'alien
-          ;; projectile-enable-caching nil
-          ;; projectile-use-git-grep t
-          projectile-files-cache-expire 604800 ; expire after a week
-          projectile-switch-project-action 'projectile-find-file
-          projectile-sort-order 'recentf
-          projectile-globally-ignored-files (append '(".git" ".DS_Store" "Icon" "TAGS") projectile-globally-ignored-directories)
-          projectile-globally-ignored-file-suffixes (append '("*.jar" "*.elc" "*.pyc" "*.o") projectile-globally-ignored-files))
-    (define-key projectile-mode-map (kbd "s-p") 'projectile-command-map)
-    (define-key projectile-mode-map (kbd "C-c p") 'projectile-command-map)
-    (add-to-list 'projectile-project-root-files ".clang_complete")
-    (projectile-mode +1)))
+  (setq projectile-indexing-method 'alien
+        ;; projectile-enable-caching nil
+        projectile-use-git-grep t
+        projectile-sort-order 'recentf
+        projectile-files-cache-expire 604800 ; expire after a week
+        ;; projectile-switch-project-action 'projectile-find-file
+        projectile-globally-ignored-files (append '(".git" ".DS_Store" "Icon" "TAGS") projectile-globally-ignored-directories)
+        projectile-globally-ignored-file-suffixes (append '("*.jar" "*.elc" "*.pyc" "*.o") projectile-globally-ignored-files))
+  (define-key projectile-mode-map (kbd "s-p") 'projectile-command-map)
+  (define-key projectile-mode-map (kbd "C-c p") 'projectile-command-map)
+  (add-to-list 'projectile-project-root-files ".clang_complete"))
 
 
 (use-package amx
@@ -243,7 +190,7 @@ _q_ quit            _c_ create          _<_ previous
 
 ;; Company
 (use-package company
-  :diminish company-mode
+  :diminish
   :defines company-backends
   :hook (after-init . global-company-mode)
   :bind (:map company-active-map ; Use tab for completion
@@ -252,33 +199,37 @@ _q_ quit            _c_ create          _<_ previous
               ( "tab" . company-complete-selection )
               ( "<tab>" . company-complete-selection ))
   :config
-  ;; (company-begin-commands '(self-insert-command)) ; start autocompletion only after typing
   (setq company-dabbrev-downcase nil
         company-dabbrev-ignore-case nil
         ;; company-dabbrev-code-other-buffers t
         company-echo-delay (if (display-graphic-p) nil 0) ; remove annoying blinking
         company-idle-delay 0.6 ; 0.6
-        company-minimum-prefix-length 3
+        company-minimum-prefix-length 3 ; 3
         company-require-match nil
         company-selection-wrap-around t
         company-tooltip-align-annotations t
         company-tooltip-flip-when-above t
         company-tooltip-limit 12
         company-global-modes
-        '(not eshell-mode comint-mode erc-mode message-mode help-mode gud-mode)
-        ;; company-frontends '(company-pseudo-tooltip-frontend
-        ;;                     company-echo-metadata-frontend)
-        company-transformers '(company-sort-by-occurrence)
-        company-backends '(company-yasnippet)))
+        '(not eshell-mode shell-mode comint-mode erc-mode message-mode help-mode gud-mode)
+        company-frontends '(company-pseudo-tooltip-frontend
+                            company-echo-metadata-frontend)
+        ;; company-transformers '(company-sort-by-occurrence)
+        company-backends '(company-capf)))
+(use-package company-quickhelp
+  :defines company-quickhelp-delay
+  :bind (:map company-active-map
+              ([remap company-show-doc-buffer] . company-quickhelp-manual-begin))
+  :hook (global-company-mode . company-quickhelp-mode)
+  :init (setq company-quickhelp-delay 0.5))
 (use-package company-emoji
-  ;; :disabled
   :requires company
   :config
   (add-to-list 'company-backends 'company-emoji))
 (use-package company-prescient
   :init (company-prescient-mode 1))
-(use-package company-posframe
-  :hook (company-mode . company-posframe-mode))
+;; (use-package company-posframe
+;;   :hook (company-mode . company-posframe-mode))
 (use-package company-box
   :diminish
   :functions (my-company-box--make-line
@@ -363,23 +314,12 @@ _q_ quit            _c_ create          _<_ previous
   )
 
 ;; Language Server Protocol (LSP)
-(use-package eglot
-  :disabled
-  :hook (ruby-mode . eglot-ensure))
 (use-package lsp-mode
   :diminish lsp-mode
-  ;; :commands (lsp lsp-deferred)
   :hook
-  (prog-mode . lsp)
-  ;; ((
-  ;;   ruby-mode
-  ;;   js2-mode typescript-mode
-  ;;   python-mode
-  ;;   elm-mode
-  ;;   web-mode
-  ;;   css-mode sass-mode scss-mode
-  ;;   elixir-mode
-  ;;   go-mode) . lsp-deferred)
+  (prog-mode . (lambda ()
+                 (unless (derived-mode-p 'emacs-lisp-mode 'lisp-mode)
+                   (lsp-deferred))))
   :config
   (require 'lsp-clients)
   (setq
@@ -398,10 +338,40 @@ _q_ quit            _c_ create          _<_ previous
               ([remap xref-find-apropos] . lsp-ivy-workspace-symbol)
               ("C-s-." . lsp-ivy-global-workspace-symbol)))
 (use-package company-lsp
-  :after lsp-mode company
+  :init (setq company-lsp-cache-candidates 'auto)
   :config
-  (setq company-lsp-cache-candidates 'auto)
-  (push 'company-lsp company-backends))
+  ;; WORKAROUND:Fix tons of unrelated completion candidates shown
+  ;; when a candidate is fulfilled
+  ;; @see https://github.com/emacs-lsp/lsp-python-ms/issues/79
+  (add-to-list 'company-lsp-filter-candidates '(mspyls))
+
+  (with-no-warnings
+    (defun my-company-lsp--on-completion (response prefix)
+      "Handle completion RESPONSE.
+PREFIX is a string of the prefix when the completion is requested.
+Return a list of strings as the completion candidates."
+      (let* ((incomplete (and (hash-table-p response) (gethash "isIncomplete" response)))
+             (items (cond ((hash-table-p response) (gethash "items" response))
+                          ((sequencep response) response)))
+             (candidates (mapcar (lambda (item)
+                                   (company-lsp--make-candidate item prefix))
+                                 (lsp--sort-completions items)))
+             (server-id (lsp--client-server-id (lsp--workspace-client lsp--cur-workspace)))
+             (should-filter (or (eq company-lsp-cache-candidates 'auto)
+                                (and (null company-lsp-cache-candidates)
+                                     (company-lsp--get-config company-lsp-filter-candidates server-id)))))
+        (when (null company-lsp--completion-cache)
+          (add-hook 'company-completion-cancelled-hook #'company-lsp--cleanup-cache nil t)
+          (add-hook 'company-completion-finished-hook #'company-lsp--cleanup-cache nil t))
+        (when (eq company-lsp-cache-candidates 'auto)
+          ;; Only cache candidates on auto mode. If it's t company caches the
+          ;; candidates for us.
+          (company-lsp--cache-put prefix (company-lsp--cache-item-new candidates incomplete)))
+        (if should-filter
+            (company-lsp--filter-candidates candidates prefix)
+          candidates)))
+    (advice-add #'company-lsp--on-completion :override #'my-company-lsp--on-completion)))
+
 (use-package lsp-ui
   :disabled
   :bind (:map lsp-ui-mode-map
@@ -429,21 +399,21 @@ _q_ quit            _c_ create          _<_ previous
   ;; https://github.com/emacs-lsp/lsp-ui/issues/243
   (defadvice lsp-ui-imenu (after hide-lsp-ui-imenu-mode-line activate)
     (setq mode-line-format nil)))
-(use-package dap-mode
-  :commands dap-mode
-  :config
-  (add-hook 'dap-stopped-hook
-            (lambda (arg) (call-interactively #'dap-hydra)))
-  (dap-mode 1)
-  (dap-ui-mode 1)
-  ;; enables mouse hover support
-  (dap-tooltip-mode 1)
-  ;; use tooltips for mouse hover
-  ;; if it is not enabled `dap-mode' will use the minibuffer.
-  (tooltip-mode 1)
 
-  (require 'dap-elixir)
-  (require 'dap-ruby))
+(use-package dap-mode
+  :diminish
+  :hook ((after-init . dap-mode)
+         (dap-mode . dap-ui-mode)
+         (dap-ui-mode . dap-tooltip-mode)
+
+         (dap-session-created . (lambda (_args) (dap-hydra)))
+         (dap-stopped . (lambda (_args) (dap-hydra)))
+
+         (ruby-mode . (lambda () (require 'dap-ruby)))
+         (go-mode . (lambda () (require 'dap-go)))
+         ((js-mode js2-mode) . (lambda () (require 'dap-chrome)))
+         (elixir-mode . (lambda () (require 'dap-elixir)))))
+
 
 (use-package smartparens
   :defer 2
@@ -492,27 +462,19 @@ _q_ quit            _c_ create          _<_ previous
     (smartparens-global-mode +1)))
 
 (use-package rainbow-delimiters
-  :defer 5
   :hook (prog-mode . rainbow-delimiters-mode))
 
 (use-package dtrt-indent
-  :defer 5
-  :delight
-  :custom (dtrt-indent-min-quality 60)
-  :init (dtrt-indent-global-mode))
+  :diminish
+  :config (setq dtrt-indent-min-quality 60)
+  :hook (after-init . dtrt-indent-global-mode))
 
 (use-package indent-guide
   :commands (indent-guide-mode indent-guide-global-mode)
-  :custom (indent-guide-delay 0.3))
+  :config (setq indent-guide-delay 0.3))
 
 (use-package aggressive-indent
-  :hook ((emacs-lisp-mode . aggressive-indent-mode)
-         (css-mode . aggressive-indent-mode)))
-
-(use-package adaptive-wrap
-  :disabled
-  :defer t
-  :config (adaptive-wrap-prefix-mode))
+  :hook (((emacs-lisp-mode css-mode) . aggressive-indent-mode)))
 
 (use-package dumb-jump
   :commands (dump-jump-go
@@ -566,11 +528,10 @@ _q_ quit            _c_ create          _<_ previous
   :hook (prog-mode . hs-minor-mode))
 
 (use-package hide-comnt
-  :load-path "vendor/"
   :commands hide/show-comments-toggle)
 
 (use-package yasnippet
-  :defer 5
+  :disabled
   :hook ((prog-mode snippet-mode) . yas-minor-mode-on)
   :commands
   (yas-minor-mode yas-minor-mode-on yas-expand yas-expand-snippet
@@ -606,12 +567,6 @@ _q_ quit            _c_ create          _<_ previous
   (add-hook 'visual-fill-column-mode-hook #'visual-line-mode)
   (advice-add 'text-scale-adjust :after
               #'visual-fill-column-adjust))
-  ;; :config
-  ;; (setq visual-fill-column-center-text t
-  ;;       ;; visual-fill-column-width
-  ;;       ;; take Emacs 26 line numbers into account
-  ;;       (+ (if (boundp 'display-line-numbers) 6 0)
-  ;;          fill-column)))
 
 (use-package swiper
   :after evil
@@ -622,34 +577,13 @@ _q_ quit            _c_ create          _<_ previous
    "C-s" 'swiper))
 
 (use-package rg
+  :defer t
   :commands (rg rg-project rg-dwim rg-literal))
 
-(use-package midnight
-  :defer 10)
+(use-package midnight)
+
 
 ;; SQL
-(use-package sql
-  :ensure nil
-  :mode "\\.sql$"
-  :custom
-  (sql-set-product-feature 'postgres :prompt-regexp "^[-[:alnum:]_]*=[#>] ")
-  (sql-set-product-feature 'postgres :prompt-cont-regexp
-                           "^[-[:alnum:]_]*[-(][#>] ")
-  :config
-  (progn
-    (defun my-sql-login-hook ()
-      "Custom SQL log-in behaviours. See `sql-login-hook'."
-      ;; n.b. If you are looking for a response and need to parse the
-      ;; response, use `sql-redirect-value' instead of `comint-send-string'.
-      (when (eq sql-product 'postgres)
-        (let ((proc (get-buffer-process (current-buffer))))
-          ;; Output each query before executing it. (n.b. this also avoids
-          ;; the psql prompt breaking the alignment of query results.)
-          (comint-send-string proc "\\set ECHO queries\n"))))
-    (add-hook 'sql-login-hook 'my-sql-login-hook)
-    (add-hook 'sql-interactive-mode-hook
-              (lambda ()
-                (toggle-truncate-lines t)))))
 (use-package sql-indent
   :hook (sql-mode . sqlind-minor-mode))
 (use-package sqlup-mode
@@ -668,7 +602,7 @@ _q_ quit            _c_ create          _<_ previous
 
 ;; CSV
 (use-package csv-mode
-  :mode "\\.csv$"
+  :mode "\\.csv\\'"
   :config
   (defun csv-align-visible ()
     "Align only visible entries in csv-mode."
@@ -682,7 +616,7 @@ _q_ quit            _c_ create          _<_ previous
 
 ;; JSON
 (use-package json-mode
-  :defer t
+  :mode "\\.json\\'"
   :config
   (setq js-indent-level 2))
 (use-package json-snatcher
@@ -712,13 +646,10 @@ If ARG is a numerical prefix argument then specify the indentation level."
 (use-package dockerfile-mode
   :mode "Dockerfile.*\\'")
 
-
 (use-package yaml-mode
   :mode "\\.ya?ml\'")
 
-
-
-;; latex
+;; LaTeX
 (with-eval-after-load 'latex-mode
   (setq TeX-auto-save t
         TeX-parse-self t)
@@ -730,19 +661,15 @@ If ARG is a numerical prefix argument then specify the indentation level."
 
 ;; Python
 (use-package python-mode
-  :mode "\\.py")
+  :mode "\\.py\\'")
 (use-package anaconda-mode
-  :hook python-mode)
-(use-package pyenv-mode
-  :if (executable-find "pyenv")
-  :commands (pyenv-mode-versions)
   :hook python-mode)
 
 ;; C (via irony-mode)
 (use-package ccls
   :requires lsp-mode
-  :hook ((c-mode c++-mode objc-mode) .
-         (lambda () (require 'ccls) (lsp)))
+  :hook ((c-mode c++-mode objc-mode cuda-mode) .
+         (lambda () (require 'ccls)))
   :config
   (setq ccls-executable "ccls"))
 (use-package platformio-mode
@@ -759,7 +686,7 @@ If ARG is a numerical prefix argument then specify the indentation level."
 ;; Elm
 ;; NOTE watch for the release of an LSP for Elm (none as of 2019-05)
 (use-package elm-mode
-  :mode ("\\.elm\\'" . elm-mode)
+  :mode "\\.elm\\'"
   :config
   (setq elm-tags-on-save t
         elm-format-on-save t)
@@ -771,7 +698,7 @@ If ARG is a numerical prefix argument then specify the indentation level."
 
 ;; OCaml / ReasonML
 (use-package reason-mode
-  :mode ("\\.rei?\\'" . reason-mode)
+  :mode "\\.rei?\\'"
   :config
   (add-hook 'reason-mode-hook (lambda ()
                                 (add-hook 'before-save-hook 'reason/refmt-before-save nil t))))
@@ -782,68 +709,163 @@ If ARG is a numerical prefix argument then specify the indentation level."
 (use-package flycheck-ocaml
   :after reason-mode)
 
-
 ;; Syntax Checking - Flycheck
 (use-package flycheck
-  :commands (flycheck-list-errors flycheck-buffer)
-  :init (global-flycheck-mode)
-  :config
-  (setq flycheck-rubocop-lint-only t
-        flycheck-idle-change-delay 1.75
-        flycheck-check-syntax-automatically '(save idle-change mode-enabled))
-  (setq-default flycheck-disabled-checkers '(ruby-rubylint
-                                             emacs-lisp-checkdoc))
-  (global-flycheck-mode +1))
-(use-package flycheck-posframe
-  :commands flycheck-posframe-show-posframe
-  :hook (flycheck-mode . flycheck-posframe-mode)
-  :config
-  (setq flycheck-posframe-warning-prefix "⚠ "
-        flycheck-posframe-info-prefix "··· "
-        flycheck-posframe-error-prefix "✕ "))
-
-;; Ansible
-(use-package ansible)
-(use-package ansible-doc)
-
-
-(use-package doom-modeline
-  ;; :after (winum)
-  ;; :defer 5
-  :hook (after-init . doom-modeline-mode)
+  :diminish
+  :hook (after-init . global-flycheck-mode)
   :config
   (setq
-   ;; doom-modeline-icon t
-   ;; doom-modeline-color-icons t
-   ;; doom-modeline-minor-modes nil
-   ;; doom-modeline-before-update-env-hook 
+   flycheck-global-modes '(not org-mode text-mode outline-mode fundamental-mode
+                               shell-mode eshell-mode term-mode vterm-mode)
+   flycheck-rubocop-lint-only t
+   flycheck-idle-change-delay 1.75
+   flycheck-indication-mode 'right-fringe
+   flycheck-check-syntax-automatically '(save idle-change mode-enabled)
+   flycheck-disabled-checkers '(ruby-rubylint
+                                emacs-lisp-checkdoc))
+  ;; Prettify fringe style
+  (when (fboundp 'define-fringe-bitmap)
+    (define-fringe-bitmap 'flycheck-fringe-bitmap-double-arrow
+      [16 48 112 240 112 48 16] nil nil 'center))
+  )
+(use-package flycheck-posframe
+  :custom-face (flycheck-posframe-border-face ((t (:inherit default))))
+  :hook (flycheck-mode . flycheck-posframe-mode)
+  :init (setq flycheck-posframe-border-width 1
+              flycheck-posframe-inhibit-functions
+              '((lambda (&rest _) (bound-and-true-p company-backend)))))
+(use-package flycheck-pos-tip
+  :defines flycheck-pos-tip-timeout
+  :hook (global-flycheck-mode . flycheck-pos-tip-mode)
+  :config (setq flycheck-pos-tip-timeout 30))
+
+(use-package doom-modeline
+  :hook (winum-mode . doom-modeline-mode)
+  :config
+  (setq
    doom-modeline-buffer-file-name-style 'relative-from-project
    doom-modeline-project-detection 'projectile
    doom-modeline-lsp t))
 
-(use-package hide-mode-line
-  :hook (((completion-list-mode completion-in-region-mode vterm-mode) . hide-mode-line-mode)))
-
+;; Icons
+;; NOTE: Must run `M-x all-the-icons-install-fonts', and install fonts manually on Windows
 (use-package all-the-icons
+  :if (display-graphic-p)
   :config
+  (with-no-warnings
+    ;; FIXME: Align the directory icons
+    ;; @see https://github.com/domtronn/all-the-icons.el/pull/173
+    (defun all-the-icons-icon-for-dir (dir &optional chevron padding)
+      "Format an icon for DIR with CHEVRON similar to tree based directories."
+      (let* ((matcher (all-the-icons-match-to-alist (file-name-base (directory-file-name dir)) all-the-icons-dir-icon-alist))
+             (path (expand-file-name dir))
+             (chevron (if chevron (all-the-icons-octicon (format "chevron-%s" chevron) :height 0.8 :v-adjust -0.1) ""))
+             (padding (or padding "\t"))
+             (icon (cond
+                    ((file-symlink-p path)
+                     (all-the-icons-octicon "file-symlink-directory" :height 1.0 :v-adjust 0.0))
+                    ((all-the-icons-dir-is-submodule path)
+                     (all-the-icons-octicon "file-submodule" :height 1.0 :v-adjust 0.0))
+                    ((file-exists-p (format "%s/.git" path))
+                     (format "%s" (all-the-icons-octicon "repo" :height 1.1 :v-adjust 0.0)))
+                    (t (apply (car matcher) (list (cadr matcher) :v-adjust 0.0))))))
+        (format "%s%s%s%s%s" padding chevron padding icon padding)))
+
+    (defun all-the-icons-reset ()
+      "Reset (unmemoize/memoize) the icons."
+      (interactive)
+      (dolist (f '(all-the-icons-icon-for-file
+                   all-the-icons-icon-for-mode
+                   all-the-icons-icon-for-url
+                   all-the-icons-icon-family-for-file
+                   all-the-icons-icon-family-for-mode
+                   all-the-icons-icon-family))
+        (ignore-errors
+          (memoize-restore f)
+          (memoize f)))
+      (message "Reset all-the-icons")))
+
   (add-to-list 'all-the-icons-icon-alist
-               '("\\.ipynb" all-the-icons-fileicon "jupyter" :height 1.2 :face all-the-icons-orange))
+               '("\\.go$" all-the-icons-fileicon "go" :face all-the-icons-blue))
   (add-to-list 'all-the-icons-mode-icon-alist
-               '(ein:notebooklist-mode all-the-icons-faicon "book" :face all-the-icons-orange))
+               '(go-mode all-the-icons-fileicon "go" :face all-the-icons-blue))
+  (add-to-list 'all-the-icons-mode-icon-alist
+               '(xwidget-webkit-mode all-the-icons-faicon "chrome" :v-adjust -0.1 :face all-the-icons-blue))
+  (add-to-list 'all-the-icons-mode-icon-alist
+               '(bongo-playlist-mode all-the-icons-material "playlist_play" :height 1.2 :v-adjust -0.2 :face 'all-the-icons-green))
+  (add-to-list 'all-the-icons-mode-icon-alist
+               '(bongo-library-mode all-the-icons-material "library_music" :height 1.1 :v-adjust -0.2 :face 'all-the-icons-dgreen))
+  (add-to-list 'all-the-icons-mode-icon-alist
+               '(gnus-group-mode all-the-icons-fileicon "gnu" :face 'all-the-icons-silver))
+  (add-to-list 'all-the-icons-mode-icon-alist
+               '(gnus-summary-mode all-the-icons-octicon "inbox" :height 1.0 :v-adjust 0.0 :face 'all-the-icons-orange))
+  (add-to-list 'all-the-icons-mode-icon-alist
+               '(gnus-article-mode all-the-icons-octicon "mail" :height 1.1 :v-adjust 0.0 :face 'all-the-icons-lblue))
+  (add-to-list 'all-the-icons-mode-icon-alist
+               '(message-mode all-the-icons-octicon "mail" :height 1.1 :v-adjust 0.0 :face 'all-the-icons-lblue))
+  (add-to-list 'all-the-icons-mode-icon-alist
+               '(diff-mode all-the-icons-octicon "git-compare" :v-adjust 0.0 :face all-the-icons-lred))
+  (add-to-list 'all-the-icons-mode-icon-alist
+               '(flycheck-error-list-mode all-the-icons-octicon "checklist" :height 1.1 :v-adjust 0.0 :face all-the-icons-lred))
+  (add-to-list 'all-the-icons-mode-icon-alist
+               '(elfeed-search-mode all-the-icons-faicon "rss-square" :v-adjust -0.1 :face all-the-icons-orange))
+  (add-to-list 'all-the-icons-mode-icon-alist
+               '(elfeed-show-mode all-the-icons-octicon "rss" :height 1.1 :v-adjust 0.0 :face all-the-icons-lorange))
+  (add-to-list 'all-the-icons-mode-icon-alist
+               '(newsticker-mode all-the-icons-faicon "rss-square" :v-adjust -0.1 :face all-the-icons-orange))
+  (add-to-list 'all-the-icons-mode-icon-alist
+               '(newsticker-treeview-mode all-the-icons-faicon "rss-square" :v-adjust -0.1 :face all-the-icons-orange))
+  (add-to-list 'all-the-icons-mode-icon-alist
+               '(newsticker-treeview-list-mode all-the-icons-octicon "rss" :height 1.1 :v-adjust 0.0 :face all-the-icons-orange))
+  (add-to-list 'all-the-icons-mode-icon-alist
+               '(newsticker-treeview-item-mode all-the-icons-octicon "rss" :height 1.1 :v-adjust 0.0 :face all-the-icons-lorange))
+  (add-to-list 'all-the-icons-icon-alist
+               '("\\.[bB][iI][nN]$" all-the-icons-octicon "file-binary" :v-adjust 0.0 :face all-the-icons-yellow))
+  (add-to-list 'all-the-icons-icon-alist
+               '("\\.c?make$" all-the-icons-fileicon "gnu" :face all-the-icons-dorange))
+  (add-to-list 'all-the-icons-icon-alist
+               '("\\.conf$" all-the-icons-octicon "settings" :v-adjust 0.0 :face all-the-icons-yellow))
+  (add-to-list 'all-the-icons-icon-alist
+               '("\\.toml$" all-the-icons-octicon "settings" :v-adjust 0.0 :face all-the-icons-yellow))
+  (add-to-list 'all-the-icons-mode-icon-alist
+               '(conf-mode all-the-icons-octicon "settings" :v-adjust 0.0 :face all-the-icons-yellow))
+  (add-to-list 'all-the-icons-mode-icon-alist
+               '(conf-space-mode all-the-icons-octicon "settings" :v-adjust 0.0 :face all-the-icons-yellow))
+  (add-to-list 'all-the-icons-mode-icon-alist
+               '(forge-topic-mode all-the-icons-alltheicon "git" :face all-the-icons-blue))
+  (add-to-list 'all-the-icons-icon-alist
+               '("\\.xpm$" all-the-icons-octicon "file-media" :v-adjust 0.0 :face all-the-icons-dgreen))
+  (add-to-list 'all-the-icons-mode-icon-alist
+               '(help-mode all-the-icons-faicon "info-circle" :height 1.1 :v-adjust -0.1 :face all-the-icons-purple))
+  (add-to-list 'all-the-icons-mode-icon-alist
+               '(helpful-mode all-the-icons-faicon "info-circle" :height 1.1 :v-adjust -0.1 :face all-the-icons-purple))
+  (add-to-list 'all-the-icons-mode-icon-alist
+               '(Info-mode all-the-icons-faicon "info-circle" :height 1.1 :v-adjust -0.1))
+  (add-to-list 'all-the-icons-icon-alist
+               '("NEWS$" all-the-icons-faicon "newspaper-o" :height 0.9 :v-adjust -0.2))
+  (add-to-list 'all-the-icons-icon-alist
+               '("Cask\\'" all-the-icons-fileicon "elisp" :height 1.0 :v-adjust -0.2 :face all-the-icons-blue))
+  (add-to-list 'all-the-icons-mode-icon-alist
+               '(cask-mode all-the-icons-fileicon "elisp" :height 1.0 :v-adjust -0.2 :face all-the-icons-blue))
+  (add-to-list 'all-the-icons-icon-alist
+               '(".*\\.ipynb\\'" all-the-icons-fileicon "jupyter" :height 1.2 :face all-the-icons-orange))
+  (add-to-list 'all-the-icons-mode-icon-alist
+               '(ein:notebooklist-mode all-the-icons-faicon "book" :face all-the-icons-lorange))
   (add-to-list 'all-the-icons-mode-icon-alist
                '(ein:notebook-mode all-the-icons-fileicon "jupyter" :height 1.2 :face all-the-icons-orange))
   (add-to-list 'all-the-icons-mode-icon-alist
-               '(ein:notebook-multilang-mode all-the-icons-fileicon "jupyter" :height 1.2 :face all-the-icons-orange))
+               '(ein:notebook-multilang-mode all-the-icons-fileicon "jupyter" :height 1.2 :face all-the-icons-dorange))
   (add-to-list 'all-the-icons-icon-alist
-               '("\\.epub$" all-the-icons-faicon "book" :face all-the-icons-green))
+               '("\\.epub\\'" all-the-icons-faicon "book" :height 1.0 :v-adjust -0.1 :face all-the-icons-green))
   (add-to-list 'all-the-icons-mode-icon-alist
-               '(nov-mode all-the-icons-faicon "book" :face all-the-icons-green))
+               '(nov-mode all-the-icons-faicon "book" :height 1.0 :v-adjust -0.1 :face all-the-icons-green))
   (add-to-list 'all-the-icons-mode-icon-alist
-               '(gfm-mode all-the-icons-octicon "markdown" :face all-the-icons-blue)))
+               '(gfm-mode all-the-icons-octicon "markdown" :face all-the-icons-lblue)))
+
 
 ;; Themes
 (use-package composite ; Use symbols in fonts (requires Emacs >= 27)
-	     :disabled
+	:disabled
   :ensure nil
   :if (version<= "27.0" emacs-version)
   :defer t
@@ -908,12 +930,14 @@ If ARG is a numerical prefix argument then specify the indentation level."
 (use-package hide-mode-line
   :hook ((neotree-mode
           treemacs-mode
+          vterm-mode
           completion-list-mode
           completion-in-region-mode) . hide-mode-line-mode))
 
 ;;; Support Emojis in Emacs
 (use-package emojify
-  :defer 5
+  :diminish
+  :defer t
   :config
   (setq emojify-display-style (if (eq system-type 'gnu/linux) 'image 'unicode)
         emojify-company-tooltips-p t)
@@ -957,7 +981,7 @@ If ARG is a numerical prefix argument then specify the indentation level."
     (add-to-list 'winum-assign-functions #'winum-assign-0-to-neotree)
     (winum-mode)))
 (use-package window
-	     :straight nil
+	:straight nil
   :ensure nil
   :preface (provide 'window)
   :custom
@@ -979,18 +1003,82 @@ If ARG is a numerical prefix argument then specify the indentation level."
       (window-height   . 0.5))
      ("." nil (reusable-frames . visible)))))
 
+
+(use-package ibuffer
+  :straight nil
+  :ensure nil
+  :functions (all-the-icons-icon-for-file
+              all-the-icons-icon-for-mode
+              all-the-icons-auto-mode-match?
+              all-the-icons-faicon
+              my-ibuffer-find-file)
+  :commands (ibuffer-find-file
+             ibuffer-current-buffer)
+  :bind ("C-x C-b" . ibuffer)
+  :init (setq ibuffer-filter-group-name-face '(:inherit (font-lock-string-face bold)))
+  :config
+  ;; Display buffer icons on GUI
+  (when (and (display-graphic-p)
+             (require 'all-the-icons nil t))
+    ;; For alignment, the size of the name field should be the width of an icon
+    (define-ibuffer-column icon (:name "  ")
+      (let ((icon (if (and (buffer-file-name)
+                           (all-the-icons-auto-mode-match?))
+                      (all-the-icons-icon-for-file (file-name-nondirectory (buffer-file-name)) :v-adjust -0.05)
+                    (all-the-icons-icon-for-mode major-mode :v-adjust -0.05))))
+        (if (symbolp icon)
+            (setq icon (all-the-icons-faicon "file-o" :face 'all-the-icons-dsilver :height 0.8 :v-adjust 0.0))
+          icon)))
+
+    (setq ibuffer-formats `((mark modified read-only locked
+                                  ;; Here you may adjust by replacing :right with :center or :left
+                                  ;; According to taste, if you want the icon further from the name
+                                  " " (icon 2 2 :left :elide)
+                                  ,(propertize " " 'display `(space :align-to 8))
+                                  (name 18 18 :left :elide)
+                                  " " (size 9 -1 :right)
+                                  " " (mode 16 16 :left :elide) " " filename-and-process)
+                            (mark " " (name 16 -1) " " filename))))
+
+  (with-eval-after-load 'counsel
+    (defun my-ibuffer-find-file ()
+      (interactive)
+      (let ((default-directory (let ((buf (ibuffer-current-buffer)))
+                                 (if (buffer-live-p buf)
+                                     (with-current-buffer buf
+                                       default-directory)
+                                   default-directory))))
+        (counsel-find-file default-directory)))
+    (advice-add #'ibuffer-find-file :override #'my-ibuffer-find-file)))
+;; Group ibuffer's list by project root
+(use-package ibuffer-projectile
+  :functions all-the-icons-octicon ibuffer-do-sort-by-alphabetic
+  :hook ((ibuffer . (lambda ()
+                      (ibuffer-projectile-set-filter-groups)
+                      (unless (eq ibuffer-sorting-mode 'alphabetic)
+                        (ibuffer-do-sort-by-alphabetic)))))
+  :config
+  (setq ibuffer-projectile-prefix
+        (if (display-graphic-p)
+            (concat
+             (all-the-icons-octicon "file-directory"
+                                    :face ibuffer-filter-group-name-face
+                                    :v-adjust -0.05
+                                    :height 1.25)
+             " ")
+          "Project: ")))
 ;; Files
 (setq backup-directory-alist
-`((".*" . ,(no-littering-expand-var-file-name "backup/"))))
+      `((".*" . ,(no-littering-expand-var-file-name "backup/"))))
 (setq auto-save-file-name-transforms
-`((".*" ,(no-littering-expand-var-file-name "auto-save/") t)))
+      `((".*" ,(no-littering-expand-var-file-name "auto-save/") t)))
 (setq kept-old-versions 2
-kept-new-versions 6
-backup-by-copying t
-require-final-newline t
-delete-old-versions t
-version-control t
-large-file-warning-threshold (* 20 1000 1000))
+      kept-new-versions 6
+      backup-by-copying t
+      require-final-newline t
+      delete-old-versions t
+      version-control t
+      large-file-warning-threshold (* 20 1000 1000))
 
 (setq vc-follow-symlinks t)
 (setq dired-dwim-target t ; "Enable side-by-side `dired` buffer targets."
@@ -1007,7 +1095,7 @@ large-file-warning-threshold (* 20 1000 1000))
 (setq uniquify-buffer-name-style 'forward)
 
 (use-package sh-mode
-	     :straight nil
+  :straight nil
   :ensure nil
   :mode
   (("\\.zshrc" . sh-mode)
@@ -1018,7 +1106,7 @@ large-file-warning-threshold (* 20 1000 1000))
    ("bash_completion$" . sh-mode)))
 
 (use-package recentf
-	     :straight nil
+	:straight nil
   :requires no-littering
   :defer t
   :ensure nil
@@ -1035,12 +1123,6 @@ large-file-warning-threshold (* 20 1000 1000))
   (add-to-list 'recentf-exclude "COMMIT_EDITMSG\\'")
   (add-to-list 'recentf-exclude no-littering-var-directory)
   (add-to-list 'recentf-exclude no-littering-etc-directory))
-
-(use-package eldoc
-	     :straight nil
-  :ensure nil
-  :delight
-  :hook ((ielm-mode eval-expression-minibuffer-setup) . eldoc-mode))
 
 (use-package vterm ; https://github.com/akermu/emacs-libvterm
   :commands (vterm vterm-other-window)
@@ -1079,22 +1161,21 @@ large-file-warning-threshold (* 20 1000 1000))
              tempo-template-adoc-emphasis
              adoc-demote
              adoc-promote)
-  :mode ("\\.adoc?\\'" . adoc-mode))
+  :mode "\\.adoc?\\'")
 
 ;; Language Files for Elixir
 (use-package po-mode
-  :mode ("\\.pot?\\'" . po-mode))
+  :mode "\\.pot?\\'")
 
-(require '+org)
 
 (use-package linux
-	     :straight nil
+  :straight nil
   :ensure nil
   :load-path "vendor/"
   :if (eq system-type 'gnu/linux))
 
 (use-package osx
-	     :straight nil
+  :straight nil
   :ensure nil
   :load-path "vendor/"
   :if (eq system-type 'darwin))
@@ -1106,6 +1187,8 @@ large-file-warning-threshold (* 20 1000 1000))
 (require 'golang)
 (require 'write)
 
+(require '+org)
+(require '+dired)
 (require '+completion)
 (require 'deprecate)
 (require '+keybindings)
@@ -1131,6 +1214,9 @@ large-file-warning-threshold (* 20 1000 1000))
 
       ;; Window Tweaks
       window-resize-pixelwise t
+
+      ;; Inhibit resizing frame
+      frame-inhibit-implied-resize t
       frame-resize-pixelwise t
 
       find-file-visit-truename t ; resolve symlinks when opening files
@@ -1145,7 +1231,7 @@ large-file-warning-threshold (* 20 1000 1000))
       make-backup-files nil ; don't create backup~ files
 
       initial-scratch-message nil
-      ;; initial-major-mode 'fundamental-mode
+      initial-major-mode 'org-mode
 
       load-prefer-newer t ; Prevent loading old code
 
@@ -1165,9 +1251,6 @@ large-file-warning-threshold (* 20 1000 1000))
       history-delete-duplicates t ; Get rid of duplicates in minibuffer history
       ;; keep the point out of the minibuffer
       minibuffer-prompt-properties '(read-only t point-entered minibuffer-avoid-prompt face minibuffer-prompt))
-
-;; relegate tooltips to echo area only
-(if (boundp 'tooltip-mode) (tooltip-mode -1))
 
 ;; Handle ANSI codes in compilation buffer
 (add-hook 'compilation-filter-hook #'doom|apply-ansi-color-to-compilation-buffer)

@@ -54,19 +54,8 @@
                             (sequence "|" "✘ CANCELED(c)"))))
 
 (use-package evil-org
-  :hook (org-mode . evil-org-mode)
-  :config
-  ;; (evil-org-use-additional-insert t)
-  (add-hook 'evil-org-mode-hook
-            (lambda ()
-              (evil-org-key-theme '(textobjects
-                                    navigation
-                                    insert))))
-
-  ;; TODO this rebinds SPC
-  ;; (require 'evil-org-agenda)
-  ;; (evil-org-agenda-set-keys)
-  )
+  :hook ((org-mode . evil-org-mode)
+         (evil-org-mode . evil-org-set-key-theme)))
 
 (use-package ox-pandoc
   :after org)

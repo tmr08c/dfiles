@@ -2,11 +2,46 @@
 ;;; Commentary:
 
 ;;; Code:
+;; Speed up startup
+(defvar default-file-name-handler-alist file-name-handler-alist)
+(setq file-name-handler-alist nil)
+(setq gc-cons-threshold 40000000)
+
+(add-hook 'emacs-startup-hook
+          (lambda ()
+            "Restore defalut values after startup."
+            (setq file-name-handler-alist default-file-name-handler-alist)
+            (setq gc-cons-threshold 800000)
+
+            ;; GC automatically while unfocusing the frame
+            ;; `focus-out-hook' is obsolete since 27.1
+            (if (boundp 'after-focus-change-function)
+                (add-function :after after-focus-change-function
+                              (lambda ()
+                                (unless (frame-focus-state)
+                                  (garbage-collect))))
+              (if (version<= "27.0" emacs-version)
+                  (add-hook 'after-focus-change-function 'garbage-collect)
+                (add-hook 'focus-out-hook 'garbage-collect)))
+
+            ;; Avoid GCs while using `ivy'/`counsel'/`swiper' and `helm', etc.
+            ;; @see http://bling.github.io/blog/2016/01/18/why-are-you-changing-gc-cons-threshold/
+            (defun my-minibuffer-setup-hook ()
+              (setq gc-cons-threshold most-positive-fixnum))
+
+            (defun my-minibuffer-exit-hook ()
+              (setq gc-cons-threshold 800000))
+
+            (add-hook 'minibuffer-setup-hook #'my-minibuffer-setup-hook)
+            (add-hook 'minibuffer-exit-hook #'my-minibuffer-exit-hook)))
 
 ;; Prevent the glimpse of un-styled Emacs by setting these early.
-(add-to-list 'default-frame-alist '(tool-bar-lines . 0))
+;; (add-to-list 'default-frame-alist '(tool-bar-lines . 0))
 ;; (add-to-list 'default-frame-alist '(menu-bar-lines . 0)) ;; I want the top level menu, it's good for discovery
-(add-to-list 'default-frame-alist '(vertical-scroll-bars))
+;; (add-to-list 'default-frame-alist '(vertical-scroll-bars))
+
+(setq frame-title-format '("Emacs |> %b")
+      icon-title-format frame-title-format)
 
 (when (fboundp 'set-charset-priority)
   (set-charset-priority 'unicode))     ; pretty
@@ -38,47 +73,23 @@
   (expand-file-name "config.el" user-emacs-directory)
   "The file path of your literate config file.")
 
-
-;;; Get package repos configured
-;; (require 'package)
-;; (add-to-list 'package-archives '("melpa-stable" . "https://stable.melpa.org/packages/"))
-;; (add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/"))
-;; (add-to-list 'package-archives '("org" . "https://orgmode.org/elpa/") t)
-;; (setq package-archive-priorities '(("org" . 4)
-;;                                    ("melpa" . 3)
-;;                                    ("melpa-stable" . 2)
-;;                                    ("gnu" . 1)))
-
-;; (unless package--initialized
-;;   (package-initialize))
-
 (straight-use-package 'use-package)
-;; (unless (package-installed-p 'use-package)
-;;   (package-refresh-contents)
-;;   (package-install 'use-package))
 
 (setq use-package-compute-statistics t
-      ;; use-package-always-ensure t
-      ;; use-package-always-defer t
-      use-package-verbose t
-      use-package-minimum-reported-time 0.01)
+      use-package-minimum-reported-time 0.05)
 
 (eval-when-compile
   ;;; Add load path for vendor directory
   (add-to-list 'load-path "~/.emacs.d/vendor/")
   (require 'use-package))
 
-(use-package quelpa
-  :config
-  (setq quelpa-update-melpa-p nil))
-
 (use-package hydra)
 (use-package hydra-posframe
   :straight (hydra-posframe :type git :host github :repo "Ladicle/hydra-posframe")
-  :hook (after-init . hydra-posframe-enable))
+  :hook (after-init . hydra-posframe-mode))
 (use-package use-package-hydra
-  :after hydra
-  :demand)
+  :after hydra)
+
 (use-package use-package-ensure-system-package
   :demand
   :functions use-package-ensure-system-package-exists?
@@ -95,12 +106,6 @@
   (setq no-littering-var-directory (expand-file-name "var/" user-emacs-directory)
         no-littering-etc-directory (expand-file-name "etc/" user-emacs-directory)
         custom-file (no-littering-expand-var-file-name "custom.el")))
-
-(use-package paradox
-  :disabled
-  :config
-  (setq paradox-execute-asynchronously t
-        paradox-automatically-star t))
 
 (when (file-readable-p (concat user-emacs-directory "config.el"))
   (load-file (concat user-emacs-directory "config.el")))

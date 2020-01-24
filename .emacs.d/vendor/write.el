@@ -1,3 +1,9 @@
+(use-package mixed-pitch
+  :diminish
+  :hook
+  ;; If you want it in all text modes:
+  (text-mode . mixed-pitch-mode))
+
 (use-package google-translate
   :commands (spacemacs/set-google-translate-languages
              google-translate-query-translate

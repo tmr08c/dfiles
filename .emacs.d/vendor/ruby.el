@@ -87,22 +87,13 @@
              ruby-refactor-extract-local-variable
              ruby-refactor-extract-constant
              ruby-refactor-extract-to-let))
-(use-package inflections) ; required by projectile-rails
+(use-package inflections)
 (use-package projectile-rails
-	:requires projectile inflections
+  :disabled
   :diminish
-  :config
-  (projectile-rails-global-mode))
+  :hook
+  (projectile-mode . projectile-rails-global-mode))
 
-;; (use-package ruby-test-mode
-;;   :commands (ruby-test-run
-;;              ruby-test-run-at-point
-;;              ruby-test-toggle-between-implementation-and-specification))
-;; (use-package minitest
-;;   :commands (minitest-verify-all
-;;              minitest-verify
-;;              minitest-rerun
-;;              minitest-verify-single))
 (use-package feature-mode
   :mode (("\\.feature\\'" . feature-mode)))
 
