@@ -1255,3 +1255,4 @@ If ARG is a numerical prefix argument then specify the indentation level."
 
 (load "~/.emacs.secrets" t)
 (provide 'config)
+;;; config.el ends here
