@@ -1,6 +1,8 @@
 ;;; config.el --- -*- lexical-binding: t; -*-
 ;;; Commentary:
 ;;;
+;;; TODO try outshine and bicycle for hide/show in prog mode
+;;; TODO try dired-sidebar instead of neotree/treemacs
 ;;;
 ;;; TODO popups need to be controlled to use the same area of screen
 ;;; TODO word wrap in completion buffers by default
@@ -712,15 +714,14 @@ If ARG is a numerical prefix argument then specify the indentation level."
   :diminish
   :hook (after-init . global-flycheck-mode)
   :config
-  (setq
-   flycheck-global-modes '(not org-mode text-mode outline-mode fundamental-mode
-                               shell-mode eshell-mode term-mode vterm-mode)
-   flycheck-rubocop-lint-only t
-   flycheck-idle-change-delay 1.75
-   flycheck-indication-mode 'right-fringe
-   flycheck-check-syntax-automatically '(save idle-change mode-enabled)
-   flycheck-disabled-checkers '(ruby-rubylint
-                                emacs-lisp-checkdoc))
+  (setq flycheck-global-modes '(not org-mode text-mode outline-mode fundamental-mode
+                                    shell-mode eshell-mode term-mode vterm-mode)
+        flycheck-rubocop-lint-only t
+        flycheck-idle-change-delay 1.75
+        flycheck-indication-mode 'right-fringe
+        flycheck-check-syntax-automatically '(save idle-change mode-enabled))
+  (setq-default flycheck-disabled-checkers '(ruby-rubylint
+                                             emacs-lisp-checkdoc))
   ;; Prettify fringe style
   (when (fboundp 'define-fringe-bitmap)
     (define-fringe-bitmap 'flycheck-fringe-bitmap-double-arrow
