@@ -1,3 +1,8 @@
+;;; lisp.el --- -*- lexical-binding: t; -*-
+;;; Commentary:
+
+;;; Code:
+
 
 ;; Emacs Lisp (elisp)
 (use-package ielm)
@@ -17,3 +22,4 @@
   :hook (emacs-lisp-mode . flycheck-cask-setup))
 
 (provide 'lisp)
+;;; lisp.el ends here

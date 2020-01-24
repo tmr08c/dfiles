@@ -1,3 +1,8 @@
+;;; golang.el --- -*- lexical-binding: t; -*-
+;;; Commentary:
+
+;;; Code:
+
 (use-package go-mode
   :mode "\\.go\\'")
 (use-package go-eldoc
@@ -21,3 +26,4 @@
   :commands go-impl)
 
 (provide 'golang)
+;;; golang.el ends here

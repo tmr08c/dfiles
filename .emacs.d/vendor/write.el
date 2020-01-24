@@ -1,3 +1,8 @@
+;;; write.el --- -*- lexical-binding: t; -*-
+;;; Commentary:
+
+;;; Code:
+
 (use-package mixed-pitch
   :diminish
   :hook
@@ -82,3 +87,4 @@ For instance pass En as source for English."
          (markdown-mode . conditionally-load-default-settings)))
 
 (provide 'write)
+;;; write.el ends here

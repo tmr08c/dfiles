@@ -59,5 +59,4 @@
 
 
 (provide 'osx)
-
 ;;; osx.el ends here

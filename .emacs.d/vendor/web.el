@@ -1,3 +1,8 @@
+;;; web.el --- -*- lexical-binding: t; -*-
+;;; Commentary:
+
+;;; Code:
+
 (use-package add-node-modules-path
   :disabled
   :hook ((js2-mode js-mode json-mode typescript-mode elm-mode) . add-node-modules-path))
@@ -89,3 +94,4 @@
                    :post-handlers '(("[d-3]||\n[i]" "RET") ("| " "SPC")))))
 
 (provide 'web)
+;;; web.el ends here

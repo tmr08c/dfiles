@@ -81,3 +81,4 @@
          . treemacs-magit--schedule-update))
 
 (provide 'deprecate)
+;;; deprecate.el ends here

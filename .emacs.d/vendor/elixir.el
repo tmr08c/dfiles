@@ -1,3 +1,8 @@
+;;; elixir.el --- -*- lexical-binding: t; -*-
+;;; Commentary:
+
+;;; Code:
+
 ;; Erlang / Elixir
 (use-package erlang)
 (use-package elixir-mode
@@ -57,3 +62,4 @@
 ;;               'spacemacs//elixir-enable-compilation-checking)))
 
 (provide 'elixir)
+;;; elixir.el ends here

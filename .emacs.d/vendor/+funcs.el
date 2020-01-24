@@ -1,4 +1,7 @@
-;;; -*- lexical-binding: t; -*-
+;;; +funcs.el --- -*- lexical-binding: t; -*-
+;;; Commentary:
+
+;;; Code:
 
 (defmacro js|global-keymap (&rest bindings)
   "Add global BINDINGS as key bindings under `space-leader-def`.
@@ -247,3 +250,4 @@ Unlike `eval-defun', this does not go to topmost function."
     (ansi-color-apply-on-region compilation-filter-start (point))))
 
 (provide '+funcs)
+;;; +funcs.el ends here

@@ -1,4 +1,7 @@
-;;; -*- lexical-binding: t; -*-
+;;;; +keybindings.el --- -*- lexical-binding: t; -*-
+;;; Commentary:
+
+;;; Code:
 
 (general-define-key :keymaps 'global
                     [remap describe-function] #'helpful-callable
@@ -956,7 +959,7 @@
                     "rr" 'lsp-rename)
 
 (defun js|neotree-keybindings ()
-  "Define keybindings when working in Neotree"
+  "Define keybindings when working in Neotree."
   (general-nmap neotree-mode-map
     "RET" 'neotree-enter
     "TAB" 'neotree-stretch-toggle

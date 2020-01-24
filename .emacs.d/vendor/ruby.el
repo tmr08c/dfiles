@@ -1,10 +1,10 @@
+;;; ruby.el --- -*- lexical-binding: t; -*-
+;;; Commentary:
+
+;;; Code:
 
 (use-package ruby-mode
   :ensure nil
-  ;; :ensure-system-package
-  ;; ((ruby-lint   . "gem install ruby-lint")
-  ;;  (ripper-tags . "gem install ripper-tags")
-  ;;  (pry . "gem install pry"))
   :hook (ruby-mode . flycheck-mode)
   :config
   (add-hook 'ruby-mode-hook
@@ -98,3 +98,4 @@
   :mode (("\\.feature\\'" . feature-mode)))
 
 (provide 'ruby)
+;;; ruby.el ends here
