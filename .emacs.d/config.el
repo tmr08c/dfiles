@@ -322,14 +322,12 @@ _q_ quit            _c_ create          _<_ previous
                    (lsp-deferred))))
   :config
   (require 'lsp-clients)
-  (setq
-   lsp-auto-guess-root t
-   lsp-enable-snippet t
-   lsp-prefer-flymake nil
-   lsp-enable-indentation t
-   lsp-before-save-edits t
-   lsp-keep-workspace-alive nil
-   flymake-fringe-indicator-position 'right-fringe)
+  (setq lsp-auto-guess-root t
+        lsp-enable-snippet t
+        lsp-prefer-flymake nil
+        lsp-enable-indentation t
+        lsp-before-save-edits t
+        lsp-keep-workspace-alive nil)
   (add-to-list 'exec-path "~/code/github/elixir-ls/release"))
 ;; Ivy integration
 (use-package lsp-ivy
