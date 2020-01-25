@@ -588,24 +588,6 @@ Return a list of strings as the completion candidates."
   :config
   (js|keymap-for-mode 'json-mode
                       "hp" 'jsons-print-path))
-(use-package json-reformat
-  :hook json-mode
-  :commands (spacemacs/json-reformat-code)
-  :config
-  (defun spacemacs/json-reformat-dwim (arg &optional start end)
-    "Reformat the whole buffer of the active region.
-If ARG is non-nil (universal prefix argument) then try to decode the strings.
-If ARG is a numerical prefix argument then specify the indentation level."
-    (interactive "P\nr")
-    (let ((json-reformat:indent-width js-indent-level)
-          (json-reformat:pretty-string? nil))
-      (cond
-       ((numberp arg) (setq json-reformat:indent-width arg))
-       (arg (setq json-reformat:pretty-string? t)))
-      (if (equal start end)
-          (save-excursion (json-reformat-region (point-min) (point-max)))
-        (json-reformat-region start end)))))
-
 
 (use-package dockerfile-mode
   :mode "Dockerfile.*\\'")
@@ -619,15 +601,9 @@ If ARG is a numerical prefix argument then specify the indentation level."
         TeX-parse-self t)
   (setq-default TeX-master nil)
   (add-hook 'TeX-mode-hook #'visual-line-mode)
-  (add-hook 'TeX-mode-hook #'rainbow-delimiters-mode))
-(use-package latex-preview-pane)
-(use-package company-auctex)
-
-;; Python
-(use-package python-mode
-  :mode "\\.py\\'")
-(use-package anaconda-mode
-  :hook python-mode)
+  (add-hook 'TeX-mode-hook #'rainbow-delimiters-mode)
+  (use-package latex-preview-pane)
+  (use-package company-auctex))
 
 ;; C (via irony-mode)
 (use-package ccls
