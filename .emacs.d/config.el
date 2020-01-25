@@ -230,8 +230,6 @@ _q_ quit            _c_ create          _<_ previous
   (add-to-list 'company-backends 'company-emoji))
 (use-package company-prescient
   :init (company-prescient-mode 1))
-;; (use-package company-posframe
-;;   :hook (company-mode . company-posframe-mode))
 (use-package company-box
   :diminish
   :functions (my-company-box--make-line
@@ -328,6 +326,9 @@ _q_ quit            _c_ create          _<_ previous
         lsp-enable-snippet t
         lsp-prefer-flymake nil
         lsp-enable-indentation t
+        lsp-enable-xref t
+        lsp-enable-imenu t
+        ;; lsp-enable-completion-at-point t
         lsp-before-save-edits t
         lsp-keep-workspace-alive nil)
   (add-to-list 'exec-path "~/code/github/elixir-ls/release"))
@@ -512,45 +513,8 @@ Return a list of strings as the completion candidates."
   :disabled
   :bind ([remap fill-paragraph] . #'unfill-toggle))
 
-(use-package outshine
-  :hook (prog-mode . outshine-mode))
-(use-package hideshow
-  :functions hs-toggle-hiding
-  :ensure nil
-  :delight
-  :config
-  (progn
-    (defun toggle-fold ()
-      (interactive)
-      (save-excursion
-        (end-of-line)
-        (hs-toggle-hiding))))
-  :hook (prog-mode . hs-minor-mode))
-
-(use-package hide-comnt
-  :commands hide/show-comments-toggle)
-
-(use-package yasnippet
-  :disabled
-  :hook ((prog-mode snippet-mode) . yas-minor-mode-on)
-  :commands
-  (yas-minor-mode yas-minor-mode-on yas-expand yas-expand-snippet
-                  yas-lookup-snippet yas-insert-snippet yas-new-snippet
-                  yas-visit-snippet-file snippet-mode)
-  :config
-  (setq yas-also-auto-indent-first-line t
-        yas-triggers-in-field t) ; Allow nested snippets
-
-  ;; fix an error caused by smartparens interfering with yasnippet bindings
-  (advice-add #'yas-expand :before #'sp-remove-active-pair-overlay)
-
-  ;; Exit snippets on ESC from normal mode
-  (add-hook '+evil-esc-hook #'yas-exit-all-snippets))
-(use-package yasnippet-snippets
-  :after yasnippet)
-
 (use-package hl-todo
-  :defer 10
+  :defer t
   :init (global-hl-todo-mode))
 
 (use-package highlight-numbers

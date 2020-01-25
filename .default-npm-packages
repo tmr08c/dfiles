@@ -1,7 +1,10 @@
+@angular/language-server
+@angular/language-service@next
 @elm-tooling/elm-language-server
 @emberwatch/ember-language-server
 bash-language-server
 bs-platform
+dockerfile-language-server-nodejs
 elm
 elm-format
 elm-oracle
@@ -33,8 +36,11 @@ tslint
 typescript
 typescript-formatter
 typescript-language-server
+vim-language-server
 vscode-css-languageserver-bin
 vscode-html-languageserver-bin
+vscode-json-languageserver
 vue-language-server
 write-good
+yaml-language-server
 zeal-user-contrib
