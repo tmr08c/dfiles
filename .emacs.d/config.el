@@ -1,6 +1,7 @@
 ;;; config.el --- Justin's Emacs config -*- lexical-binding: t; -*-
 ;;; Commentary:
 
+;;; TODO evil-lion
 ;;; TODO try outshine and bicycle for hide/show in prog mode
 ;;; TODO try dired-sidebar instead of neotree/treemacs
 ;;; TODO take over window-purpose from spacemacs
