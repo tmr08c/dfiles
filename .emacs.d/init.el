@@ -107,6 +107,88 @@
         no-littering-etc-directory (expand-file-name "etc/" user-emacs-directory)
         custom-file (no-littering-expand-var-file-name "custom.el")))
 
+(use-package exec-path-from-shell
+  :diminish
+  :config
+  (setq exec-path-from-shell-arguments '("-l"))
+  (exec-path-from-shell-initialize))
+
+(use-package which-key
+  :defer
+  :diminish
+  :config
+  (setq which-key-sort-order 'which-key-prefix-then-key-order
+        which-key-sort-uppercase-first nil
+        which-key-add-column-padding 1
+        which-key-max-display-columns nil
+        which-key-min-display-lines 6)
+  (which-key-setup-side-window-bottom)
+  (which-key-mode))
+
+(use-package evil
+  :init (setq evil-want-C-u-scroll t
+              evil-want-integration t
+              evil-want-keybinding nil) ; This MUST be in init.
+  :config
+  (setq evil-want-visual-char-semi-exclusive t
+        evil-want-Y-yank-to-eol t
+        evil-want-fine-undo t
+        evil-shift-width 2
+        evil-magic t
+        evil-echo-state t
+        evil-search-module 'evil-search
+        evil-indent-convert-tabs t
+        evil-ex-search-vim-style-regexp t
+        evil-ex-substitute-global t
+        evil-ex-visual-char-range t  ; column range for ex commands
+        evil-insert-skip-empty-lines t
+        evil-mode-line-format 'nil
+        evil-respect-visual-line-mode t
+        ;; more vim-like behavior
+        evil-symbol-word-search t
+        ;; don't activate mark on shift-click
+        shift-select-mode nil
+        ;; cursor appearance
+        ;; evil-default-cursor '+evil-default-cursor
+        evil-normal-state-cursor 'box
+        ;; evil-emacs-state-cursor  '(box +evil-emacs-cursor)
+        evil-insert-state-cursor 'bar
+        evil-visual-state-cursor 'hollow)
+  (fset 'evil-visual-update-x-selection 'ignore)
+
+  ;; Disable Evil for the states below
+  (evil-set-initial-state 'Custom-mode 'emacs)
+
+  (defun +evil|update-shift-width ()
+    (setq evil-shift-width tab-width))
+  (add-hook 'after-change-major-mode-hook #'+evil|update-shift-width t)
+
+  (evil-mode 1))
+
+(use-package general
+  :functions space-leader-def
+  :init
+  (setq general-override-states '(insert
+                                  emacs
+                                  hybrid
+                                  normal
+                                  visual
+                                  motion
+                                  operator
+                                  replace))
+  :config
+  (general-auto-unbind-keys)
+  (general-create-definer space-leader-def
+    :prefix "SPC"
+    :non-normal-prefix "C-SPC")
+  (general-evil-setup)
+  (general-vmap "," (general-simulate-key "SPC m"))
+  (general-nmap "," (general-simulate-key "SPC m")))
+
+
+
+(require '+funcs)
+
 (when (file-readable-p (concat user-emacs-directory "config.el"))
   (load-file (concat user-emacs-directory "config.el")))
 

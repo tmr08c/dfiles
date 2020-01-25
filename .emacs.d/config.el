@@ -1,101 +1,40 @@
-;;; config.el --- -*- lexical-binding: t; -*-
+;;; config.el --- Justin's Emacs config -*- lexical-binding: t; -*-
 ;;; Commentary:
-;;;
+
 ;;; TODO try outshine and bicycle for hide/show in prog mode
 ;;; TODO try dired-sidebar instead of neotree/treemacs
-;;;
+;;; TODO take over window-purpose from spacemacs
 ;;; TODO popups need to be controlled to use the same area of screen
 ;;; TODO word wrap in completion buffers by default
 ;;; TODO no line numbers in completion buffers
 ;;; TODO look into emacs-quickrun (run commands quickly)
-;;;
+
 ;;; Code:
-
-
-(require '+funcs)
 
 (defvar +completion-engine 'ivy
   "Setting to control whether to use helm or ivy.")
+(if (eq +completion-engine 'helm)
+    (require '+helm)
+  (require '+ivy))
 
-(use-package exec-path-from-shell
-  :diminish
-  :config
-  (setq exec-path-from-shell-arguments '("-l"))
-  (exec-path-from-shell-initialize))
+(if (eq system-type 'darwin)
+    (require 'osx)
+  (require 'linux))
 
-(use-package which-key
-  :defer 1
-  :diminish
-  :config
-  (setq which-key-sort-order 'which-key-prefix-then-key-order
-        which-key-sort-uppercase-first nil
-        which-key-add-column-padding 1
-        which-key-max-display-columns nil
-        which-key-min-display-lines 6)
-  (which-key-setup-side-window-bottom)
-  (which-key-mode))
+(require 'web)
+(require 'ember)
+(require 'ruby)
+(require 'elixir)
+(require 'golang)
+(require 'write)
 
-(use-package general
-  :after evil
-  :demand
-  :functions space-leader-def
-  :init
-  (setq general-override-states '(insert
-                                  emacs
-                                  hybrid
-                                  normal
-                                  visual
-                                  motion
-                                  operator
-                                  replace))
-  :config
-  (general-auto-unbind-keys)
-  (general-create-definer space-leader-def
-    :prefix "SPC"
-    :non-normal-prefix "C-SPC")
-  (general-evil-setup)
-  (general-vmap "," (general-simulate-key "SPC m"))
-  (general-nmap "," (general-simulate-key "SPC m")))
+(require '+company)
+(require '+org)
+(require '+dired)
+(require 'deprecate)
+(require '+keybindings)
 
-(use-package evil
-  :demand
-  :init (setq evil-want-C-u-scroll t
-              evil-want-integration t
-              evil-want-keybinding nil) ; This MUST be in init.
-  :config
-  (setq evil-want-visual-char-semi-exclusive t
-        evil-want-Y-yank-to-eol t
-        evil-want-fine-undo t
-        evil-shift-width 2
-        evil-magic t
-        evil-echo-state t
-        evil-indent-convert-tabs t
-        evil-ex-search-vim-style-regexp t
-        evil-ex-substitute-global t
-        evil-ex-visual-char-range t  ; column range for ex commands
-        evil-insert-skip-empty-lines t
-        evil-mode-line-format 'nil
-        evil-respect-visual-line-mode t
-        ;; more vim-like behavior
-        evil-symbol-word-search t
-        ;; don't activate mark on shift-click
-        shift-select-mode nil
-        ;; cursor appearance
-        ;; evil-default-cursor '+evil-default-cursor
-        evil-normal-state-cursor 'box
-        ;; evil-emacs-state-cursor  '(box +evil-emacs-cursor)
-        evil-insert-state-cursor 'bar
-        evil-visual-state-cursor 'hollow)
-  (fset 'evil-visual-update-x-selection 'ignore)
-
-  ;; Disable Evil for the states below
-  (evil-set-initial-state 'Custom-mode 'emacs)
-
-  (defun +evil|update-shift-width ()
-    (setq evil-shift-width tab-width))
-  (add-hook 'after-change-major-mode-hook #'+evil|update-shift-width t)
-
-  (evil-mode 1))
+(use-package rg)
 
 (use-package evil-escape
   :load-path "vendor/" ; Vendored due to missing vterm support - https://github.com/syl20bnr/evil-escape/pull/87
@@ -190,128 +129,7 @@ _q_ quit            _c_ create          _<_ previous
 (use-package zoom
   :commands zoom-mode)
 
-;; Company
-(use-package company
-  :diminish
-  :defines company-backends
-  :hook (after-init . global-company-mode)
-  :bind (:map company-active-map ; Use tab for completion
-              ( "RET" . nil)
-              ( [return] . nil )
-              ( "tab" . company-complete-selection )
-              ( "<tab>" . company-complete-selection ))
-  :config
-  (setq company-dabbrev-downcase nil
-        company-dabbrev-ignore-case nil
-        ;; company-dabbrev-code-other-buffers t
-        company-echo-delay (if (display-graphic-p) nil 0) ; remove annoying blinking
-        company-idle-delay 0.6 ; 0.6
-        company-minimum-prefix-length 3 ; 3
-        company-require-match nil
-        company-selection-wrap-around t
-        company-tooltip-align-annotations t
-        company-tooltip-flip-when-above t
-        company-tooltip-limit 12
-        company-global-modes
-        '(not eshell-mode shell-mode comint-mode erc-mode message-mode help-mode gud-mode)
-        company-frontends '(company-pseudo-tooltip-frontend
-                            company-echo-metadata-frontend)
-        ;; company-transformers '(company-sort-by-occurrence)
-        company-backends '(company-capf)))
-(use-package company-quickhelp
-  :defines company-quickhelp-delay
-  :bind (:map company-active-map
-              ([remap company-show-doc-buffer] . company-quickhelp-manual-begin))
-  :hook (global-company-mode . company-quickhelp-mode)
-  :init (setq company-quickhelp-delay 0.5))
-(use-package company-emoji
-  :requires company
-  :config
-  (add-to-list 'company-backends 'company-emoji))
-(use-package company-prescient
-  :init (company-prescient-mode 1))
-(use-package company-box
-  :diminish
-  :functions (my-company-box--make-line
-              my-company-box-icons--elisp)
-  :hook (company-mode . company-box-mode)
-  :init (setq company-box-backends-colors nil
-              company-box-show-single-candidate t
-              company-box-max-candidates 50
-              company-box-doc-delay 0.5)
-  :config
-  ;; Support `company-common'
-  (defun my-company-box--make-line (candidate)
-    (-let* (((candidate annotation len-c len-a backend) candidate)
-            (color (company-box--get-color backend))
-            ((c-color a-color i-color s-color) (company-box--resolve-colors color))
-            (icon-string (and company-box--with-icons-p (company-box--add-icon candidate)))
-            (candidate-string (concat (propertize (or company-common "") 'face 'company-tooltip-common)
-                                      (substring (propertize candidate 'face 'company-box-candidate) (length company-common) nil)))
-            (align-string (when annotation
-                            (concat " " (and company-tooltip-align-annotations
-                                             (propertize " " 'display `(space :align-to (- right-fringe ,(or len-a 0) 1)))))))
-            (space company-box--space)
-            (icon-p company-box-enable-icon)
-            (annotation-string (and annotation (propertize annotation 'face 'company-box-annotation)))
-            (line (concat (unless (or (and (= space 2) icon-p) (= space 0))
-                            (propertize " " 'display `(space :width ,(if (or (= space 1) (not icon-p)) 1 0.75))))
-                          (company-box--apply-color icon-string i-color)
-                          (company-box--apply-color candidate-string c-color)
-                          align-string
-                          (company-box--apply-color annotation-string a-color)))
-            (len (length line)))
-      (add-text-properties 0 len (list 'company-box--len (+ len-c len-a)
-                                       'company-box--color s-color)
-                           line)
-      line))
-  (advice-add #'company-box--make-line :override #'my-company-box--make-line)
 
-  ;; Prettify icons
-  (defun my-company-box-icons--elisp (candidate)
-    (when (derived-mode-p 'emacs-lisp-mode)
-      (let ((sym (intern candidate)))
-        (cond ((fboundp sym) 'Function)
-              ((featurep sym) 'Module)
-              ((facep sym) 'Color)
-              ((boundp sym) 'Variable)
-              ((symbolp sym) 'Text)
-              (t . nil)))))
-  (advice-add #'company-box-icons--elisp :override #'my-company-box-icons--elisp)
-
-  (declare-function all-the-icons-faicon 'all-the-icons)
-  (declare-function all-the-icons-material 'all-the-icons)
-  (declare-function all-the-icons-octicon 'all-the-icons)
-  (setq company-box-icons-all-the-icons
-        `((Unknown . ,(all-the-icons-material "find_in_page" :height 0.85 :v-adjust -0.2))
-          (Text . ,(all-the-icons-faicon "text-width" :height 0.8 :v-adjust -0.05))
-          (Method . ,(all-the-icons-faicon "cube" :height 0.8 :v-adjust -0.05 :face 'all-the-icons-purple))
-          (Function . ,(all-the-icons-faicon "cube" :height 0.8 :v-adjust -0.05 :face 'all-the-icons-purple))
-          (Constructor . ,(all-the-icons-faicon "cube" :height 0.8 :v-adjust -0.05 :face 'all-the-icons-purple))
-          (Field . ,(all-the-icons-octicon "tag" :height 0.8 :v-adjust 0 :face 'all-the-icons-lblue))
-          (Variable . ,(all-the-icons-octicon "tag" :height 0.8 :v-adjust 0 :face 'all-the-icons-lblue))
-          (Class . ,(all-the-icons-material "settings_input_component" :height 0.85 :v-adjust -0.2 :face 'all-the-icons-orange))
-          (Interface . ,(all-the-icons-material "share" :height 0.85 :v-adjust -0.2 :face 'all-the-icons-lblue))
-          (Module . ,(all-the-icons-material "view_module" :height 0.85 :v-adjust -0.2 :face 'all-the-icons-lblue))
-          (Property . ,(all-the-icons-faicon "wrench" :height 0.8 :v-adjust -0.05))
-          (Unit . ,(all-the-icons-material "settings_system_daydream" :height 0.85 :v-adjust -0.2))
-          (Value . ,(all-the-icons-material "format_align_right" :height 0.85 :v-adjust -0.2 :face 'all-the-icons-lblue))
-          (Enum . ,(all-the-icons-material "storage" :height 0.85 :v-adjust -0.2 :face 'all-the-icons-orange))
-          (Keyword . ,(all-the-icons-material "filter_center_focus" :height 0.85 :v-adjust -0.2))
-          (Snippet . ,(all-the-icons-material "format_align_center" :height 0.85 :v-adjust -0.2))
-          (Color . ,(all-the-icons-material "palette" :height 0.85 :v-adjust -0.2))
-          (File . ,(all-the-icons-faicon "file-o" :height 0.85 :v-adjust -0.05))
-          (Reference . ,(all-the-icons-material "collections_bookmark" :height 0.85 :v-adjust -0.2))
-          (Folder . ,(all-the-icons-faicon "folder-open" :height 0.85 :v-adjust -0.05))
-          (EnumMember . ,(all-the-icons-material "format_align_right" :height 0.85 :v-adjust -0.2 :face 'all-the-icons-lblue))
-          (Constant . ,(all-the-icons-faicon "square-o" :height 0.85 :v-adjust -0.05))
-          (Struct . ,(all-the-icons-material "settings_input_component" :height 0.85 :v-adjust -0.2 :face 'all-the-icons-orange))
-          (Event . ,(all-the-icons-octicon "zap" :height 0.8 :v-adjust 0 :face 'all-the-icons-orange))
-          (Operator . ,(all-the-icons-material "control_point" :height 0.85 :v-adjust -0.2))
-          (TypeParameter . ,(all-the-icons-faicon "arrows" :height 0.8 :v-adjust -0.05))
-          (Template . ,(all-the-icons-material "format_align_center" :height 0.85 :v-adjust -0.2)))
-        company-box-icons-alist 'company-box-icons-all-the-icons)
-  )
 
 ;; Language Server Protocol (LSP)
 (use-package lsp-mode
@@ -332,46 +150,6 @@ _q_ quit            _c_ create          _<_ previous
         lsp-before-save-edits t
         lsp-keep-workspace-alive nil)
   (add-to-list 'exec-path "~/code/github/elixir-ls/release"))
-;; Ivy integration
-(use-package lsp-ivy
-  :after lsp-mode
-  :bind (:map lsp-mode-map
-              ([remap xref-find-apropos] . lsp-ivy-workspace-symbol)
-              ("C-s-." . lsp-ivy-global-workspace-symbol)))
-(use-package company-lsp
-  :init (setq company-lsp-cache-candidates 'auto)
-  :config
-  ;; WORKAROUND:Fix tons of unrelated completion candidates shown
-  ;; when a candidate is fulfilled
-  ;; @see https://github.com/emacs-lsp/lsp-python-ms/issues/79
-  (add-to-list 'company-lsp-filter-candidates '(mspyls))
-
-  (with-no-warnings
-    (defun my-company-lsp--on-completion (response prefix)
-      "Handle completion RESPONSE.
-PREFIX is a string of the prefix when the completion is requested.
-Return a list of strings as the completion candidates."
-      (let* ((incomplete (and (hash-table-p response) (gethash "isIncomplete" response)))
-             (items (cond ((hash-table-p response) (gethash "items" response))
-                          ((sequencep response) response)))
-             (candidates (mapcar (lambda (item)
-                                   (company-lsp--make-candidate item prefix))
-                                 (lsp--sort-completions items)))
-             (server-id (lsp--client-server-id (lsp--workspace-client lsp--cur-workspace)))
-             (should-filter (or (eq company-lsp-cache-candidates 'auto)
-                                (and (null company-lsp-cache-candidates)
-                                     (company-lsp--get-config company-lsp-filter-candidates server-id)))))
-        (when (null company-lsp--completion-cache)
-          (add-hook 'company-completion-cancelled-hook #'company-lsp--cleanup-cache nil t)
-          (add-hook 'company-completion-finished-hook #'company-lsp--cleanup-cache nil t))
-        (when (eq company-lsp-cache-candidates 'auto)
-          ;; Only cache candidates on auto mode. If it's t company caches the
-          ;; candidates for us.
-          (company-lsp--cache-put prefix (company-lsp--cache-item-new candidates incomplete)))
-        (if should-filter
-            (company-lsp--filter-candidates candidates prefix)
-          candidates)))
-    (advice-add #'company-lsp--on-completion :override #'my-company-lsp--on-completion)))
 
 (use-package lsp-ui
   :disabled
@@ -416,52 +194,6 @@ Return a list of strings as the completion candidates."
          (elixir-mode . (lambda () (require 'dap-elixir)))))
 
 
-(use-package smartparens
-  :defer 2
-  :config
-  (progn
-    (require 'smartparens-config)
-    (setq sp-highlight-pair-overlay nil
-          sp-highlight-wrap-overlay nil
-          sp-highlight-wrap-tag-overlay nil
-          sp-show-pair-from-inside t
-          sp-cancel-autoskip-on-backward-movement nil
-          sp-show-pair-delay 0.1
-          sp-max-pair-length 4
-          sp-max-prefix-length 50
-          sp-escape-quotes-after-insert nil)
-
-    ;; Smartparens' navigation feature is neat, but does not justify how expensive
-    ;; it is. It's also less useful for evil users. This may need to be
-    ;; reactivated for non-evil users though. Needs more testing!
-    (defun js|disable-smartparens-navigate-skip-match ()
-      (setq sp-navigate-skip-match nil
-            sp-navigate-consider-sgml-tags nil))
-    (add-hook 'after-change-major-mode-hook #'js|disable-smartparens-navigate-skip-match)
-
-    ;; autopairing in `eval-expression' and `evil-ex'
-    (defun js|init-smartparens-in-eval-expression ()
-      "Enable `smartparens-mode' in the minibuffer, during `eval-expression' or
-  `evil-ex'."
-      (when (memq this-command '(eval-expression evil-ex))
-        (smartparens-mode)))
-    (add-hook 'minibuffer-setup-hook #'js|init-smartparens-in-eval-expression)
-    (sp-local-pair 'minibuffer-inactive-mode "'" nil :actions nil)
-
-    (defun js|smartparens-pair-newline (id action context)
-      (save-excursion
-        (newline)
-        (indent-according-to-mode)))
-
-    (defun js|smartparens-pair-newline-and-indent (id action context)
-      (js|smartparens-pair-newline id action context)
-      (indent-according-to-mode))
-
-    ;; smartparens breaks evil-mode's replace state
-    (add-hook 'evil-replace-state-entry-hook #'turn-off-smartparens-mode)
-    (add-hook 'evil-replace-state-exit-hook  #'turn-on-smartparens-mode)
-    (smartparens-global-mode +1)))
-
 (use-package rainbow-delimiters
   :hook (prog-mode . rainbow-delimiters-mode))
 
@@ -471,6 +203,7 @@ Return a list of strings as the completion candidates."
   :hook (after-init . dtrt-indent-global-mode))
 
 (use-package indent-guide
+  :diminish
   :commands (indent-guide-mode indent-guide-global-mode)
   :config (setq indent-guide-delay 0.3))
 
@@ -488,26 +221,24 @@ Return a list of strings as the completion candidates."
         dumb-jump-selector +completion-engine))
 
 (use-package ws-butler
-  :defer t
-  :delight
+  :diminish
   :hook (prog-mode . ws-butler-mode)
   :config
   (setq ws-butler-keep-whitespace-before-point nil))
 
 (use-package autorevert
   :ensure nil
-  :defer t
-  :delight auto-revert-mode
+  :hook (after-init . global-auto-revert-mode)
+  :diminish
   :config
   (setq auto-revert-verbose nil
-        auto-revert-check-vc-info t)
-  (global-auto-revert-mode +1))
+        auto-revert-check-vc-info t))
 
 (use-package undo-tree
   :delight
   :config
   (setq undo-tree-auto-save-history nil)
-  :hook (evil-mode . global-undo-tree-mode))
+  :hook (after-init . global-undo-tree-mode))
 
 (use-package unfill
   :disabled
@@ -539,10 +270,6 @@ Return a list of strings as the completion candidates."
   :general
   (general-define-key
    "C-s" 'swiper))
-
-(use-package rg
-  :defer t
-  :commands (rg rg-project rg-dwim rg-literal))
 
 (use-package midnight)
 
@@ -943,6 +670,50 @@ Return a list of strings as the completion candidates."
      ("." nil (reusable-frames . visible)))))
 
 
+(use-package smartparens
+  :hook (prog-mode . smartparens-global-mode)
+  :config
+  (progn
+    (require 'smartparens-config)
+    (setq sp-highlight-pair-overlay nil
+          sp-highlight-wrap-overlay nil
+          sp-highlight-wrap-tag-overlay nil
+          sp-show-pair-from-inside t
+          sp-cancel-autoskip-on-backward-movement nil
+          sp-show-pair-delay 0.1
+          sp-max-pair-length 4
+          sp-max-prefix-length 50
+          sp-escape-quotes-after-insert nil)
+
+    ;; Smartparens' navigation feature is neat, but does not justify how expensive
+    ;; it is. It's also less useful for evil users. This may need to be
+    ;; reactivated for non-evil users though. Needs more testing!
+    (defun js|disable-smartparens-navigate-skip-match ()
+      (setq sp-navigate-skip-match nil
+            sp-navigate-consider-sgml-tags nil))
+    (add-hook 'after-change-major-mode-hook #'js|disable-smartparens-navigate-skip-match)
+
+    ;; autopairing in `eval-expression' and `evil-ex'
+    (defun js|init-smartparens-in-eval-expression ()
+      "Enable `smartparens-mode' in the minibuffer, during `eval-expression' or `evil-ex'."
+      (when (memq this-command '(eval-expression evil-ex))
+        (smartparens-mode)))
+    (add-hook 'minibuffer-setup-hook #'js|init-smartparens-in-eval-expression)
+    (sp-local-pair 'minibuffer-inactive-mode "'" nil :actions nil)
+
+    (defun js|smartparens-pair-newline (id action context)
+      (save-excursion
+        (newline)
+        (indent-according-to-mode)))
+
+    (defun js|smartparens-pair-newline-and-indent (id action context)
+      (js|smartparens-pair-newline id action context)
+      (indent-according-to-mode))
+
+    ;; smartparens breaks evil-mode's replace state
+    (add-hook 'evil-replace-state-entry-hook #'turn-off-smartparens-mode)
+    (add-hook 'evil-replace-state-exit-hook  #'turn-on-smartparens-mode)))
+
 (use-package ibuffer
   :straight nil
   :ensure nil
@@ -1106,31 +877,6 @@ Return a list of strings as the completion candidates."
 (use-package po-mode
   :mode "\\.pot?\\'")
 
-
-(use-package linux
-  :straight nil
-  :ensure nil
-  :load-path "vendor/"
-  :if (eq system-type 'gnu/linux))
-
-(use-package osx
-  :straight nil
-  :ensure nil
-  :load-path "vendor/"
-  :if (eq system-type 'darwin))
-
-(require 'web)
-(require 'ember)
-(require 'ruby)
-(require 'elixir)
-(require 'golang)
-(require 'write)
-
-(require '+org)
-(require '+dired)
-(require '+completion)
-(require 'deprecate)
-(require '+keybindings)
 
 (customize-set-variable 'user-full-name "Justin Smestad")
 (customize-set-variable 'user-mail-address "justin.smestad@gmail.com")

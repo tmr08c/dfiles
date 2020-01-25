@@ -503,6 +503,9 @@
                     "r" '(:ignore t :wk "refactor")
                     "rd" 'merlin-destruct)
 
+(js|keymap-for-mode 'css-mode
+                    "l" 'counsel-css)
+
 (js|keymap-for-mode 'ruby-mode
                     "b" '(:ignore t :wk "bundle")
                     "bc" 'bundle-check
