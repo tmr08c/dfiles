@@ -50,8 +50,9 @@
   :hook (after-init . global-evil-surround-mode))
 (use-package evil-matchit
   :diminish
-  :hook (after-init . global-evil-matchit-mode))
+  :hook (prog-mode . turn-on-evil-matchit-mode))
 (use-package evil-goggles
+  :defer t
   :diminish
   :config
   ;;  (setq evil-goggles-duration 0.1
@@ -64,6 +65,8 @@
   :init
   (setq evil-collection-company-use-tng nil)
   (evil-collection-init))
+(use-package evil-expat
+  :defer t)
 
 (use-package auto-sudoedit
   :hook (after-init . auto-sudoedit-mode))
