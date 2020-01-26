@@ -13,7 +13,7 @@
 ;;; Code:
 
 (use-package centaur-tabs
-  :demand
+  :commands (centaur-tabs-mode)
   :config
   (setq centaur-tabs-set-icons t
         centaur-tabs-style "bar"
@@ -21,7 +21,6 @@
 	      centaur-tabs-set-modified-marker t
         centaur-tabs-height 32)
   (centaur-tabs-change-fonts "Ubuntu" 120)
-  (centaur-tabs-mode t)
   (with-eval-after-load 'projectile
     (centaur-tabs-group-by-projectile-project))
   :bind
