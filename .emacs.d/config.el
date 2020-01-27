@@ -598,17 +598,17 @@ _q_ quit            _c_ create          _<_ previous
 (use-package doom-themes
   :config
   ;; (setq doom-treemacs-enable-variable-pitch t)
-  (load-theme 'doom-one t)
+  ;; (load-theme 'doom-one t)
+  (load-theme 'doom-nord-light t)
+  ;; (load-theme 'doom-nord t)
+  ;; (load-theme 'doom-spacegrey t)
+
   ;; Enable flashing mode-line on errors
   (doom-themes-visual-bell-config)
-  (set-face-attribute 'doom-visual-bell nil
-                      :background (face-foreground 'error)
-                      :foreground (face-background 'default)
-                      :inverse-video nil)
   ;; Corrects (and improves) org-mode's native fontification.
   (doom-themes-org-config)
 
-  ;; Enable custom treemacs theme (all-the-icons must be installed!)
+  (doom-themes-neotree-config)
   (doom-themes-treemacs-config))
 
 
