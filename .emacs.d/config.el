@@ -54,6 +54,7 @@
 (use-package rg)
 
 (use-package evil-escape
+  :disabled
   :load-path "vendor/" ; Vendored due to missing vterm support - https://github.com/syl20bnr/evil-escape/pull/87
   :diminish
   :config
@@ -61,6 +62,7 @@
         evil-escape-excluded-major-modes '(vterm-mode)
         evil-escape-key-sequence "jk")
   (evil-escape-mode))
+
 (use-package evil-surround
   :diminish
   :hook (after-init . global-evil-surround-mode))
@@ -247,7 +249,6 @@ _q_ quit            _c_ create          _<_ previous
   (setq ws-butler-keep-whitespace-before-point nil))
 
 (use-package autorevert
-  :ensure nil
   :hook (after-init . global-auto-revert-mode)
   :diminish
   :config
@@ -552,7 +553,6 @@ _q_ quit            _c_ create          _<_ previous
 ;; Themes
 (use-package composite ; Use symbols in fonts (requires Emacs >= 27)
 	:disabled
-  :ensure nil
   :if (version<= "27.0" emacs-version)
   :defer t
   :config
@@ -668,7 +668,6 @@ _q_ quit            _c_ create          _<_ previous
     (winum-mode)))
 (use-package window
 	:straight nil
-  :ensure nil
   :preface (provide 'window)
   :custom
   (display-buffer-alist
@@ -736,7 +735,6 @@ _q_ quit            _c_ create          _<_ previous
 
 (use-package ibuffer
   :straight nil
-  :ensure nil
   :functions (all-the-icons-icon-for-file
               all-the-icons-icon-for-mode
               all-the-icons-auto-mode-match?
@@ -819,14 +817,12 @@ _q_ quit            _c_ create          _<_ previous
 
 (use-package display-line-numbers
   :straight nil
-  :ensure nil
   :hook (prog-mode . display-line-numbers-mode))
 
 (setq uniquify-buffer-name-style 'forward)
 
 (use-package sh-mode
   :straight nil
-  :ensure nil
   :mode
   (("\\.zshrc" . sh-mode)
    ("bashrc$" . sh-mode)
@@ -839,7 +835,6 @@ _q_ quit            _c_ create          _<_ previous
 	:straight nil
   :requires no-littering
   :defer t
-  :ensure nil
   :config
   (setq recentf-auto-cleanup 200
         recentf-max-saved-items 300
