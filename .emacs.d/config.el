@@ -14,6 +14,11 @@
 
 (use-package centaur-tabs
   :commands (centaur-tabs-mode)
+  :defines (centaur-tabs-set-icons
+            centaur-tabs-style
+            centaur-tabs-set-bar
+            centaur-tabs-set-modified-marker
+            centaur-tabs-height)
   :config
   (setq centaur-tabs-set-icons t
         centaur-tabs-style "bar"
@@ -127,6 +132,7 @@ _q_ quit            _c_ create          _<_ previous
     ("k" eyebrowse-close-window-config :color red)
     ("r" eyebrowse-rename-window-config)
     ("s" eyebrowse-switch-to-window-config))
+  (add-hook 'eyebrowse-post-switch-hook #'neo-global-attach)
   (eyebrowse-mode t))
 
 (use-package projectile
@@ -832,9 +838,8 @@ _q_ quit            _c_ create          _<_ previous
    ("bash_completion$" . sh-mode)))
 
 (use-package recentf
-	:straight nil
+  :straight nil
   :requires no-littering
-  :defer t
   :config
   (setq recentf-auto-cleanup 200
         recentf-max-saved-items 300

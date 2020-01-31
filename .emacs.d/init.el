@@ -126,6 +126,7 @@
   (which-key-mode))
 
 (use-package evil
+  :defines (evil-normal-state-map)
   :init (setq evil-want-C-u-scroll t
               evil-want-integration t
               evil-want-keybinding nil) ; This MUST be in init.
