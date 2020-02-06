@@ -169,13 +169,16 @@ _q_ quit            _c_ create          _<_ previous
   :config
   (require 'lsp-clients)
   (setq lsp-auto-guess-root t
-        lsp-enable-snippet t
+        ;; lsp-enable-snippet t
         lsp-prefer-flymake nil
         lsp-enable-indentation t
         lsp-enable-xref t
         lsp-enable-imenu t
         ;; lsp-enable-completion-at-point t
-        lsp-before-save-edits t
+        ;; lsp-before-save-edits t
+        lsp-solargraph-formatting t
+        lsp-solargraph-diagnostics nil
+        lsp-solargraph-rename nil
         lsp-keep-workspace-alive nil)
   (add-to-list 'exec-path "~/code/github/elixir-ls/release"))
 
