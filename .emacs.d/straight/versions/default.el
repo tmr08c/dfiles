@@ -61,7 +61,6 @@
  ("emacsmirror-mirror" . "642cadde1035df5a4f4d868ec3c785294e94f5e5")
  ("ember-mode" . "a587c423041b2fcb065fd5b6a03b2899b764e462")
  ("ember-yasnippets.el" . "3b5bd01569646237bf1b540d097e12f9118b67f4")
- ("emmet-mode" . "1acb821e0142136344ccf40c1e5fb664d7db2e70")
  ("epl" . "78ab7a85c08222cd15582a298a364774e3282ce6")
  ("eslintd-fix" . "98c669e3653bf94c236c54946c6faba7f782ef0d")
  ("evil" . "48ceb43f8a1e95e6d7eafe428ff640d83952462f")

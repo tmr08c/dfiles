@@ -182,8 +182,8 @@ _q_ quit            _c_ create          _<_ previous
         lsp-solargraph-rename nil
         lsp-keep-workspace-alive nil)
   (lsp-register-client
-   (make-lsp-client :new-connection (lsp-stdio-connection (list "node" "~/code/github/ember-language-server/lib/start-server.js" "--stdio"))
-                    :major-modes '(js2-mode)
+   (make-lsp-client :new-connection (lsp-stdio-connection (list "node" (concat (getenv "HOME") "/code/github/ember-language-server/lib/start-server.js") "--stdio"))
+                    :major-modes '(js-mode js2-mode web-mode)
                     :priority -1
                     :ignore-messages (list "Initializing Ember Language Server at .*$")
                     :add-on? t

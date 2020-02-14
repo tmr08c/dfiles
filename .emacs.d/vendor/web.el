@@ -53,32 +53,27 @@
   :mode "\\.\\(?:as\\(?:[cp]x\\)\\|blade\\.php\\|erb\\|hbs\\|j\\(?:inja\\|sp\\)\\|mustache\\|p?html?\\|svelte\\|t\\(?:pl\\.php\\|sx\\|wig\\)\\|vue\\)\\'"
   :mode "wp-content/themes/.+/.+\\.php\\'"
   :mode "templates/.+\\.php\\'"
+  :mode "\\.hbs\\'"
   :diminish
   :config
-  (setq   web-mode-markup-indent-offset 2
-          web-mode-css-indent-offset 2
-          web-mode-code-indent-offset 2
-          web-mode-block-padding 0
-          web-mode-enable-block-face t
-          web-mode-enable-current-column-highlight t
-          web-mode-auto-close-style 2
-          web-mode-enable-html-entities-fontification t
-          web-mode-enable-current-element-highlight t
-          web-mode-enable-auto-quoting t
-          web-mode-enable-auto-pairing t)
+  (setq web-mode-markup-indent-offset 2
+        web-mode-comment-style 2
+        web-mode-css-indent-offset 2
+        web-mode-code-indent-offset 2
+        web-mode-block-padding 0
+        web-mode-enable-block-face t
+        web-mode-auto-close-style 2
+        web-mode-enable-css-colorization t
+        web-mode-enable-html-entities-fontification t
+        web-mode-enable-current-element-highlight t
+        web-mode-enable-current-column-highlight t
+        web-mode-enable-auto-closing t
+        web-mode-enable-auto-quoting t
+        web-mode-enable-auto-pairing t)
   (add-hook 'web-mode-hook #'turn-off-smartparens-mode))
-(use-package emmet-mode
-  :diminish
-  :hook ((css-mode web-mode) . emmet-mode)
-  :config
-  (add-hook 'emmet-mode-hook #'yas-minor-mode-on)
-  (setq emmet-move-cursor-between-quotes t))
-
 
 (use-package css-mode
   :mode "\\.css$"
-  :hook (css-mode . (lambda ()
-                      (setq-local company-backends '(company-css company-yasnippet))))
   :config
   (setq css-indent-offset 2)
   (add-hook 'css-mode-hook #'rainbow-delimiters-mode))
