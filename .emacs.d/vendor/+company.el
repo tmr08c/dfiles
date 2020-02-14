@@ -125,6 +125,7 @@
         company-box-icons-alist 'company-box-icons-all-the-icons)
   )
 (use-package company-lsp
+  :disabled
   :init (setq company-lsp-cache-candidates 'auto)
   :config
   ;; WORKAROUND:Fix tons of unrelated completion candidates shown

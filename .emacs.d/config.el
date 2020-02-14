@@ -174,12 +174,20 @@ _q_ quit            _c_ create          _<_ previous
         lsp-enable-indentation t
         lsp-enable-xref t
         lsp-enable-imenu t
+        lsp-prefer-capf t
         ;; lsp-enable-completion-at-point t
         ;; lsp-before-save-edits t
         lsp-solargraph-formatting t
         lsp-solargraph-diagnostics nil
         lsp-solargraph-rename nil
         lsp-keep-workspace-alive nil)
+  (lsp-register-client
+   (make-lsp-client :new-connection (lsp-stdio-connection (list "node" "~/code/github/ember-language-server/lib/start-server.js" "--stdio"))
+                    :major-modes '(js2-mode)
+                    :priority -1
+                    :ignore-messages (list "Initializing Ember Language Server at .*$")
+                    :add-on? t
+                    :server-id 'ember-ls))
   (add-to-list 'exec-path "~/code/github/elixir-ls/release"))
 
 (use-package lsp-ui
