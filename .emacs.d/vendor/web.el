@@ -66,7 +66,7 @@
         web-mode-enable-css-colorization t
         web-mode-enable-html-entities-fontification t
         web-mode-enable-current-element-highlight t
-        web-mode-enable-current-column-highlight t
+        web-mode-enable-current-column-highlight nil
         web-mode-enable-auto-closing t
         web-mode-enable-auto-quoting t
         web-mode-enable-auto-pairing t)
