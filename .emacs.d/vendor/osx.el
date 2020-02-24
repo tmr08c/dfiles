@@ -4,7 +4,6 @@
 
 ;;; Code:
 
-
 (set-fontset-font t 'unicode "Apple Color Emoji" nil 'prepend)
 (add-hook 'after-make-frame-functions
           (lambda (frame)

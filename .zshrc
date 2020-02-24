@@ -1,35 +1,6 @@
 OS=$(uname -s)
 
-# Set Language
-export LANG=en_US.UTF-8
-export LANGUAGE=en_US.UTF-8
-export LC_CTYPE=en_US.UTF-8
-export LC_ALL=en_US.UTF-8
-
-
 fpath=( $HOME/.zsh "${fpath[@]}" )
-
-# Add local packages to PATH
-path=(
-  $HOME/.local/bin
-  $path
-)
-
-# Rust
-# if [[ -d ~/.cargo ]]; then
-#   path=(
-#     $HOME/.cargo/bin
-#     $path
-#   )
-# fi
-
-# PlatformIO
-# if [[ -d ~/.platformio ]]; then
-#   path=(
-#     $path
-#     $HOME/.platformio/penv/bin
-#   )
-# fi
 
 if (( $+commands[emacs] )); then
 
@@ -120,8 +91,6 @@ source ~/.zpluginrc
 
 # Aliases
 [[ -f ~/.aliases ]] && source ~/.aliases
-
-. $HOME/.asdf/asdf.sh
 
 . $HOME/.asdf/completions/asdf.bash
 

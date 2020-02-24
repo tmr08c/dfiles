@@ -570,7 +570,7 @@ This is for use in `ivy-re-builders-alist'."
                     [remap projectile-find-dir]         'counsel-projectile-find-dir
                     [remap projectile-switch-to-buffer] 'counsel-projectile-switch-to-buffer
                     [remap projectile-grep]             'counsel-projectile-grep
-                    [remap projectile-ag]               'counsel-projectile-rg
+                    [remap projectile-rg]               'counsel-projectile-rg
                     [remap projectile-switch-project]   'counsel-projectile-switch-project
                     [remap switch-to-buffer]       'ivy-switch-buffer
                     ;; [remap persp-switch-to-buffer] '+ivy/switch-workspace-buffer

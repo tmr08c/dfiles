@@ -105,10 +105,12 @@
         no-littering-etc-directory (expand-file-name "etc/" user-emacs-directory)
         custom-file (no-littering-expand-var-file-name "custom.el")))
 
+
 (use-package exec-path-from-shell
-  :diminish
+  :if (memq window-system '(mac ns x))
+  :demand
   :config
-  (setq exec-path-from-shell-arguments '("-l"))
+  (setq exec-path-from-shell-arguments nil)
   (exec-path-from-shell-initialize))
 
 (use-package which-key

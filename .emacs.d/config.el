@@ -108,6 +108,49 @@
   :config
   (setq direnv-always-show-summary nil))
 
+(use-package perspective
+  ;; :hook (persp-switch . my/persp-neo)
+  :config
+  (setq persp-initial-frame-name "none"
+        persp-show-modestring nil)
+  (defhydra perspective-hydra (:color blue)
+    "
+^
+^Perspective^         ^Do^                ^Switch^
+^─────────^─────────^──^────────────────^──────^────────────
+_q_ quit            ^^                  _<_ previous
+^^                  _k_ kill            _>_ next
+^^                  _r_ rename          _b_ switch to buffer
+^^                  _a_ add buffer      _s_ switch
+^^                  _A_ set buffer      _p_ switch project
+"
+    ("q" nil)
+    ("a" persp-add-buffer)
+    ("A" persp-set-buffer)
+    ("<" persp-prev :color red)
+    (">" persp-next :color red)
+    ;; ("c" eyebrowse-create-window-config)
+    ("b" persp-switch-to-buffer)
+    ("p" projectile-persp-switch-buffer)
+    ("k" persp-kill :color red)
+    ("r" persp-rename)
+    ("s" persp-switch))
+  (defun my/persp-neo ()
+    "Make NeoTree follow the perspective"
+    (interactive)
+    (let ((cw (selected-window))
+          (path (buffer-file-name))) ;;save current window/buffer
+      (progn
+        (when (and (fboundp 'projectile-project-p)
+                   (projectile-project-p)
+                   (fboundp 'projectile-project-root))
+          (neotree-dir (projectile-project-root)))
+        (neotree-find path))
+      (select-window cw)))
+
+  (persp-mode))
+(use-package persp-projectile
+  :after perspective)
 (use-package eyebrowse ; Easy workspaces creation and switching
   :demand
   :delight
@@ -257,7 +300,14 @@ _q_ quit            _c_ create          _<_ previous
              dumb-jump-go-prefer-external-other-window)
   :config
   (setq dump-jump-force-searcher 'rg
-        dumb-jump-selector +completion-engine))
+        dumb-jump-selector +completion-engine)
+  (defhydra hydra-dumb-jump (:color blue)
+    "Dumb Jump"
+    ("g" dumb-jump-go "Jump to def")
+    ("p" dumb-jump-back "Jump back")
+    ("q" dumb-jump-quick-look "Quick look")
+    ("o" dumb-jump-go-other-window "Jump in other window")
+    ("q" nil "Quit")))
 
 (use-package ws-butler
   :diminish
@@ -355,7 +405,17 @@ _q_ quit            _c_ create          _<_ previous
                       "hp" 'jsons-print-path))
 
 (use-package dockerfile-mode
-  :mode "Dockerfile.*\\'")
+  :mode "\\Dockerfile.*\\'")
+(use-package docker ;; TODO finish customizing this
+  :config
+  (defhydra hydra-docker (:columns 5 :color blue)
+    "Docker"
+    ("c" docker-containers "Containers")
+    ("v" docker-volumes "Volumes")
+    ("i" docker-images "Images")
+    ("n" docker-networks "Networks")
+    ("b" dockerfile-build-buffer "Build Buffer")
+    ("q" nil "Quit")))
 
 (use-package yaml-mode
   :mode "\\.ya?ml\'")
@@ -446,10 +506,16 @@ _q_ quit            _c_ create          _<_ previous
 (use-package doom-modeline
   :hook (winum-mode . doom-modeline-mode)
   :config
-  (setq
-   doom-modeline-buffer-file-name-style 'relative-from-project
-   doom-modeline-project-detection 'projectile
-   doom-modeline-lsp t))
+  (setq doom-modeline-indent-info nil
+        ;; doom-modeline-display-default-persp-name t
+        doom-modeline-major-mode-icon t
+        doom-modeline-major-mode-color-icon t
+        doom-modeline-enable-word-count nil
+        doom-modeline-buffer-encoding nil
+        doom-modeline-buffer-file-name-style 'relative-from-project
+        doom-modeline-project-detection 'projectile
+        doom-modeline-lsp t
+        doom-modeline-env-version nil))
 
 ;; Icons
 ;; NOTE: Must run `M-x all-the-icons-install-fonts', and install fonts manually on Windows
