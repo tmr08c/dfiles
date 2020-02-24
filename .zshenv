@@ -8,14 +8,15 @@ export GOPATH="$HOME/code/golang"
 
 path=(
   $HOME/.local/bin
-  $HOME/.asdf/bin
-  $HOME/.asdf/shims
   $HOME/.platformio/penv/bin
   $HOME/.cargo/bin
   $GOPATH/bin
   $path
 )
 
-[[ -f ~/.zprofile.local ]] && source ~/.zprofile.local
-
 . $HOME/.asdf/asdf.sh
+
+[[ -f ~/.zshenv.local ]] && source ~/.zshenv.local
+
+export PATH
+

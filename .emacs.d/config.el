@@ -1,6 +1,7 @@
 ;;; config.el --- Justin's Emacs config -*- lexical-binding: t; -*-
 ;;; Commentary:
 
+;;; TODO dump-jump after xref (instead of dump jump first)
 ;;; TODO evil-lion
 ;;; TODO try outshine and bicycle for hide/show in prog mode
 ;;; TODO try dired-sidebar instead of neotree/treemacs
@@ -101,12 +102,10 @@
   (setq editorconfig-trim-whitespaces-mode 'ws-butler-mode))
 
 (use-package direnv
-  :hook
-  ((flycheck-before-syntax-check . direnv-update-environment)
-   (before-hack-local-variables . direnv-update-environment)
-   (prog-mode . direnv-mode))
   :config
-  (setq direnv-always-show-summary nil))
+  (add-to-list 'direnv-non-file-modes 'vterm-mode)
+  (setq direnv-always-show-summary nil)
+  (direnv-mode))
 
 (use-package perspective
   ;; :hook (persp-switch . my/persp-neo)
@@ -186,7 +185,7 @@ _q_ quit            _c_ create          _<_ previous
         projectile-use-git-grep t
         projectile-sort-order 'recentf
         projectile-files-cache-expire 604800 ; expire after a week
-        ;; projectile-switch-project-action 'projectile-find-file
+        projectile-switch-project-action 'counsel-projectile-find-file
         projectile-globally-ignored-files (append '(".git" ".DS_Store" "Icon" "TAGS") projectile-globally-ignored-directories)
         projectile-globally-ignored-file-suffixes (append '("*.jar" "*.elc" "*.pyc" "*.o") projectile-globally-ignored-files))
   (define-key projectile-mode-map (kbd "s-p") 'projectile-command-map)
@@ -293,21 +292,18 @@ _q_ quit            _c_ create          _<_ previous
   :hook (((emacs-lisp-mode css-mode) . aggressive-indent-mode)))
 
 (use-package dumb-jump
-  :commands (dump-jump-go
-             dumb-jump-go-other-window
-             dump-jump-go-prompt
-             dump-jump-go-prefer-external
-             dumb-jump-go-prefer-external-other-window)
   :config
-  (setq dump-jump-force-searcher 'rg
+  (setq dump-jump-prefer-searcher 'rg
         dumb-jump-selector +completion-engine)
-  (defhydra hydra-dumb-jump (:color blue)
+  (defhydra hydra-dumb-jump (:color blue :columns 3)
     "Dumb Jump"
-    ("g" dumb-jump-go "Jump to def")
-    ("p" dumb-jump-back "Jump back")
-    ("q" dumb-jump-quick-look "Quick look")
-    ("o" dumb-jump-go-other-window "Jump in other window")
-    ("q" nil "Quit")))
+    ("j" dumb-jump-go "Go")
+    ("o" dumb-jump-go-other-window "Other window")
+    ("e" dumb-jump-go-prefer-external "Go external")
+    ("x" dumb-jump-go-prefer-external-other-window "Go external other window")
+    ("i" dumb-jump-go-prompt "Prompt")
+    ("l" dumb-jump-quick-look "Quick look")
+    ("b" dumb-jump-back "Back")))
 
 (use-package ws-butler
   :diminish

@@ -24,7 +24,7 @@
 ;;   :config
 ;;   (add-to-list 'company-backends 'company-inf-ruby))
 (use-package rspec-mode
-  :mode ("/\\.rspec\\'" . text-mode)
+  ;; :mode ("/\\.rspec\\'" . text-mode)
   :commands (rspec-verify-all
              rspec-rerun
              rspec-verify
@@ -39,15 +39,12 @@
              rspec-dired-verify
              rspec-install-snippets
              rspec-dired-verify-single)
-  :hook ((dired-mode . rspec-dired-mode)
-         (ruby-mode . rspec-mode))
+  :hook (ruby-mode . rspec-mode)
   :config
   (setq compilation-scroll-output 'first-error
         rspec-use-spring-when-possible nil
         rspec-autosave-buffer t)
   (add-hook 'rspec-compilation-mode-hook 'inf-ruby-auto-enter nil t)
-  (with-eval-after-load 'yasnippet
-    (rspec-install-snippets))
   ;; (with-eval-after-load 'smartparens
   ;;   (sp-with-modes 'ruby-mode
   ;;     (sp-local-pair
@@ -75,8 +72,8 @@
 ;;             (lambda ()
 ;;               (add-hook 'before-save-hook 'rubocopfmt)))
 ;;   )
-(use-package rbenv
-  :hook (ruby-mode . global-rbenv-mode))
+;; (use-package rbenv
+;;   :hook (ruby-mode . global-rbenv-mode))
 (use-package yard-mode
   :hook (ruby-mode . yard-mode))
 (use-package ruby-hash-syntax

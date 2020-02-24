@@ -572,7 +572,7 @@ This is for use in `ivy-re-builders-alist'."
                     [remap projectile-grep]             'counsel-projectile-grep
                     [remap projectile-rg]               'counsel-projectile-rg
                     [remap projectile-switch-project]   'counsel-projectile-switch-project
-                    [remap switch-to-buffer]       'ivy-switch-buffer
+                    [remap switch-to-buffer]       'persp-counsel-switch-buffer
                     ;; [remap persp-switch-to-buffer] '+ivy/switch-workspace-buffer
                     [remap imenu-anywhere]         'ivy-imenu-anywhere)
 

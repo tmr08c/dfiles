@@ -93,7 +93,7 @@
 
                   ;; Go to
                   "g" '(:ignore t :wk "Go to")
-                  "gd" '(hydra-dump-jump/body :wk "Dump Jump")
+                  "gd" '(hydra-dumb-jump/body :wk "Dump Jump")
                   ;; "gd" '(dumb-jump-go :wk "definition")
                   ;; "gD" '(dumb-jump-go-other-window :wk "definition (other window)")
 
