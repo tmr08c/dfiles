@@ -15,10 +15,10 @@
         ruby-align-to-stmt-keywords
         '(if while unless until begin case for def)))
 (use-package bundler
-  :hook (ruby-mode . bundler-mode))
+  :after ruby-mode)
 (use-package inf-ruby
   :hook ((ruby-mode . inf-ruby-minor-mode)
-          (compilation-filter . inf-ruby-auto-enter)))
+         (compilation-filter . inf-ruby-auto-enter)))
 ;; (use-package company-inf-ruby
 ;;   :after inf-ruby
 ;;   :config

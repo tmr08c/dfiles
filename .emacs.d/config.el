@@ -395,7 +395,7 @@ _q_ quit            _c_ create          _<_ previous
   :config
   (setq js-indent-level 2))
 (use-package json-snatcher
-  :hook json-mode
+  :commands (jsons-print-path)
   :config
   (js|keymap-for-mode 'json-mode
                       "hp" 'jsons-print-path))
