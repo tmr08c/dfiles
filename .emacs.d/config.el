@@ -213,7 +213,7 @@ _q_ quit            _c_ create          _<_ previous
   (setq lsp-auto-guess-root t
         ;; lsp-enable-snippet t
         lsp-prefer-flymake nil
-        lsp-enable-indentation t
+        ;; lsp-enable-indentation t ;; TODO is this messing emacs?
         lsp-enable-xref t
         lsp-enable-imenu t
         lsp-prefer-capf t
@@ -233,7 +233,7 @@ _q_ quit            _c_ create          _<_ previous
   (add-to-list 'exec-path "~/code/github/elixir-ls/release"))
 
 (use-package lsp-ui
-  :disabled
+  ;; :disabled
   :bind (:map lsp-ui-mode-map
               ([remap xref-find-definitions] . lsp-ui-peek-find-definitions)
               ([remap xref-find-references] . lsp-ui-peek-find-references)
