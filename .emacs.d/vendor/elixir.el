@@ -8,17 +8,15 @@
 (use-package elixir-mode
   :config
   (progn
-    (defun exs-freeze-workaround ()
-      (when (and (stringp buffer-file-name)
-                 (string-match "\\.exs\\'" buffer-file-name))
-        (auto-composition-mode -1)
-        (elixir-mode)))
+    ;; (defun exs-freeze-workaround ()
+    ;;   (when (and (stringp buffer-file-name)
+    ;;              (string-match "\\.exs\\'" buffer-file-name))
+    ;;     (auto-composition-mode -1)
+    ;;     (elixir-mode)))
+    ;; (if (version<= "27.0" emacs-version) (exs-freeze-workaround))
     (add-hook 'elixir-mode-hook
-              (if (version<= "27.0" emacs-version) (exs-freeze-workaround))
-              (lambda ()
-                (add-hook 'before-save-hook #'lsp-format-buffer nil t)))
-
-    ))
+              (lambda () (add-hook 'before-save-hook 'elixir-format nil t))
+              )))
 (use-package exunit
   :commands (exunit-verify-all
              exunit-verify-all-in-umbrella
