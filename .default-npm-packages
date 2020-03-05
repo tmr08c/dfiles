@@ -15,6 +15,9 @@ jsonlint
 nodemon
 ocaml-language-server
 prettier
+stylelint
+stylelint-config-standard
+stylelint-scss
 textlint
 textlint-plugin-asciidoctor
 textlint-plugin-html

@@ -15,7 +15,7 @@
     ;;     (elixir-mode)))
     ;; (if (version<= "27.0" emacs-version) (exs-freeze-workaround))
     (add-hook 'elixir-mode-hook
-              (lambda () (add-hook 'before-save-hook 'elixir-format nil t))
+              (lambda () (add-hook 'before-save-hook 'lsp-format-buffer nil t))
               )))
 (use-package exunit
   :commands (exunit-verify-all
