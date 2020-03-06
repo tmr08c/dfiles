@@ -10,7 +10,6 @@
     "editor.renderWhitespace": "boundary",
     "git.autofetch": true,
     "vim.easymotion": true,
-    "vim.enableNeovim": true,
     "vim.neovimPath": "/usr/bin/nvim",
     "vim.useSystemClipboard": true,
     "vim.insertModeKeyBindings": [

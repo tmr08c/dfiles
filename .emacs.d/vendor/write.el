@@ -6,8 +6,7 @@
 (use-package mixed-pitch
   :diminish
   :hook
-  ;; If you want it in all text modes:
-  (text-mode . mixed-pitch-mode))
+  ((text-mode writeroom-mode org-mode markdown-mode gfm-mode) . mixed-pitch-mode))
 
 (use-package google-translate
   :commands (spacemacs/set-google-translate-languages
