@@ -142,10 +142,10 @@ if [ ! -d ~/.emacs-spacemacs.d ]; then
   git clone -b develop https://github.com/syl20bnr/spacemacs ~/.emacs-spacemacs.d
 fi
 
-if [ ! -d ~/org ]; then
-  echo "Fetch org files"
-  git clone https://gitlab.com/jsmestad/org.git ~/org
-fi
+# if [ ! -d ~/org ]; then
+#  echo "Fetch org files"
+#  git clone https://gitlab.com/jsmestad/org.git ~/org
+# fi
 
 echo "Updating the yadm repo origin URL"
 yadm remote set-url origin "git@github.com:jsmestad/dfiles.git"
