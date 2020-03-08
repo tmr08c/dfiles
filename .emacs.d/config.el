@@ -678,8 +678,8 @@ _q_ quit            _c_ create          _<_ previous
 (use-package doom-themes
   :config
   ;; (setq doom-treemacs-enable-variable-pitch t)
-  ;; (load-theme 'doom-one t)
-  (load-theme 'doom-nord-light t)
+  (load-theme 'doom-one t)
+  ;; (load-theme 'doom-nord-light t)
   ;; (load-theme 'doom-nord t)
   ;; (load-theme 'doom-spacegrey t)
 
@@ -703,7 +703,6 @@ _q_ quit            _c_ create          _<_ previous
 ;;; Support Emojis in Emacs
 (use-package emojify
   :diminish
-  :defer t
   :config
   (setq emojify-display-style (if (eq system-type 'gnu/linux) 'image 'unicode)
         emojify-company-tooltips-p t)
@@ -747,7 +746,7 @@ _q_ quit            _c_ create          _<_ previous
     (add-to-list 'winum-assign-functions #'winum-assign-0-to-neotree)
     (winum-mode)))
 (use-package window
-	:straight nil
+  :straight (window :type built-in)
   :preface (provide 'window)
   :custom
   (display-buffer-alist
@@ -767,7 +766,6 @@ _q_ quit            _c_ create          _<_ previous
       (reusable-frames . visible)
       (window-height   . 0.5))
      ("." nil (reusable-frames . visible)))))
-
 
 (use-package smartparens
   :hook (prog-mode . smartparens-global-mode)
@@ -814,7 +812,7 @@ _q_ quit            _c_ create          _<_ previous
     (add-hook 'evil-replace-state-exit-hook  #'turn-on-smartparens-mode)))
 
 (use-package ibuffer
-  :straight nil
+  :straight (ibuffer :type built-in)
   :functions (all-the-icons-icon-for-file
               all-the-icons-icon-for-mode
               all-the-icons-auto-mode-match?
@@ -896,13 +894,13 @@ _q_ quit            _c_ create          _<_ previous
         dired-use-ls-dired nil)
 
 (use-package display-line-numbers
-  :straight nil
+  :straight (display-line-numbers :type built-in)
   :hook (prog-mode . display-line-numbers-mode))
 
 (setq uniquify-buffer-name-style 'forward)
 
 (use-package sh-mode
-  :straight nil
+  :straight (sh-mode :type built-in)
   :mode
   (("\\.zshrc" . sh-mode)
    ("bashrc$" . sh-mode)
@@ -912,7 +910,7 @@ _q_ quit            _c_ create          _<_ previous
    ("bash_completion$" . sh-mode)))
 
 (use-package recentf
-  :straight nil
+  :straight (recentf :type built-in)
   :requires no-littering
   :config
   (setq recentf-auto-cleanup 200
