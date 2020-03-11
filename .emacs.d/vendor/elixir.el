@@ -52,12 +52,17 @@
   :hook (elixir-mode . flycheck-mix-setup))
 
 (js|keymap-for-mode 'elixir-mode
+                    "g" '(:ignore t :wk "goto")
+                    "gt" 'exunit-toggle-file-and-test
+                    "gT" 'exunit-toggle-file-and-test-other-window
+
                     "t" '(:ignore t :wk "test")
-                    "tb" 'exunit-verify-all
-                    "tB" 'exunit-verify-all-in-umbrella
-                    "ta" 'exunit-verify
+                    "tb" 'exunit-verify
+                    "ta" 'exunit-verify-all
+                    "tA" 'exunit-verify-all-in-umbrella
                     "tk" 'exunit-rerun
                     "tt" 'exunit-verify-single)
+
 ;; NOTE outdated from alchemist set up. Here for reference
 
 ;; (js|keymap-for-mode 'elixir-mode

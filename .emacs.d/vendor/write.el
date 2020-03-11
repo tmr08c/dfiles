@@ -6,7 +6,7 @@
 (use-package mixed-pitch
   :diminish
   :hook
-  ((text-mode writeroom-mode org-mode markdown-mode gfm-mode) . mixed-pitch-mode))
+  ((writeroom-mode org-mode markdown-mode gfm-mode) . mixed-pitch-mode))
 
 (use-package google-translate
   :commands (spacemacs/set-google-translate-languages

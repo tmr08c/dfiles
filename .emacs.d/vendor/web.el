@@ -49,11 +49,9 @@
 ;;   :hook (web-mode . (lambda ()
 ;;                       (setq-local company-backends '(company-web-html company-css company-yasnippet)))))
 
+(use-package prettier-js
+  :hook (web-mode . prettier-js-mode))
 (use-package web-mode
-  :mode "\\.\\(?:as\\(?:[cp]x\\)\\|blade\\.php\\|erb\\|hbs\\|j\\(?:inja\\|sp\\)\\|mustache\\|p?html?\\|svelte\\|t\\(?:pl\\.php\\|sx\\|wig\\)\\|vue\\)\\'"
-  :mode "wp-content/themes/.+/.+\\.php\\'"
-  :mode "templates/.+\\.php\\'"
-  :mode "\\.hbs\\'"
   :diminish
   :config
   (setq web-mode-markup-indent-offset 2
