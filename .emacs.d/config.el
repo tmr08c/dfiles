@@ -234,6 +234,7 @@ _q_ quit            _c_ create          _<_ previous
 
 (use-package lsp-ui
   ;; :disabled
+  :hook (elixir-mode . lsp-ui-doc-mode)
   :bind (:map lsp-ui-mode-map
               ([remap xref-find-definitions] . lsp-ui-peek-find-definitions)
               ([remap xref-find-references] . lsp-ui-peek-find-references)
