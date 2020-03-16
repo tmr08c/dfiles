@@ -21,6 +21,7 @@ zeus.json
 .uuid
 .log/**/*
 .solargraph.yml
+.ccls-cache/
 
 # Custom definition
 backend/config/definitions.rb

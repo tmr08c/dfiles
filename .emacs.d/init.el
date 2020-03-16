@@ -186,8 +186,6 @@
   (general-vmap "," (general-simulate-key "SPC m"))
   (general-nmap "," (general-simulate-key "SPC m")))
 
-
-
 (require '+funcs)
 
 (when (file-readable-p (concat user-emacs-directory "config.el"))
