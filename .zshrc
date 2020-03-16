@@ -100,7 +100,7 @@ zinit snippet OMZ::plugins/ssh-agent/ssh-agent.plugin.zsh
 zinit snippet OMZ::plugins/asdf/asdf.plugin.zsh
 
 zinit ice as"completion"
-zinit snippet OMZ::plugins/mix/_mix
+zinit snippet https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/plugins/mix/_mix
 
 zinit light zsh-users/zsh-completions
 # zinit light djui/alias-tips
