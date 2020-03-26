@@ -216,7 +216,7 @@ _q_ quit            _c_ create          _<_ previous
         ;; lsp-enable-indentation t ;; TODO is this messing emacs?
         lsp-enable-xref t
         lsp-enable-imenu t
-        lsp-prefer-capf t
+        ;; lsp-prefer-capf t
         ;; lsp-enable-completion-at-point t
         ;; lsp-before-save-edits t
         lsp-solargraph-formatting t
