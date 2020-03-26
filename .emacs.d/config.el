@@ -714,7 +714,10 @@ _q_ quit            _c_ create          _<_ previous
     magit-log-mode) . emojify-mode))
 
 ;; Git
-(use-package magit)
+(use-package magit
+  :config
+  (when (eq system-type 'darwin)
+    (setq magit-git-executable "/usr/local/bin/git")))
 (use-package evil-magit
   :after magit)
 
