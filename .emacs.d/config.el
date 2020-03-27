@@ -59,6 +59,7 @@
 
 (use-package rg)
 
+(use-package vimish-fold)
 (use-package evil-escape
   :disabled
   :load-path "vendor/" ; Vendored due to missing vterm support - https://github.com/syl20bnr/evil-escape/pull/87
