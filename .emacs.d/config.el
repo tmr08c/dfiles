@@ -1038,5 +1038,12 @@ _q_ quit            _c_ create          _<_ previous
 (add-hook 'compilation-filter-hook #'doom|apply-ansi-color-to-compilation-buffer)
 
 (load "~/.emacs.secrets" t)
+
+(use-package server
+  :straight nil
+  :config
+  (unless (server-running-p)
+    (server-start)))
+
 (provide 'config)
 ;;; config.el ends here

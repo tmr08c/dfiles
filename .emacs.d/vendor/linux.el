@@ -15,4 +15,4 @@
 
 (provide 'linux)
 
-;;; linux.el ends here
+;;; linux.el ends here.
