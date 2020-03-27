@@ -634,7 +634,7 @@ _q_ quit            _c_ create          _<_ previous
 ;; Themes
 (use-package composite ; Use symbols in fonts (requires Emacs >= 27)
   :if (version<= "27.0" emacs-version)
-  :straight (composite :type built-in)
+  :straight nil
   :init
   (defvar composition-ligature-table (make-char-table nil))
   :hook
@@ -751,7 +751,7 @@ _q_ quit            _c_ create          _<_ previous
     (add-to-list 'winum-assign-functions #'winum-assign-0-to-neotree)
     (winum-mode)))
 (use-package window
-  :straight (window :type built-in)
+  :straight nil
   :preface (provide 'window)
   :custom
   (display-buffer-alist
@@ -817,7 +817,7 @@ _q_ quit            _c_ create          _<_ previous
     (add-hook 'evil-replace-state-exit-hook  #'turn-on-smartparens-mode)))
 
 (use-package ibuffer
-  :straight (ibuffer :type built-in)
+  :straight nil
   :functions (all-the-icons-icon-for-file
               all-the-icons-icon-for-mode
               all-the-icons-auto-mode-match?
@@ -899,13 +899,13 @@ _q_ quit            _c_ create          _<_ previous
         dired-use-ls-dired nil)
 
 (use-package display-line-numbers
-  :straight (display-line-numbers :type built-in)
+  :straight nil
   :hook (prog-mode . display-line-numbers-mode))
 
 (setq uniquify-buffer-name-style 'forward)
 
 (use-package sh-mode
-  :straight (sh-mode :type built-in)
+  :straight nil
   :mode
   (("\\.zshrc" . sh-mode)
    ("bashrc$" . sh-mode)
@@ -915,7 +915,7 @@ _q_ quit            _c_ create          _<_ previous
    ("bash_completion$" . sh-mode)))
 
 (use-package recentf
-  :straight (recentf :type built-in)
+  :straight nil
   :requires no-littering
   :config
   (setq recentf-auto-cleanup 200
