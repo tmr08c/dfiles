@@ -72,22 +72,27 @@
   :disabled
   :custom (toc-org-max-depth 10)
   :hook (org-mode . toc-org-enable))
+(use-package org-superstar
+  :hook (org-mode . org-superstar-mode)
+  :config
+  (setq org-superstar-headline-bullets-list '("⁖" "◉" "○" "✸" "✿")))
 (use-package org-bullets
+  :disabled
   :commands org-bullets-mode
   :hook (org-mode . org-bullets-mode))
 (use-package org-autolist ; RET starts new list entry
   :hook (org-mode . org-autolist-mode))
 
 
-(use-package org-gcal
-  :after org
-  :config
-  (setq org-gcal-client-id "784734461161-i9ggdi0n5ct4qb6vo0ftbjs3n90pdd1a.apps.googleusercontent.com"
-        org-gcal-file-alist '(("justin.smestad@gmail.com" . "~/org/gcal-p.org"))
-        org-gcal-auto-archive nil
-        org-gcal-notify-p nil)
-  (add-hook 'org-agenda-mode-hook 'org-gcal-fetch)
-  (add-hook 'org-capture-after-finalize-hook 'org-gcal-fetch))
+;; (use-package org-gcal
+;;   :after org
+;;   :config
+;;   (setq org-gcal-client-id "784734461161-i9ggdi0n5ct4qb6vo0ftbjs3n90pdd1a.apps.googleusercontent.com"
+;;         org-gcal-file-alist '(("justin.smestad@gmail.com" . "~/org/gcal-p.org"))
+;;         org-gcal-auto-archive nil
+;;         org-gcal-notify-p nil)
+;;   (add-hook 'org-agenda-mode-hook 'org-gcal-fetch)
+;;   (add-hook 'org-capture-after-finalize-hook 'org-gcal-fetch))
 
 ;; (use-package org-projectile
 ;;   :commands org-projectile-projectile-project-todo-completing-read

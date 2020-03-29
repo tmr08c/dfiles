@@ -128,7 +128,5 @@ compinit
 # Aliases
 [[ -f ~/.aliases ]] && source ~/.aliases
 
-. $HOME/.asdf/completions/asdf.bash
-
 # To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
 [[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
