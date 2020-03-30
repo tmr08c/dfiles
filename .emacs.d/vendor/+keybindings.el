@@ -56,7 +56,8 @@
 
                   ;; Buffers
                   "b"   '(:ignore t :wk "Buffers")
-                  "bb" '(switch-to-buffer :wk "list buffers")
+                  "bb" '(switch-to-buffer :wk "switch buffers")
+                  "bl" '(ibuffer-other-window :wk "list buffers")
                   "bn" '(next-buffer :wk "next buffer")
                   "bp" '(previous-buffer :wk "prev buffer")
                   "bd" '((lambda ()
