@@ -105,7 +105,6 @@
         no-littering-etc-directory (expand-file-name "etc/" user-emacs-directory)
         custom-file (no-littering-expand-var-file-name "custom.el")))
 
-
 (use-package exec-path-from-shell
   :if (memq window-system '(mac ns x))
   :demand
@@ -114,7 +113,7 @@
   (exec-path-from-shell-initialize))
 
 (use-package which-key
-  :defer
+  :hook (after-init . which-key-mode)
   :diminish
   :config
   (setq which-key-sort-order 'which-key-prefix-then-key-order
@@ -122,8 +121,7 @@
         which-key-add-column-padding 1
         which-key-max-display-columns nil
         which-key-min-display-lines 6)
-  (which-key-setup-side-window-bottom)
-  (which-key-mode))
+  (which-key-setup-side-window-bottom))
 
 (use-package evil
   :defines (evil-normal-state-map)
