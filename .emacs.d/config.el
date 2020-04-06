@@ -477,8 +477,9 @@ _q_ quit            _c_ create          _<_ previous
   :diminish
   :hook (after-init . global-flycheck-mode)
   :config
-  (setq flycheck-global-modes '(not org-mode text-mode outline-mode fundamental-mode
-                                    shell-mode eshell-mode term-mode vterm-mode)
+  (setq flycheck-global-modes
+        '(not org-mode text-mode outline-mode fundamental-mode
+              diff-mode shell-mode eshell-mode term-mode vterm-mode)
         flycheck-rubocop-lint-only t
         flycheck-idle-change-delay 1.75
         flycheck-indication-mode 'right-fringe
@@ -520,41 +521,28 @@ _q_ quit            _c_ create          _<_ previous
 (use-package all-the-icons
   :if (display-graphic-p)
   :config
-  (with-no-warnings
-    ;; FIXME: Align the directory icons
-    ;; @see https://github.com/domtronn/all-the-icons.el/pull/173
-    (defun all-the-icons-icon-for-dir (dir &optional chevron padding)
-      "Format an icon for DIR with CHEVRON similar to tree based directories."
-      (let* ((matcher (all-the-icons-match-to-alist (file-name-base (directory-file-name dir)) all-the-icons-dir-icon-alist))
-             (path (expand-file-name dir))
-             (chevron (if chevron (all-the-icons-octicon (format "chevron-%s" chevron) :height 0.8 :v-adjust -0.1) ""))
-             (padding (or padding "\t"))
-             (icon (cond
-                    ((file-symlink-p path)
-                     (all-the-icons-octicon "file-symlink-directory" :height 1.0 :v-adjust 0.0))
-                    ((all-the-icons-dir-is-submodule path)
-                     (all-the-icons-octicon "file-submodule" :height 1.0 :v-adjust 0.0))
-                    ((file-exists-p (format "%s/.git" path))
-                     (format "%s" (all-the-icons-octicon "repo" :height 1.1 :v-adjust 0.0)))
-                    (t (apply (car matcher) (list (cadr matcher) :v-adjust 0.0))))))
-        (format "%s%s%s%s%s" padding chevron padding icon padding)))
-
-    (defun all-the-icons-reset ()
-      "Reset (unmemoize/memoize) the icons."
-      (interactive)
+  (declare-function memoize 'memoize)
+  (declare-function memoize-restore 'memoize)
+  (defun all-the-icons-reset ()
+    "Reset (unmemoize/memoize) the icons."
+    (interactive)
+    (ignore-errors
       (dolist (f '(all-the-icons-icon-for-file
                    all-the-icons-icon-for-mode
                    all-the-icons-icon-for-url
                    all-the-icons-icon-family-for-file
                    all-the-icons-icon-family-for-mode
                    all-the-icons-icon-family))
-        (ignore-errors
-          (memoize-restore f)
-          (memoize f)))
-      (message "Reset all-the-icons")))
+        (memoize-restore f)
+        (memoize f)))
+    (message "Reset all-the-icons"))
 
   (add-to-list 'all-the-icons-icon-alist
                '("\\.go$" all-the-icons-fileicon "go" :face all-the-icons-blue))
+  (add-to-list 'all-the-icons-icon-alist
+               '("\\go.mod$" all-the-icons-fileicon "go" :face all-the-icons-dblue))
+  (add-to-list 'all-the-icons-icon-alist
+               '("\\go.sum$" all-the-icons-fileicon "go" :face all-the-icons-dpurple))
   (add-to-list 'all-the-icons-mode-icon-alist
                '(go-mode all-the-icons-fileicon "go" :face all-the-icons-blue))
   (add-to-list 'all-the-icons-mode-icon-alist
@@ -575,6 +563,8 @@ _q_ quit            _c_ create          _<_ previous
                '(diff-mode all-the-icons-octicon "git-compare" :v-adjust 0.0 :face all-the-icons-lred))
   (add-to-list 'all-the-icons-mode-icon-alist
                '(flycheck-error-list-mode all-the-icons-octicon "checklist" :height 1.1 :v-adjust 0.0 :face all-the-icons-lred))
+  (add-to-list 'all-the-icons-icon-alist
+               '("\\.rss$" all-the-icons-octicon "rss" :height 1.1 :v-adjust 0.0 :face all-the-icons-lorange))
   (add-to-list 'all-the-icons-mode-icon-alist
                '(elfeed-search-mode all-the-icons-faicon "rss-square" :v-adjust -0.1 :face all-the-icons-orange))
   (add-to-list 'all-the-icons-mode-icon-alist
@@ -818,49 +808,29 @@ _q_ quit            _c_ create          _<_ previous
 
 (use-package ibuffer
   :straight nil
-  :functions (all-the-icons-icon-for-file
-              all-the-icons-icon-for-mode
-              all-the-icons-auto-mode-match?
-              all-the-icons-faicon
-              my-ibuffer-find-file)
+  :functions (my-ibuffer-find-file)
   :commands (ibuffer-find-file
              ibuffer-current-buffer)
   :bind ("C-x C-b" . ibuffer)
   :init (setq ibuffer-filter-group-name-face '(:inherit (font-lock-string-face bold)))
   :config
-  ;; Display buffer icons on GUI
-  (when (and (display-graphic-p)
-             (require 'all-the-icons nil t))
-    ;; For alignment, the size of the name field should be the width of an icon
-    (define-ibuffer-column icon (:name "  ")
-      (let ((icon (if (and (buffer-file-name)
-                           (all-the-icons-auto-mode-match?))
-                      (all-the-icons-icon-for-file (file-name-nondirectory (buffer-file-name)) :v-adjust -0.05)
-                    (all-the-icons-icon-for-mode major-mode :v-adjust -0.05))))
-        (if (symbolp icon)
-            (setq icon (all-the-icons-faicon "file-o" :face 'all-the-icons-dsilver :height 0.8 :v-adjust 0.0))
-          icon)))
-
-    (setq ibuffer-formats `((mark modified read-only locked
-                                  ;; Here you may adjust by replacing :right with :center or :left
-                                  ;; According to taste, if you want the icon further from the name
-                                  " " (icon 2 2 :left :elide)
-                                  ,(propertize " " 'display `(space :align-to 8))
-                                  (name 18 18 :left :elide)
-                                  " " (size 9 -1 :right)
-                                  " " (mode 16 16 :left :elide) " " filename-and-process)
-                            (mark " " (name 16 -1) " " filename))))
-
   (with-eval-after-load 'counsel
-    (defun my-ibuffer-find-file ()
-      (interactive)
-      (let ((default-directory (let ((buf (ibuffer-current-buffer)))
-                                 (if (buffer-live-p buf)
-                                     (with-current-buffer buf
-                                       default-directory)
-                                   default-directory))))
-        (counsel-find-file default-directory)))
-    (advice-add #'ibuffer-find-file :override #'my-ibuffer-find-file)))
+    (with-no-warnings
+      (defun my-ibuffer-find-file ()
+        (interactive)
+        (let ((default-directory (let ((buf (ibuffer-current-buffer)))
+                                   (if (buffer-live-p buf)
+                                       (with-current-buffer buf
+                                         default-directory)
+                                     default-directory))))
+          (counsel-find-file default-directory)))
+      (advice-add #'ibuffer-find-file :override #'my-ibuffer-find-file))))
+
+(use-package all-the-icons-ibuffer
+  :init
+  (setq all-the-icons-ibuffer-icon-size 0.85)
+  (all-the-icons-ibuffer-mode 1))
+
 ;; Group ibuffer's list by project root
 (use-package ibuffer-projectile
   :functions all-the-icons-octicon ibuffer-do-sort-by-alphabetic
@@ -874,8 +844,8 @@ _q_ quit            _c_ create          _<_ previous
             (concat
              (all-the-icons-octicon "file-directory"
                                     :face ibuffer-filter-group-name-face
-                                    :v-adjust -0.05
-                                    :height 1.25)
+                                    :v-adjust 0.0
+                                    :height 1.0)
              " ")
           "Project: ")))
 ;; Files
@@ -892,11 +862,6 @@ _q_ quit            _c_ create          _<_ previous
       large-file-warning-threshold (* 20 1000 1000))
 
 (setq vc-follow-symlinks t)
-(setq dired-dwim-target t ; "Enable side-by-side `dired` buffer targets."
-        dired-recursive-copies 'always ; "Better recursion in `dired`."
-        dired-recursive-deletes 'top
-        delete-by-moving-to-trash t
-        dired-use-ls-dired nil)
 
 (use-package display-line-numbers
   :straight nil
