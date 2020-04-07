@@ -17,6 +17,14 @@
               (set-frame-parameter nil 'ns-appearance bg)
               (setcdr (assq 'ns-appearance default-frame-alist) bg))))
 
+;; Dired fixes for macOS
+(setq dired-use-ls-dired nil)
+(when (executable-find "gls")
+  ;; Use GNU ls as `gls' from `coreutils' if available.
+  (setq insert-directory-program "gls"
+        ls-lisp-use-insert-directory-program t
+        dired-listing-switches "-alh --group-directories-first"))
+
 (use-package reveal-in-osx-finder
   :commands reveal-in-osx-finder)
 
