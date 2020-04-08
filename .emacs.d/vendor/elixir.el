@@ -4,7 +4,10 @@
 ;;; Code:
 
 ;; Erlang / Elixir
-(use-package erlang)
+(use-package erlang
+  :mode ("\\.erlang\\'" . erlang-mode)
+  :mode ("/rebar\\.config\\(?:\\.script\\)?\\'" . erlang-mode)
+  :mode ("/\\(?:app\\|sys\\)\\.config\\'" . erlang-mode))
 (use-package elixir-mode
   :config
   (progn
