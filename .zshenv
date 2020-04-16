@@ -1,22 +1,5 @@
-# Set Language
-export LANG=en_US.UTF-8
-export LANGUAGE=en_US.UTF-8
-export LC_CTYPE=en_US.UTF-8
-export LC_ALL=en_US.UTF-8
-
-export GOPATH="$HOME/code/golang"
-
-path=(
-  $HOME/.local/bin
-  $HOME/.platformio/penv/bin
-  $HOME/.cargo/bin
-  $GOPATH/bin
-  $path
-)
-
-. $HOME/.asdf/asdf.sh
-
-[[ -f ~/.zshenv.local ]] && source ~/.zshenv.local
-
-export PATH
-
+# Ensure that a non-login, non-interactive shell has a defined environment.
+# (Only once) if it was not sourced before, becuase .zshenv is always sourced
+if [[ ( "$SHLVL" -eq 1 && ! -o LOGIN ) && -s "${ZDOTDIR:-$HOME}/.zprofile" ]]; then
+  source "$HOME/.zprofile"
+fi

@@ -90,8 +90,7 @@ autoload -Uz _zinit
 # (this is currently required for annexes)
 zinit light-mode for \
     zinit-zsh/z-a-patch-dl \
-    zinit-zsh/z-a-as-monitor \
-    zinit-zsh/z-a-bin-gem-node
+    zinit-zsh/z-a-as-monitor
 
 zinit light zsh-users/zsh-autosuggestions
 zinit light zsh-users/zsh-syntax-highlighting
