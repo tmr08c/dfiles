@@ -135,9 +135,10 @@ function vterm_printf(){
 autoload -Uz compinit
 compinit
 
+export ERL_AFLAGS="-kernel shell_history enabled"
+
 [[ -f ~/.zshrc.local ]] && source ~/.zshrc.local
 [[ -f ~/.zshrc.private ]] && source ~/.zshrc.private
-
 
 # Aliases
 [[ -f ~/.aliases ]] && source ~/.aliases

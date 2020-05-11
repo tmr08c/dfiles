@@ -1,1 +1,1 @@
-export ERL_AFLAGS="-kernel shell_history enabled"
+.zshrc.local##os.Darwin,hostname.Enzyme-MBP
