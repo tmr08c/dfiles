@@ -52,3 +52,11 @@
 ;;
 ;; You can also try 'gd' (or 'C-c g d') to jump to their definition and see how
 ;; they are implemented.
+
+
+;; Treat underscore is a word character
+(add-hook! 'ruby-mode-hook (modify-syntax-entry ?_ "w"))
+(add-hook! 'elixir-mode-hook (modify-syntax-entry ?_ "w"))
+
+;; Add ElixirLS so Emacs can find it
+(add-to-list 'exec-path "~/code/github/elixir-ls/release")

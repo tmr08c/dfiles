@@ -11,7 +11,7 @@ if [ "$system_type" = "Darwin" ]; then
 
 
     echo "Configure Yubikey dependencies"
-    brew install gnupg yubikey-personalization hopenpgp-tools pinentry-mac
+    brew install gnupg yubikey-personalization hopenpgp-tools ykman pinentry-mac
     brew install direnv
   fi
 
