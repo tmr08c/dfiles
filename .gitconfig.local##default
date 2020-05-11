@@ -1,7 +1,10 @@
 [user]
   name = Justin Smestad
   email = justin.smestad@gmail.com
+  signingkey = 1CAE895F6E08EA26
 [github]
   user = jsmestad
 [include]
   path = .gitconfig.private
+[commit]
+  gpgsign = true
