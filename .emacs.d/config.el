@@ -681,6 +681,9 @@ _q_ quit            _c_ create          _<_ previous
   (doom-themes-org-config)
 
   (doom-themes-neotree-config)
+  (setq doom-themes-neotree-enable-variable-pitch t
+        doom-themes-neotree-file-icons 'simple
+        doom-themes-neotree-line-spacing 2)
   (doom-themes-treemacs-config))
 
 

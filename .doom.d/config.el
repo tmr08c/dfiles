@@ -1,59 +1,54 @@
-;;; ~/.doom.d/config.el -*- lexical-binding: t; -*-
+;;; $DOOMDIR/config.el -*- lexical-binding: t; -*-
 
-;; (load! "+bindings")
+;; Place your private configuration here! Remember, you do not need to run 'doom
+;; sync' after modifying this file!
 
-(setq doom-font (font-spec :family "Cascadia Code")
-      doom-variable-pitch-font (font-spec :family "Fira Sans")
-      doom-theme 'doom-one)
 
-;; (let ((emoji-font-face
-;;        (if IS-MAC "Apple Color Emoji" "Twitter Color Emoji"))
-;;       (font-size
-;;        (if IS-MAC 13 15)))
-;;   (setq doom-unicode-font (font-spec :name emoji-font-face :size font-size)
-;;         doom-font (font-spec :family "Fira Mono" :size font-size)))
+;; Some functionality uses this to identify you, e.g. GPG configuration, email
+;; clients, file templates and snippets.
+(setq user-full-name "Justin Smestad"
+      user-mail-address "justin.smestad@gmail.com")
 
-;; (when IS-LINUX
-;;   (map!
-;;    ;; Use Super-S to save like I am on macOS
-;;    :n "s-s" (λ! (call-interactively (key-binding "\C-x\C-s")))))
+;; Doom exposes five (optional) variables for controlling fonts in Doom. Here
+;; are the three important ones:
+;;
+;; + `doom-font'
+;; + `doom-variable-pitch-font'
+;; + `doom-big-font' -- used for `doom-big-font-mode'; use this for
+;;   presentations or streaming.
+;;
+;; They all accept either a font-spec, font string ("Input Mono-12"), or xlfd
+;; font string. You generally only need these two:
+(setq doom-font (font-spec :family "Cascadia Code" :height 120)
+      doom-variable-pitch-font (font-spec :family "Ubuntu" :height 120))
 
-(def-package! aggressive-indent
-  :hook ((emacs-lisp-mode css-mode lisp-mode) . aggressive-indent-mode))
+;; There are two ways to load a theme. Both assume the theme is installed and
+;; available. You can either set `doom-theme' or manually load a theme with the
+;; `load-theme' function. This is the default:
+(setq doom-theme 'doom-one)
 
-;; (after! doom-themes
-;;   (remove-hook! 'doom-load-theme-hook 'doom-themes-neotree-config))
+;; If you use `org' and don't want your org files in the default location below,
+;; change `org-directory'. It must be set before org loads!
+(setq org-directory "~/org/")
 
-;; (after! go-mode
-;;   (add-hook 'before-save-hook 'gofmt-before-save) ; run gofmt on save
+;; This determines the style of line numbers in effect. If set to `nil', line
+;; numbers are disabled. For relative line numbers, set this to `relative'.
+(setq display-line-numbers-type t)
 
-;;   (defun my-go-mode-hook-fn ()
-;;     (setq tab-width 2
-;;           indent-tabs-mode 1)
-;;     (flycheck-gometalinter-setup)
-;;     (flycheck-mode 1))
-;;   (add-hook 'go-mode-hook #'my-go-mode-hook-fn))
 
-(after! company
-  (setq company-idle-delay 0.6
-        company-minimum-prefix-length 2))
-
-(after! counsel
-  (setq counsel-rg-base-command "rg -zS -M 150 --no-heading --line-number --color never %s ."))
-
-(after! ivy
-  (setq ivy-re-builders-alist '((t . ivy--regex-ignore-order))))
-
-;; (after! projectile
-;;   (setq projectile-globally-ignored-file-suffixes (append (list ".elc"))
-;;         projectile-globally-ignored-directories (append (list "node_modules"))
-;;         projectile-track-known-projects-automatically nil
-;;         counsel-projectile-sort-projects t
-;;         projectile-ignored-projects nil))
-
-;; (after! swiper
-;;   (map!
-;;    :n "C-s" 'swiper))
-
-(after! which-key
-  (setq which-key-idle-delay 0.8))
+;; Here are some additional functions/macros that could help you configure Doom:
+;;
+;; - `load!' for loading external *.el files relative to this one
+;; - `use-package' for configuring packages
+;; - `after!' for running code after a package has loaded
+;; - `add-load-path!' for adding directories to the `load-path', relative to
+;;   this file. Emacs searches the `load-path' when you load packages with
+;;   `require' or `use-package'.
+;; - `map!' for binding new keys
+;;
+;; To get information about any of these functions/macros, move the cursor over
+;; the highlighted symbol at press 'K' (non-evil users must press 'C-c g k').
+;; This will open documentation for it, including demos of how they are used.
+;;
+;; You can also try 'gd' (or 'C-c g d') to jump to their definition and see how
+;; they are implemented.
