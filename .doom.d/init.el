@@ -92,7 +92,7 @@
        (lookup              ; navigate your code and its documentation
         +docsets
         +xwidget)
-       lsp
+       (lsp +peek)
        ;;macos             ; MacOS-specific commands
        magit             ; a git porcelain for Emacs
        ;;make              ; run make tasks from Emacs
