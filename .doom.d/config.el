@@ -53,6 +53,15 @@
 ;; You can also try 'gd' (or 'C-c g d') to jump to their definition and see how
 ;; they are implemented.
 
+(after! org
+  (setq org-hide-emphasis-markers t
+        org-insert-heading-respect-content t
+        org-superstar-headline-bullets-list '("⁖" "◉" "○" "✸" "✿")))
+(use-package! org-autolist :after org)
+(use-package! org-make-toc :after org)
+(use-package! mixed-pitch
+  :hook
+  ((writeroom-mode org-mode markdown-mode gfm-mode) . mixed-pitch-mode))
 
 ;; Treat underscore is a word character
 (add-hook! 'ruby-mode-hook (modify-syntax-entry ?_ "w"))
