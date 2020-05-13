@@ -48,3 +48,4 @@
 (package! org-autolist)
 (package! org-make-toc)
 (package! mixed-pitch)
+(package! writegood-mode :disable t)
