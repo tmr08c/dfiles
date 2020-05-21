@@ -63,6 +63,9 @@
   :hook
   ((writeroom-mode org-mode markdown-mode gfm-mode) . mixed-pitch-mode))
 
+(use-package! feature-mode
+  :mode (("\\.feature\\'" . feature-mode)))
+
 ;; Treat underscore is a word character
 (add-hook! 'ruby-mode-hook (modify-syntax-entry ?_ "w"))
 (add-hook! 'elixir-mode-hook (modify-syntax-entry ?_ "w"))
