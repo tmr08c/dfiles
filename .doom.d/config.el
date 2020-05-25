@@ -35,6 +35,9 @@
 ;; numbers are disabled. For relative line numbers, set this to `relative'.
 (setq display-line-numbers-type t)
 
+(setq-default tab-width 2
+              ;; Use Github as the standard, ref http://hilton.org.uk/blog/source-code-line-length
+              fill-column 125)
 
 ;; Here are some additional functions/macros that could help you configure Doom:
 ;;

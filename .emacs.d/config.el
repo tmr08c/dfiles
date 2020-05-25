@@ -976,7 +976,6 @@ _q_ quit            _c_ create          _<_ previous
       create-lockfiles nil
       cua-mode t
       desktop-save-mode nil
-      indent-tabs-mode nil
 
       make-backup-files nil ; don't create backup~ files
 
