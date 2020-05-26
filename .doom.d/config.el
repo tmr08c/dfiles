@@ -57,21 +57,51 @@
 ;; they are implemented.
 
 (after! org
-  (setq org-hide-emphasis-markers t
-        org-insert-heading-respect-content t
-        org-superstar-headline-bullets-list '("⁖" "◉" "○" "✸" "✿")))
+  (setq! org-hide-emphasis-markers t
+         org-insert-heading-respect-content t
+         org-superstar-headline-bullets-list '("⁖" "◉" "○" "✸" "✿")))
 (use-package! org-autolist :after org)
-(use-package! org-make-toc :after org)
 (use-package! mixed-pitch
   :hook
   ((writeroom-mode org-mode markdown-mode gfm-mode) . mixed-pitch-mode))
 
+(setq! ruby-align-to-stmt-keywords '(if while unless until begin case for def))
 (use-package! feature-mode
   :mode (("\\.feature\\'" . feature-mode)))
+(after! rspec-mode
+  (dolist (mode '(rspec-verifiable-mode-map rspec-mode-map))
+    (undefine-key! mode "SPC m t v"))
+
+    (map! :localleader
+        :prefix "t"
+        :map (rspec-verifiable-mode-map rspec-mode-map)
+        "b" #'rspec-verify))
+
+;; Comma shortcut to SPC m
+(after! general
+  (general-evil-setup)
+  (general-vmap "," (general-simulate-key "SPC m"))
+  (general-nmap "," (general-simulate-key "SPC m")))
 
 ;; Treat underscore is a word character
-(add-hook! 'ruby-mode-hook (modify-syntax-entry ?_ "w"))
-(add-hook! 'elixir-mode-hook (modify-syntax-entry ?_ "w"))
+(add-hook! '(ruby-mode-hook elixir-mode-hook)
+  (modify-syntax-entry ?_ "w"))
+
+;; Disable some flycheck checkers
+(setq-default flycheck-disabled-checkers '(ruby-rubylint emacs-lisp-checkdoc))
 
 ;; Add ElixirLS so Emacs can find it
 (add-to-list 'exec-path "~/code/github/elixir-ls/release")
+
+;; Do not show hidden files by default
+(setq! neo-show-hidden-files nil)
+(after! neotree
+  ;; Treat all files with a leading dot as hidden
+  (pushnew! neo-hidden-regexp-list "\\`.DS_Store$" "^\\.")
+  (undefine-key! 'neotree-mode-map "v" "s" "RET")
+  (map! :map neotree-mode-map
+    :n "RET" 'neotree-enter
+    :n "q" 'neotree-hide
+    :n "C" 'neotree-copy-node
+    :n "o" 'neotree-enter
+    :n "I" 'neotree-hidden-file-toggle))
