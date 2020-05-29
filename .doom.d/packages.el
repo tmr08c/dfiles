@@ -50,3 +50,4 @@
 (package! writegood-mode :disable t)
 
 (package! feature-mode)
+(package! all-the-icons-ibuffer)

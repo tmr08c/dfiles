@@ -56,6 +56,9 @@
 ;; You can also try 'gd' (or 'C-c g d') to jump to their definition and see how
 ;; they are implemented.
 
+(use-package! all-the-icons-ibuffer
+  :init (all-the-icons-ibuffer-mode 1))
+
 (after! org
   (setq! org-hide-emphasis-markers t
          org-insert-heading-respect-content t
