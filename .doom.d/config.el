@@ -36,6 +36,7 @@
 (setq display-line-numbers-type t)
 
 (setq-default tab-width 2
+              indent-tabs-mode nil
               ;; Use Github as the standard, ref http://hilton.org.uk/blog/source-code-line-length
               fill-column 125)
 
@@ -95,6 +96,14 @@
 
 ;; Add ElixirLS so Emacs can find it
 (add-to-list 'exec-path "~/code/github/elixir-ls/release")
+
+(after! web-mode
+  (setq web-mode-markup-indent-offset 2
+        web-mode-css-indent-offset 2
+        web-mode-code-indent-offset 2
+
+        ;; Highlight the current element
+        web-mode-enable-current-element-highlight t))
 
 ;; Do not show hidden files by default
 (setq! neo-show-hidden-files nil)
