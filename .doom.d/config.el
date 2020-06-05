@@ -117,3 +117,70 @@
     :n "C" 'neotree-copy-node
     :n "o" 'neotree-enter
     :n "I" 'neotree-hidden-file-toggle))
+
+
+(setq ivy-read-action-function #'ivy-hydra-read-action)
+
+(use-package! web-mode
+  :commands web-mode-set-engine
+  :config
+    (define-advice web-mode-guess-engine-and-content-type (:around (f &rest r) guess-engine-by-extension)
+    (if (and buffer-file-name (equal "ex" (file-name-extension buffer-file-name)))
+        (progn (setq web-mode-content-type "html")
+          (setq web-mode-engine "elixir")
+          (web-mode-on-engine-setted))
+      (apply f r))))
+
+;; (use-package! mmm-mode
+;;   :init (setq mmm-global-mode 'maybe
+;;               mmm-parse-when-idle 't
+;;               mmm-set-file-name-for-modes '(web-mode)
+;;               mmm-submode-decoration-level 0)
+;;   :config
+;;   (require 'web-mode)
+
+
+
+
+;;   (mmm-add-classes
+;;   `((elixir-liveview
+;;       :submode web-mode
+;;       :face mmm-declaration-submode-face
+;;       :front ,liveview-regex-start
+;;       :front-offset (end-of-line 1)
+;;       :include-front nil
+;;       :back ,liveview-regex-end
+;;       :include-back nil
+;;       :end-not-begin t)))
+
+;;   (mmm-add-mode-ext-class 'elixir-mode nil 'elixir-liveview))
+
+(use-package! polymode
+  :mode ("\.ex$" . poly-elixir-web-mode)
+  :config
+  (define-hostmode poly-elixir-hostmode :mode 'elixir-mode)
+  (define-innermode poly-liveview-expr-elixir-innermode
+    :mode 'web-mode
+    :head-matcher (rx line-start (* space) "~L" (= 3 (char "\"'")) line-end)
+    :tail-matcher (rx line-start (* space) (= 3 (char "\"'")) line-end)
+    :head-mode 'host
+    :tail-mode 'host
+    :allow-nested nil
+    :keep-in-mode 'host
+    :fallback-mode 'host)
+  (define-polymode poly-elixir-web-mode
+    :hostmode 'poly-elixir-hostmode
+    :innermodes '(poly-liveview-expr-elixir-innermode))
+  )
+(setq web-mode-engines-alist '(("elixir" . "\\.ex\\'")))
+
+;; TODO: Get exdoc highlighting working maybe?
+;; (define-innermode poly-markdown-exdoc-innermode
+;;   :mode 'gfm-mode
+;;   :head-matcher (rx "@" (or "moduledoc" "doc") space (= 3 (char "\"'")))
+;;   :tail-matcher (rx (= 3 (char "\"'")))
+;;   :head-mode 'host
+;;   :tail-mode 'host
+;;   :allow-nested nil
+;;   :keep-in-mode 'host
+;;   :fallback-mode 'host)

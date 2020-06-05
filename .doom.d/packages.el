@@ -51,3 +51,6 @@
 
 (package! feature-mode)
 (package! all-the-icons-ibuffer)
+(package! polymode
+  :pin "44265e3516")
+;; (package! mmm-mode)
