@@ -122,7 +122,7 @@
 (setq ivy-read-action-function #'ivy-hydra-read-action)
 
 (use-package! web-mode
-  :commands web-mode-set-engine
+  ;; :commands web-mode-set-engine
   :config
     (define-advice web-mode-guess-engine-and-content-type (:around (f &rest r) guess-engine-by-extension)
     (if (and buffer-file-name (equal "ex" (file-name-extension buffer-file-name)))
@@ -156,7 +156,7 @@
 ;;   (mmm-add-mode-ext-class 'elixir-mode nil 'elixir-liveview))
 
 (use-package! polymode
-  :mode ("\.ex$" . poly-elixir-web-mode)
+  :mode ("\\.ex\\'" . poly-elixir-web-mode)
   :config
   (define-hostmode poly-elixir-hostmode :mode 'elixir-mode)
   (define-innermode poly-liveview-expr-elixir-innermode
