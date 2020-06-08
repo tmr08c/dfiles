@@ -122,6 +122,8 @@
 
 (setq ivy-read-action-function #'ivy-hydra-read-action)
 
+;; Stop DOOM from detecting HTML as "large files"
+(pushnew! doom-large-file-excluded-modes 'web-mode)
 (use-package! web-mode
   ;; :commands web-mode-set-engine
   :config
