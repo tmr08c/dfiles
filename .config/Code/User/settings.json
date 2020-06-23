@@ -1259,5 +1259,6 @@
     "workbench.colorTheme": "Atom One Dark",
     "workbench.iconTheme": "vscode-great-icons",
     "editor.fontLigatures": true,
-    "window.menuBarVisibility": "toggle"
+    "window.menuBarVisibility": "toggle",
+    "extensions.showRecommendationsOnlyOnDemand": true
 }

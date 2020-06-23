@@ -54,3 +54,5 @@
 (package! polymode
   :pin "44265e3516")
 ;; (package! mmm-mode)
+;;
+(unpin! elixir-mode)
