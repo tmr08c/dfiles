@@ -56,3 +56,4 @@
 ;; (package! mmm-mode)
 ;;
 (unpin! elixir-mode)
+(unpin! lsp-mode)
