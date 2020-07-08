@@ -22,6 +22,14 @@
 (setq doom-font (font-spec :family "Cascadia Code" :height 120)
       doom-variable-pitch-font (font-spec :family "Ubuntu" :height 120))
 
+;; Scratch mode inherit from last buffers major mode
+(setq doom-scratch-initial-major-mode t)
+
+;; Disable projectile caching when `fd` is present.
+;; Taken from issue #3376
+(after! projectile
+  (setq! projectile-enable-caching (not (executable-find doom-projectile-fd-binary))))
+
 ;; There are two ways to load a theme. Both assume the theme is installed and
 ;; available. You can either set `doom-theme' or manually load a theme with the
 ;; `load-theme' function. This is the default:
