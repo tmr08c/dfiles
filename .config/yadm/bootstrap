@@ -15,7 +15,10 @@ if [ "$system_type" = "Darwin" ]; then
     brew install direnv
 
     echo "Emacs mode dependencies"
-    brew install coreutils cmake jq shellcheck ripgrep fd
+    brew install coreutils cmake jq shellcheck ripgrep fd aspell pandoc jansson
+
+    echo "Utilities"
+    brew install websocat tldr tig ripgrep mkcert
   fi
 
   echo "Install iTerm2 color scheme"
