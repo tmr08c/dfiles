@@ -11,6 +11,7 @@ path=(
   $HOME/.platformio/penv/bin
   $HOME/.cargo/bin
   $GOPATH/bin
+  $HOME/.cask/bin
   $path
 )
 
