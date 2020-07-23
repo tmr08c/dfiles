@@ -154,7 +154,10 @@
 ;;   (require 'web-mode)
 
 
-
+(after! highlight-numbers
+  (puthash 'elixir-mode
+           "\\_<-?[[:digit:]]+\\(?:_[[:digit:]]\\{3\\}\\)*\\_>"
+           highlight-numbers-modelist))
 
 ;;   (mmm-add-classes
 ;;   `((elixir-liveview
