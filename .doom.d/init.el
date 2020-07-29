@@ -47,6 +47,7 @@
        ;;window-select     ; visually switch windows
        workspaces        ; tab emulation, persistence & separate workspaces
        ;;zen               ; distraction-free coding or writing
+       ;;minimap           ; show a map of the code on the side
 
        :editor
        (evil +everywhere); come to the dark side, we have cookies
@@ -108,7 +109,7 @@
        ;;agda              ; types of types of types of types...
        (cc +lsp)                ; C/C++/Obj-C madness
        ;;clojure           ; java with a lisp
-       ;;common-lisp       ; if you've seen one lisp, you've seen them all
+       common-lisp       ; if you've seen one lisp, you've seen them all
        ;;coq               ; proofs-as-programs
        ;;crystal           ; ruby at the speed of c
        ;;csharp            ; unity, .NET, and mono shenanigans
