@@ -213,3 +213,5 @@
 
 ;; Enable Gravatars when viewing comments
 (setq magit-revision-show-gravatars '("^Author:     " . "^Commit:     "))
+
+(setq auth-sources '("~/.authinfo"))

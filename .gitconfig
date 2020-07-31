@@ -1,39 +1,39 @@
 [alias]
-  ci = commit
-  co = checkout
-  f = fetch
-  s = status
-  b = branch
-  d = diff
-  a = add
-  l = log
-  ctags = !.git/hooks/ctags
-  cleanup = "!git branch --merged | grep  -v '\\*\\|master\\|develop' | xargs -n 1 git branch -d"
-  set-upstream = "!git branch --set-upstream-to=origin/`git symbolic-ref --short HEAD"
+	ci = commit
+	co = checkout
+	f = fetch
+	s = status
+	b = branch
+	d = diff
+	a = add
+	l = log
+	ctags = !.git/hooks/ctags
+	cleanup = "!git branch --merged | grep  -v '\\*\\|master\\|develop' | xargs -n 1 git branch -d"
+	set-upstream = "!git branch --set-upstream-to=origin/`git symbolic-ref --short HEAD"
 [core]
-  excludesfile = ~/.gitignore
+	excludesfile = ~/.gitignore
 [color]
-  ui = auto
+	ui = auto
 [merge]
-  # Show merge statistics after merge.
-  stat = true
-  ff = only
+	# Show merge statistics after merge.
+	stat = true
+	ff = only
 [include]
-  path = .gitconfig.local
+	path = .gitconfig.local
 [commit]
-  template = ~/.gitmessage
+	template = ~/.gitmessage
 [push]
-  default = simple
+	default = simple
 [pull]
-  ff = only
+	ff = only
 [init]
-  templatedir = ~/.git_template
+	templatedir = ~/.git_template
 [branch]
-  autosetupmerge = always
+	autosetupmerge = always
 [fetch]
-  prune = true
+	prune = true
 [url "git@github.com:"]
-  insteadOf = https://github.com/
+	insteadOf = https://github.com/
 [user]
 	email = justin.smestad@gmail.com
 	name = Justin Smestad
