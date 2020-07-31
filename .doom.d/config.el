@@ -28,7 +28,9 @@
 ;; Disable projectile caching when `fd` is present.
 ;; Taken from issue #3376
 (after! projectile
-  (setq! projectile-enable-caching (not (executable-find doom-projectile-fd-binary))))
+  (setq! projectile-enable-caching nil
+         ;;(not (executable-find doom-projectile-fd-binary))
+         ))
 
 ;; Elixir LSP keeps checking project every N seconds otherwise
 (setq lsp-enable-file-watchers t)
@@ -118,17 +120,17 @@
         web-mode-enable-current-element-highlight t))
 
 ;; Do not show hidden files by default
-(setq! neo-show-hidden-files nil)
-(after! neotree
-  ;; Treat all files with a leading dot as hidden
-  (pushnew! neo-hidden-regexp-list "\\`.DS_Store$" "^\\.")
-  (undefine-key! 'neotree-mode-map "v" "s" "RET")
-  (map! :map neotree-mode-map
-    :n "RET" 'neotree-enter
-    :n "q" 'neotree-hide
-    :n "C" 'neotree-copy-node
-    :n "o" 'neotree-enter
-    :n "I" 'neotree-hidden-file-toggle))
+;; (setq! neo-show-hidden-files nil)
+;; (after! neotree
+;;   ;; Treat all files with a leading dot as hidden
+;;   (pushnew! neo-hidden-regexp-list "\\`.DS_Store$" "^\\.")
+;;   (undefine-key! 'neotree-mode-map "v" "s" "RET")
+;;   (map! :map neotree-mode-map
+;;     :n "RET" 'neotree-enter
+;;     :n "q" 'neotree-hide
+;;     :n "C" 'neotree-copy-node
+;;     :n "o" 'neotree-enter
+;;     :n "I" 'neotree-hidden-file-toggle))
 
 
 (setq ivy-read-action-function #'ivy-hydra-read-action)
@@ -207,3 +209,7 @@
   (let ((face (or (get-char-property pos 'read-face-name)
                   (get-char-property pos 'face))))
     (if face (message "Face: %s" face) (message "No face at %d" pos))))
+
+
+;; Enable Gravatars when viewing comments
+(setq magit-revision-show-gravatars '("^Author:     " . "^Commit:     "))
