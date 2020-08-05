@@ -218,3 +218,6 @@
 
 ;; Support dotenv files with ENV names
 (add-to-list 'auto-mode-alist `(,(rx ".env" (or ".production" ".test" ".development") string-end) . sh-mode))
+
+;; Brewfile
+(add-to-list 'auto-mode-alist `(,(rx "Brewfile" string-end) . fundamental-mode))
