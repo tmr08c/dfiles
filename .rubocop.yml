@@ -105,7 +105,7 @@ Layout/EndAlignment:
   Description: 'Align ends correctly.'
   Enabled: true
 
-Lint/EndInMethod:
+Style/EndBlock:
   Description: 'END blocks should not be placed inside method definitions.'
   Enabled: true
 

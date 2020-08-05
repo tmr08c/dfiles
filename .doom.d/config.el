@@ -215,3 +215,6 @@
 (setq magit-revision-show-gravatars '("^Author:     " . "^Commit:     "))
 
 (setq auth-sources '("~/.authinfo"))
+
+;; Support dotenv files with ENV names
+(add-to-list 'auto-mode-alist `(,(rx ".env" (or ".production" ".test" ".development") string-end) . sh-mode))
