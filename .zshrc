@@ -7,7 +7,7 @@ fi
 
 OS=$(uname -s)
 
-fpath=( $HOME/.zsh "${fpath[@]}" )
+fpath=(${ASDF_DIR}/completions $HOME/.zsh "${fpath[@]}" )
 
 if (( $+commands[emacs] )); then
 
@@ -103,7 +103,6 @@ zinit light zsh-users/zsh-autosuggestions
 zinit light zsh-users/zsh-syntax-highlighting
 
 zinit snippet OMZ::plugins/ssh-agent/ssh-agent.plugin.zsh
-zinit snippet OMZ::plugins/asdf/asdf.plugin.zsh
 
 zinit ice as"completion"
 zinit snippet https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/plugins/mix/_mix
