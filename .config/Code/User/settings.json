@@ -1256,9 +1256,9 @@
         "editor.defaultFormatter": "ms-vscode.cpptools"
     },
     "platformio-ide.forceUploadAndMonitor": true,
-    "workbench.colorTheme": "Atom One Dark",
-    "workbench.iconTheme": "vscode-great-icons",
     "editor.fontLigatures": true,
     "window.menuBarVisibility": "toggle",
-    "extensions.showRecommendationsOnlyOnDemand": true
+    "extensions.showRecommendationsOnlyOnDemand": true,
+    "workbench.colorTheme": "One Dark Pro",
+    "workbench.iconTheme": "vscode-great-icons"
 }
