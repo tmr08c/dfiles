@@ -8,22 +8,22 @@ if [ "$system_type" = "Darwin" ]; then
   if [ ! command -v brew >/dev/null 2>&1 ]; then
     echo "Installing homebrew"
     /usr/bin/ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
-
-
-    echo "Configure Yubikey dependencies"
-    brew install gnupg yubikey-personalization hopenpgp-tools ykman pinentry-mac
-    brew install direnv
-
-    echo "Emacs mode dependencies"
-    brew install coreutils cmake jq shellcheck ripgrep fd aspell pandoc jansson
-
-    echo "Utilities"
-    brew install websocat tldr tig ripgrep mkcert
   fi
+
+  echo "Configure Yubikey dependencies"
+  brew install gnupg yubikey-personalization hopenpgp-tools ykman pinentry-mac
+  brew install direnv
+
+  echo "Emacs mode dependencies"
+  brew install coreutils cmake jq shellcheck ripgrep fd aspell pandoc jansson
+
+  echo "Utilities"
+  brew install websocat tldr tig ripgrep mkcert
 
   echo "Install iTerm2 color scheme"
   echo "Run \`wget https://raw.githubusercontent.com/martinlindhe/base16-iterm2/master/itermcolors/base16-monokai-256.itermcolors\` and install it"
 
+  ln -sf ~/.config/Code/User/settings.json ~/Library/Application\ Support/Code/User/settings.json
 else
   echo "Configure Keyboard Settings"
   sudo gsettings set org.gnome.desktop.peripherals.keyboard repeat-interval 30
