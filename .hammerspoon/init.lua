@@ -1,4 +1,5 @@
-hs.loadSpoon('ControlEscape'):start() -- Load Hammerspoon bits from https://github.com/jasonrudolph/ControlEscape.spoon
+-- Disable as it cannot filter between devices.
+-- hs.loadSpoon('ControlEscape'):start() -- Load Hammerspoon bits from https://github.com/jasonrudolph/ControlEscape.spoon
 
 hs.hotkey.bind({"cmd", "alt", "ctrl"}, "Right", function()
   local win = hs.window.focusedWindow()
