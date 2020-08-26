@@ -1,7 +1,5 @@
 OS=$(uname -s)
 
-fpath=(${ASDF_DIR}/completions $HOME/.zsh "${fpath[@]}" )
-
 if (( $+commands[emacs] )); then
 
   function magit() {
@@ -83,8 +81,10 @@ if [[ ! -f $HOME/.zinit/bin/zinit.zsh ]]; then
 fi
 
 source "$HOME/.zinit/bin/zinit.zsh"
-autoload -Uz _zinit
-(( ${+_comps} )) && _comps[zinit]=_zinit
+# autoload -Uz _zinit
+# (( ${+_comps} )) && _comps[zinit]=_zinit
+
+zinit fpath -f ${ASDF_DIR}/completions
 
 # Load a few important annexes, without Turbo
 # (this is currently required for annexes)
@@ -97,6 +97,11 @@ zinit from"gh-r" as"program" mv"direnv* -> direnv" \
     pick"direnv" src="zhook.zsh" for \
         direnv/direnv
 
+# zinit ice atclone"dircolors -b LS_COLORS > clrs.zsh" \
+#     atpull'%atclone' pick"clrs.zsh" nocompile'!' \
+#     atload'zstyle ":completion:*" list-colors “${(s.:.)LS_COLORS}”'
+# zinit light trapd00r/LS_COLORS
+
 zinit wait lucid light-mode for \
   atinit"zicompinit; zicdreplay" \
       zdharma/fast-syntax-highlighting \
@@ -105,7 +110,7 @@ zinit wait lucid light-mode for \
   blockf atpull'zinit creinstall -q .' \
       zsh-users/zsh-completions
 
-# zinit ice wait'1' lucid; zinit light zsh-users/zsh-completions
+
 # zinit light djui/alias-tips
 
 zinit ice lucid depth=1; zinit load romkatv/gitstatus
