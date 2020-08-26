@@ -92,8 +92,6 @@ zinit light-mode for \
     zinit-zsh/z-a-patch-dl \
     zinit-zsh/z-a-as-monitor
 
-zinit snippet OMZ::plugins/ssh-agent/ssh-agent.plugin.zsh
-
 zinit from"gh-r" as"program" mv"direnv* -> direnv" \
     atclone'./direnv hook zsh > zhook.zsh' atpull'%atclone' \
     pick"direnv" src="zhook.zsh" for \
@@ -107,15 +105,10 @@ zinit wait lucid light-mode for \
   blockf atpull'zinit creinstall -q .' \
       zsh-users/zsh-completions
 
-zinit ice as"completion"
-zinit snippet https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/plugins/mix/_mix
-
 # zinit ice wait'1' lucid; zinit light zsh-users/zsh-completions
 # zinit light djui/alias-tips
-# zinit light greymd/docker-zsh-completion
 
 zinit ice lucid depth=1; zinit load romkatv/gitstatus
-
 zinit ice depth=1; zinit light romkatv/powerlevel10k
 
 ### End of Zinit's installer chunk

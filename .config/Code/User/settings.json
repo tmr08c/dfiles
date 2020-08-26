@@ -1260,5 +1260,6 @@
     "window.menuBarVisibility": "toggle",
     "extensions.showRecommendationsOnlyOnDemand": true,
     "workbench.colorTheme": "One Dark Pro",
-    "workbench.iconTheme": "vscode-great-icons"
+    "workbench.iconTheme": "vscode-great-icons",
+    "ruby.useLanguageServer": true
 }
