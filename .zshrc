@@ -1,10 +1,3 @@
-# Enable Powerlevel10k instant prompt. Should stay close to the top of ~/.zshrc.
-# Initialization code that may require console input (password prompts, [y/n]
-# confirmations, etc.) must go above this block; everything else may go below.
-if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]; then
-  source "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
-fi
-
 OS=$(uname -s)
 
 fpath=(${ASDF_DIR}/completions $HOME/.zsh "${fpath[@]}" )
@@ -99,28 +92,33 @@ zinit light-mode for \
     zinit-zsh/z-a-patch-dl \
     zinit-zsh/z-a-as-monitor
 
-zinit light zsh-users/zsh-autosuggestions
-zinit light zsh-users/zsh-syntax-highlighting
-
 zinit snippet OMZ::plugins/ssh-agent/ssh-agent.plugin.zsh
+
+zinit from"gh-r" as"program" mv"direnv* -> direnv" \
+    atclone'./direnv hook zsh > zhook.zsh' atpull'%atclone' \
+    pick"direnv" src="zhook.zsh" for \
+        direnv/direnv
+
+zinit wait lucid light-mode for \
+  atinit"zicompinit; zicdreplay" \
+      zdharma/fast-syntax-highlighting \
+  atload"_zsh_autosuggest_start" \
+      zsh-users/zsh-autosuggestions \
+  blockf atpull'zinit creinstall -q .' \
+      zsh-users/zsh-completions
 
 zinit ice as"completion"
 zinit snippet https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/plugins/mix/_mix
 
-zinit light zsh-users/zsh-completions
+# zinit ice wait'1' lucid; zinit light zsh-users/zsh-completions
 # zinit light djui/alias-tips
 # zinit light greymd/docker-zsh-completion
 
-zinit light romkatv/powerlevel10k
+zinit ice lucid depth=1; zinit load romkatv/gitstatus
+
+zinit ice depth=1; zinit light romkatv/powerlevel10k
 
 ### End of Zinit's installer chunk
-
-# direnv
-if (( $+commands[direnv] )); then
-  eval "$(direnv hook zsh)"
-else
-  echo "Missing direnv. Please install it `brew install direnv` or `apt install direnv`."
-fi
 
 
 # VTerm Compat
@@ -138,8 +136,8 @@ function vterm_printf(){
 }
 
 # completion
-autoload -Uz compinit
-compinit
+# autoload -Uz compinit
+# compinit
 
 export ERL_AFLAGS="-kernel shell_history enabled"
 

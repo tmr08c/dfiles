@@ -23,6 +23,5 @@ zeus.json
 .solargraph.yml
 .ccls-cache/
 .vscode/
+.rufo
 
-# Custom definition
-backend/config/definitions.rb

@@ -19,7 +19,9 @@
 ;;
 ;; They all accept either a font-spec, font string ("Input Mono-12"), or xlfd
 ;; font string. You generally only need these two:
-(setq doom-font (font-spec :family "Cascadia Code" :height 120)
+;; (setq doom-font (font-spec :family "Cascadia Code" :height 120)
+;;       doom-variable-pitch-font (font-spec :family "Ubuntu" :height 120))
+(setq doom-font (font-spec :family "CaskaydiaCove Nerd Font Mono" :style "book" :height 120)
       doom-variable-pitch-font (font-spec :family "Ubuntu" :height 120))
 
 ;; Scratch mode inherit from last buffers major mode
@@ -90,7 +92,7 @@
   (dolist (mode '(rspec-verifiable-mode-map rspec-mode-map))
     (undefine-key! mode "SPC m t v"))
 
-    (map! :localleader
+  (map! :localleader
         :prefix "t"
         :map (rspec-verifiable-mode-map rspec-mode-map)
         "b" #'rspec-verify))
@@ -101,6 +103,9 @@
   (general-vmap "," (general-simulate-key "SPC m"))
   (general-nmap "," (general-simulate-key "SPC m")))
 
+(setq +format-on-save-enabled-modes
+      '(not ruby-mode  ; rufo is too aggressive
+            ))
 ;; Treat underscore is a word character
 (add-hook! '(ruby-mode-hook elixir-mode-hook)
   (modify-syntax-entry ?_ "w"))
@@ -140,11 +145,11 @@
 (use-package! web-mode
   ;; :commands web-mode-set-engine
   :config
-    (define-advice web-mode-guess-engine-and-content-type (:around (f &rest r) guess-engine-by-extension)
+  (define-advice web-mode-guess-engine-and-content-type (:around (f &rest r) guess-engine-by-extension)
     (if (and buffer-file-name (equal "ex" (file-name-extension buffer-file-name)))
         (progn (setq web-mode-content-type "html")
-          (setq web-mode-engine "elixir")
-          (web-mode-on-engine-setted))
+               (setq web-mode-engine "elixir")
+               (web-mode-on-engine-setted))
       (apply f r))))
 
 ;; (use-package! mmm-mode
