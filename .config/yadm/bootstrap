@@ -18,7 +18,7 @@ if [ "$system_type" = "Darwin" ]; then
   brew install coreutils cmake jq shellcheck ripgrep fd aspell pandoc jansson
 
   echo "Utilities"
-  brew install websocat tldr tig ripgrep mkcert
+  brew install websocat tldr tig ripgrep mkcert exa
 
   echo "Install iTerm2 color scheme"
   echo "Run \`wget https://raw.githubusercontent.com/martinlindhe/base16-iterm2/master/itermcolors/base16-monokai-256.itermcolors\` and install it"
