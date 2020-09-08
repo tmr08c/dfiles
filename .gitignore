@@ -24,4 +24,5 @@ zeus.json
 .ccls-cache/
 .vscode/
 .rufo
-
+config/definitions.rb
+.reek.yml
