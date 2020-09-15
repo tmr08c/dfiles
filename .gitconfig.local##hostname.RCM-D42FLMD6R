@@ -1,4 +1,0 @@
-[includeIf "gitdir:~/code/redcanary/"]
-  path = ~/code/redcanary/.gitconfig
-[includeIf "gitdir:~/code/github/"]
-  path = ~/code/github/.gitconfig
