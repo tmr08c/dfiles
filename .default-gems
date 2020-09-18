@@ -5,3 +5,4 @@ rubocop
 solargraph
 ruby-debug-ide
 debase
+reek
