@@ -12,13 +12,12 @@ if [ "$system_type" = "Darwin" ]; then
 
   echo "Configure Yubikey dependencies"
   brew install gnupg yubikey-personalization hopenpgp-tools ykman pinentry-mac
-  brew install direnv
 
   echo "Emacs mode dependencies"
   brew install coreutils cmake jq shellcheck ripgrep fd aspell pandoc jansson
 
   echo "Utilities"
-  brew install websocat tldr tig ripgrep mkcert exa
+  brew install websocat tldr tig ripgrep mkcert exa graphviz sbcl grip glslang
 
   echo "Install iTerm2 color scheme"
   echo "Run \`wget https://raw.githubusercontent.com/martinlindhe/base16-iterm2/master/itermcolors/base16-monokai-256.itermcolors\` and install it"
@@ -134,24 +133,19 @@ if [ command -v vim >/dev/null 2>&1 ]; then
 fi
 
 if [ ! -d ~/.asdf ]; then
-  git clone https://github.com/asdf-vm/asdf.git ~/.asdf --branch v0.5.1
+  git clone https://github.com/asdf-vm/asdf.git ~/.asdf --branch v0.8.0
 fi
 
 if [ ! -d ~/.emacs-doom.d ]; then
   echo "Grabbing Doom Emacs"
-  git clone -b develop https://github.com/hlissner/doom-emacs.git ~/.emacs-doom.d
-  ~/.emacs-doom.d/bin/doom refresh
+  git clone -b develop https://github.com/hlissner/doom-emacs.git ~/.emacs.d
+  ~/.emacs.d/bin/doom refresh
 fi
 
 if [ ! -d ~/.emacs-spacemacs.d ]; then
   echo "Grabbing Spacemacs"
   git clone -b develop https://github.com/syl20bnr/spacemacs ~/.emacs-spacemacs.d
 fi
-
-# if [ ! -d ~/org ]; then
-#  echo "Fetch org files"
-#  git clone https://gitlab.com/jsmestad/org.git ~/org
-# fi
 
 echo "Updating the yadm repo origin URL"
 yadm remote set-url origin "git@github.com:jsmestad/dfiles.git"
