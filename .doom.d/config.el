@@ -105,7 +105,8 @@
 
 (setq +format-on-save-enabled-modes
       '(not ruby-mode  ; rufo is too aggressive
-            ))
+            yaml-mode))
+
 ;; Treat underscore is a word character
 (add-hook! '(ruby-mode-hook elixir-mode-hook)
   (modify-syntax-entry ?_ "w"))
