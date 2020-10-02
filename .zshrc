@@ -92,10 +92,10 @@ zinit light-mode for \
     zinit-zsh/z-a-patch-dl \
     zinit-zsh/z-a-as-monitor
 
-zinit from"gh-r" as"program" mv"direnv* -> direnv" \
-    atclone'./direnv hook zsh > zhook.zsh' atpull'%atclone' \
-    pick"direnv" src="zhook.zsh" for \
-        direnv/direnv
+# zinit from"gh-r" as"program" mv"direnv* -> direnv" \
+#     atclone'./direnv hook zsh > zhook.zsh' atpull'%atclone' \
+#     pick"direnv" src="zhook.zsh" for \
+#         direnv/direnv
 
 # zinit ice atclone"dircolors -b LS_COLORS > clrs.zsh" \
 #     atpull'%atclone' pick"clrs.zsh" nocompile'!' \
@@ -118,6 +118,11 @@ zinit ice depth=1; zinit light romkatv/powerlevel10k
 
 ### End of Zinit's installer chunk
 
+# Use asdf for direnv to speed up lookups on commands
+#
+# See ~/.config/direnv/direnvrc
+eval "$(asdf exec direnv hook zsh)"
+direnv() { asdf exec direnv "$@"; }
 
 # VTerm Compat
 function vterm_printf(){
