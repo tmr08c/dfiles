@@ -138,10 +138,6 @@ function vterm_printf(){
     fi
 }
 
-# completion
-# autoload -Uz compinit
-# compinit
-
 export ERL_AFLAGS="-kernel shell_history enabled"
 
 [[ -f ~/.zshrc.local ]] && source ~/.zshrc.local
