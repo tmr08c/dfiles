@@ -57,3 +57,4 @@
 ;;
 (unpin! elixir-mode)
 (unpin! lsp-mode)
+(unpin! flycheck)

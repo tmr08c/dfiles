@@ -7,6 +7,7 @@ alias git-cleanup="git fetch -p"
 
 alias dk='docker'
 alias dc='docker-compose'
+alias k='kubectl'
 
 if [ "$OS" = "Linux" ]; then
   alias pbcopy='xsel --clipboard --input'
