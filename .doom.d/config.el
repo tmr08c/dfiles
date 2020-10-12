@@ -21,8 +21,11 @@
 ;; font string. You generally only need these two:
 ;; (setq doom-font (font-spec :family "Cascadia Code" :height 120)
 ;;       doom-variable-pitch-font (font-spec :family "Ubuntu" :height 120))
-(setq doom-font (font-spec :family "CaskaydiaCove Nerd Font Mono" :style "book" :height 120)
-      doom-variable-pitch-font (font-spec :family "Ubuntu" :height 120))
+;; (setq doom-font (font-spec :family "CaskaydiaCove Nerd Font Mono" :style "book" :height 120)
+;;       doom-variable-pitch-font (font-spec :family "Ubuntu" :height 120))
+;; :size must be in font-spec for big-font-mode to work
+(setq doom-font (font-spec :family "CaskaydiaCove Nerd Font Mono" :style "book" :size 13.0)
+      doom-variable-pitch-font (font-spec :family "Ubuntu" :size 13.0))
 
 ;; Scratch mode inherit from last buffers major mode
 (setq doom-scratch-initial-major-mode t)
