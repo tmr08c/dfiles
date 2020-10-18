@@ -1261,5 +1261,9 @@
     "extensions.showRecommendationsOnlyOnDemand": true,
     "workbench.colorTheme": "One Dark Pro",
     "workbench.iconTheme": "vscode-great-icons",
-    "ruby.useLanguageServer": true
+    "ruby.useLanguageServer": true,
+    "terminal.integrated.shell.osx": "/bin/zsh",
+    "[elixir]": {
+        "editor.defaultFormatter": "JakeBecker.elixir-ls"
+    }
 }

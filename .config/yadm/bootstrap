@@ -117,11 +117,6 @@ fi
 
 [[ -d ~/code/github ]] || mkdir -p ~/code/github
 
-if [[ ! -f ~/.emacs ]]; then
-  echo "Install Chemacs"
-  git clone https://github.com/plexus/chemacs.git ~/code/github/chemacs && ./code/github/chemacs/install.sh
-fi
-
 if [ ! -e $HOME/.vim/bundle/vundle ]; then
   echo "Installing Vundle for VIM configuration"
   mkdir -p ~/.vim
@@ -136,10 +131,10 @@ if [ ! -d ~/.asdf ]; then
   git clone https://github.com/asdf-vm/asdf.git ~/.asdf --branch v0.8.0
 fi
 
-if [ ! -d ~/.emacs-doom.d ]; then
+if [ ! -d ~/.emacs.d ]; then
   echo "Grabbing Doom Emacs"
   git clone -b develop https://github.com/hlissner/doom-emacs.git ~/.emacs.d
-  ~/.emacs.d/bin/doom refresh
+  ~/.emacs.d/bin/doom sync
 fi
 
 if [ ! -d ~/.emacs-spacemacs.d ]; then
