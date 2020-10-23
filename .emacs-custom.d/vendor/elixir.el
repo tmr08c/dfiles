@@ -51,8 +51,6 @@
                          (setq-local company-backends '(alchemist-company company-yasnippet)))))
 (use-package flycheck-credo
   :hook (elixir-mode . flycheck-credo-setup))
-(use-package flycheck-mix
-  :hook (elixir-mode . flycheck-mix-setup))
 
 (js|keymap-for-mode 'elixir-mode
                     "g" '(:ignore t :wk "goto")

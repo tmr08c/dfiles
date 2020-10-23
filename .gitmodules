@@ -1,0 +1,3 @@
+[submodule ".emacs-custom.d/vendor/use-package"]
+	path = .emacs-custom.d/vendor/use-package
+	url = https://github.com/jwiegley/use-package.git

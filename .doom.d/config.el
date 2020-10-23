@@ -230,3 +230,19 @@
 
 ;; Brewfile
 (add-to-list 'auto-mode-alist `(,(rx "Brewfile" string-end) . fundamental-mode))
+
+
+(use-package! exunit
+  :hook (elixir-mode . exunit-mode)
+  :defer t
+  :config
+  (map! :after elixir-mode
+        :localleader
+        :map elixir-mode-map
+        :prefix "t"
+        "a" #'exunit-verify-all
+        "r" #'exunit-rerun
+        "v" #'exunit-verify
+        "T" #'exunit-toggle-file-and-test
+        "t" #'exunit-toggle-file-and-test-other-window
+        "s" #'exunit-verify-single))

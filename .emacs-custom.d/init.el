@@ -70,7 +70,9 @@
   (expand-file-name "config.el" user-emacs-directory)
   "The file path of your literate config file.")
 
-(straight-use-package 'use-package)
+;; (straight-use-package 'use-package
+;;   :pin "4fb1f9a68f1e7e7d614652afc017a6652fd029f1")
+;; (straight-use-package '(use-package :type git :host github :repo "jwiegley/use-package" :branch "master"))
 
 (setq straight-use-package-by-default t
       use-package-compute-statistics t
@@ -78,7 +80,8 @@
 
 (eval-when-compile
   ;;; Add load path for vendor directory
-  (add-to-list 'load-path "~/.emacs.d/vendor/")
+  (add-to-list 'load-path "~/.emacs-custom.d/vendor/use-package")
+  (add-to-list 'load-path "~/.emacs-custom.d/vendor")
   (require 'use-package))
 
 (use-package hydra)
