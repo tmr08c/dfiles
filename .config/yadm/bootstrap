@@ -132,9 +132,14 @@ if [ ! -d ~/.asdf ]; then
 fi
 
 if [ ! -d ~/.emacs.d ]; then
+  echo "Grabbing Chemacsustom Emacs"
+  git clone https://github.com/plexus/chemacs2.git ~/.emacs.d
+fi
+
+if [ ! -d ~/.emacs-doom.d ]; then
   echo "Grabbing Doom Emacs"
-  git clone -b develop https://github.com/hlissner/doom-emacs.git ~/.emacs.d
-  ~/.emacs.d/bin/doom sync
+  git clone -b develop https://github.com/hlissner/doom-emacs.git ~/.emacs-doom.d
+  ~/.emacs-doom.d/bin/doom sync
 fi
 
 if [ ! -d ~/.emacs-spacemacs.d ]; then

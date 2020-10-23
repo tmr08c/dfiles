@@ -49,12 +49,12 @@
 (package! mixed-pitch)
 (package! writegood-mode :disable t)
 
-(package! feature-mode)
 (package! all-the-icons-ibuffer)
 (package! polymode
-  :pin "44265e3516")
-;; (package! mmm-mode)
-;;
-(unpin! elixir-mode)
-(unpin! lsp-mode)
-(unpin! flycheck)
+  :pin "3284ff1001")
+
+(package! straight
+  :pin "5d91a923390e8cbfb9481b280a36195957a80e87")
+
+(package! exunit
+  :pin "c77b0397b80d772c98fcc34c9ab131a8350fbf40")
