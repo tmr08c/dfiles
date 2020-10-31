@@ -1266,5 +1266,10 @@
     "[elixir]": {
         "editor.defaultFormatter": "JakeBecker.elixir-ls"
     },
-    "vim.enableNeovim": true
+    "vim.enableNeovim": true,
+    "emmet.excludeLanguages": [
+        "haml",
+        "markdown"
+    ],
+    "editor.suggest.showSnippets": false
 }

@@ -210,20 +210,19 @@ _q_ quit            _c_ create          _<_ previous
                  (unless (derived-mode-p 'emacs-lisp-mode 'lisp-mode)
                    (lsp-deferred))))
   :config
-  (require 'lsp-clients)
-  (setq lsp-auto-guess-root t
-        ;; lsp-enable-snippet t
-        lsp-prefer-flymake nil
-        ;; lsp-enable-indentation t ;; TODO is this messing emacs?
-        lsp-enable-xref t
-        lsp-enable-imenu t
-        ;; lsp-prefer-capf t
-        ;; lsp-enable-completion-at-point t
-        ;; lsp-before-save-edits t
-        lsp-solargraph-formatting t
-        lsp-solargraph-diagnostics nil
-        lsp-solargraph-rename nil
-        lsp-keep-workspace-alive nil)
+  (setq lsp-auto-guess-root t)
+  ;; lsp-prefer-flymake nil
+  ;; lsp-enable-indentation t ;; TODO is this messing emacs?
+  ;; lsp-enable-xref t
+  ;; lsp-enable-imenu t
+  ;; lsp-enable-snippet t
+  ;; lsp-prefer-capf t
+  ;; lsp-enable-completion-at-point t
+  ;; lsp-before-save-edits t
+  ;; lsp-solargraph-formatting t
+  ;; lsp-solargraph-diagnostics nil
+  ;; lsp-solargraph-rename nil
+  ;; lsp-keep-workspace-alive nil)
   ;; (lsp-register-client
   ;;  (make-lsp-client :new-connection (lsp-stdio-connection (list "node" (concat (getenv "HOME") "/code/github/ember-language-server/lib/start-server.js") "--stdio"))
   ;;                   :major-modes '(js-mode js2-mode)
@@ -242,6 +241,10 @@ _q_ quit            _c_ create          _<_ previous
               ("C-c u" . lsp-ui-imenu))
   :init
   (setq lsp-ui-doc-enable nil
+        lsp-ui-doc-max-height 8
+        lsp-ui-doc-max-width 35
+        lsp-ui-sideline-ignore-duplicate t
+
         lsp-ui-doc-delay 3
         lsp-ui-doc-include-signature t
         lsp-ui-doc-header t
@@ -252,15 +255,10 @@ _q_ quit            _c_ create          _<_ previous
         lsp-ui-sideline-enable nil
         lsp-ui-sideline-ignore-duplicate t)
   :config
-  (add-to-list 'lsp-ui-doc-frame-parameters '(right-fringe . 8))
+  ;; (add-to-list 'lsp-ui-doc-frame-parameters '(right-fringe . 8))
 
   ;; `C-g'to close doc
-  (advice-add #'keyboard-quit :before #'lsp-ui-doc-hide)
-
-  ;; WORKAROUND Hide mode-line of the lsp-ui-imenu buffer
-  ;; https://github.com/emacs-lsp/lsp-ui/issues/243
-  (defadvice lsp-ui-imenu (after hide-lsp-ui-imenu-mode-line activate)
-    (setq mode-line-format nil)))
+  (advice-add #'keyboard-quit :before #'lsp-ui-doc-hide))
 
 (use-package dap-mode
   :diminish
@@ -941,6 +939,9 @@ _q_ quit            _c_ create          _<_ previous
 ;; Language Files for Elixir
 (use-package po-mode
   :mode "\\.pot?\\'")
+
+(use-package yasnippet)
+(use-package yasnippet-snippets)
 
 
 (customize-set-variable 'user-full-name "Justin Smestad")

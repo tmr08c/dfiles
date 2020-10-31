@@ -36,8 +36,17 @@
   :hook (global-company-mode . company-quickhelp-mode)
   :init (setq company-quickhelp-delay 0.5))
 (use-package company-emoji
-  :requires company
+  ;; :requires company
+  :hook (after-make-frame-functions . --set-emoji-font)
+  :defines --set-emoji-font
   :config
+  (defun --set-emoji-font (frame)
+    "Adjust the font settings of FRAME so Emacs can display emoji properly."
+    (if (eq system-type 'darwin)
+      ;; For NS/Cocoa
+      (set-fontset-font t 'symbol (font-spec :family "Apple Color Emoji") frame 'prepend)
+      ;; For Linux
+      (set-fontset-font t 'symbol (font-spec :family "Symbola") frame 'prepend)))
   (add-to-list 'company-backends 'company-emoji))
 (use-package company-prescient
   :init (company-prescient-mode 1))
