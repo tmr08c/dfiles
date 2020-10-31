@@ -44,7 +44,8 @@
                   "nc" 'org-capture
                   "nl" 'org-store-link
 
-                  "SPC" '(execute-extended-command :wk "M-x")
+                  ":" '(execute-extended-command :wk "M-x")
+                  "SPC" '(projectile-find-file :wk "find project file")
                   ;; "TAB" '(switch-to-other-buffer :wk "prev buffer")
 
                   ;; Help bindings
@@ -126,7 +127,6 @@
                   "pd" '(projectile-find-dir :wk "find directory")
                   "pf" '(projectile-find-file :wk "open file")
                   "pp" '(projectile-persp-switch-project :wk "open project")
-                  "ps" '(counsel-projectile-rg :wk "search in project")
                   "pt" 'neotree-projectile-action
 
                   ;; Quit
@@ -145,7 +145,7 @@
                                         (thing-at-point 'symbol t))))
                            (swiper input))
                          :wk "search buffer")
-
+                  "sp" '(counsel-projectile-rg :wk "search project")
 
 
                   ;; Toggle
