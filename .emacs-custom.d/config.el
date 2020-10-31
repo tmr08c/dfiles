@@ -14,6 +14,7 @@
 ;;; Code:
 
 (use-package centaur-tabs
+  :disabled
   :commands (centaur-tabs-mode)
   :defines (centaur-tabs-set-icons
             centaur-tabs-style
@@ -98,6 +99,7 @@
 
 ;; EditorConfig
 (use-package editorconfig
+  :disabled
   :hook (prog-mode . editorconfig-mode)
   :config
   (setq editorconfig-trim-whitespaces-mode 'ws-butler-mode))
@@ -261,6 +263,7 @@ _q_ quit            _c_ create          _<_ previous
   (advice-add #'keyboard-quit :before #'lsp-ui-doc-hide))
 
 (use-package dap-mode
+  :disabled
   :diminish
   :hook ((after-init . dap-mode)
          (dap-mode . dap-ui-mode)
@@ -279,6 +282,7 @@ _q_ quit            _c_ create          _<_ previous
   :hook (prog-mode . rainbow-delimiters-mode))
 
 (use-package dtrt-indent
+  :disabled
   :diminish
   :config (setq dtrt-indent-min-quality 60)
   :hook (after-init . dtrt-indent-global-mode))
@@ -428,7 +432,7 @@ _q_ quit            _c_ create          _<_ previous
 
 ;; C (via irony-mode)
 (use-package ccls
-  :requires lsp-mode
+  :disabled
   :hook ((c-mode c++-mode objc-mode cuda-mode) .
          (lambda () (require 'ccls)))
   :config
@@ -1001,6 +1005,9 @@ _q_ quit            _c_ create          _<_ previous
       history-delete-duplicates t ; Get rid of duplicates in minibuffer history
       ;; keep the point out of the minibuffer
       minibuffer-prompt-properties '(read-only t point-entered minibuffer-avoid-prompt face minibuffer-prompt))
+
+
+(setq lisp-indent-function 'common-lisp-indent-function)
 
 ;; Handle ANSI codes in compilation buffer
 (add-hook 'compilation-filter-hook #'doom|apply-ansi-color-to-compilation-buffer)

@@ -115,6 +115,7 @@
                   "p"  '(:ignore t :wk "Projects")
                   "p!" '(projectile-run-shell-command-in-root :wk "run command")
                   "p%" '(projectile-replace-regexp :wk "replace regexp")
+                  "pa" '(projectile-add-known-project :wk "add project")
                   ;; "p a" '(projectile-toggle-between-implementation-and-test :wk "toggle test")
                   "pc" 'org-projectile-projectile-project-todo-completing-read
                   "pI" '(projectile-invalidate-cache :wk "clear cache")
@@ -137,13 +138,13 @@
                   "s" '(:ignore t :wk "Search")
                   "ss" '(swiper :wk "search buffer")
                   "sS" '(lambda ()
-                          (interactive)
-                          (let ((input (if (region-active-p)
-                                           (buffer-substring-no-properties
-                                            (region-beginning) (region-end))
-                                         (thing-at-point 'symbol t))))
-                            (swiper input))
-                          :wk "search buffer")
+                         (interactive)
+                         (let ((input (if (region-active-p)
+                                          (buffer-substring-no-properties
+                                           (region-beginning) (region-end))
+                                        (thing-at-point 'symbol t))))
+                           (swiper input))
+                         :wk "search buffer")
 
 
 
@@ -814,30 +815,30 @@
                     "r" '(:ignore t :wk "refactor")
                     "rr" 'lsp-rename)
 
-(defun js|neotree-keybindings ()
-  "Define keybindings when working in Neotree."
-  (general-nmap neotree-mode-map
-    "RET" 'neotree-enter
-    "TAB" 'neotree-stretch-toggle
-    "q" 'neotree-hide
-    "|" 'neotree-enter-vertical-split
-    "-" 'neotree-enter-horizontal-split
-    "'" 'neotree-quick-look
-    "c" 'neotree-create-node
-    "C" 'neotree-copy-node
-    "d" 'neotree-delete-node
-    "gr" 'neotree-refresh
-    "H" 'neotree-select-previous-sibling-node
-    "j" 'neotree-next-line
-    "J" 'neotree-select-down-node
-    "k" 'neotree-previous-line
-    "K" 'neotree-select-up-node
-    "L" 'neotree-select-next-sibling-node
-    "q" 'neotree-hide
-    "o" 'neotree-enter
-    "r" 'neotree-rename-node
-    "R" 'neotree-change-root
-    "I" 'neotree-hidden-file-toggle))
+;; (defun js|neotree-keybindings ()
+;;   "Define keybindings when working in Neotree."
+;;   (general-nmap neotree-mode-map
+;;       "RET" 'neotree-enter
+;;       "TAB" 'neotree-stretch-toggle
+;;       "q" 'neotree-hide
+;;       "|" 'neotree-enter-vertical-split
+;;       "-" 'neotree-enter-horizontal-split
+;;       "'" 'neotree-quick-look
+;;       "c" 'neotree-create-node
+;;       "C" 'neotree-copy-node
+;;       "d" 'neotree-delete-node
+;;       "gr" 'neotree-refresh
+;;       "H" 'neotree-select-previous-sibling-node
+;;       "j" 'neotree-next-line
+;;       "J" 'neotree-select-down-node
+;;       "k" 'neotree-previous-line
+;;       "K" 'neotree-select-up-node
+;;       "L" 'neotree-select-next-sibling-node
+;;       "q" 'neotree-hide
+;;       "o" 'neotree-enter
+;;       "r" 'neotree-rename-node
+;;       "R" 'neotree-change-root
+;;       "I" 'neotree-hidden-file-toggle))
 
 (defun js|flyspell-mode-toggle ()
   "Toggle flyspell mode."
