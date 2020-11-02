@@ -29,6 +29,7 @@
 
 (use-package treemacs
   ;; :requires all-the-icons
+  :disabled
   :commands (treemacs-follow-mode
              treemacs-filewatch-mode
              treemacs-fringe-indicator-mode
@@ -79,6 +80,5 @@
           magit-post-stage
           magit-post-unstage)
          . treemacs-magit--schedule-update))
-
 (provide 'deprecate)
 ;;; deprecate.el ends here

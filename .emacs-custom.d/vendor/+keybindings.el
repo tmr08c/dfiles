@@ -127,7 +127,9 @@
                   "pd" '(projectile-find-dir :wk "find directory")
                   "pf" '(projectile-find-file :wk "open file")
                   "pp" '(projectile-persp-switch-project :wk "open project")
-                  "pt" 'neotree-projectile-action
+
+                  "o"  '(:ignore t :wk "Open")
+                  "op" 'neotree-projectile-action
 
                   ;; Quit
                   "q"  '(:ignore t :wk "Quit")
@@ -161,14 +163,14 @@
                   "u" 'universal-argument-more
 
                   ;; Windows
-                  "w"   '(:ignore t :wk "Windows")
+                  "w"  '(:ignore t :wk "Windows")
                   "wd" '(delete-window :wk "close window")
-                  "w/" '((lambda ()
+                  "wv" '((lambda ()
                            (interactive)
                            (split-window-horizontally)
                            (other-window 1))
                          :wk "split vertical")
-                  "w-" '((lambda ()
+                  "ws" '((lambda ()
                            (interactive)
                            (split-window-vertically)
                            (other-window 1))
@@ -815,30 +817,30 @@
                     "r" '(:ignore t :wk "refactor")
                     "rr" 'lsp-rename)
 
-;; (defun js|neotree-keybindings ()
-;;   "Define keybindings when working in Neotree."
-;;   (general-nmap neotree-mode-map
-;;       "RET" 'neotree-enter
-;;       "TAB" 'neotree-stretch-toggle
-;;       "q" 'neotree-hide
-;;       "|" 'neotree-enter-vertical-split
-;;       "-" 'neotree-enter-horizontal-split
-;;       "'" 'neotree-quick-look
-;;       "c" 'neotree-create-node
-;;       "C" 'neotree-copy-node
-;;       "d" 'neotree-delete-node
-;;       "gr" 'neotree-refresh
-;;       "H" 'neotree-select-previous-sibling-node
-;;       "j" 'neotree-next-line
-;;       "J" 'neotree-select-down-node
-;;       "k" 'neotree-previous-line
-;;       "K" 'neotree-select-up-node
-;;       "L" 'neotree-select-next-sibling-node
-;;       "q" 'neotree-hide
-;;       "o" 'neotree-enter
-;;       "r" 'neotree-rename-node
-;;       "R" 'neotree-change-root
-;;       "I" 'neotree-hidden-file-toggle))
+(defun js|neotree-keybindings ()
+  "Define keybindings when working in Neotree."
+  (general-nmap neotree-mode-map
+      "RET" 'neotree-enter
+      "TAB" 'neotree-stretch-toggle
+      "q" 'neotree-hide
+      "|" 'neotree-enter-vertical-split
+      "-" 'neotree-enter-horizontal-split
+      "'" 'neotree-quick-look
+      "c" 'neotree-create-node
+      "C" 'neotree-copy-node
+      "d" 'neotree-delete-node
+      "gr" 'neotree-refresh
+      "H" 'neotree-select-previous-sibling-node
+      "j" 'neotree-next-line
+      "J" 'neotree-select-down-node
+      "k" 'neotree-previous-line
+      "K" 'neotree-select-up-node
+      "L" 'neotree-select-next-sibling-node
+      "q" 'neotree-hide
+      "o" 'neotree-enter
+      "r" 'neotree-rename-node
+      "R" 'neotree-change-root
+      "I" 'neotree-hidden-file-toggle))
 
 (defun js|flyspell-mode-toggle ()
   "Toggle flyspell mode."
