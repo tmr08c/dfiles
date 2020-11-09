@@ -58,3 +58,6 @@
 
 (package! exunit
   :pin "c77b0397b80d772c98fcc34c9ab131a8350fbf40")
+
+(package! format-all
+  :pin "4b82f81818654e2690cbe0140fc624d2087655b6")

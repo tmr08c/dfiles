@@ -1271,5 +1271,6 @@
         "haml",
         "markdown"
     ],
-    "editor.suggest.showSnippets": false
+    "editor.suggest.showSnippets": false,
+    "go.useLanguageServer": true
 }
