@@ -107,7 +107,10 @@
   (general-nmap "," (general-simulate-key "SPC m")))
 
 (setq +format-on-save-enabled-modes
-      '(not ruby-mode  ; rufo is too aggressive
+      '(not emacs-lisp-mode  ; elisp's mechanisms are good enough
+            sql-mode         ; sqlformat is currently broken
+            tex-mode         ; latexindent is broken
+            latex-mode
             yaml-mode))
 
 ;; Treat underscore is a word character
@@ -127,20 +130,6 @@
 
         ;; Highlight the current element
         web-mode-enable-current-element-highlight t))
-
-;; Do not show hidden files by default
-;; (setq! neo-show-hidden-files nil)
-;; (after! neotree
-;;   ;; Treat all files with a leading dot as hidden
-;;   (pushnew! neo-hidden-regexp-list "\\`.DS_Store$" "^\\.")
-;;   (undefine-key! 'neotree-mode-map "v" "s" "RET")
-;;   (map! :map neotree-mode-map
-;;     :n "RET" 'neotree-enter
-;;     :n "q" 'neotree-hide
-;;     :n "C" 'neotree-copy-node
-;;     :n "o" 'neotree-enter
-;;     :n "I" 'neotree-hidden-file-toggle))
-
 
 (setq ivy-read-action-function #'ivy-hydra-read-action)
 
