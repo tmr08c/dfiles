@@ -6,6 +6,10 @@
 
 ;;; Code:
 
+(when (boundp 'comp-eln-load-path)
+  (setcar comp-eln-load-path
+          (expand-file-name "cache/eln-cache/" user-emacs-directory)))
+
 ;; Defer garbage collection further back in the startup process
 (setq gc-cons-threshold 80000000)
 (defvar default-file-name-handler-alist file-name-handler-alist)
