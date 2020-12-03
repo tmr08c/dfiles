@@ -13,6 +13,10 @@ if [ "$system_type" = "Darwin" ]; then
   echo "Configure Yubikey dependencies"
   brew install gnupg yubikey-personalization hopenpgp-tools ykman pinentry-mac
 
+  echo "Install Universal ctags"
+  brew tap universal-ctags/universal-ctags
+  brew install --HEAD universal-ctags
+
   echo "Emacs mode dependencies"
   brew install coreutils cmake jq shellcheck ripgrep fd aspell pandoc jansson
 
