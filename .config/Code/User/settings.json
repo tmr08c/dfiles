@@ -1272,5 +1272,17 @@
         "markdown"
     ],
     "editor.suggest.showSnippets": false,
-    "go.useLanguageServer": true
+    "go.useLanguageServer": true,
+    "shellformat.effectLanguages": [
+        "shellscript",
+        "dockerfile",
+        "dotenv",
+        "hosts",
+        "jvmoptions",
+        "ignore",
+        "gitignore",
+        "properties",
+        "spring-boot-properties",
+        "azcli"
+    ]
 }

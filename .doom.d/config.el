@@ -76,8 +76,8 @@
 ;; You can also try 'gd' (or 'C-c g d') to jump to their definition and see how
 ;; they are implemented.
 
-(use-package! all-the-icons-ibuffer
-  :init (all-the-icons-ibuffer-mode 1))
+;; (use-package! all-the-icons-ibuffer
+;;   :init (all-the-icons-ibuffer-mode 1))
 
 (after! org
   (setq! org-hide-emphasis-markers t
@@ -220,18 +220,3 @@
 ;; Brewfile
 (add-to-list 'auto-mode-alist `(,(rx "Brewfile" string-end) . fundamental-mode))
 
-
-(use-package! exunit
-  :hook (elixir-mode . exunit-mode)
-  :defer t
-  :config
-  (map! :after elixir-mode
-        :localleader
-        :map elixir-mode-map
-        :prefix "t"
-        "a" #'exunit-verify-all
-        "r" #'exunit-rerun
-        "v" #'exunit-verify
-        "T" #'exunit-toggle-file-and-test
-        "t" #'exunit-toggle-file-and-test-other-window
-        "s" #'exunit-verify-single))

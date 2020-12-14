@@ -49,15 +49,9 @@
 (package! mixed-pitch)
 (package! writegood-mode :disable t)
 
-(package! all-the-icons-ibuffer)
+;;(package! all-the-icons-ibuffer)
 (package! polymode
-  :pin "3284ff1001")
-
-(package! straight
-  :pin "5d91a923390e8cbfb9481b280a36195957a80e87")
-
-(package! exunit
-  :pin "c77b0397b80d772c98fcc34c9ab131a8350fbf40")
+  :pin "3284ff10017d280ba82f27dc20fe5223b0df709c")
 
 (package! format-all
-  :pin "4b82f81818654e2690cbe0140fc624d2087655b6")
+  :pin "18b97bbcb9c4abc2b369cdc023206858c81f7b12")
