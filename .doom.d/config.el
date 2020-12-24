@@ -135,15 +135,15 @@
 
 ;; Stop DOOM from detecting HTML as "large files"
 (pushnew! doom-large-file-excluded-modes 'web-mode)
-(use-package! web-mode
-  ;; :commands web-mode-set-engine
-  :config
-  (define-advice web-mode-guess-engine-and-content-type (:around (f &rest r) guess-engine-by-extension)
-    (if (and buffer-file-name (equal "ex" (file-name-extension buffer-file-name)))
-        (progn (setq web-mode-content-type "html")
-               (setq web-mode-engine "elixir")
-               (web-mode-on-engine-setted))
-      (apply f r))))
+;; (use-package! web-mode
+;;   ;; :commands web-mode-set-engine
+;;   :config
+;;   (define-advice web-mode-guess-engine-and-content-type (:around (f &rest r) guess-engine-by-extension)
+;;     (if (and buffer-file-name (equal "ex" (file-name-extension buffer-file-name)))
+;;         (progn (setq web-mode-content-type "html")
+;;                (setq web-mode-engine "elixir")
+;;                (web-mode-on-engine-setted))
+;;       (apply f r))))
 
 ;; (use-package! mmm-mode
 ;;   :init (setq mmm-global-mode 'maybe
@@ -154,10 +154,10 @@
 ;;   (require 'web-mode)
 
 
-(after! highlight-numbers
-  (puthash 'elixir-mode
-           "\\_<-?[[:digit:]]+\\(?:_[[:digit:]]\\{3\\}\\)*\\_>"
-           highlight-numbers-modelist))
+;; (after! highlight-numbers
+;;   (puthash 'elixir-mode
+;;            "\\_<-?[[:digit:]]+\\(?:_[[:digit:]]\\{3\\}\\)*\\_>"
+;;            highlight-numbers-modelist))
 
 ;;   (mmm-add-classes
 ;;   `((elixir-liveview
@@ -215,7 +215,8 @@
 (setq auth-sources '("~/.authinfo"))
 
 ;; Support dotenv files with ENV names
-(add-to-list 'auto-mode-alist `(,(rx ".env" (or ".production" ".test" ".development") string-end) . sh-mode))
+(add-to-list 'auto-mode-alist `(,(rx ".env" (or ".production" ".test" ".development" ".local") string-end) . sh-mode))
+(add-to-list 'auto-mode-alist `(,(rx ".envrc.private" string-end) . sh-mode))
 
 ;; Brewfile
 (add-to-list 'auto-mode-alist `(,(rx "Brewfile" string-end) . fundamental-mode))
