@@ -21,12 +21,12 @@ if [ "$system_type" = "Darwin" ]; then
   brew install coreutils cmake jq shellcheck ripgrep fd aspell pandoc jansson
 
   echo "Utilities"
-  brew install websocat tldr tig ripgrep mkcert exa graphviz sbcl grip glslang
+  brew install websocat tldr tig ripgrep mkcert exa graphviz sbcl grip glslang tidy-html5 ccls
 
   echo "Install iTerm2 color scheme"
   echo "Run \`wget https://raw.githubusercontent.com/martinlindhe/base16-iterm2/master/itermcolors/base16-monokai-256.itermcolors\` and install it"
 
-  ln -sf ~/.config/Code/User/settings.json ~/Library/Application\ Support/Code/User/settings.json
+  # ln -sf ~/.config/Code/User/settings.json ~/Library/Application\ Support/Code/User/settings.json
 else
   echo "Configure Keyboard Settings"
   sudo gsettings set org.gnome.desktop.peripherals.keyboard repeat-interval 30
