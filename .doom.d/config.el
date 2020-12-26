@@ -30,12 +30,13 @@
 ;; Scratch mode inherit from last buffers major mode
 (setq doom-scratch-initial-major-mode t)
 
-;; Disable projectile caching when `fd` is present.
-;; Taken from issue #3376
+;; Do not copy to kill ring on visual paste
+(after! evil
+  (setq! evil-kill-on-visual-paste nil))
+
+
 (after! projectile
-  (setq! projectile-enable-caching nil
-         ;;(not (executable-find doom-projectile-fd-binary))
-         ))
+  (setq! projectile-files-cache-expire 5))
 
 ;; Elixir LSP keeps checking project every N seconds otherwise
 (setq lsp-enable-file-watchers t)
@@ -131,7 +132,7 @@
         ;; Highlight the current element
         web-mode-enable-current-element-highlight t))
 
-(setq ivy-read-action-function #'ivy-hydra-read-action)
+;; (setq ivy-read-action-function #'ivy-hydra-read-action)
 
 ;; Stop DOOM from detecting HTML as "large files"
 (pushnew! doom-large-file-excluded-modes 'web-mode)
@@ -172,8 +173,11 @@
 
 ;;   (mmm-add-mode-ext-class 'elixir-mode nil 'elixir-liveview))
 
+(use-package! evil-matchit
+  :hook (web-mode . turn-on-evil-matchit-mode))
 (use-package! polymode
   :mode ("\\.ex\\'" . poly-elixir-web-mode)
+  :init (setq! web-mode-engines-alist '(("elixir" . "\\.ex\\'")))
   :config
   (define-hostmode poly-elixir-hostmode :mode 'elixir-mode)
   (define-innermode poly-liveview-expr-elixir-innermode
@@ -187,9 +191,7 @@
     :fallback-mode 'host)
   (define-polymode poly-elixir-web-mode
     :hostmode 'poly-elixir-hostmode
-    :innermodes '(poly-liveview-expr-elixir-innermode))
-  )
-(setq web-mode-engines-alist '(("elixir" . "\\.ex\\'")))
+    :innermodes '(poly-liveview-expr-elixir-innermode)))
 
 ;; TODO: Get exdoc highlighting working maybe?
 ;; (define-innermode poly-markdown-exdoc-innermode
@@ -221,3 +223,5 @@
 ;; Brewfile
 (add-to-list 'auto-mode-alist `(,(rx "Brewfile" string-end) . fundamental-mode))
 
+;; Set custom snippets directory
+(setq +snippets-dir "~/.config/snippets")

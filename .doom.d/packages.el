@@ -53,5 +53,5 @@
 (package! polymode
   :pin "3284ff10017d280ba82f27dc20fe5223b0df709c")
 
-(package! format-all
-  :pin "18b97bbcb9c4abc2b369cdc023206858c81f7b12")
+(package! doom-snippets :ignore t)
+(package! evil-matchit)
