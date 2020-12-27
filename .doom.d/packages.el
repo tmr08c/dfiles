@@ -55,3 +55,4 @@
 
 (package! doom-snippets :ignore t)
 (package! evil-matchit)
+;; (package! lsp-tailwindcss :recipe (:host github :repo "jsmestad/lsp-tailwindcss" :branch "patch-1"))

@@ -193,6 +193,8 @@
     :hostmode 'poly-elixir-hostmode
     :innermodes '(poly-liveview-expr-elixir-innermode)))
 
+;; (after! lsp-mode
+;;         (require 'lsp-tailwindcss))
 ;; TODO: Get exdoc highlighting working maybe?
 ;; (define-innermode poly-markdown-exdoc-innermode
 ;;   :mode 'gfm-mode
