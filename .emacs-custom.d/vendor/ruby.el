@@ -84,15 +84,15 @@
              ruby-refactor-extract-local-variable
              ruby-refactor-extract-constant
              ruby-refactor-extract-to-let))
-(use-package inflections)
+;; (use-package inflections)
 (use-package projectile-rails
   :disabled
   :diminish
   :hook
   (projectile-mode . projectile-rails-global-mode))
 
-(use-package feature-mode
-  :mode (("\\.feature\\'" . feature-mode)))
+;; (use-package feature-mode
+;;   :mode (("\\.feature\\'" . feature-mode)))
 
 (provide 'ruby)
 ;;; ruby.el ends here

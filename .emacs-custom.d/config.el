@@ -714,8 +714,6 @@ _q_ quit            _c_ create          _<_ previous
   :config
   (when (eq system-type 'darwin)
     (setq magit-git-executable "/usr/local/bin/git")))
-(use-package evil-magit
-  :after magit)
 
 ;; Restart Emacs
 (use-package restart-emacs

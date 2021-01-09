@@ -193,6 +193,9 @@
     :hostmode 'poly-elixir-hostmode
     :innermodes '(poly-liveview-expr-elixir-innermode)))
 
+(set-formatter! 'htmlbeautifier "htmlbeautifier -n eex "
+  :modes '((web-mode (equal "elixir" web-mode-engine))))
+
 ;; (after! lsp-mode
 ;;         (require 'lsp-tailwindcss))
 ;; TODO: Get exdoc highlighting working maybe?
@@ -254,3 +257,9 @@
 
     (advice-add 'ivy-rich--ivy-switch-buffer-transformer :around 'ek/ivy-rich-cache-lookup)
     (advice-add 'ivy-switch-buffer :after 'ek/ivy-rich-cache-rebuild-trigger)))
+
+;; Turn off undo-fu-session-mode
+(remove-hook 'undo-fu-mode-hook #'global-undo-fu-session-mode)
+
+
+(use-package! interleave)
