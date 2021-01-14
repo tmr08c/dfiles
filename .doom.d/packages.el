@@ -59,3 +59,4 @@
 (unpin! elixir-mode)
 (package! interleave)
 (unpin! dockerfile-mode)
+(unpin! jump)

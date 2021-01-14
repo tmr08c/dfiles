@@ -196,6 +196,14 @@
 (set-formatter! 'htmlbeautifier "htmlbeautifier -n eex "
   :modes '((web-mode (equal "elixir" web-mode-engine))))
 
+(after! lsp-mode
+  (dolist (match
+           '("[/\\\\].direnv$"
+             "[/\\\\]node_modules$"
+             "[/\\\\]deps"
+             "[/\\\\]build"
+             "[/\\\\]_build"))
+    (add-to-list 'lsp-file-watch-ignored match)))
 ;; (after! lsp-mode
 ;;         (require 'lsp-tailwindcss))
 ;; TODO: Get exdoc highlighting working maybe?
