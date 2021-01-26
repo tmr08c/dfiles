@@ -206,33 +206,41 @@ _q_ quit            _c_ create          _<_ previous
 
 ;; Language Server Protocol (LSP)
 (use-package lsp-mode
-  :diminish lsp-mode
-  :hook
-  (prog-mode . (lambda ()
-                 (unless (derived-mode-p 'emacs-lisp-mode 'lisp-mode)
-                   (lsp-deferred))))
-  :config
-  (setq lsp-auto-guess-root t)
-  ;; lsp-prefer-flymake nil
-  ;; lsp-enable-indentation t ;; TODO is this messing emacs?
-  ;; lsp-enable-xref t
-  ;; lsp-enable-imenu t
-  ;; lsp-enable-snippet t
-  ;; lsp-prefer-capf t
-  ;; lsp-enable-completion-at-point t
-  ;; lsp-before-save-edits t
-  ;; lsp-solargraph-formatting t
-  ;; lsp-solargraph-diagnostics nil
-  ;; lsp-solargraph-rename nil
-  ;; lsp-keep-workspace-alive nil)
-  ;; (lsp-register-client
-  ;;  (make-lsp-client :new-connection (lsp-stdio-connection (list "node" (concat (getenv "HOME") "/code/github/ember-language-server/lib/start-server.js") "--stdio"))
-  ;;                   :major-modes '(js-mode js2-mode)
-  ;;                   :priority -1
-  ;;                   :ignore-messages (list "Initializing Ember Language Server at .*$")
-  ;;                   :add-on? t
-  ;;                   :server-id 'ember-ls))
-  (add-to-list 'exec-path "~/code/github/elixir-ls/release"))
+    :diminish lsp-mode
+    :hook
+    (prog-mode . (lambda ()
+                   (unless (derived-mode-p 'emacs-lisp-mode 'lisp-mode)
+                     (lsp-deferred))))
+    :config
+    (setq lsp-auto-guess-root t)
+
+    ;; lsp-prefer-flymake nil
+    ;; lsp-enable-indentation t ;; TODO is this messing emacs?
+    ;; lsp-enable-xref t
+    ;; lsp-enable-imenu t
+    ;; lsp-enable-snippet t
+    ;; lsp-prefer-capf t
+    ;; lsp-enable-completion-at-point t
+    ;; lsp-before-save-edits t
+    ;; lsp-solargraph-formatting t
+    ;; lsp-solargraph-diagnostics nil
+    ;; lsp-solargraph-rename nil
+    ;; lsp-keep-workspace-alive nil)
+    ;; (lsp-register-client
+    ;;  (make-lsp-client :new-connection (lsp-stdio-connection (list "node" (concat (getenv "HOME") "/code/github/ember-language-server/lib/start-server.js") "--stdio"))
+    ;;                   :major-modes '(js-mode js2-mode)
+    ;;                   :priority -1
+    ;;                   :ignore-messages (list "Initializing Ember Language Server at .*$")
+    ;;                   :add-on? t
+    ;;                   :server-id 'ember-ls))
+    (dolist (match
+              '("[/\\\\].direnv$"
+                "[/\\\\]node_modules$"
+                "[/\\\\]deps"
+                "[/\\\\]build"
+                "[/\\\\]_build"))
+      (add-to-list 'lsp-file-watch-ignored match))
+    (add-to-list 'exec-path "~/code/github/elixir-ls/release"))
 
 (use-package lsp-ui
   ;; :disabled
@@ -974,6 +982,7 @@ _q_ quit            _c_ create          _<_ previous
 
       find-file-visit-truename t ; resolve symlinks when opening files
 
+      comp-async-report-warnings-errors nil
       byte-compile-warnings '(not free-vars unresolved noruntime lexical make-local)
       idle-update-delay 1 ; update UI slightly less often (0.5 default)
       create-lockfiles nil
