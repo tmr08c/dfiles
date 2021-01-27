@@ -112,7 +112,11 @@
             sql-mode         ; sqlformat is currently broken
             tex-mode         ; latexindent is broken
             latex-mode
-            yaml-mode))
+            yaml-mode
+            ruby-mode))
+
+;; Solargraph does worse job than format-all-mode
+(setq-hook! 'ruby-mode-hook +format-with-lsp nil)
 
 ;; Treat underscore is a word character
 (add-hook! '(ruby-mode-hook elixir-mode-hook)

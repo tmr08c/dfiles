@@ -12,6 +12,9 @@
               ( [return] . nil )
               ( "<tab>" . company-complete-selection ))
   :config
+  (with-eval-after-load 'lsp-mode
+    (setq lsp-completion-provider :capf))
+
   (setq company-dabbrev-downcase nil
         company-dabbrev-ignore-case nil
         ;; company-dabbrev-code-other-buffers t
@@ -28,7 +31,7 @@
         company-frontends '(company-pseudo-tooltip-frontend
                             company-echo-metadata-frontend)
         ;; company-transformers '(company-sort-by-occurrence)
-        company-backends '()))
+        company-backends '((company-capf :with company-dabbrev))))
 (use-package company-quickhelp
   :defines company-quickhelp-delay
   :bind (:map company-active-map
@@ -133,12 +136,12 @@
         company-box-icons-alist 'company-box-icons-all-the-icons)
   )
 
-(use-package company-lsp
-  :requires company
-  :config
-  (setq company-lsp-cache-candidates 'auto
-        company-lsp-enable-snippet nil)
-  (push 'company-lsp company-backends))
+;; (use-package company-lsp
+;;   :requires company
+;;   :config
+;;   (setq company-lsp-cache-candidates 'auto
+;;         company-lsp-enable-snippet nil)
+;;   )
 
 
 (provide '+company)
