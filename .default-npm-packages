@@ -12,6 +12,11 @@ jsonlint
 nodemon
 ocaml-language-server
 prettier
+prettier-plugin-eex
+@prettier/plugin-ruby
+prettier-plugin-tailwind
+prettier-plugin-sh
+standard
 stylelint
 stylelint-config-standard
 stylelint-scss

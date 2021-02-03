@@ -706,6 +706,10 @@ _q_ quit            _c_ create          _<_ previous
           completion-list-mode
           completion-in-region-mode) . hide-mode-line-mode))
 
+(use-package apheleia
+  :straight (:host github :repo "raxod502/apheleia")
+  :hook (prog-mode . apheleia-global-mode))
+
 ;;; Support Emojis in Emacs
 (use-package emojify
   :diminish
