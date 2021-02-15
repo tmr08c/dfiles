@@ -63,9 +63,9 @@ export HISTFILE=~/.zsh_history
 export CLICOLOR=1
 
 # NVM (Node.JS) auto use
-export NVM_AUTO_USE=true
+# export NVM_AUTO_USE=true
 
-export ZSH_AUTOSUGGEST_USE_ASYNC=true
+# export ZSH_AUTOSUGGEST_USE_ASYNC=true
 
 # Delete key
 bindkey    "^[[3~"          delete-char
@@ -81,8 +81,11 @@ if [[ ! -f $HOME/.zinit/bin/zinit.zsh ]]; then
 fi
 
 source "$HOME/.zinit/bin/zinit.zsh"
-# autoload -Uz _zinit
-# (( ${+_comps} )) && _comps[zinit]=_zinit
+autoload -Uz _zinit
+(( ${+_comps} )) && _comps[zinit]=_zinit
+
+export GITSTATUS_LOG_LEVEL=DEBUG
+zinit ice depth=1; zinit light romkatv/powerlevel10k
 
 zinit fpath -f ${ASDF_DIR}/completions
 
@@ -113,8 +116,7 @@ zinit wait lucid light-mode for \
 
 # zinit light djui/alias-tips
 
-zinit ice lucid depth=1; zinit load romkatv/gitstatus
-zinit ice depth=1; zinit light romkatv/powerlevel10k
+
 
 ### End of Zinit's installer chunk
 
