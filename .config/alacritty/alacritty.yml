@@ -91,7 +91,7 @@ font:
     #   - (macOS) Menlo
     #   - (Linux) monospace
     #   - (Windows) Consolas
-    family: Cascadia Mono PL
+    family: MesloLGS NF
     #family: CaskaydiaCove Nerd Font Mono
     #family: JetBrainsMono Nerd Font Regular
 
@@ -151,7 +151,7 @@ font:
   #
   # This is a global setting and will require a log out or restart to take
   # effect.
-  use_thin_strokes: false
+  use_thin_strokes: true #false
 
 # If `true`, bold text is drawn using the bright color variants.
 draw_bold_text_with_bright_colors: true
