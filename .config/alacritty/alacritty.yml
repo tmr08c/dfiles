@@ -91,13 +91,13 @@ font:
     #   - (macOS) Menlo
     #   - (Linux) monospace
     #   - (Windows) Consolas
-    #family: Cascadia Mono PL
-    family: CaskaydiaCove Nerd Font Mono
+    family: Cascadia Mono PL
+    #family: CaskaydiaCove Nerd Font Mono
     #family: JetBrainsMono Nerd Font Regular
 
     # The `style` can be specified to pick a specific face.
-    #style: Regular
-    style: Book
+    style: Regular
+    #style: Book
 
   # Bold font face
   #bold:
@@ -122,7 +122,7 @@ font:
   #style: Italic
 
   # Point size
-  size: 13.0
+  size: 14.0
 
   # Offset is the extra space around each character. `offset.y` can be thought of
   # as modifying the line spacing, and `offset.x` as modifying the letter spacing.
