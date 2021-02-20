@@ -207,10 +207,10 @@ _q_ quit            _c_ create          _<_ previous
 ;; Language Server Protocol (LSP)
 (use-package lsp-mode
   :diminish lsp-mode
-  :hook
-  (prog-mode . (lambda ()
-                 (unless (derived-mode-p 'emacs-lisp-mode 'lisp-mode)
-                   (lsp-deferred))))
+  ;; :hook
+  ;; (prog-mode . (lambda ()
+  ;;                (unless (derived-mode-p 'emacs-lisp-mode 'lisp-mode)
+  ;;                  (lsp-deferred))))
   :config
   (setq lsp-auto-guess-root t
         lsp-headerline-breadcrumb-enable nil)
@@ -490,7 +490,8 @@ _q_ quit            _c_ create          _<_ previous
   :config
   (setq flycheck-global-modes
         '(not org-mode text-mode outline-mode fundamental-mode
-              diff-mode shell-mode eshell-mode term-mode vterm-mode)
+          diff-mode shell-mode eshell-mode term-mode vterm-mode)
+        flycheck-javascript-eslint-executable "eslint_d"
         flycheck-rubocop-lint-only t
         flycheck-idle-change-delay 1.75
         flycheck-indication-mode 'right-fringe
@@ -500,7 +501,7 @@ _q_ quit            _c_ create          _<_ previous
   ;; Prettify fringe style
   (when (fboundp 'define-fringe-bitmap)
     (define-fringe-bitmap 'flycheck-fringe-bitmap-double-arrow
-      [16 48 112 240 112 48 16] nil nil 'center))
+        [16 48 112 240 112 48 16] nil nil 'center))
   )
 (use-package flycheck-posframe
   :custom-face (flycheck-posframe-border-face ((t (:inherit default))))
@@ -706,9 +707,9 @@ _q_ quit            _c_ create          _<_ previous
           completion-list-mode
           completion-in-region-mode) . hide-mode-line-mode))
 
-(use-package apheleia
-  :straight (:host github :repo "raxod502/apheleia")
-  :hook (prog-mode . apheleia-global-mode))
+;; (use-package apheleia
+;;   :straight (:host github :repo "raxod502/apheleia")
+;;   :hook (prog-mode . apheleia-global-mode))
 
 ;;; Support Emojis in Emacs
 (use-package emojify

@@ -8,9 +8,11 @@
   :hook ((js2-mode js-mode json-mode typescript-mode elm-mode) . add-node-modules-path))
 
 (use-package js2-mode
+
   :mode "\\.m?js\\'"
   :hook
-  (js2-mode . js2-imenu-extras-mode)
+  ((js2-mode . js2-imenu-extras-mode)
+   (js2-mode . lsp-mode))
   :config
   (setq js-chain-indent t
         ;; Don't mishighlight shebang lines
@@ -39,6 +41,7 @@
   :hook (js2-mode . eslintd-fix-mode))
 
 (use-package typescript-mode
+  :hook ((typescript-mode . lsp-mode))
   :config
   (add-hook 'typescript-mode-hook #'rainbow-delimiters-mode)
   (setq typescript-indent-level 2
@@ -49,8 +52,7 @@
 ;;   :hook (web-mode . (lambda ()
 ;;                       (setq-local company-backends '(company-web-html company-css company-yasnippet)))))
 
-(use-package prettier-js
-  :hook (web-mode . prettier-js-mode))
+
 (use-package web-mode
   :diminish
   :config

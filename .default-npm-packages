@@ -6,6 +6,7 @@ elm
 elm-format
 elm-oracle
 elm-test
+eslint_d
 express
 js-beautify
 jsonlint
@@ -14,7 +15,6 @@ ocaml-language-server
 prettier
 prettier-plugin-eex
 @prettier/plugin-ruby
-prettier-plugin-tailwind
 prettier-plugin-sh
 standard
 stylelint
