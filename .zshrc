@@ -123,8 +123,8 @@ zinit wait lucid light-mode for \
 # Use asdf for direnv to speed up lookups on commands
 #
 # See ~/.config/direnv/direnvrc
-eval "$(asdf exec direnv hook zsh)"
-direnv() { asdf exec direnv "$@"; }
+# eval "$(asdf exec direnv hook zsh)"
+# direnv() { asdf exec direnv "$@"; }
 
 # VTerm Compat
 function vterm_printf(){
