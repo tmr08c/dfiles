@@ -81,7 +81,7 @@
   :commands org-bullets-mode
   :hook (org-mode . org-bullets-mode))
 (use-package org-autolist ; RET starts new list entry
-  :hook (org-mode . org-autolist-mode))
+    :hook (org-mode . org-autolist-mode))
 
 
 ;; (use-package org-gcal
@@ -101,18 +101,6 @@
 ;;   :config
 ;;   (setq org-projectile-per-project-filepath "TODO.org"
 ;;         org-agenda-files (append org-agenda-files (org-projectile-todo-files))))
-
-
-(set-face-attribute 'variable-pitch nil
-                    :family "Ubuntu" :weight 'regular)
-
-(set-face-attribute 'fixed-pitch nil
-                    :family "Cascadia Code" :weight 'regular)
-
-(face-spec-set 'default
-               '((((type x)) :family "Cascadia Code" :height 120)
-                 (((type ns)) :family "Cascadia Code" :height 120)
-                 (t :family :height 120)))
 
 (provide '+org)
 ;;; +org.el ends here

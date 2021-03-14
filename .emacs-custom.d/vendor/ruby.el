@@ -8,9 +8,9 @@
   :hook (ruby-mode . flycheck-mode)
   :config
   (add-hook 'ruby-mode-hook
-            '(lambda ()
-               ;; (add-hook 'before-save-hook 'lsp-format-buffer) ; Wait for newer solargraph gem
-               (setq evil-shift-width ruby-indent-level)))
+            (lambda ()
+              (add-hook 'before-save-hook 'lsp-format-buffer) ; Wait for newer solargraph gem
+              (setq evil-shift-width ruby-indent-level)))
   (setq ruby-insert-encoding-magic-comment nil
         ruby-align-to-stmt-keywords
         '(if while unless until begin case for def)))

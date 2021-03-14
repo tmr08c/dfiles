@@ -24,8 +24,12 @@
 ;; (setq doom-font (font-spec :family "CaskaydiaCove Nerd Font Mono" :style "book" :height 120)
 ;;       doom-variable-pitch-font (font-spec :family "Ubuntu" :height 120))
 ;; :size must be in font-spec for big-font-mode to work
-(setq doom-font (font-spec :family "CaskaydiaCove Nerd Font Mono" :style "book" :size 13.0)
+;; (setq doom-font (font-spec :family "JetBrains Mono" :size 13.0)
+;;       doom-variable-pitch-font (font-spec :family "Ubuntu" :size 13.0))
+(setq doom-font (font-spec :family "MesloLGS NF" :size 13.0)
       doom-variable-pitch-font (font-spec :family "Ubuntu" :size 13.0))
+;; (setq doom-font (font-spec :family "CaskaydiaCove Nerd Font Mono" :style "book" :size 13.0)
+;;       doom-variable-pitch-font (font-spec :family "Ubuntu" :size 13.0))
 
 ;; Scratch mode inherit from last buffers major mode
 (setq doom-scratch-initial-major-mode t)
@@ -197,8 +201,20 @@
     :hostmode 'poly-elixir-hostmode
     :innermodes '(poly-liveview-expr-elixir-innermode)))
 
-(set-formatter! 'htmlbeautifier "htmlbeautifier -n eex "
-  :modes '((web-mode (equal "elixir" web-mode-engine))))
+;; (defun maybe-use-prettier ()
+;;   "Enable prettier-js-mode if .prettierrc or .prettierrc.json file is located."
+;;   (if (or (locate-dominating-file default-directory ".prettierrc")
+;;           (locate-dominating-file default-directory ".prettierrc.json"))
+;;         (prettier-js-mode +1)))
+
+;; (use-package! prettier-js)
+;; (after! prettier-js
+;;   :config
+;;   (setq! prettier-js-args '(
+;;                              "--trailing-comma" "all"
+;;                              "--bracket-spacing" "true"
+;;                              )))
+;; (add-hook! '(web-mode-hook) 'maybe-use-prettier)
 
 (after! lsp-mode
   (dolist (match
@@ -275,3 +291,6 @@
 
 
 (use-package! interleave)
+
+;; Only check for git. We don't use anything else.
+(setq vc-handled-backends '(Git))

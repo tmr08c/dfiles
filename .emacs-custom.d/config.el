@@ -1028,10 +1028,19 @@ _q_ quit            _c_ create          _<_ previous
 (load "~/.emacs.secrets" t)
 
 (use-package server
-  :straight nil
-  :config
-  (unless (server-running-p)
-    (server-start)))
+    :straight nil
+    :config
+    (unless (server-running-p)
+      (server-start)))
+
+
+;; Set fonts
+(set-face-attribute 'variable-pitch nil :family "Ubuntu" :weight 'regular)
+(set-face-attribute 'fixed-pitch nil :family "MesloLGS NF" :weight 'regular)
+(face-spec-set 'default
+               '((((type x)) :family "MesloLGS NF" :height 130)
+                 (((type ns)) :family "MesloLGS NF" :height 130)
+                 (t :family :height 130)))
 
 (provide 'config)
 ;;; config.el ends here

@@ -50,8 +50,7 @@
 (package! writegood-mode :disable t)
 
 ;;(package! all-the-icons-ibuffer)
-(package! polymode
-  :pin "3284ff10017d280ba82f27dc20fe5223b0df709c")
+(package! polymode)
 
 (package! doom-snippets :ignore t)
 (package! evil-matchit)
@@ -60,3 +59,6 @@
 (package! interleave)
 (unpin! dockerfile-mode)
 (unpin! jump)
+
+(package! prettier-js)
+(package! alchemist :disable t)
