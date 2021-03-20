@@ -9,7 +9,7 @@
   :mode ("/rebar\\.config\\(?:\\.script\\)?\\'" . erlang-mode)
   :mode ("/\\(?:app\\|sys\\)\\.config\\'" . erlang-mode))
 (use-package elixir-mode
-  :hook (elixir-mode . lsp-mode)
+  :hook (elixir-mode . lsp)
   :config
   (progn
     ;; (defun exs-freeze-workaround ()

@@ -207,6 +207,7 @@ _q_ quit            _c_ create          _<_ previous
 ;; Language Server Protocol (LSP)
 (use-package lsp-mode
   :diminish lsp-mode
+  :hook (lsp-mode . lsp-enable-which-key-integration)
   ;; :hook
   ;; (prog-mode . (lambda ()
   ;;                (unless (derived-mode-p 'emacs-lisp-mode 'lisp-mode)

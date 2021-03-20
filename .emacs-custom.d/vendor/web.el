@@ -12,7 +12,7 @@
   :mode "\\.m?js\\'"
   :hook
   ((js2-mode . js2-imenu-extras-mode)
-   (js2-mode . lsp-mode))
+   (js2-mode . lsp))
   :config
   (setq js-chain-indent t
         ;; Don't mishighlight shebang lines
@@ -41,7 +41,7 @@
   :hook (js2-mode . eslintd-fix-mode))
 
 (use-package typescript-mode
-  :hook ((typescript-mode . lsp-mode))
+  :hook ((typescript-mode . lsp))
   :config
   (add-hook 'typescript-mode-hook #'rainbow-delimiters-mode)
   (setq typescript-indent-level 2
