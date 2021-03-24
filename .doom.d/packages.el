@@ -62,3 +62,5 @@
 
 (package! prettier-js)
 (package! alchemist :disable t)
+
+(package! lsp-origami)

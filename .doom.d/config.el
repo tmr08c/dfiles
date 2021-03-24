@@ -294,3 +294,10 @@
 
 ;; Only check for git. We don't use anything else.
 (setq vc-handled-backends '(Git))
+
+;; Enable folding
+(setq lsp-enable-folding t)
+
+;; Add origami with LSP integration
+(use-package! lsp-origami)
+(add-hook! 'lsp-after-open-hook #'lsp-origami-try-enable)
