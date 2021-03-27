@@ -94,8 +94,6 @@
   ((writeroom-mode org-mode markdown-mode gfm-mode) . mixed-pitch-mode))
 
 (setq! ruby-align-to-stmt-keywords '(if while unless until begin case for def))
-(use-package! feature-mode
-  :mode (("\\.feature\\'" . feature-mode)))
 (after! rspec-mode
   (dolist (mode '(rspec-verifiable-mode-map rspec-mode-map))
     (undefine-key! mode "SPC m t v"))
@@ -154,32 +152,7 @@
 ;;                (web-mode-on-engine-setted))
 ;;       (apply f r))))
 
-;; (use-package! mmm-mode
-;;   :init (setq mmm-global-mode 'maybe
-;;               mmm-parse-when-idle 't
-;;               mmm-set-file-name-for-modes '(web-mode)
-;;               mmm-submode-decoration-level 0)
-;;   :config
-;;   (require 'web-mode)
 
-
-;; (after! highlight-numbers
-;;   (puthash 'elixir-mode
-;;            "\\_<-?[[:digit:]]+\\(?:_[[:digit:]]\\{3\\}\\)*\\_>"
-;;            highlight-numbers-modelist))
-
-;;   (mmm-add-classes
-;;   `((elixir-liveview
-;;       :submode web-mode
-;;       :face mmm-declaration-submode-face
-;;       :front ,liveview-regex-start
-;;       :front-offset (end-of-line 1)
-;;       :include-front nil
-;;       :back ,liveview-regex-end
-;;       :include-back nil
-;;       :end-not-begin t)))
-
-;;   (mmm-add-mode-ext-class 'elixir-mode nil 'elixir-liveview))
 
 (use-package! evil-matchit
   :hook (web-mode . turn-on-evil-matchit-mode))
@@ -201,21 +174,6 @@
     :hostmode 'poly-elixir-hostmode
     :innermodes '(poly-liveview-expr-elixir-innermode)))
 
-;; (defun maybe-use-prettier ()
-;;   "Enable prettier-js-mode if .prettierrc or .prettierrc.json file is located."
-;;   (if (or (locate-dominating-file default-directory ".prettierrc")
-;;           (locate-dominating-file default-directory ".prettierrc.json"))
-;;         (prettier-js-mode +1)))
-
-;; (use-package! prettier-js)
-;; (after! prettier-js
-;;   :config
-;;   (setq! prettier-js-args '(
-;;                              "--trailing-comma" "all"
-;;                              "--bracket-spacing" "true"
-;;                              )))
-;; (add-hook! '(web-mode-hook) 'maybe-use-prettier)
-
 (after! lsp-mode
   (dolist (match
            '("[/\\\\].direnv$"
@@ -223,7 +181,7 @@
              "[/\\\\]deps"
              "[/\\\\]build"
              "[/\\\\]_build"))
-    (add-to-list 'lsp-file-watch-ignored match)))
+    (add-to-list 'lsp-file-watch-ignored-directories match)))
 ;; (after! lsp-mode
 ;;         (require 'lsp-tailwindcss))
 ;; TODO: Get exdoc highlighting working maybe?
@@ -259,38 +217,38 @@
 ;; Set custom snippets directory
 (setq +snippets-dir "~/.config/snippets")
 
-(eval-after-load 'ivy-rich
-  (progn
-    (defvar ek/ivy-rich-cache
-      (make-hash-table :test 'equal))
+;; (eval-after-load 'ivy-rich
+;;   (progn
+;;     (defvar ek/ivy-rich-cache
+;;       (make-hash-table :test 'equal))
 
-    (defun ek/ivy-rich-cache-lookup (delegate candidate)
-      (let ((result (gethash candidate ek/ivy-rich-cache)))
-        (unless result
-          (setq result (funcall delegate candidate))
-          (puthash candidate result ek/ivy-rich-cache))
-        result))
+;;     (defun ek/ivy-rich-cache-lookup (delegate candidate)
+;;       (let ((result (gethash candidate ek/ivy-rich-cache)))
+;;         (unless result
+;;           (setq result (funcall delegate candidate))
+;;           (puthash candidate result ek/ivy-rich-cache))
+;;         result))
 
-    (defun ek/ivy-rich-cache-reset ()
-      (clrhash ek/ivy-rich-cache))
+;;     (defun ek/ivy-rich-cache-reset ()
+;;       (clrhash ek/ivy-rich-cache))
 
-    (defun ek/ivy-rich-cache-rebuild ()
-      (mapc (lambda (buffer)
-              (ivy-rich--ivy-switch-buffer-transformer (buffer-name buffer)))
-            (buffer-list)))
+;;     (defun ek/ivy-rich-cache-rebuild ()
+;;       (mapc (lambda (buffer)
+;;               (ivy-rich--ivy-switch-buffer-transformer (buffer-name buffer)))
+;;             (buffer-list)))
 
-    (defun ek/ivy-rich-cache-rebuild-trigger ()
-      (ek/ivy-rich-cache-reset)
-      (run-with-idle-timer 1 nil 'ek/ivy-rich-cache-rebuild))
+;;     (defun ek/ivy-rich-cache-rebuild-trigger ()
+;;       (ek/ivy-rich-cache-reset)
+;;       (run-with-idle-timer 1 nil 'ek/ivy-rich-cache-rebuild))
 
-    (advice-add 'ivy-rich--ivy-switch-buffer-transformer :around 'ek/ivy-rich-cache-lookup)
-    (advice-add 'ivy-switch-buffer :after 'ek/ivy-rich-cache-rebuild-trigger)))
+;;     (advice-add 'ivy-rich--ivy-switch-buffer-transformer :around 'ek/ivy-rich-cache-lookup)
+;;     (advice-add 'ivy-switch-buffer :after 'ek/ivy-rich-cache-rebuild-trigger)))
 
 ;; Turn off undo-fu-session-mode
-(remove-hook 'undo-fu-mode-hook #'global-undo-fu-session-mode)
+(remove-hook! 'undo-fu-mode-hook #'global-undo-fu-session-mode)
 
 
-(use-package! interleave)
+(use-package! interleave :defer t)
 
 ;; Only check for git. We don't use anything else.
 (setq vc-handled-backends '(Git))
