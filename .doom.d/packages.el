@@ -61,3 +61,4 @@
 (package! alchemist :disable t)
 
 (package! lsp-origami)
+(package! lsp-tailwindcss :recipe (:host github :repo "merrickluo/lsp-tailwindcss"))

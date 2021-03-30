@@ -153,6 +153,8 @@
 ;;       (apply f r))))
 
 
+(after! treemacs
+ (setq treemacs-show-hidden-files nil))
 
 (use-package! evil-matchit
   :hook (web-mode . turn-on-evil-matchit-mode))
@@ -174,6 +176,7 @@
     :hostmode 'poly-elixir-hostmode
     :innermodes '(poly-liveview-expr-elixir-innermode)))
 
+(use-package! lsp-tailwindcss)
 (after! lsp-mode
   (dolist (match
            '("[/\\\\].direnv$"
