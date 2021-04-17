@@ -1,11 +1,6 @@
-@elm-tooling/elm-language-server
 bash-language-server
 bs-platform
 dockerfile-language-server-nodejs
-elm
-elm-format
-elm-oracle
-elm-test
 eslint_d
 express
 js-beautify
