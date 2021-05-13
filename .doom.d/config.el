@@ -40,7 +40,8 @@
 
 
 (after! projectile
-  (setq! projectile-files-cache-expire 5))
+  (setq! projectile-files-cache-expire 5
+         projectile-track-known-projects-automatically nil))
 
 ;; Elixir LSP keeps checking project every N seconds otherwise
 (setq lsp-enable-file-watchers t)
