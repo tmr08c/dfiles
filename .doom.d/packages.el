@@ -62,3 +62,6 @@
 
 (package! lsp-origami)
 (package! lsp-tailwindcss :recipe (:host github :repo "merrickluo/lsp-tailwindcss"))
+
+(package! tree-sitter)
+(package! tree-sitter-langs)

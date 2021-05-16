@@ -263,3 +263,9 @@
 ;; Add origami with LSP integration
 (use-package! lsp-origami)
 (add-hook! 'lsp-after-open-hook #'lsp-origami-try-enable)
+
+(use-package! tree-sitter
+  :config
+  (require 'tree-sitter-langs)
+  (global-tree-sitter-mode)
+  (add-hook 'tree-sitter-after-on-hook #'tree-sitter-hl-mode))
