@@ -182,7 +182,8 @@
   ;; Larger
   (setq lsp-ui-doc-max-height 10
     lsp-ui-doc-max-width 80)
-   ;; Enable LSP UI doc with mouse hover
+
+  ;; Enable LSP UI doc with mouse hover
   (setq lsp-ui-doc-enable t
     lsp-ui-doc-show-with-cursor nil
     lsp-ui-doc-show-with-mouse t))
