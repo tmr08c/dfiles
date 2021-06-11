@@ -56,7 +56,7 @@
 (package! evil-matchit)
 (unpin! elixir-mode)
 (unpin! dockerfile-mode)
-(unpin! jump)
+;; (unpin! jump)
 
 (package! alchemist :disable t)
 
@@ -65,3 +65,4 @@
 
 (package! tree-sitter)
 (package! tree-sitter-langs)
+(package! magit-section)

@@ -178,7 +178,23 @@
     :innermodes '(poly-liveview-expr-elixir-innermode)))
 
 (use-package! lsp-tailwindcss)
+(after! lsp-ui
+  ;; Larger
+  (setq lsp-ui-doc-max-height 10
+    lsp-ui-doc-max-width 80)
+   ;; Enable LSP UI doc with mouse hover
+  (setq lsp-ui-doc-enable t
+    lsp-ui-doc-show-with-cursor nil
+    lsp-ui-doc-show-with-mouse t))
+
+;; Add origami with LSP integration
+(use-package! lsp-origami)
+(add-hook! 'lsp-after-open-hook #'lsp-origami-try-enable)
+
+
 (after! lsp-mode
+  ;; Enable folding
+  (setq lsp-enable-folding t)
   (dolist (match
            '("[/\\\\].direnv$"
              "[/\\\\]node_modules$"
@@ -257,15 +273,47 @@
 ;; Only check for git. We don't use anything else.
 (setq vc-handled-backends '(Git))
 
-;; Enable folding
-(setq lsp-enable-folding t)
-
-;; Add origami with LSP integration
-(use-package! lsp-origami)
-(add-hook! 'lsp-after-open-hook #'lsp-origami-try-enable)
-
 (use-package! tree-sitter
   :config
   (require 'tree-sitter-langs)
   (global-tree-sitter-mode)
   (add-hook 'tree-sitter-after-on-hook #'tree-sitter-hl-mode))
+
+(use-package! tree-sitter
+  :init
+  (defface tree-sitter-hl-face:warning
+    '((default :inherit font-lock-warning-face))
+    "Face for parser errors"
+    :group 'tree-sitter-hl-faces)
+
+  (defun hook/tree-sitter-common ()
+    (unless font-lock-defaults
+      (setq font-lock-defaults '(nil)))
+    (setq tree-sitter-hl-use-font-lock-keywords nil)
+    (tree-sitter-mode +1)
+    (tree-sitter-hl-mode +1))
+
+  (defun hook/elixir-tree-sitter ()
+    (require 'f)
+    (require 's)
+
+    (setq tree-sitter-hl-default-patterns
+     (read
+      (concat
+       "["
+       (s-replace "#match?" ".match?"
+                  (f-read-text (expand-file-name "~/code/github/tree-sitter-elixir/queries/highlights.scm")))
+       "]")))
+    (hook/tree-sitter-common))
+
+  :hook ((elixir-mode . hook/elixir-tree-sitter))
+  :custom-face
+  (tree-sitter-hl-face:operator ((t)))
+  (tree-sitter-hl-face:variable ((t)))
+  (tree-sitter-hl-face:function.method.call ((t)))
+  (tree-sitter-hl-face:property ((t))))
+
+(use-package! tree-sitter-langs
+  :after tree-sitter
+  :config
+  (add-to-list 'tree-sitter-major-mode-language-alist '(elixir-mode . elixir)))
