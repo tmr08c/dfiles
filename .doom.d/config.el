@@ -155,7 +155,8 @@
 
 
 (after! treemacs
- (setq treemacs-show-hidden-files nil))
+  (setq +treemacs-git-mode 'deferred ;; requires Python3
+        treemacs-show-hidden-files nil))
 
 (use-package! evil-matchit
   :hook (web-mode . turn-on-evil-matchit-mode))
