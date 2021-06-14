@@ -319,3 +319,12 @@
   :after tree-sitter
   :config
   (add-to-list 'tree-sitter-major-mode-language-alist '(elixir-mode . elixir)))
+
+;; Fix exit error 2 with projectile-search
+(after! counsel
+  (advice-add 'counsel-rg
+              :around
+              (lambda (func &rest args)
+                (cl-letf (((symbol-function #'process-exit-status)
+                           (lambda (_proc) 0)))
+                  (apply func args)))))
