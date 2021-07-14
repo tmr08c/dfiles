@@ -84,7 +84,6 @@ source "$HOME/.zinit/bin/zinit.zsh"
 autoload -Uz _zinit
 (( ${+_comps} )) && _comps[zinit]=_zinit
 
-export GITSTATUS_LOG_LEVEL=DEBUG
 zinit ice depth=1; zinit light romkatv/powerlevel10k
 
 zinit fpath -f ${ASDF_DIR}/completions
