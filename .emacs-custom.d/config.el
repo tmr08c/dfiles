@@ -46,7 +46,6 @@
   (require 'linux))
 
 (require 'web)
-(require 'ember)
 (require 'ruby)
 (require 'elixir)
 (require 'golang)

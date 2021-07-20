@@ -94,8 +94,23 @@
   :hook
   ((writeroom-mode org-mode markdown-mode gfm-mode) . mixed-pitch-mode))
 
+
+; Ruby Mode
+;;
+;; Solargraph does worse job than format-all-mode
+(setq-hook! 'ruby-mode-hook +format-with-lsp nil)
+
+;; Treat underscore is a word character
+(add-hook! '(ruby-mode-hook elixir-mode-hook)
+  (modify-syntax-entry ?_ "w"))
+
+;; Change alignment
 (setq! ruby-align-to-stmt-keywords '(if while unless until begin case for def))
+
+;; RSpec
 (after! rspec-mode
+  ;; Use spring when pid is present
+  (setq rspec-use-spring-when-possible t)
   (dolist (mode '(rspec-verifiable-mode-map rspec-mode-map))
     (undefine-key! mode "SPC m t v"))
 
@@ -117,13 +132,6 @@
             latex-mode
             yaml-mode
             ruby-mode))
-
-;; Solargraph does worse job than format-all-mode
-(setq-hook! 'ruby-mode-hook +format-with-lsp nil)
-
-;; Treat underscore is a word character
-(add-hook! '(ruby-mode-hook elixir-mode-hook)
-  (modify-syntax-entry ?_ "w"))
 
 ;; Disable some flycheck checkers
 (setq-default flycheck-disabled-checkers '(ruby-rubylint emacs-lisp-checkdoc))
@@ -178,6 +186,7 @@
     :hostmode 'poly-elixir-hostmode
     :innermodes '(poly-liveview-expr-elixir-innermode)))
 
+; LSP
 (use-package! lsp-tailwindcss)
 (after! lsp-ui
   ;; Larger
@@ -192,7 +201,6 @@
 ;; Add origami with LSP integration
 (use-package! lsp-origami)
 (add-hook! 'lsp-after-open-hook #'lsp-origami-try-enable)
-
 
 (after! lsp-mode
   ;; Enable folding
@@ -328,3 +336,6 @@
                 (cl-letf (((symbol-function #'process-exit-status)
                            (lambda (_proc) 0)))
                   (apply func args)))))
+
+;; Allow turning off lsp mode
+(add-to-list 'safe-local-variable-values '(eval lsp-mode))
