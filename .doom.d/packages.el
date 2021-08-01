@@ -66,3 +66,5 @@
 (package! tree-sitter)
 (package! tree-sitter-langs)
 (package! magit-section)
+
+(package! flycheck-clang-tidy)

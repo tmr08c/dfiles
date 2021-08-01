@@ -186,12 +186,10 @@
     :hostmode 'poly-elixir-hostmode
     :innermodes '(poly-liveview-expr-elixir-innermode)))
 
-; LSP
-(use-package! lsp-tailwindcss)
 (after! lsp-ui
   ;; Larger
   (setq lsp-ui-doc-max-height 10
-    lsp-ui-doc-max-width 80)
+        lsp-ui-doc-max-width 80)
 
   ;; Enable LSP UI doc with mouse hover
   (setq lsp-ui-doc-enable t
@@ -202,9 +200,31 @@
 (use-package! lsp-origami)
 (add-hook! 'lsp-after-open-hook #'lsp-origami-try-enable)
 
+(after! eglot
+  (add-to-list 'eglot-server-programs '((c++-mode c-mode) . ("ccls"))))
+
 (after! lsp-mode
+  (use-package! lsp-tailwindcss)
+
+  (setq +cc-default-header-file-mode 'c++-mode)
+  ;; (setq +cc-default-header-file-mode 'c++-mode
+  ;;       lsp-clients-clangd-executable "/usr/local/opt/llvm/bin/clangd"
+  ;;       lsp-clients-clangd-args '(
+  ;;                                  "-j=3"
+  ;;                                  "--background-index"
+  ;;                                  "--clang-tidy"
+  ;;                                  "--completion-style=detailed"
+  ;;                                  ;; "--query-driver=/usr/local/bin/gcc-8"
+  ;;                                  ;; "--query-driver=/Users/justinsmestad/.espressif/tools/xtensa-esp32-elf/esp-2021r1-8.4.0/xtensa-esp32-elf/bin/xtensa-esp32-elf-gcc"
+  ;;                                  ;; "--query-driver=/Users/justinsmestad/.espressif/tools/xtensa-esp32-elf/esp-2021r1-8.4.0/xtensa-esp32-elf/bin/xtensa-esp32-elf-g++"
+  ;;                                  ))
+  ;; ;; Prefer clangd
+  ;; (after! lsp-clangd (set-lsp-priority! 'clangd 2))
+
   ;; Enable folding
   (setq lsp-enable-folding t)
+
+  ;; Ignore certain directories to limit file watchers
   (dolist (match
            '("[/\\\\].direnv$"
              "[/\\\\]node_modules$"
@@ -247,36 +267,8 @@
 ;; Set custom snippets directory
 (setq +snippets-dir "~/.config/snippets")
 
-;; (eval-after-load 'ivy-rich
-;;   (progn
-;;     (defvar ek/ivy-rich-cache
-;;       (make-hash-table :test 'equal))
-
-;;     (defun ek/ivy-rich-cache-lookup (delegate candidate)
-;;       (let ((result (gethash candidate ek/ivy-rich-cache)))
-;;         (unless result
-;;           (setq result (funcall delegate candidate))
-;;           (puthash candidate result ek/ivy-rich-cache))
-;;         result))
-
-;;     (defun ek/ivy-rich-cache-reset ()
-;;       (clrhash ek/ivy-rich-cache))
-
-;;     (defun ek/ivy-rich-cache-rebuild ()
-;;       (mapc (lambda (buffer)
-;;               (ivy-rich--ivy-switch-buffer-transformer (buffer-name buffer)))
-;;             (buffer-list)))
-
-;;     (defun ek/ivy-rich-cache-rebuild-trigger ()
-;;       (ek/ivy-rich-cache-reset)
-;;       (run-with-idle-timer 1 nil 'ek/ivy-rich-cache-rebuild))
-
-;;     (advice-add 'ivy-rich--ivy-switch-buffer-transformer :around 'ek/ivy-rich-cache-lookup)
-;;     (advice-add 'ivy-switch-buffer :after 'ek/ivy-rich-cache-rebuild-trigger)))
-
 ;; Turn off undo-fu-session-mode
 (remove-hook! 'undo-fu-mode-hook #'global-undo-fu-session-mode)
-
 
 (use-package! interleave :defer t)
 

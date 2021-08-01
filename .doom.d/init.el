@@ -23,7 +23,8 @@
        (company +childframe)           ; the ultimate code completion backend
        ;;helm              ; the *other* search engine for love and life
        ;;ido               ; the other *other* search engine...
-       (ivy +prescient +icons)               ; a search engine for love and life
+       ;; (ivy +prescient +icons)               ; a search engine for love and life
+       (vertico +icons)           ; the search engine of the future
 
        :ui
        deft              ; notational velocity for Emacs
@@ -95,7 +96,7 @@
        (lookup             ; navigate your code and its documentation
         +docsets
         +xwidget)
-       (lsp)
+       (lsp +eglot)
        (magit +forge)      ; a git porcelain for Emacs
        ;;make              ; run make tasks from Emacs
        ;;pass              ; password manager for nerds
