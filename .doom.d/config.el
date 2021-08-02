@@ -43,8 +43,6 @@
   (setq! projectile-files-cache-expire 5
          projectile-track-known-projects-automatically nil))
 
-;; Elixir LSP keeps checking project every N seconds otherwise
-(setq lsp-enable-file-watchers t)
 
 ;; There are two ways to load a theme. Both assume the theme is installed and
 ;; available. You can either set `doom-theme' or manually load a theme with the
@@ -196,15 +194,20 @@
     lsp-ui-doc-show-with-cursor nil
     lsp-ui-doc-show-with-mouse t))
 
-;; Add origami with LSP integration
-(use-package! lsp-origami)
-(add-hook! 'lsp-after-open-hook #'lsp-origami-try-enable)
 
 (after! eglot
   (add-to-list 'eglot-server-programs '((c++-mode c-mode) . ("ccls"))))
 
 (after! lsp-mode
   (use-package! lsp-tailwindcss)
+
+  ;; Add origami with LSP integration
+  (use-package! lsp-origami)
+  (add-hook! 'lsp-after-open-hook #'lsp-origami-try-enable)
+
+
+  ;; Elixir LSP keeps checking project every N seconds otherwise
+  (setq lsp-enable-file-watchers t)
 
   (setq +cc-default-header-file-mode 'c++-mode)
   ;; (setq +cc-default-header-file-mode 'c++-mode
@@ -321,13 +324,10 @@
   (add-to-list 'tree-sitter-major-mode-language-alist '(elixir-mode . elixir)))
 
 ;; Fix exit error 2 with projectile-search
-(after! counsel
-  (advice-add 'counsel-rg
-              :around
-              (lambda (func &rest args)
-                (cl-letf (((symbol-function #'process-exit-status)
-                           (lambda (_proc) 0)))
-                  (apply func args)))))
-
-;; Allow turning off lsp mode
-(add-to-list 'safe-local-variable-values '(eval lsp-mode))
+;; (after! counsel
+;;   (advice-add 'counsel-rg
+;;               :around
+;;               (lambda (func &rest args)
+;;                 (cl-letf (((symbol-function #'process-exit-status)
+;;                            (lambda (_proc) 0)))
+;;                   (apply func args)))))
