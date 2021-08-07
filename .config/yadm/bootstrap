@@ -3,152 +3,157 @@
 system_type=$(uname -s)
 
 if [ "$system_type" = "Darwin" ]; then
-	echo "macOS detected"
+  echo "macOS detected"
 
-	if [ ! command -v brew ] >/dev/null 2>&1; then
-		echo "Installing homebrew"
-		/usr/bin/ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
-	fi
+  if [ ! command -v brew ] >/dev/null 2>&1; then
+    echo "Installing homebrew"
+    /usr/bin/ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
+  fi
 
-	echo "Configure Yubikey dependencies"
-	brew install gnupg yubikey-personalization hopenpgp-tools ykman pinentry-mac
+  echo "Configure Yubikey dependencies"
+  brew install gnupg yubikey-personalization hopenpgp-tools ykman pinentry-mac
 
-	echo "Install Universal ctags"
-	brew tap universal-ctags/universal-ctags
-	brew install --HEAD universal-ctags
+  echo "Install Universal ctags"
+  brew tap universal-ctags/universal-ctags
+  brew install --HEAD universal-ctags
 
-	echo "Emacs mode dependencies"
-	brew install coreutils cmake jq shellcheck ripgrep fd aspell pandoc jansson pngpaste
+  echo "Emacs mode dependencies"
+  brew install coreutils cmake jq shellcheck ripgrep fd aspell pandoc jansson pngpaste
 
-	echo "Utilities"
-	brew install websocat tldr tig ripgrep mkcert exa graphviz sbcl grip glslang tidy-html5 ccls
+  echo "Utilities"
+  brew install websocat tldr tig ripgrep mkcert exa graphviz sbcl grip glslang tidy-html5 ccls
 
-	echo "Install iTerm2 color scheme"
-	echo "Run \`wget https://raw.githubusercontent.com/martinlindhe/base16-iterm2/master/itermcolors/base16-monokai-256.itermcolors\` and install it"
+  echo "Install iTerm2 color scheme"
+  echo "Run \`wget https://raw.githubusercontent.com/martinlindhe/base16-iterm2/master/itermcolors/base16-monokai-256.itermcolors\` and install it"
 
-	# ln -sf ~/.config/Code/User/settings.json ~/Library/Application\ Support/Code/User/settings.json
+  # ln -sf ~/.config/Code/User/settings.json ~/Library/Application\ Support/Code/User/settings.json
 else
-	echo "Configure Keyboard Settings"
-	sudo gsettings set org.gnome.desktop.peripherals.keyboard repeat-interval 30
-	sudo gsettings set org.gnome.desktop.peripherals.keyboard delay 300
+  echo "Configure Keyboard Settings"
+  sudo gsettings set org.gnome.desktop.peripherals.keyboard repeat-interval 30
+  sudo gsettings set org.gnome.desktop.peripherals.keyboard delay 300
 
-	if [ -f /etc/redhat-release ]; then
-		echo "Fedora / RHEL detected"
-		sudo dnf install -y direnv util-linux-user vim mozilla-fira-mono-fonts mozilla-fira-sans-fonts google-roboto-slab-fonts aspell-en
+  if [ -f /etc/redhat-release ]; then
+    echo "Fedora / RHEL detected"
+    sudo dnf install -y direnv util-linux-user vim mozilla-fira-mono-fonts mozilla-fira-sans-fonts google-roboto-slab-fonts aspell-en
 
-		echo "C/C++ stuff"
-		sudo dnf install -y clang cmake clang-devel llvm-devel ccls
+    echo "C/C++ stuff"
+    sudo dnf install -y clang cmake clang-devel llvm-devel ccls
 
-		#echo "Configure Yubikey dependencies"
-		#sudo dnf install -y pcsc-lite yubioath-desktop powertop
+    #echo "Configure Yubikey dependencies"
+    #sudo dnf install -y pcsc-lite yubioath-desktop powertop
 
-		echo "Install Ruby dependencies"
-		sudo dnf install -y bzip2 openssl-devel libyaml-devel libffi-devel readline-devel zlib-devel gdbm-devel ncurses-devel perl-Digest-SHA postgresql-devel patch
+    echo "Install Ruby dependencies"
+    sudo dnf install -y bzip2 openssl-devel libyaml-devel libffi-devel readline-devel zlib-devel gdbm-devel ncurses-devel perl-Digest-SHA postgresql-devel patch
 
-		echo "Install Python dependencies"
-		sudo dnf install -y zlib-devel bzip2 bzip2-devel readline-devel sqlite sqlite-devel openssl-devel tk-devel libffi-devel
+    echo "Install Python dependencies"
+    sudo dnf install -y zlib-devel bzip2 bzip2-devel readline-devel sqlite sqlite-devel openssl-devel tk-devel libffi-devel
 
-		echo "Install Erlang dependencies"
-		sudo dnf install -y autoconf ncurses-devel wxGTK-devel wxBase openssl-devel java-1.8.0-openjdk-devel libiodbc unixODBC.x86_64 erlang-odbc.x86_64 libxslt fop
+    echo "Install Erlang dependencies"
+    sudo dnf install -y autoconf ncurses-devel wxGTK-devel wxBase openssl-devel java-1.8.0-openjdk-devel libiodbc unixODBC.x86_64 erlang-odbc.x86_64 libxslt fop
 
-		echo "Install Printer dependencies"
-		sudo dnf install -y libnsl
-	elif [ -f /etc/SUSE-brand ]; then
-		echo "SUSE detected"
-		sudo zypper install direnv zsh
+    echo "Install Printer dependencies"
+    sudo dnf install -y libnsl
+  elif [ -f /etc/SUSE-brand ]; then
+    echo "SUSE detected"
+    sudo zypper install direnv zsh
 
-		echo "Python dependencies"
-		sudo zypper install gcc automake openssl-devel ncurses-devel readline-devel zlib-devel tk-devel libffi-devel
+    echo "Python dependencies"
+    sudo zypper install gcc automake openssl-devel ncurses-devel readline-devel zlib-devel tk-devel libffi-devel
 
-		echo "Install Ruby dependencies"
-		sudo zypper install gcc automake gdbm-devel libffi-devel libyaml-devel libopenssl-devel ncurses-devel readline-devel zlib-devel postgresql postgresql-devel
-	else
-		distro=$(lsb_release -i | cut -f2-)
+    echo "Install Ruby dependencies"
+    sudo zypper install gcc automake gdbm-devel libffi-devel libyaml-devel libopenssl-devel ncurses-devel readline-devel zlib-devel postgresql postgresql-devel
+  else
+    distro=$(lsb_release -i | cut -f2-)
 
-		if [ "$distro" = "Ubuntu" ]; then
-			echo "Ubuntu detected"
-			sudo apt install -y pinentry-gnome3 direnv dconf-cli xsel m4 libssh-dev xsltproc fop
+    if [ "$distro" = "Ubuntu" ]; then
+      echo "Ubuntu detected"
+      sudo apt install -y pinentry-gnome3 direnv dconf-cli xsel m4 libssh-dev xsltproc fop
 
-			echo "Install Ruby dependencies"
-			sudo apt install -y autoconf bison build-essential libssl-dev libyaml-dev libreadline-dev zlib1g-dev libncurses5-dev libffi-dev
+      echo "Install Ruby dependencies"
+      sudo apt install -y autoconf bison build-essential libssl-dev libyaml-dev libreadline-dev zlib1g-dev libncurses5-dev libffi-dev
 
-			echo "Configure Yubikey dependencies"
-			sudo apt install -y gnupg2 gnupg-agent pinentry-curses scdaemon pcscd libusb-1.0-0-dev
+      echo "Configure Yubikey dependencies"
+      sudo apt install -y gnupg2 gnupg-agent pinentry-curses scdaemon pcscd libusb-1.0-0-dev
 
-			echo "Erlang dependencies"
-			sudo apt install -y libcanberra-gtk-module libcanberra-gtk3-module
-		fi
+      echo "Erlang dependencies"
+      sudo apt install -y libcanberra-gtk-module libcanberra-gtk3-module
+    fi
 
-		if [ "$distro" = "ManjaroLinux" ]; then
-			echo "Manjaro / Arch Linux detected"
-			sudo pacman -Syu xsel vim neovim emacs otf-fira-sans otf-fira-code otf-fira-mono ttf-roboto-slab ttf-roboto-mono ttf-roboto tilix slack-desktop ripgrep postgresql-libs gcc the_silver_searcher visual-studio-code-bin yakyak
+    if [ "$distro" = "ManjaroLinux" ]; then
+      echo "Manjaro / Arch Linux detected"
+      sudo pacman -Syu xsel vim neovim emacs otf-fira-sans otf-fira-code otf-fira-mono ttf-roboto-slab ttf-roboto-mono ttf-roboto tilix slack-desktop ripgrep postgresql-libs gcc the_silver_searcher visual-studio-code-bin yakyak
 
-			sudo pacman -S --needed base-devel curses glu mesa wxgtk2 libpng libssh unixodbc
+      sudo pacman -S --needed base-devel curses glu mesa wxgtk2 libpng libssh unixodbc
 
-			echo "Install Pop_OS! theme"
-			sudo pacman -Sy pop-gtk-theme-bin pop-icon-theme-bin
+      echo "Install Pop_OS! theme"
+      sudo pacman -Sy pop-gtk-theme-bin pop-icon-theme-bin
 
-			echo "Configure Yubikey dependencies"
-			sudo pacman -Sy libusb-compat yubikey-manager
-		fi
+      echo "Configure Yubikey dependencies"
+      sudo pacman -Sy libusb-compat yubikey-manager
+    fi
 
-	fi
+  fi
 
-	if [ ! -d ~/.config/tilix/schemes ]; then
-		echo "Fetching base16 theme for Tilix"
-		mkdir -p ~/.config/tilix/schemes
-		cd ~/.config/tilix/schemes
-		wget https://github.com/karlding/base16-tilix/blob/master/tilix/base16-monokai.json
-	fi
+  if [ ! -d ~/.config/tilix/schemes ]; then
+    echo "Fetching base16 theme for Tilix"
+    mkdir -p ~/.config/tilix/schemes
+    cd ~/.config/tilix/schemes
+    wget https://github.com/karlding/base16-tilix/blob/master/tilix/base16-monokai.json
+  fi
 
-	# Download GPG key from Public Server
-	gpg2 --list-keys 0xDB57958A3B574D5C >/dev/null 2>&1
-	status=$?
-	if [ $status -ne 0 ]; then
-		echo "GPG key missing. Importing from Public Server."
-		gpg2 --recv 0xDB57958A3B574D5C
-		echo "GPG imported. You must manually trust it."
-		echo "Run 'gpg --edit-key 0xDB57958A3B574D5C' and give it ultimate trust."
+  # Download GPG key from Public Server
+  gpg2 --list-keys 0xDB57958A3B574D5C >/dev/null 2>&1
+  status=$?
+  if [ $status -ne 0 ]; then
+    echo "GPG key missing. Importing from Public Server."
+    gpg2 --recv 0xDB57958A3B574D5C
+    echo "GPG imported. You must manually trust it."
+    echo "Run 'gpg --edit-key 0xDB57958A3B574D5C' and give it ultimate trust."
 
-		# Run GPG with SSH
-		GPG_TTY=$(tty)
-		SSH_AUTH_SOCK=$(gpgconf --list-dirs agent-ssh-socket)
-		gpgconf --launch gpg-agent
+    # Run GPG with SSH
+    GPG_TTY=$(tty)
+    SSH_AUTH_SOCK=$(gpgconf --list-dirs agent-ssh-socket)
+    gpgconf --launch gpg-agent
 
-		ssh-add -L | grep "cardno:000607123960" >~/.ssh/id_rsa_yubikey.pub
-	fi
+    ssh-add -L | grep "cardno:000607123960" >~/.ssh/id_rsa_yubikey.pub
+  fi
 fi
 
 [[ -d ~/code/github ]] || mkdir -p ~/code/github
 
 if [ ! -e $HOME/.vim/bundle/vundle ]; then
-	echo "Installing Vundle for VIM configuration"
-	mkdir -p ~/.vim
-	git clone https://github.com/gmarik/vundle.git $HOME/.vim/bundle/vundle
+  echo "Installing Vundle for VIM configuration"
+  mkdir -p ~/.vim
+  git clone https://github.com/gmarik/vundle.git $HOME/.vim/bundle/vundle
 fi
 
 if [ command -v vim ] >/dev/null 2>&1; then
-	vim -u $HOME/.vimrc.bundles +BundleInstall +qa
+  vim -u $HOME/.vimrc.bundles +BundleInstall +qa
 fi
 
 if [ ! -d ~/.asdf ]; then
-	git clone https://github.com/asdf-vm/asdf.git ~/.asdf --branch v0.8.0
+  git clone https://github.com/asdf-vm/asdf.git ~/.asdf --branch v0.8.0
+fi
+
+if [ ! -d ~/.intellimacs ]; then
+  echo "Install Spacemacs for IntelliJ"
+  git clone https://github.com/MarcoIeni/intellimacs ~/.intellimacs
 fi
 
 if [ ! -d ~/.emacs.d ]; then
-	echo "Grabbing Chemacsustom Emacs"
-	git clone https://github.com/plexus/chemacs2.git ~/.emacs.d
+  echo "Grabbing Chemacsustom Emacs"
+  git clone https://github.com/plexus/chemacs2.git ~/.emacs.d
 fi
 
 if [ ! -d ~/.emacs-doom.d ]; then
-	echo "Grabbing Doom Emacs"
-	git clone -b develop https://github.com/hlissner/doom-emacs.git ~/.emacs-doom.d
-	~/.emacs-doom.d/bin/doom sync
+  echo "Grabbing Doom Emacs"
+  git clone -b develop https://github.com/hlissner/doom-emacs.git ~/.emacs-doom.d
+  ~/.emacs-doom.d/bin/doom sync
 fi
 
 if [ ! -d ~/.emacs-spacemacs.d ]; then
-	echo "Grabbing Spacemacs"
-	git clone -b develop https://github.com/syl20bnr/spacemacs ~/.emacs-spacemacs.d
+  echo "Grabbing Spacemacs"
+  git clone -b develop https://github.com/syl20bnr/spacemacs ~/.emacs-spacemacs.d
 fi
 
 echo "Updating the yadm repo origin URL"
