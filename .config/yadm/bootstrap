@@ -65,7 +65,7 @@ else
   else
     distro=$(lsb_release -i | cut -f2-)
 
-    if [ "$distro" = "Ubuntu" ]; then
+    if [ "$distro" = "Ubuntu" ] || [ "$distro" = "Pop" ]; then
       echo "Ubuntu detected"
       sudo apt install -y pinentry-gnome3 direnv dconf-cli xsel m4 libssh-dev xsltproc fop
 

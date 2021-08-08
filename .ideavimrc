@@ -5,6 +5,14 @@ source ~/.intellimacs/extra.vim
 source ~/.intellimacs/major.vim
 source ~/.intellimacs/hybrid.vim
 
+""" Plugins
+set surround
+set commentary
+set easymotion
+set NERDTree
+set highlightedyank
+set vim-paragraph-motion
+
 " (Optional) Enable which-key plugin
 source ~/.intellimacs/which-key.vim
 
