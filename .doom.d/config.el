@@ -195,8 +195,8 @@
     lsp-ui-doc-show-with-mouse t))
 
 
-(after! eglot
-  (add-to-list 'eglot-server-programs '((c++-mode c-mode) . ("ccls"))))
+;; (after! eglot
+;;   (add-to-list 'eglot-server-programs '((c++-mode c-mode) . ("ccls" "-v=1" "-log-file=/tmp/ccls.log"))))
 
 (after! lsp-mode
   (use-package! lsp-tailwindcss)
@@ -210,19 +210,19 @@
   (setq lsp-enable-file-watchers t)
 
   (setq +cc-default-header-file-mode 'c++-mode)
-  ;; (setq +cc-default-header-file-mode 'c++-mode
-  ;;       lsp-clients-clangd-executable "/usr/local/opt/llvm/bin/clangd"
-  ;;       lsp-clients-clangd-args '(
-  ;;                                  "-j=3"
-  ;;                                  "--background-index"
-  ;;                                  "--clang-tidy"
-  ;;                                  "--completion-style=detailed"
-  ;;                                  ;; "--query-driver=/usr/local/bin/gcc-8"
-  ;;                                  ;; "--query-driver=/Users/justinsmestad/.espressif/tools/xtensa-esp32-elf/esp-2021r1-8.4.0/xtensa-esp32-elf/bin/xtensa-esp32-elf-gcc"
-  ;;                                  ;; "--query-driver=/Users/justinsmestad/.espressif/tools/xtensa-esp32-elf/esp-2021r1-8.4.0/xtensa-esp32-elf/bin/xtensa-esp32-elf-g++"
-  ;;                                  ))
-  ;; ;; Prefer clangd
-  ;; (after! lsp-clangd (set-lsp-priority! 'clangd 2))
+  (setq +cc-default-header-file-mode 'c++-mode
+        lsp-clients-clangd-executable "/usr/local/opt/llvm/bin/clangd"
+        lsp-clients-clangd-args '(
+                                   "-j=3"
+                                   "--background-index"
+                                   "--clang-tidy"
+                                   "--completion-style=detailed"
+                                   ;; "--query-driver=/usr/local/bin/gcc-8"
+                                   ;; "--query-driver=/Users/justinsmestad/.espressif/tools/xtensa-esp32-elf/esp-2021r1-8.4.0/xtensa-esp32-elf/bin/xtensa-esp32-elf-gcc"
+                                   "--query-driver=/Users/justinsmestad/.espressif/tools/xtensa-esp32-elf/esp-2021r1-8.4.0/xtensa-esp32-elf/bin/xtensa-esp32-elf-g++"
+                                   ))
+  ;; Prefer clangd
+  (after! lsp-clangd (set-lsp-priority! 'clangd 2))
 
   ;; Enable folding
   (setq lsp-enable-folding t)

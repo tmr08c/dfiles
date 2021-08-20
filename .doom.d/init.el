@@ -96,7 +96,8 @@
        (lookup             ; navigate your code and its documentation
         +docsets
         +xwidget)
-       (lsp +eglot)
+       ;; (lsp +eglot)
+       (lsp)
        (magit +forge)      ; a git porcelain for Emacs
        ;;make              ; run make tasks from Emacs
        ;;pass              ; password manager for nerds
@@ -153,8 +154,7 @@
         +pretty
         +pomodoro
         +pandoc
-        +dragndrop
-        +roam)
+        +dragndrop)
        ;;php               ; perl's insecure younger brother
        plantuml            ; diagrams for confusing people more
        ;;purescript        ; javascript, but functional
