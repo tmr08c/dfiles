@@ -1,0 +1,4 @@
+#Checks: '-*,clang-diagnostic*,clang-analyzer-cplusplus*,clang-analyzer*,bugprone*,modernize*,performance*,cppcoreguidelines*,llvm*,misc*,readability*,-cppcoreguidelines-avoid-magic-numbers,-readability-magic-numbers'
+Checks: '-*,clang-diagnostic*,clang-analyzer-cplusplus*,clang-analyzer*,cert-*,bugprone*,modernize*,performance*,cppcoreguidelines*,misc*,readability*,-cppcoreguidelines-avoid-magic-numbers,-readability-magic-numbers,-cppcoreguidelines-pro-type-vararg'
+WarningsAsErrors: "*"
+FormatStyle: llvm
