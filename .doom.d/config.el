@@ -160,9 +160,11 @@
 ;;       (apply f r))))
 
 
+;; (setq +treemacs-git-mode 'deferred ;; requires Python3)
+
 (after! treemacs
-  (setq +treemacs-git-mode 'deferred ;; requires Python3
-        treemacs-show-hidden-files nil))
+  (setq treemacs-show-hidden-files nil
+        treemacs-read-string-input 'from-minibuffer))
 
 (use-package! evil-matchit
   :hook (web-mode . turn-on-evil-matchit-mode))
@@ -192,11 +194,14 @@
   ;; Enable LSP UI doc with mouse hover
   (setq lsp-ui-doc-enable t
     lsp-ui-doc-show-with-cursor nil
-    lsp-ui-doc-show-with-mouse t))
+    lsp-ui-doc-show-with-mouse nil))
 
 
 ;; (after! eglot
 ;;   (add-to-list 'eglot-server-programs '((c++-mode c-mode) . ("ccls" "-v=1" "-log-file=/tmp/ccls.log"))))
+(after! company
+  (setq company-minimum-prefix-length 3
+        company-tooltip-limit 8))
 
 (after! lsp-mode
   (use-package! lsp-tailwindcss)
@@ -230,6 +235,7 @@
   ;; Ignore certain directories to limit file watchers
   (dolist (match
            '("[/\\\\].direnv$"
+             "[/\\\\].elixir_ls"
              "[/\\\\]node_modules$"
              "[/\\\\]deps"
              "[/\\\\]build"

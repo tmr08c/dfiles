@@ -56,6 +56,8 @@
 (package! evil-matchit)
 (unpin! elixir-mode)
 (unpin! dockerfile-mode)
+(unpin! lsp-mode)
+(unpin! lsp-ui)
 ;; (unpin! jump)
 
 (package! alchemist :disable t)

@@ -1,0 +1,34 @@
+if [ -f "/Applications/Emacs.app/Contents/MacOS/Emacs" ]; then
+  export EMACS="/Applications/Emacs.app/Contents/MacOS/Emacs"
+  alias emacs="$EMACS"
+fi
+
+if [ -f "/Applications/Emacs.app/Contents/MacOS/bin/emacsclient" ]; then
+  alias emacsclient="/Applications/Emacs.app/Contents/MacOS/bin/emacsclient"
+fi
+
+path=(
+  $HOME/code/github/elixir-ls/release
+  /usr/local/opt/llvm/bin
+  $path
+)
+
+if [ -f "$HOME/.espressif" ]; then
+
+  export IDF_PATH=$HOME/esp/esp-idf
+  alias get_idf='. $HOME/esp/esp-idf/export.sh'
+
+  path=(
+    $path
+    $HOME/.espressif/tools/xtensa-esp32-elf-clang/bin
+    $HOME/.espressif/tools/xtensa-esp32-elf/esp-2021r1-8.4.0/xtensa-esp32-elf/bin
+  )
+fi
+
+eval "$(direnv hook zsh)"
+
+if [ -f "$HOME/.asdf/plugins/dotnet-core" ]; then
+  . ~/.asdf/plugins/dotnet-core/set-dotnet-home.zsh
+fi
+
+export PATH

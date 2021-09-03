@@ -33,8 +33,6 @@
 	autosetupmerge = always
 [fetch]
 	prune = true
-[url "git@github.com:"]
-	insteadOf = https://github.com/
 [user]
 	email = justin.smestad@gmail.com
 	name = Justin Smestad
