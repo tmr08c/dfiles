@@ -9,12 +9,25 @@ fi
 
 path=(
   $HOME/code/github/elixir-ls/release
-  /usr/local/opt/llvm/bin
   $path
 )
 
-if [ -f "$HOME/.espressif" ]; then
+if [ $IS_M1 ]; then
+  path=(
+   /opt/homebrew/opt/llvm/bin
+   $path
+   /opt/homebrew/opt/ccache/libexec
+  )
+else
+  path=(
+   /usr/local/opt/llvm/bin
+   $path
+   /usr/local/opt/ccache/libexec
+  )
 
+fi
+
+if [ -f "$HOME/.espressif" ]; then
   export IDF_PATH=$HOME/esp/esp-idf
   alias get_idf='. $HOME/esp/esp-idf/export.sh'
 
@@ -26,6 +39,10 @@ if [ -f "$HOME/.espressif" ]; then
 fi
 
 eval "$(direnv hook zsh)"
+
+if [ -f "$HOME/.asdf/plugins/java/set-java-home.zsh" ]; then
+  . ~/.asdf/plugins/java/set-java-home.zsh
+fi
 
 if [ -f "$HOME/.asdf/plugins/dotnet-core" ]; then
   . ~/.asdf/plugins/dotnet-core/set-dotnet-home.zsh
