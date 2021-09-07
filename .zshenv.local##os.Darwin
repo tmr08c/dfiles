@@ -12,7 +12,7 @@ path=(
   $path
 )
 
-if [ $IS_M1 ]; then
+if $IS_M1; then
   path=(
    /opt/homebrew/opt/llvm/bin
    $path
