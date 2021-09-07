@@ -17,7 +17,7 @@ if [ "${arch_name}" = "arm64" ]; then
   IS_M1=true
 fi
 
-if [ $IS_M1 ]; then
+if $IS_M1; then
   eval $(/opt/homebrew/bin/brew shellenv)
 fi
 
